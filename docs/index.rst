@@ -9,11 +9,11 @@ Welcome to Ethereum ABI Utils's documentation!
 Contents:
 
 .. toctree::
-   :maxdepth: 2
-
     overview
     encoding
     decoding
+
+    :maxdepth: 2
 
 
 Indices and tables
