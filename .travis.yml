@@ -1,0 +1,15 @@
+language: python
+python:
+  - "2.7"
+env:
+  matrix:
+    - TOX_ENV=py27
+    - TOX_ENV=flake8
+cache: pip
+install:
+  - "travis_retry pip install setuptools --upgrade"
+  - "travis_retry pip install tox"
+script:
+  - tox -e $TOX_ENV
+after_script:
+  - cat .tox/$TOX_ENV/log/*.log
