@@ -1,6 +1,9 @@
 import pytest
 
 from eth_abi.abi import decode_abi
+from eth_abi.exceptions import (
+    DecodingError,
+)
 
 
 @pytest.mark.parametrize(
@@ -16,7 +19,7 @@ def test_decode_two_uint32(input, expected):
 
 
 def test_empty_data_raises():
-    with pytest.raises(AssertionError):
+    with pytest.raises(DecodingError):
         decode_abi(['uint32', 'uint32'], '0x')
 
 
@@ -26,7 +29,7 @@ def test_decode_various():
             '6d616c000000000000000000000000000000000000000000000000000000000000000000000000000'
             '00000000000000000')
 
-    expected = [b'0x82a978b3f5962a5b0957d9ee9eef472ee55b42f1', 1,
+    expected = [b'82a978b3f5962a5b0957d9ee9eef472ee55b42f1', 1,
                 b'stupid pink animal\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00', 0]
     output = decode_abi(['address', 'uint32', 'bytes32', 'int32'], data)
     assert output == expected
