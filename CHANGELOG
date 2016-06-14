@@ -1,3 +1,9 @@
+0.2.0
+-----
+
+- Bugfixes from upstream pyethereum repository for encoding/decoding
+- Python 3 Support
+
 0.1.0
 -----
 
