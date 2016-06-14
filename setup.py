@@ -21,7 +21,9 @@ setup(
     author_email='pipermerriam@gmail.com',
     url='https://github.com/pipermerriam/ethereum-abi-utils',
     include_package_data=True,
-    install_requires=[],
+    install_requires=[
+        'rlp>=0.4.6',
+    ],
     py_modules=['eth_abi'],
     license="MIT",
     zip_safe=False,

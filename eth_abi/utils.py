@@ -1,6 +1,10 @@
 import struct
 import binascii
 
+from eth_abi.constants import (
+    TT256,
+)
+
 
 def strip_0x_prefix(value):
     """
@@ -32,6 +36,14 @@ def is_string(v):
     return isinstance(v, basestring)
 
 
+def to_string(value):
+    return str(value)
+
+
+def to_string_for_regexp(value):
+    return str(value)
+
+
 def int_to_big_endian(lnum):
     if lnum == 0:
         return b'\0'
@@ -50,3 +62,21 @@ def big_endian_to_int(value):
         return struct.unpack('>Q', value.rjust(8, '\x00'))[0]
     else:
         return int(value.encode('hex'), 16)
+
+
+def encode_int(v):
+    '''encodes an integer into serialization'''
+    if not is_numeric(v) or v < 0 or v >= TT256:
+        raise Exception("Integer invalid or out of range: %r" % v)
+    return int_to_big_endian(v)
+
+
+HEX_CHARS = '1234567890abcdef'
+
+
+def is_hex_encoded_value(v):
+    if not strip_0x_prefix(v).lower().strip(HEX_CHARS) == '':
+        return False
+    if len(strip_0x_prefix(v)) % 64 and len(strip_0x_prefix(v)) % 40:
+        return False
+    return True
