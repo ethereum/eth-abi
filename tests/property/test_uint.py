@@ -26,7 +26,7 @@ def test_always_positive_multi(type_and_value):
     encoded_value = encode_abi([_type], [value])
     decoded_value = decode_abi([_type], encoded_value)
 
-    assert decoded_value >= 0
+    assert decoded_value[0] >= 0
 
 
 @given(st.one_of(uint_strats))

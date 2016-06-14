@@ -1,5 +1,9 @@
 import itertools
 
+from rlp.utils import (
+    encode_hex,
+)
+
 import hypothesis.strategies as st
 
 
@@ -37,7 +41,7 @@ sized_bytes_strats = [
 ]
 
 
-address_raw_strat = st.binary(min_size=20, max_size=20).map(lambda v: v.encode('hex'))
+address_raw_strat = st.binary(min_size=20, max_size=20).map(lambda v: encode_hex(v))
 address_strat = st.tuples(
     st.just('address'),
     address_raw_strat,
