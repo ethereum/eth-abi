@@ -1,16 +1,58 @@
+import sys
 import struct
 import binascii
+
+from rlp.utils import (
+    encode_hex,
+)
 
 from eth_abi.constants import (
     TT256,
 )
 
 
+if sys.version_info.major == 2:
+    def is_numeric(v):
+        return isinstance(v, (int, long))  # NOQA
+
+    def is_string(v):
+        return isinstance(v, basestring)  # NOQA
+
+    def is_text(v):
+        return is_string(v)
+
+    def to_string(value):
+        return str(value)
+
+    def to_string_for_regexp(value):
+        return str(value)
+else:
+    def is_numeric(v):
+        return isinstance(v, int)
+
+    def is_string(v):
+        return isinstance(v, bytes)
+
+    def is_text(v):
+        return isinstance(v, (bytes, str))
+
+    def to_string(value):
+        if isinstance(value, bytes):
+            return value
+        if isinstance(value, str):
+            return bytes(value, 'utf-8')
+        if isinstance(value, int):
+            return bytes(str(value), 'utf-8')
+
+    def to_string_for_regexp(value):
+        return str(to_string(value), 'utf-8')
+
+
 def strip_0x_prefix(value):
     """
     Remove the `0x` prefix from a hex value.
     """
-    if value.startswith('0x'):
+    if to_string(value).startswith(b'0x'):
         return value[2:]
     return value
 
@@ -21,27 +63,11 @@ def zpad(value, length):
 
         zpad("abc", 5") => "\x00\x00abc"
     """
-    return b'\x00' * max(0, length - len(value)) + value
+    return b'\x00' * max(0, length - len(value)) + to_string(value)
 
 
 def ceil32(x):
     return x if x % 32 == 0 else x + 32 - (x % 32)
-
-
-def is_numeric(v):
-    return isinstance(v, (int, long))
-
-
-def is_string(v):
-    return isinstance(v, basestring)
-
-
-def to_string(value):
-    return str(value)
-
-
-def to_string_for_regexp(value):
-    return str(value)
 
 
 def int_to_big_endian(lnum):
@@ -61,7 +87,7 @@ def big_endian_to_int(value):
     elif len(value) <= 8:
         return struct.unpack('>Q', value.rjust(8, '\x00'))[0]
     else:
-        return int(value.encode('hex'), 16)
+        return int(encode_hex(value), 16)
 
 
 def encode_int(v):
@@ -71,11 +97,11 @@ def encode_int(v):
     return int_to_big_endian(v)
 
 
-HEX_CHARS = '1234567890abcdef'
+HEX_CHARS = b'1234567890abcdef'
 
 
 def is_hex_encoded_value(v):
-    if not strip_0x_prefix(v).lower().strip(HEX_CHARS) == '':
+    if not strip_0x_prefix(to_string(v)).lower().strip(HEX_CHARS) == b'':
         return False
     if len(strip_0x_prefix(v)) % 64 and len(strip_0x_prefix(v)) % 40:
         return False

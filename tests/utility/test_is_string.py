@@ -6,13 +6,13 @@ from eth_abi.utils import is_string
 @pytest.mark.parametrize(
     'value,expected',
     (
-        # Strings
-        ('abc', True),
-        ('', True),
+        # Byte Strings
+        (b'abc', True),
+        (b'', True),
         # Ints
         (0, False),
-        # Longs
-        (0L, False),
+        # Ints
+        (2 ** 256, False),
         # Bools
         (True, False),
     )

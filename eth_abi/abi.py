@@ -13,10 +13,12 @@ from eth_abi.utils import (
     ceil32,
     zpad,
     is_string,
+    is_text,
     is_numeric,
     big_endian_to_int,
     encode_int,
     to_string,
+    to_string_for_regexp,
     strip_0x_prefix,
     is_hex_encoded_value,
 )
@@ -149,7 +151,7 @@ def process_type(typ):
     # Crazy reg expression to separate out base type component (eg. uint),
     # size (eg. 256, 128x128, none), array component (eg. [], [45], none)
     regexp = '([a-z]*)([0-9]*x?[0-9]*)((\[[0-9]*\])*)'
-    base, sub, arr, _ = re.match(regexp, to_string(typ)).groups()
+    base, sub, arr, _ = re.match(regexp, to_string_for_regexp(typ)).groups()
     arrlist = re.findall('\[[0-9]*\]', arr)
     if len(''.join(arrlist)) != len(arr):
         raise ValueError("Unknown characters found in array declaration")
@@ -211,8 +213,8 @@ def enc(typ, arg):
     sz = get_size(typ)
     # Encode dynamic-sized strings as <len(str)> + <str>
     if base in ('string', 'bytes') and not sub:
-        if not isinstance(arg, (str, bytes, unicode)):
-            raise EncodingError("Expecting a string")
+        if not is_text(arg):
+            raise EncodingError("Expecting a text type")
         return enc(lentyp, len(arg)) + \
             to_string(arg) + \
             b'\x00' * (ceil32(len(arg)) - len(arg))
@@ -307,7 +309,7 @@ def decode_single(typ, data):
         i = (o - 2**(high + low)) if o >= 2**(high + low - 1) else o
         return (i * 1.0 / 2**low)
     elif base == 'bool':
-        return bool(int(data.encode('hex'), 16))
+        return bool(int(encode_hex(data), 16))
 
 
 # Decodes multiple arguments using the head/tail mechanism

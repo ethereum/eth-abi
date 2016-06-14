@@ -41,11 +41,5 @@ output/*/index.html
 # Sphinx
 docs/_build
 
-# Blockchain
-**/chains/*/nodes/*
-**/chains/*/nodekey
-**/chains/*/dapp/*
-**/chains/*/chaindata/*
-
-# Known Contracts
-**/known_contracts.json
+# Hypothesis
+.hypothesis
