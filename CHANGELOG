@@ -1,3 +1,8 @@
+0.2.1
+-----
+
+- Use pyrlp utility functions for big_endian int operations
+
 0.2.0
 -----
 
