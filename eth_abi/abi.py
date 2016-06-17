@@ -7,6 +7,7 @@ import ast
 from rlp.utils import (
     decode_hex,
     encode_hex,
+    big_endian_to_int,
 )
 
 from eth_abi.utils import (
@@ -15,7 +16,6 @@ from eth_abi.utils import (
     is_string,
     is_text,
     is_numeric,
-    big_endian_to_int,
     encode_int,
     to_string,
     to_string_for_regexp,
