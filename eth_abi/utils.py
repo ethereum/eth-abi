@@ -1,9 +1,7 @@
 import sys
-import struct
-import binascii
 
 from rlp.utils import (
-    encode_hex,
+    int_to_big_endian,
 )
 
 from eth_abi.constants import (
@@ -68,26 +66,6 @@ def zpad(value, length):
 
 def ceil32(x):
     return x if x % 32 == 0 else x + 32 - (x % 32)
-
-
-def int_to_big_endian(lnum):
-    if lnum == 0:
-        return b'\0'
-    s = hex(lnum)[2:]
-    s = s.rstrip('L')
-    if len(s) & 1:
-        s = '0' + s
-    s = binascii.unhexlify(s)
-    return s
-
-
-def big_endian_to_int(value):
-    if len(value) == 1:
-        return ord(value)
-    elif len(value) <= 8:
-        return struct.unpack('>Q', value.rjust(8, '\x00'))[0]
-    else:
-        return int(encode_hex(value), 16)
 
 
 def encode_int(v):
