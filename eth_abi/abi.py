@@ -8,7 +8,6 @@ from rlp.utils import (
     decode_hex,
     encode_hex,
     big_endian_to_int,
-    str_to_bytes,
 )
 
 from eth_abi.utils import (
