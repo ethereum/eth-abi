@@ -67,6 +67,9 @@ def encode_single(typ, arg):
     except ValueError:
         base, sub, arrlist = process_type(typ)
 
+    if is_text(arg):
+        arg = to_string(arg)
+
     # Unsigned integers: uint<sz>
     if base == 'uint':
         sub = int(sub)
@@ -140,7 +143,7 @@ def encode_single(typ, arg):
             return zpad(arg, 32)
         elif len(arg) == 40:
             return zpad(decode_hex(arg), 32)
-        elif len(arg) == 42 and arg[:2] == '0x':
+        elif len(arg) == 42 and arg[:2] == b'0x':
             return zpad(decode_hex(arg[2:]), 32)
         else:
             raise EncodingError("Could not parse address: %r" % arg)
