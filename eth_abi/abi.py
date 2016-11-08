@@ -84,6 +84,40 @@ def encode_single(typ, arg):
             raise EncodingError("Value must be a boolean")
         return zpad(encode_int(int(arg)), 32)
     # Signed integers: int<sz>
+    elif base == 'ufixed':
+        sub = to_string(sub)
+
+        high_str, _, low_str = sub.partition(b'x')
+        high = int(high_str)
+        low = int(low_str)
+
+        if not (0 < high + low <= 256 and high % 8 == 0 and low % 8 == 0):
+            raise ValueError('invalid unsigned fixed length {}'.format(sub))
+
+        if not 0 <= arg < 2 ** high:
+            raise ValueOutOfBounds(repr(arg))
+
+        float_point = arg * 2**low
+        fixed_point = int(float_point)
+        return zpad(encode_int(fixed_point), 32)
+    elif base == 'fixed':
+        sub = to_string(sub)  # pylint: disable=redefined-variable-type
+
+        high_str, _, low_str = sub.partition(b'x')
+        high = int(high_str)
+        low = int(low_str)
+        bits = high - 1
+
+        if not (0 < high + low <= 256 and high % 8 == 0 and low % 8 == 0):
+            raise ValueError('invalid unsigned fixed length {}'.format(sub))
+
+        if not -2 ** bits <= arg < 2 ** bits:
+            raise ValueOutOfBounds(repr(arg))
+
+        float_point = arg * 2**low
+        fixed_point = int(float_point)
+        value = fixed_point % 2**256
+        return zpad(encode_int(value), 32)
     elif base == 'int':
         sub = int(sub)
         i = decint(arg, True)
@@ -172,6 +206,17 @@ def process_type(typ):
             raise ValueError("Integer size out of bounds")
         if int(sub) % 8 != 0:
             raise ValueError("Integer size must be multiple of 8")
+    # Check validity of fixed type
+    elif base == 'ufixed' or base == 'fixed':
+        if not re.match('^[0-9]+x[0-9]+$', sub):
+            raise ValueError("Real type must have suffix of form <high>x<low>, eg. 128x128")
+        high, _, low = sub.partition('x')
+        high = int(high)
+        low = int(low)
+        if 8 > (high + low) or (high + low) > 256:
+            raise ValueError("Real size out of bounds (max 32 bytes)")
+        if high % 8 != 0 or low % 8 != 0:
+            raise ValueError("Real high/low sizes must be multiples of 8")
     # Check validity of real type
     elif base == 'ureal' or base == 'real':
         if not re.match('^[0-9]+x[0-9]+$', sub):
@@ -313,6 +358,16 @@ def decode_single(typ, data):
         return (i * 1.0 / 2**low)
     elif base == 'bool':
         return bool(int(encode_hex(data), 16))
+    elif base == 'ufixed':
+        high, low = [int(x) for x in sub.split('x')]
+        return big_endian_to_int(data) * 1.0 / 2 ** low
+    elif base == 'fixed':
+        high, low = [int(x) for x in sub.split('x')]
+        o = big_endian_to_int(data)
+        i = (o - 2 ** (high + low)) if o >= 2 ** (high + low - 1) else o
+        return (i * 1.0 / 2 ** low)
+    else:
+        raise ValueError("Unknown base type: {0}".format(base))
 
 
 # Decodes multiple arguments using the head/tail mechanism

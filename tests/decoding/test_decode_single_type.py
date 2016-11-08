@@ -78,6 +78,17 @@ def test_decode_bool(input, expected):
 @pytest.mark.parametrize(
     'input,expected',
     (
+        ('0x0000000000000000000000000000000220000000000000000000000000000000', 2.125),
+    )
+)
+def test_decode_fixed(input, expected):
+    output = decode_single('fixed128x128', input)
+    assert output == expected
+
+
+@pytest.mark.parametrize(
+    'input,expected',
+    (
         (
             '0x7465737400000000000000000000000000000000000000000000000000000000',
             b'test\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
