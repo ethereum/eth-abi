@@ -3,29 +3,30 @@ Vendored from `pyethereum.abi`
 """
 import re
 import ast
+import warnings
 
-from rlp.utils import (
-    decode_hex,
-    encode_hex,
-    big_endian_to_int,
-)
+from io import BytesIO
 
-from eth_abi.utils import (
-    ceil32,
-    zpad,
-    is_string,
+from eth_utils import (
     is_text,
-    is_numeric,
-    encode_int,
-    to_string,
-    to_string_for_regexp,
-    strip_0x_prefix,
-    is_hex_encoded_value,
+    is_bytes,
+    is_integer,
+    force_text,
+    force_bytes,
+    remove_0x_prefix,
+    decode_hex,
+    coerce_args_to_bytes,
 )
+
 from eth_abi.constants import (
     TT255,
     TT256,
     TT256M1,
+)
+
+from eth_abi.decoding import (
+    get_decoder_for_type,
+    get_decoder,
 )
 from eth_abi.exceptions import (
     EncodingError,
@@ -33,18 +34,25 @@ from eth_abi.exceptions import (
     ValueOutOfBounds,
 )
 
+from eth_abi.utils.numeric import (
+    ceil32,
+    big_endian_to_int,
+    encode_int,
+)
+from eth_abi.utils.padding import (
+    zpad32,
+)
+
 
 # Decode an unsigned/signed integer
+@coerce_args_to_bytes
 def decint(n, signed=False):
-    if isinstance(n, str):
-        n = to_string(n)
-
-    if is_numeric(n):
+    if is_integer(n):
         min, max = (-TT255, TT255 - 1) if signed else (0, TT256M1)
         if n > max or n < min:
             raise EncodingError("Number out of range: %r" % n)
         return n
-    elif is_string(n):
+    elif is_bytes(n):
         if len(n) == 40:
             n = decode_hex(n)
         if len(n) > 32:
@@ -68,7 +76,7 @@ def encode_single(typ, arg):
         base, sub, arrlist = process_type(typ)
 
     if is_text(arg):
-        arg = to_string(arg)
+        arg = force_bytes(arg)
 
     # Unsigned integers: uint<sz>
     if base == 'uint':
@@ -77,35 +85,35 @@ def encode_single(typ, arg):
 
         if not 0 <= i < 2**sub:
             raise ValueOutOfBounds(repr(arg))
-        return zpad(encode_int(i), 32)
+        return zpad32(encode_int(i))
     # bool: int<sz>
     elif base == 'bool':
         if not isinstance(arg, bool):
             raise EncodingError("Value must be a boolean")
-        return zpad(encode_int(int(arg)), 32)
+        return zpad32(encode_int(int(arg)))
     # Signed integers: int<sz>
     elif base == 'int':
         sub = int(sub)
         i = decint(arg, True)
         if not -2**(sub - 1) <= i < 2**(sub - 1):
             raise ValueOutOfBounds(repr(arg))
-        return zpad(encode_int(i % 2**sub), 32)
+        return zpad32(encode_int(i % 2**sub))
     # Unsigned reals: ureal<high>x<low>
     elif base == 'ureal':
         high, low = [int(x) for x in sub.split('x')]
         if not 0 <= arg < 2**high:
             raise ValueOutOfBounds(repr(arg))
-        return zpad(encode_int(int(arg * 2**low)), 32)
+        return zpad32(encode_int(int(arg * 2**low)))
     # Signed reals: real<high>x<low>
     elif base == 'real':
         high, low = [int(x) for x in sub.split('x')]
         if not -2**(high - 1) <= arg < 2**(high - 1):
             raise ValueOutOfBounds(repr(arg))
         i = int(arg * 2**low)
-        return zpad(encode_int(i % 2**(high + low)), 32)
+        return zpad32(encode_int(i % 2**(high + low)))
     # Strings
     elif base == 'string' or base == 'bytes':
-        if not is_string(arg):
+        if not is_bytes(arg):
             raise EncodingError("Expecting string: %r" % arg)
         # Fixed length: string<sz>
         if len(sub):
@@ -118,33 +126,33 @@ def encode_single(typ, arg):
             return arg + b'\x00' * (32 - len(arg))
         # Variable length: string
         else:
-            return zpad(encode_int(len(arg)), 32) + \
+            return zpad32(encode_int(len(arg))) + \
                 arg + \
                 b'\x00' * (ceil32(len(arg)) - len(arg))
     # Hashes: hash<sz>
     elif base == 'hash':
         if not (int(sub) and int(sub) <= 32):
             raise EncodingError("too long: %r" % arg)
-        if is_numeric(arg):
-            return zpad(encode_int(arg), 32)
+        if is_integer(arg):
+            return zpad32(encode_int(arg))
         elif len(arg) == int(sub):
-            return zpad(arg, 32)
+            return zpad32(arg)
         elif len(arg) == int(sub) * 2:
-            return zpad(decode_hex(arg), 32)
+            return zpad32(decode_hex(arg))
         else:
             raise EncodingError("Could not parse hash: %r" % arg)
     # Addresses: address (== hash160)
     elif base == 'address':
         if sub != '':
             raise EncodingError("Address type cannot specify a byte size")
-        if is_numeric(arg):
-            return zpad(encode_int(arg), 32)
+        if is_integer(arg):
+            return zpad32(encode_int(arg))
         elif len(arg) == 20:
-            return zpad(arg, 32)
+            return zpad32(arg)
         elif len(arg) == 40:
-            return zpad(decode_hex(arg), 32)
+            return zpad32(decode_hex(arg))
         elif len(arg) == 42 and arg[:2] == b'0x':
-            return zpad(decode_hex(arg[2:]), 32)
+            return zpad32(decode_hex(arg[2:]))
         else:
             raise EncodingError("Could not parse address: %r" % arg)
     raise EncodingError("Unhandled type: %r %r" % (base, sub))
@@ -154,7 +162,7 @@ def process_type(typ):
     # Crazy reg expression to separate out base type component (eg. uint),
     # size (eg. 256, 128x128, none), array component (eg. [], [45], none)
     regexp = '([a-z]*)([0-9]*x?[0-9]*)((\[[0-9]*\])*)'
-    base, sub, arr, _ = re.match(regexp, to_string_for_regexp(typ)).groups()
+    base, sub, arr, _ = re.match(regexp, force_text(typ)).groups()
     arrlist = re.findall('\[[0-9]*\]', arr)
     if len(''.join(arrlist)) != len(arr):
         raise ValueError("Unknown characters found in array declaration")
@@ -219,7 +227,7 @@ def enc(typ, arg):
         if not is_text(arg):
             raise EncodingError("Expecting a text type")
         return enc(lentyp, len(arg)) + \
-            to_string(arg) + \
+            force_bytes(arg) + \
             b'\x00' * (ceil32(len(arg)) - len(arg))
     # Encode dynamic-sized lists via the head/tail mechanism described in
     # https://github.com/ethereum/wiki/wiki/Proposal-for-new-ABI-value-encoding
@@ -249,7 +257,7 @@ def enc(typ, arg):
     # Encode static-sized lists via sequential packing
     else:
         if arrlist == []:
-            return to_string(encode_single(typ, arg))
+            return force_bytes(encode_single(typ, arg))
         else:
             subtyp = base, sub, arrlist[:-1]
             o = b''
@@ -278,87 +286,51 @@ def encode_abi(types, args):
     return myhead + mytail
 
 
+HEX_CHARS = b'1234567890abcdef'
+
+
+def is_hex_encoded_value(v):
+    if not remove_0x_prefix(force_bytes(v)).lower().strip(HEX_CHARS) == b'':
+        return False
+    if len(remove_0x_prefix(v)) % 64 and len(remove_0x_prefix(v)) % 40:
+        return False
+    return True
+
+
 # Decodes a single base datum
 def decode_single(typ, data):
+    if is_hex_encoded_value(data):
+        warnings.warn(DeprecationWarning(
+            "Automatic inference of hex encoded data has been deprecated. "
+            "Please adjust your code to ensure that the data argument for "
+            "`decode_single` is a byte string"
+        ))
+        data = decode_hex(remove_0x_prefix(data))
+
     try:
         base, sub, arrlist = typ
     except ValueError:
         base, sub, arrlist = process_type(typ)
 
-    if is_hex_encoded_value(data):
-        data = decode_hex(strip_0x_prefix(data))
-
-    if base == 'address':
-        return encode_hex(data[12:])
-    elif base == 'hash':
-        return data[32 - int(sub):]
-    elif base == 'string' or base == 'bytes':
-        if len(sub):
-            return data[:int(sub)]
-        else:
-            l = big_endian_to_int(data[0:32])
-            return data[32:][:l]
-    elif base == 'uint':
-        return big_endian_to_int(data)
-    elif base == 'int':
-        o = big_endian_to_int(data)
-        return (o - 2**int(sub)) if o >= 2**(int(sub) - 1) else o
-    elif base == 'ureal':
-        high, low = [int(x) for x in sub.split('x')]
-        return big_endian_to_int(data) * 1.0 / 2**low
-    elif base == 'real':
-        high, low = [int(x) for x in sub.split('x')]
-        o = big_endian_to_int(data)
-        i = (o - 2**(high + low)) if o >= 2**(high + low - 1) else o
-        return (i * 1.0 / 2**low)
-    elif base == 'bool':
-        return bool(int(encode_hex(data), 16))
+    decoder = get_decoder_for_type(base, sub, arrlist)
+    stream = BytesIO(force_bytes(data))
+    return decoder(stream)
 
 
 # Decodes multiple arguments using the head/tail mechanism
 def decode_abi(types, data):
     if is_hex_encoded_value(data):
-        data = decode_hex(strip_0x_prefix(data))
+        warnings.warn(DeprecationWarning(
+            "Automatic inference of hex encoded data has been deprecated. "
+            "Please adjust your code to ensure that the data argument for "
+            "`decode_single` is a byte string"
+        ))
+        data = decode_hex(remove_0x_prefix(data))
 
-    # Process types
-    proctypes = [process_type(typ) for typ in types]
-    # Get sizes of everything
-    sizes = [get_size(typ) for typ in proctypes]
-    # Initialize array of outputs
-    outs = [None] * len(types)
-    # Initialize array of start positions
-    start_positions = [None] * len(types) + [len(data)]
-    # If a type is static, grab the data directly, otherwise record
-    # its start position
-    pos = 0
-    for i, typ in enumerate(types):
-        if sizes[i] is None:
-            start_positions[i] = big_endian_to_int(data[pos:pos + 32])
-            j = i - 1
-            while j >= 0 and start_positions[j] is None:
-                start_positions[j] = start_positions[i]
-                j -= 1
-            pos += 32
-        else:
-            outs[i] = data[pos:pos + sizes[i]]
-            pos += sizes[i]
-    # We add a start position equal to the length of the entire data
-    # for convenience.
-    j = len(types) - 1
-    while j >= 0 and start_positions[j] is None:
-        start_positions[j] = start_positions[len(types)]
-        j -= 1
-    if pos > len(data):
-        raise DecodingError("Not enough data for head")
-    # Grab the data for tail arguments using the start positions
-    # calculated above
-    for i, typ in enumerate(types):
-        if sizes[i] is None:
-            offset = start_positions[i]
-            next_offset = start_positions[i + 1]
-            outs[i] = data[offset:next_offset]
-    # Recursively decode them all
-    return [dec(proctypes[i], outs[i]) for i in range(len(outs))]
+    processed_types = tuple(process_type(_type) for _type in types)
+    decoder = get_decoder(processed_types)
+    stream = BytesIO(force_bytes(data))
+    return decoder(stream)
 
 
 # Decode a single value (static or dynamic)

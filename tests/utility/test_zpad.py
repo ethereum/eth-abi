@@ -1,6 +1,6 @@
 import pytest
 
-from eth_abi.utils import zpad
+from eth_abi.utils.padding import zpad
 
 
 @pytest.mark.parametrize(

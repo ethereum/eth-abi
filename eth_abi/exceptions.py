@@ -12,3 +12,11 @@ class ValueOutOfBounds(EncodingError):
 
 class DecodingError(Exception):
     pass
+
+
+class InsufficientDataBytes(DecodingError):
+    pass
+
+
+class NonEmptyPaddingBytes(DecodingError):
+    pass
