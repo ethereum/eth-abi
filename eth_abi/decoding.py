@@ -16,16 +16,18 @@ from eth_abi.utils.numeric import (
 )
 
 
-def get_decoder(processed_types):
+def get_multi_decoder(processed_types):
+    """
+    """
     decoders = tuple(
-        get_decoder_for_type(base, sub, arrlist) for base, sub, arrlist in processed_types
+        get_single_decoder(base, sub, arrlist) for base, sub, arrlist in processed_types
     )
     return MultiDecoder.as_decoder(decoders=decoders)
 
 
-def get_decoder_for_type(base, sub, arrlist):
+def get_single_decoder(base, sub, arrlist):
     if arrlist:
-        sub_decoder = get_decoder_for_type(base, sub, arrlist[:-1])
+        sub_decoder = get_single_decoder(base, sub, arrlist[:-1])
         if arrlist[-1]:
             return SizedArrayDecoder.as_decoder(
                 array_size=arrlist[-1][0],

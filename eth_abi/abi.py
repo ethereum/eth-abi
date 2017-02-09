@@ -27,8 +27,8 @@ from eth_abi.constants import (
 )
 
 from eth_abi.decoding import (
-    get_decoder_for_type,
-    get_decoder,
+    get_single_decoder,
+    get_multi_decoder,
 )
 from eth_abi.exceptions import (
     EncodingError,
@@ -313,7 +313,7 @@ def decode_single(typ, data):
     except ValueError:
         base, sub, arrlist = process_type(typ)
 
-    decoder = get_decoder_for_type(base, sub, arrlist)
+    decoder = get_single_decoder(base, sub, arrlist)
     stream = BytesIO(force_bytes(data))
     return decoder(stream)
 
@@ -329,6 +329,6 @@ def decode_abi(types, data):
         data = decode_hex(remove_0x_prefix(data))
 
     processed_types = tuple(process_type(_type) for _type in types)
-    decoder = get_decoder(processed_types)
+    decoder = get_multi_decoder(processed_types)
     stream = BytesIO(force_bytes(data))
     return decoder(stream)
