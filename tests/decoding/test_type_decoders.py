@@ -29,7 +29,7 @@ from eth_abi.decoding import (
     MultiDecoder,
     BooleanDecoder,
     AddressDecoder,
-    ArrayDecoder,
+    DynamicArrayDecoder,
 )
 
 from eth_abi.utils.padding import (
@@ -55,20 +55,20 @@ def is_non_empty_non_null_byte_string(value):
 def test_decode_unsigned_int(integer_bit_size, stream_bytes, data_byte_size):
     if integer_bit_size % 8 != 0:
         with pytest.raises(ValueError):
-            UIntDecoder.factory(
+            UIntDecoder.as_decoder(
                 value_bit_size=integer_bit_size,
                 data_byte_size=data_byte_size,
             )
         return
     elif integer_bit_size > data_byte_size * 8:
         with pytest.raises(ValueError):
-            UIntDecoder.factory(
+            UIntDecoder.as_decoder(
                 value_bit_size=integer_bit_size,
                 data_byte_size=data_byte_size,
             )
         return
     else:
-        decoder = UIntDecoder.factory(
+        decoder = UIntDecoder.as_decoder(
             value_bit_size=integer_bit_size,
             data_byte_size=data_byte_size,
         )
@@ -79,14 +79,14 @@ def test_decode_unsigned_int(integer_bit_size, stream_bytes, data_byte_size):
 
     if len(stream_bytes) < data_byte_size:
         with pytest.raises(InsufficientDataBytes):
-            decoder.decode(stream)
+            decoder(stream)
         return
     elif actual_value > 2 ** integer_bit_size - 1:
         with pytest.raises(NonEmptyPaddingBytes):
-            decoder.decode(stream)
+            decoder(stream)
         return
     else:
-        decoded_value = decoder.decode(stream)
+        decoded_value = decoder(stream)
 
     assert decoded_value == actual_value
 
@@ -100,20 +100,20 @@ def test_decode_unsigned_int(integer_bit_size, stream_bytes, data_byte_size):
 def test_decode_signed_int(integer_bit_size, stream_bytes, data_byte_size):
     if integer_bit_size % 8 != 0:
         with pytest.raises(ValueError):
-            IntDecoder.factory(
+            IntDecoder.as_decoder(
                 value_bit_size=integer_bit_size,
                 data_byte_size=data_byte_size,
             )
         return
     elif integer_bit_size > data_byte_size * 8:
         with pytest.raises(ValueError):
-            IntDecoder.factory(
+            IntDecoder.as_decoder(
                 value_bit_size=integer_bit_size,
                 data_byte_size=data_byte_size,
             )
         return
     else:
-        decoder = IntDecoder.factory(
+        decoder = IntDecoder.as_decoder(
             value_bit_size=integer_bit_size,
             data_byte_size=data_byte_size,
         )
@@ -129,14 +129,14 @@ def test_decode_signed_int(integer_bit_size, stream_bytes, data_byte_size):
 
     if len(stream_bytes) < data_byte_size:
         with pytest.raises(InsufficientDataBytes):
-            decoder.decode(stream)
+            decoder(stream)
         return
     elif raw_value > 2 ** integer_bit_size - 1:
         with pytest.raises(NonEmptyPaddingBytes):
-            decoder.decode(stream)
+            decoder(stream)
         return
     else:
-        decoded_value = decoder.decode(stream)
+        decoded_value = decoder(stream)
 
     assert decoded_value == actual_value
 
@@ -152,12 +152,14 @@ def test_decode_bytes_and_string(string_bytes, pad_size):
     stream_bytes = size_bytes + padded_string_bytes
     stream = BytesIO(stream_bytes)
 
+    decoder = StringDecoder.as_decoder()
+
     if len(padded_string_bytes) < ceil32(len(string_bytes)):
         with pytest.raises(InsufficientDataBytes):
-            StringDecoder.decode(stream)
+            decoder(stream)
         return
 
-    decoded_value = StringDecoder.decode(stream)
+    decoded_value = decoder(stream)
     assert decoded_value == string_bytes
 
 
@@ -169,17 +171,17 @@ def test_decode_bytes_and_string(string_bytes, pad_size):
 def test_decode_boolean(stream_bytes, data_byte_size):
     stream = BytesIO(stream_bytes)
 
-    decoder = BooleanDecoder.factory(data_byte_size=data_byte_size)
+    decoder = BooleanDecoder.as_decoder(data_byte_size=data_byte_size)
 
     if len(stream_bytes) < data_byte_size:
         with pytest.raises(InsufficientDataBytes):
-            decoder.decode(stream)
+            decoder(stream)
         return
 
     padding_bytes = stream_bytes[:data_byte_size][:-1]
     if is_non_empty_non_null_byte_string(padding_bytes):
         with pytest.raises(NonEmptyPaddingBytes):
-            decoder.decode(stream)
+            decoder(stream)
         return
 
     byte_value = stream_bytes[data_byte_size - 1]
@@ -190,10 +192,10 @@ def test_decode_boolean(stream_bytes, data_byte_size):
         actual_value = True
     else:
         with pytest.raises(NonEmptyPaddingBytes):
-            decoder.decode(stream)
+            decoder(stream)
         return
 
-    decoded_value = decoder.decode(stream)
+    decoded_value = decoder(stream)
     assert decoded_value is actual_value
 
 
@@ -206,13 +208,13 @@ def test_decode_boolean(stream_bytes, data_byte_size):
 def test_decode_bytes_xx(value_byte_size, stream_bytes, data_byte_size):
     if value_byte_size > data_byte_size:
         with pytest.raises(ValueError):
-            BytesDecoder.factory(
+            BytesDecoder.as_decoder(
                 value_bit_size=value_byte_size * 8,
                 data_byte_size=data_byte_size,
             )
         return
     else:
-        decoder = BytesDecoder.factory(
+        decoder = BytesDecoder.as_decoder(
             value_bit_size=value_byte_size * 8,
             data_byte_size=data_byte_size,
         )
@@ -223,14 +225,14 @@ def test_decode_bytes_xx(value_byte_size, stream_bytes, data_byte_size):
 
     if len(stream_bytes) < data_byte_size:
         with pytest.raises(InsufficientDataBytes):
-            decoder.decode(stream)
+            decoder(stream)
         return
     elif is_non_empty_non_null_byte_string(padding_bytes):
         with pytest.raises(NonEmptyPaddingBytes):
-            decoder.decode(stream)
+            decoder(stream)
         return
     else:
-        decoded_value = decoder.decode(stream)
+        decoded_value = decoder(stream)
 
     assert decoded_value == actual_value
 
@@ -245,12 +247,12 @@ def test_decode_address(address_bytes, padding_size, data_byte_size):
     stream_bytes = b'\x00' * padding_size + address_bytes
     if data_byte_size < 20:
         with pytest.raises(ValueError):
-            AddressDecoder.factory(
+            AddressDecoder.as_decoder(
                 data_byte_size=data_byte_size,
             )
         return
     else:
-        decoder = AddressDecoder.factory(
+        decoder = AddressDecoder.as_decoder(
             data_byte_size=data_byte_size,
         )
 
@@ -259,14 +261,14 @@ def test_decode_address(address_bytes, padding_size, data_byte_size):
 
     if len(stream_bytes) < data_byte_size:
         with pytest.raises(InsufficientDataBytes):
-            decoder.decode(stream)
+            decoder(stream)
         return
     elif is_non_empty_non_null_byte_string(padding_bytes):
         with pytest.raises(NonEmptyPaddingBytes):
-            decoder.decode(stream)
+            decoder(stream)
         return
     else:
-        decoded_value = decoder.decode(stream)
+        decoded_value = decoder(stream)
 
     actual_value = to_normalized_address(stream_bytes[:data_byte_size][-20:])
 
@@ -285,25 +287,27 @@ def test_decode_array_of_unsigned_integers(array_size, array_values):
     ))
     stream_bytes = size_bytes + values_bytes
 
-    decoder = ArrayDecoder.factory(sub_decoder=UIntDecoder.factory(value_bit_size=256).decode)
+    decoder = DynamicArrayDecoder.as_decoder(
+        sub_decoder=UIntDecoder.as_decoder(value_bit_size=256),
+    )
     stream = BytesIO(stream_bytes)
 
     if len(array_values) < array_size:
         with pytest.raises(InsufficientDataBytes):
-            decoder.decode(stream)
+            decoder(stream)
         return
 
-    actual_values = decoder.decode(stream)
+    actual_values = decoder(stream)
     assert actual_values == array_values[:array_size]
 
 
 # TODO: make this generic
 def test_multi_decoder():
-    decoder = MultiDecoder.factory(decoders=(
-        UIntDecoder.factory(value_bit_size=256).decode,
-        StringDecoder.decode,
+    decoder = MultiDecoder.as_decoder(decoders=(
+        UIntDecoder.as_decoder(value_bit_size=256),
+        StringDecoder.as_decoder(),
     ))
     stream = BytesIO(decode_hex('0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'))
-    uint_v, bytes_v = decoder.decode(stream)
+    uint_v, bytes_v = decoder(stream)
     assert uint_v == 0
-    assert bytes_v == 64 * b'\x00'
+    assert bytes_v == b''
