@@ -18,34 +18,34 @@ def get_decoder(processed_types):
     decoders = tuple(
         get_decoder_for_type(base, sub, arrlist) for base, sub, arrlist in processed_types
     )
-    return MultiDecoder.factory(decoders=decoders).decode
+    return MultiDecoder.as_decoder(decoders=decoders)
 
 
 def get_decoder_for_type(base, sub, arrlist):
     if arrlist:
         sub_decoder = get_decoder_for_type(base, sub, arrlist[:-1])
         if arrlist[-1]:
-            return SizedArrayDecoder.factory(
+            return SizedArrayDecoder.as_decoder(
                 array_size=arrlist[-1][0],
                 sub_decoder=sub_decoder,
-            ).decode
+            )
         else:
-            return DynamicArrayDecoder.factory(sub_decoder=sub_decoder).decode
+            return DynamicArrayDecoder.as_decoder(sub_decoder=sub_decoder)
     elif base == 'address':
         return decode_address
     elif base == 'bool':
         return decode_bool
     elif base == 'bytes':
         if sub:
-            return BytesDecoder.factory(value_bit_size=int(sub) * 8).decode
+            return BytesDecoder.as_decoder(value_bit_size=int(sub) * 8)
         else:
             return decode_bytes
     elif base == 'int':
-        return IntDecoder.factory(value_bit_size=int(sub)).decode
+        return IntDecoder.as_decoder(value_bit_size=int(sub))
     elif base == 'string':
         return decode_string
     elif base == 'uint':
-        return UIntDecoder.factory(value_bit_size=int(sub)).decode
+        return UIntDecoder.as_decoder(value_bit_size=int(sub))
     else:
         raise ValueError(
             "Unsupported type: {0} - must be one of "
@@ -54,11 +54,8 @@ def get_decoder_for_type(base, sub, arrlist):
 
 
 class BaseDecoder(object):
-    def __init__(self, *args, **kwargs):
-        raise TypeError("Decoder classes should not be instantiated")
-
     @classmethod
-    def factory(cls, name=None, **kwargs):
+    def as_decoder(cls, name=None, **kwargs):
         for key in kwargs:
             if not hasattr(cls, key):
                 raise AttributeError(
@@ -70,11 +67,53 @@ class BaseDecoder(object):
             name = cls.__name__
         sub_cls = type(name, (cls,), kwargs)
         sub_cls.validate()
-        return sub_cls
+        instance = sub_cls()
+        return instance
 
     @classmethod
     def validate(cls):
         pass
+
+    def __call__(self, stream):
+        return self.decode(stream)
+
+
+class HeadTailDecoder(BaseDecoder):
+    sub_decoder = None
+
+    @classmethod
+    def validate(cls):
+        super(HeadTailDecoder, cls).validate()
+        if cls.sub_decoder is None:
+            raise ValueError("No `sub_decoder` set")
+
+    @classmethod
+    def decode(cls, stream):
+        start_pos = decode_uint_256(stream)
+        anchor_pos = stream.tell()
+        stream.seek(start_pos)
+        value = cls.sub_decoder(stream)
+        stream.seek(anchor_pos)
+        return value
+
+
+class MultiDecoder(BaseDecoder):
+    decoders = None
+
+    @classmethod
+    def validate(cls):
+        super(MultiDecoder, cls).validate()
+        if cls.decoders is None:
+            raise ValueError("No `decoders` set")
+
+    @classmethod
+    @to_tuple
+    def decode(cls, stream):
+        for decoder in cls.decoders:
+            if isinstance(decoder, (DynamicArrayDecoder, StringDecoder)):
+                yield HeadTailDecoder.as_decoder(sub_decoder=decoder)(stream)
+            else:
+                yield decoder(stream)
 
 
 class SingleDecoder(BaseDecoder):
@@ -103,22 +142,6 @@ class SingleDecoder(BaseDecoder):
         return raw_data
 
 
-class MultiDecoder(BaseDecoder):
-    decoders = None
-
-    @classmethod
-    def validate(cls):
-        super(MultiDecoder, cls).validate()
-        if cls.decoders is None:
-            raise ValueError("No `decoders` set")
-
-    @classmethod
-    @to_tuple
-    def decode(cls, stream):
-        for callback in cls.decoders:
-            yield callback(stream)
-
-
 class BaseArrayDecoder(BaseDecoder):
     sub_decoder = None
 
@@ -143,13 +166,9 @@ class DynamicArrayDecoder(BaseArrayDecoder):
     @classmethod
     @to_tuple
     def decode(cls, stream):
-        start_pos = decode_uint_256(stream)
-        anchor_pos = stream.tell()
-        stream.seek(start_pos)
         array_size = decode_uint_256(stream)
         for _ in range(array_size):
             yield cls.sub_decoder(stream)
-        stream.seek(anchor_pos)
 
 
 class FixedByteSizeDecoder(SingleDecoder):
@@ -240,7 +259,7 @@ class BooleanDecoder(Fixed32ByteSizeDecoder):
             )
 
 
-decode_bool = BooleanDecoder.factory().decode
+decode_bool = BooleanDecoder.as_decoder()
 
 
 class AddressDecoder(Fixed32ByteSizeDecoder):
@@ -249,7 +268,7 @@ class AddressDecoder(Fixed32ByteSizeDecoder):
     decoder_fn = to_normalized_address
 
 
-decode_address = AddressDecoder.factory().decode
+decode_address = AddressDecoder.as_decoder()
 
 
 #
@@ -260,7 +279,7 @@ class UIntDecoder(Fixed32ByteSizeDecoder):
     is_big_endian = True
 
 
-decode_uint_256 = UIntDecoder.factory(value_bit_size=256).decode
+decode_uint_256 = UIntDecoder.as_decoder(value_bit_size=256)
 
 
 #
@@ -300,17 +319,10 @@ class StringDecoder(SingleDecoder):
 
     @classmethod
     def read_data_from_stream(cls, stream):
-        start_pos = decode_uint_256(stream)
-        anchor_pos = stream.tell()
-
-        stream.seek(start_pos)
-
         data_length = decode_uint_256(stream)
         padded_length = ceil32(data_length)
 
         data = stream.read(padded_length)
-
-        stream.seek(anchor_pos)
 
         if len(data) < padded_length:
             raise InsufficientDataBytes(
@@ -322,4 +334,4 @@ class StringDecoder(SingleDecoder):
         return data[:data_length]
 
 
-decode_string = decode_bytes = StringDecoder.factory().decode
+decode_string = decode_bytes = StringDecoder.as_decoder()
