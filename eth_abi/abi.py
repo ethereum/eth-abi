@@ -32,7 +32,6 @@ from eth_abi.decoding import (
 )
 from eth_abi.exceptions import (
     EncodingError,
-    DecodingError,
     ValueOutOfBounds,
 )
 
@@ -333,47 +332,3 @@ def decode_abi(types, data):
     decoder = get_decoder(processed_types)
     stream = BytesIO(force_bytes(data))
     return decoder(stream)
-
-
-# Decode a single value (static or dynamic)
-def dec(typ, arg):
-    base, sub, arrlist = typ
-    sz = get_size(typ)
-
-    # Dynamic-sized strings are encoded as <len(str)> + <str>
-    if base in ('string', 'bytes') and not sub:
-        L = big_endian_to_int(arg[:32])
-        if len(arg[32:]) != ceil32(L):
-            raise ValueError("Wrong data size for string/bytes object")
-        return arg[32:][:L]
-    # Dynamic-sized arrays
-    elif sz is None:
-        L = big_endian_to_int(arg[:32])
-        subtyp = base, sub, arrlist[:-1]
-        subsize = get_size(subtyp)
-        # If children are dynamic, use the head/tail mechanism. Fortunately,
-        # here the code is simpler since we do not have to worry about
-        # mixed dynamic and static children, as we do in the top-level multi-arg
-        # case
-        if subsize is None:
-            if len(arg) < 32 + 32 * L:
-                raise DecodingError("Not enough data for head")
-            start_positions = [big_endian_to_int(arg[32 + 32 * i: 64 + 32 * i])
-                               for i in range(L)] + [len(arg)]
-            outs = [arg[start_positions[i]: start_positions[i + 1]]
-                    for i in range(L)]
-            return [dec(subtyp, out) for out in outs]
-        # If children are static, then grab the data slice for each one and
-        # sequentially decode them manually
-        else:
-            return [dec(subtyp, arg[32 + subsize * i: 32 + subsize * (i + 1)])
-                    for i in range(L)]
-    # Static-sized arrays: decode piece-by-piece
-    elif len(arrlist):
-        L = arrlist[-1][0]
-        subtyp = base, sub, arrlist[:-1]
-        subsize = get_size(subtyp)
-        return [dec(subtyp, arg[subsize * i:subsize * (i + 1)])
-                for i in range(L)]
-    else:
-        return decode_single(typ, arg)
