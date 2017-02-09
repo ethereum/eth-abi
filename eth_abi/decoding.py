@@ -23,7 +23,6 @@ def get_decoder(processed_types):
 
 def get_decoder_for_type(base, sub, arrlist):
     if arrlist:
-        sub_type = base, sub, arrlist[:-1]
         sub_decoder = get_decoder_for_type(base, sub, arrlist[:-1])
         return ArrayDecoder.factory(sub_decoder=sub_decoder).decode
     elif base == 'address':
@@ -126,8 +125,12 @@ class ArrayDecoder(BaseDecoder):
     @classmethod
     @to_tuple
     def decode(cls, stream):
-        num_items = decode_uint_256(stream)
-        for _ in range(num_items):
+        head_length = decode_uint_256(stream)
+        array_length = UIntDecoder.factory(
+            value_bit_size=256,
+            data_byte_size=head_length,
+        ).decode(stream)
+        for _ in range(array_length):
             yield cls.sub_decoder(stream)
 
 
@@ -204,8 +207,8 @@ class Fixed32ByteSizeDecoder(FixedByteSizeDecoder):
 
 
 class BooleanDecoder(Fixed32ByteSizeDecoder):
-    value_bit_size=8
-    is_big_endian=True
+    value_bit_size = 8
+    is_big_endian = True
 
     @classmethod
     def decoder_fn(cls, data):

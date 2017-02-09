@@ -11,6 +11,8 @@ from eth_utils import (
     is_text,
     is_bytes,
     is_integer,
+    is_boolean,
+    is_list_like,
     force_text,
     force_bytes,
     remove_0x_prefix,
@@ -88,7 +90,7 @@ def encode_single(typ, arg):
         return zpad32(encode_int(i))
     # bool: int<sz>
     elif base == 'bool':
-        if not isinstance(arg, bool):
+        if not is_boolean(arg):
             raise EncodingError("Value must be a boolean")
         return zpad32(encode_int(int(arg)))
     # Signed integers: int<sz>
@@ -232,7 +234,7 @@ def enc(typ, arg):
     # Encode dynamic-sized lists via the head/tail mechanism described in
     # https://github.com/ethereum/wiki/wiki/Proposal-for-new-ABI-value-encoding
     elif sz is None:
-        if not isinstance(arg, list):
+        if not is_list_like(arg):
             raise EncodingError("Expecting a list argument")
         subtyp = base, sub, arrlist[:-1]
         subsize = get_size(subtyp)

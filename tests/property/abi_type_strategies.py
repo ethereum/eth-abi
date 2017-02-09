@@ -1,7 +1,8 @@
 import itertools
 
-from rlp.utils import (
+from eth_utils import (
     encode_hex,
+    add_0x_prefix,
 )
 
 import hypothesis.strategies as st
@@ -41,7 +42,7 @@ sized_bytes_strats = [
 ]
 
 
-address_raw_strat = st.binary(min_size=20, max_size=20).map(lambda v: encode_hex(v))
+address_raw_strat = st.binary(min_size=20, max_size=20).map(encode_hex).map(add_0x_prefix)
 address_strat = st.tuples(
     st.just('address'),
     address_raw_strat,
@@ -70,7 +71,7 @@ all_basic_strats = list(itertools.chain(
 
 
 unsized_list_raw_strats = [
-    (type_str + "[]", st.lists(type_strat, min_size=0, max_size=MAX_LIST_SIZE))
+    (type_str + "[]", st.lists(type_strat, min_size=0, max_size=MAX_LIST_SIZE).map(tuple))
     for type_str, type_strat in all_basic_raw_strats
 ]
 unsized_list_strats = [
@@ -88,14 +89,14 @@ sized_list_strats = [
         st.shared(
             st.integers(min_value=MIN_LIST_SIZE, max_value=MAX_LIST_SIZE),
             key="n",
-        ).flatmap(lambda n: st.lists(type_strat, min_size=n, max_size=n))
+        ).flatmap(lambda n: st.lists(type_strat, min_size=n, max_size=n).map(tuple))
     ) for type_str, type_strat in all_basic_raw_strats
 ]
 
 
 def zip_types_and_values(types_and_values):
     types, values = zip(*types_and_values)
-    return list(types), list(values)
+    return tuple(types), tuple(values)
 
 
 single_abi_strats = st.one_of(itertools.chain(
