@@ -47,3 +47,17 @@ def encode_int(value):
     if not is_number(value) or value < 0 or value >= TT256:
         raise Exception("Integer invalid or out of range: %r" % value)
     return int_to_big_endian(value)
+
+
+def compute_unsigned_bounds(num_bits):
+    return (
+        0,
+        2 ** num_bits - 1,
+    )
+
+
+def compute_signed_bounds(num_bits):
+    return (
+        -1 * 2 ** (num_bits - 1),
+        2 ** (num_bits - 1) - 1,
+    )

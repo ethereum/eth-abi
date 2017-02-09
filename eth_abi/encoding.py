@@ -1,6 +1,9 @@
 from eth_utils import (
     is_boolean,
     is_integer,
+    is_address,
+    is_bytes,
+    to_canonical_address,
 )
 
 from eth_abi.exceptions import (
@@ -10,9 +13,13 @@ from eth_abi.exceptions import (
 
 from eth_abi.utils.numeric import (
     int_to_big_endian,
+    compute_signed_bounds,
+    compute_unsigned_bounds,
+    ceil32,
 )
 from eth_abi.utils.padding import (
     zpad,
+    zpad_right,
 )
 
 
@@ -82,7 +89,7 @@ class FixedSizeEncoder(BaseEncoder):
         if cls.is_big_endian:
             padded_encoded_value = zpad(base_encoded_value, cls.data_byte_size)
         else:
-            raise NotImplementedError("Not yet implemented")
+            padded_encoded_value = zpad_right(base_encoded_value, cls.data_byte_size)
         return padded_encoded_value
 
 
@@ -110,9 +117,9 @@ class BooleanEncoder(FixedSizeEncoder):
             raise ValueError("Invariant")
 
 
-class UIntEncoder(FixedSizeEncoder):
+class NumberEncoder(FixedSizeEncoder):
     is_big_endian = True
-    encode_fn = staticmethod(int_to_big_endian)
+    bounds_fn = None
 
     @classmethod
     def validate_value(cls, value):
@@ -124,14 +131,94 @@ class UIntEncoder(FixedSizeEncoder):
                 )
             )
 
-        upper_bound = 2 ** cls.value_bit_size - 1
+        lower_bound, upper_bound = cls.bounds_fn(cls.value_bit_size)
 
-        if value < 0 or value > upper_bound:
+        if value < lower_bound or value > upper_bound:
             raise ValueOutOfBounds(
                 "Value '{0}' cannot be encoded in {1} bits.  Must be bounded "
-                "between [0, {2}]".format(
+                "between [{2}, {3}]".format(
                     value,
                     cls.value_bit_size,
+                    lower_bound,
                     upper_bound,
                 )
             )
+
+
+class UIntEncoder(NumberEncoder):
+    encode_fn = staticmethod(int_to_big_endian)
+    bounds_fn = staticmethod(compute_unsigned_bounds)
+
+
+encode_uint_256 = UIntEncoder.as_encoder(value_bit_size=256, data_byte_size=32)
+
+
+class IntEncoder(NumberEncoder):
+    bounds_fn = staticmethod(compute_signed_bounds)
+
+    @classmethod
+    def encode_fn(cls, value):
+        return int_to_big_endian(value % 2**cls.value_bit_size)
+
+
+class AddressEncoder(FixedSizeEncoder):
+    encode_fn = to_canonical_address
+    is_big_endian = True
+
+    @classmethod
+    def validate_value(cls, value):
+        if not is_address(value):
+            raise EncodingTypeError(
+                "Value of type {0} cannot be encoded by {0}".format(
+                    type(value),
+                    cls.__name__,
+                )
+            )
+
+    @classmethod
+    def validate(cls):
+        super(AddressEncoder, cls).validate()
+        if cls.value_bit_size != 20 * 8:
+            raise ValueError('Addresses must be 160 bits in length')
+
+
+class BytesEncoder(FixedSizeEncoder):
+    is_big_endian = False
+
+    @classmethod
+    def validate_value(cls, value):
+        if not is_bytes(value):
+            raise EncodingTypeError(
+                "Value of type {0} cannot be encoded by {0}".format(
+                    type(value),
+                    cls.__name__,
+                )
+            )
+        if len(value) > cls.value_bit_size // 8:
+            raise ValueOutOfBounds(
+                "String {0} exceeds total byte size for bytes{1} encoding".format(
+                    value,
+                    cls.value_bit_size // 8,
+                )
+            )
+
+    @classmethod
+    def encode_fn(cls, value):
+        return value
+
+
+class StringEncoder(BaseEncoder):
+    @classmethod
+    def encode(cls, value):
+        if not is_bytes(value):
+            raise EncodingTypeError(
+                "Value of type {0} cannot be encoded as a string".format(
+                    type(value),
+                )
+            )
+
+        encoded_size = encode_uint_256(len(value))
+        padded_value = zpad_right(value, ceil32(len(value)))
+        encoded_value = encoded_size + padded_value
+
+        return encoded_value
