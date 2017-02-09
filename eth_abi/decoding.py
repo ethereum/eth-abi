@@ -24,7 +24,13 @@ def get_decoder(processed_types):
 def get_decoder_for_type(base, sub, arrlist):
     if arrlist:
         sub_decoder = get_decoder_for_type(base, sub, arrlist[:-1])
-        return ArrayDecoder.factory(sub_decoder=sub_decoder).decode
+        if arrlist[-1]:
+            return SizedArrayDecoder.factory(
+                array_size=arrlist[-1][0],
+                sub_decoder=sub_decoder,
+            ).decode
+        else:
+            return DynamicArrayDecoder.factory(sub_decoder=sub_decoder).decode
     elif base == 'address':
         return decode_address
     elif base == 'bool':
@@ -113,25 +119,37 @@ class MultiDecoder(BaseDecoder):
             yield callback(stream)
 
 
-class ArrayDecoder(BaseDecoder):
+class BaseArrayDecoder(BaseDecoder):
     sub_decoder = None
 
     @classmethod
     def validate(cls):
-        super(ArrayDecoder, cls).validate()
+        super(BaseArrayDecoder, cls).validate()
         if cls.sub_decoder is None:
             raise ValueError("No `sub_decoder` set")
+
+
+class SizedArrayDecoder(BaseArrayDecoder):
+    array_size = None
 
     @classmethod
     @to_tuple
     def decode(cls, stream):
-        head_length = decode_uint_256(stream)
-        array_length = UIntDecoder.factory(
-            value_bit_size=256,
-            data_byte_size=head_length,
-        ).decode(stream)
-        for _ in range(array_length):
+        for _ in range(cls.array_size):
             yield cls.sub_decoder(stream)
+
+
+class DynamicArrayDecoder(BaseArrayDecoder):
+    @classmethod
+    @to_tuple
+    def decode(cls, stream):
+        start_pos = decode_uint_256(stream)
+        anchor_pos = stream.tell()
+        stream.seek(start_pos)
+        array_size = decode_uint_256(stream)
+        for _ in range(array_size):
+            yield cls.sub_decoder(stream)
+        stream.seek(anchor_pos)
 
 
 class FixedByteSizeDecoder(SingleDecoder):
@@ -282,9 +300,18 @@ class StringDecoder(SingleDecoder):
 
     @classmethod
     def read_data_from_stream(cls, stream):
+        start_pos = decode_uint_256(stream)
+        anchor_pos = stream.tell()
+
+        stream.seek(start_pos)
+
         data_length = decode_uint_256(stream)
         padded_length = ceil32(data_length)
+
         data = stream.read(padded_length)
+
+        stream.seek(anchor_pos)
+
         if len(data) < padded_length:
             raise InsufficientDataBytes(
                 "Tried to read {0} bytes.  Only got {1} bytes".format(

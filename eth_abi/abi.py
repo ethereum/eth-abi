@@ -226,8 +226,8 @@ def enc(typ, arg):
     sz = get_size(typ)
     # Encode dynamic-sized strings as <len(str)> + <str>
     if base in ('string', 'bytes') and not sub:
-        if not is_text(arg):
-            raise EncodingError("Expecting a text type")
+        if not is_bytes(arg):
+            raise EncodingError("Expecting a bytes type")
         return enc(lentyp, len(arg)) + \
             force_bytes(arg) + \
             b'\x00' * (ceil32(len(arg)) - len(arg))
