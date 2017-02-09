@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 from eth_utils import (
     force_text,
     to_tuple,
@@ -265,7 +267,7 @@ decode_bool = BooleanDecoder.as_decoder()
 class AddressDecoder(Fixed32ByteSizeDecoder):
     value_bit_size = 20 * 8
     is_big_endian = True
-    decoder_fn = to_normalized_address
+    decoder_fn = staticmethod(to_normalized_address)
 
 
 decode_address = AddressDecoder.as_decoder()
@@ -275,7 +277,7 @@ decode_address = AddressDecoder.as_decoder()
 # Unsigned Integer Decoders
 #
 class UIntDecoder(Fixed32ByteSizeDecoder):
-    decoder_fn = big_endian_to_int
+    decoder_fn = staticmethod(big_endian_to_int)
     is_big_endian = True
 
 
@@ -286,7 +288,6 @@ decode_uint_256 = UIntDecoder.as_decoder(value_bit_size=256)
 # Signed Integer Decoders
 #
 class IntDecoder(Fixed32ByteSizeDecoder):
-    decoder_fn = big_endian_to_int
     is_big_endian = True
 
     @classmethod

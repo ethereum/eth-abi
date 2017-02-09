@@ -1,6 +1,6 @@
 import pytest
 
-from rlp.utils import (
+from eth_utils import (
     decode_hex,
 )
 

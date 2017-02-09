@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 import pytest
 
 from io import BytesIO
@@ -186,9 +188,9 @@ def test_decode_boolean(stream_bytes, data_byte_size):
 
     byte_value = stream_bytes[data_byte_size - 1]
 
-    if byte_value == 0:
+    if byte_value in {0, b'\x00'}:
         actual_value = False
-    elif byte_value == 1:
+    elif byte_value in {1, b'\x01'}:
         actual_value = True
     else:
         with pytest.raises(NonEmptyPaddingBytes):
