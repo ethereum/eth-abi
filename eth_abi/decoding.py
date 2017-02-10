@@ -45,11 +45,11 @@ def get_single_decoder(base, sub, arrlist):
         else:
             return decode_bytes
     elif base == 'int':
-        return IntDecoder.as_decoder(value_bit_size=int(sub))
+        return SignedIntegerDecoder.as_decoder(value_bit_size=int(sub))
     elif base == 'string':
         return decode_string
     elif base == 'uint':
-        return UIntDecoder.as_decoder(value_bit_size=int(sub))
+        return UnsignedIntegerDecoder.as_decoder(value_bit_size=int(sub))
     elif base == 'ureal':
         high_bit_size, low_bit_size = [int(v) for v in sub.split('x')]
         return UnsignedRealDecoder.as_decoder(
@@ -292,18 +292,18 @@ decode_address = AddressDecoder.as_decoder()
 #
 # Unsigned Integer Decoders
 #
-class UIntDecoder(Fixed32ByteSizeDecoder):
+class UnsignedIntegerDecoder(Fixed32ByteSizeDecoder):
     decoder_fn = staticmethod(big_endian_to_int)
     is_big_endian = True
 
 
-decode_uint_256 = UIntDecoder.as_decoder(value_bit_size=256)
+decode_uint_256 = UnsignedIntegerDecoder.as_decoder(value_bit_size=256)
 
 
 #
 # Signed Integer Decoders
 #
-class IntDecoder(Fixed32ByteSizeDecoder):
+class SignedIntegerDecoder(Fixed32ByteSizeDecoder):
     is_big_endian = True
 
     @classmethod

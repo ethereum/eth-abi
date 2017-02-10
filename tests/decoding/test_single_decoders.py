@@ -24,8 +24,8 @@ from eth_abi.exceptions import (
     NonEmptyPaddingBytes,
 )
 from eth_abi.decoding import (
-    UIntDecoder,
-    IntDecoder,
+    UnsignedIntegerDecoder,
+    SignedIntegerDecoder,
     UnsignedRealDecoder,
     SignedRealDecoder,
     StringDecoder,
@@ -59,20 +59,20 @@ def is_non_empty_non_null_byte_string(value):
 def test_decode_unsigned_int(integer_bit_size, stream_bytes, data_byte_size):
     if integer_bit_size % 8 != 0:
         with pytest.raises(ValueError):
-            UIntDecoder.as_decoder(
+            UnsignedIntegerDecoder.as_decoder(
                 value_bit_size=integer_bit_size,
                 data_byte_size=data_byte_size,
             )
         return
     elif integer_bit_size > data_byte_size * 8:
         with pytest.raises(ValueError):
-            UIntDecoder.as_decoder(
+            UnsignedIntegerDecoder.as_decoder(
                 value_bit_size=integer_bit_size,
                 data_byte_size=data_byte_size,
             )
         return
     else:
-        decoder = UIntDecoder.as_decoder(
+        decoder = UnsignedIntegerDecoder.as_decoder(
             value_bit_size=integer_bit_size,
             data_byte_size=data_byte_size,
         )
@@ -104,20 +104,20 @@ def test_decode_unsigned_int(integer_bit_size, stream_bytes, data_byte_size):
 def test_decode_signed_int(integer_bit_size, stream_bytes, data_byte_size):
     if integer_bit_size % 8 != 0:
         with pytest.raises(ValueError):
-            IntDecoder.as_decoder(
+            SignedIntegerDecoder.as_decoder(
                 value_bit_size=integer_bit_size,
                 data_byte_size=data_byte_size,
             )
         return
     elif integer_bit_size > data_byte_size * 8:
         with pytest.raises(ValueError):
-            IntDecoder.as_decoder(
+            SignedIntegerDecoder.as_decoder(
                 value_bit_size=integer_bit_size,
                 data_byte_size=data_byte_size,
             )
         return
     else:
-        decoder = IntDecoder.as_decoder(
+        decoder = SignedIntegerDecoder.as_decoder(
             value_bit_size=integer_bit_size,
             data_byte_size=data_byte_size,
         )
@@ -292,7 +292,7 @@ def test_decode_array_of_unsigned_integers(array_size, array_values):
     stream_bytes = size_bytes + values_bytes
 
     decoder = DynamicArrayDecoder.as_decoder(
-        sub_decoder=UIntDecoder.as_decoder(value_bit_size=256),
+        sub_decoder=UnsignedIntegerDecoder.as_decoder(value_bit_size=256),
     )
     stream = BytesIO(stream_bytes)
 
@@ -308,7 +308,7 @@ def test_decode_array_of_unsigned_integers(array_size, array_values):
 # TODO: make this generic
 def test_multi_decoder():
     decoder = MultiDecoder.as_decoder(decoders=(
-        UIntDecoder.as_decoder(value_bit_size=256),
+        UnsignedIntegerDecoder.as_decoder(value_bit_size=256),
         StringDecoder.as_decoder(),
     ))
     stream = BytesIO(decode_hex('0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'))

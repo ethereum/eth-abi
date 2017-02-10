@@ -1,6 +1,7 @@
 from eth_utils import (
     is_boolean,
     is_integer,
+    is_number,
     is_address,
     is_bytes,
     to_canonical_address,
@@ -13,8 +14,8 @@ from eth_abi.exceptions import (
 
 from eth_abi.utils.numeric import (
     int_to_big_endian,
-    compute_signed_bounds,
-    compute_unsigned_bounds,
+    compute_signed_integer_bounds,
+    compute_unsigned_integer_bounds,
     ceil32,
 )
 from eth_abi.utils.padding import (
@@ -120,10 +121,19 @@ class BooleanEncoder(FixedSizeEncoder):
 class NumberEncoder(FixedSizeEncoder):
     is_big_endian = True
     bounds_fn = None
+    type_check_fn = None
+
+    @classmethod
+    def validate(cls):
+        super(NumberEncoder, cls).validate()
+        if cls.bounds_fn is None:
+            raise ValueError("`bounds_fn` cannot be null")
+        if cls.type_check_fn is None:
+            raise ValueError("`type_check_fn` cannot be null")
 
     @classmethod
     def validate_value(cls, value):
-        if not is_integer(value):
+        if not cls.type_check_fn(value):
             raise EncodingTypeError(
                 "Value of type {0} cannot be encoded by {0}".format(
                     type(value),
@@ -145,20 +155,62 @@ class NumberEncoder(FixedSizeEncoder):
             )
 
 
-class UIntEncoder(NumberEncoder):
+class UnsignedIntegerEncoder(NumberEncoder):
     encode_fn = staticmethod(int_to_big_endian)
-    bounds_fn = staticmethod(compute_unsigned_bounds)
+    bounds_fn = staticmethod(compute_unsigned_integer_bounds)
+    type_check_fn = staticmethod(is_integer)
 
 
-encode_uint_256 = UIntEncoder.as_encoder(value_bit_size=256, data_byte_size=32)
+encode_uint_256 = UnsignedIntegerEncoder.as_encoder(value_bit_size=256, data_byte_size=32)
 
 
-class IntEncoder(NumberEncoder):
-    bounds_fn = staticmethod(compute_signed_bounds)
+class SignedIntegerEncoder(NumberEncoder):
+    bounds_fn = staticmethod(compute_signed_integer_bounds)
+    type_check_fn = staticmethod(is_integer)
 
     @classmethod
     def encode_fn(cls, value):
         return int_to_big_endian(value % 2**cls.value_bit_size)
+
+
+class BaseRealEncoder(NumberEncoder):
+    low_bit_size = None
+    high_bit_size = None
+    type_check_fn = staticmethod(is_number)
+
+    @classmethod
+    def validate(cls):
+        if cls.high_bit_size is None:
+            raise ValueError("`high_bit_size` cannot be null")
+        if cls.low_bit_size is None:
+            raise ValueError("`low_bit_size` cannot be null")
+        if cls.low_bit_size + cls.high_bit_size != cls.value_bit_size:
+            raise ValueError("high and low bitsizes must sum to the value_bit_size")
+
+
+class UnsignedRealEncoder(BaseRealEncoder):
+    @classmethod
+    def bounds_fn(cls, value_bit_size):
+        return compute_unsigned_integer_bounds(cls.high_bit_size)
+
+    @classmethod
+    def encode_fn(cls, value):
+        scaled_value = value * 2 ** cls.low_bit_size
+        integer_value = int(scaled_value)
+        return int_to_big_endian(integer_value)
+
+
+class SignedRealEncoder(BaseRealEncoder):
+    @classmethod
+    def bounds_fn(cls, value_bit_size):
+        return compute_signed_integer_bounds(cls.high_bit_size)
+
+    @classmethod
+    def encode_fn(cls, value):
+        scaled_value = value * 2 ** cls.low_bit_size
+        integer_value = int(scaled_value)
+        unsigned_integer_value = integer_value % 2 ** (cls.high_bit_size + cls.low_bit_size)
+        return int_to_big_endian(unsigned_integer_value)
 
 
 class AddressEncoder(FixedSizeEncoder):

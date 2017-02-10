@@ -49,14 +49,14 @@ def encode_int(value):
     return int_to_big_endian(value)
 
 
-def compute_unsigned_bounds(num_bits):
+def compute_unsigned_integer_bounds(num_bits):
     return (
         0,
         2 ** num_bits - 1,
     )
 
 
-def compute_signed_bounds(num_bits):
+def compute_signed_integer_bounds(num_bits):
     return (
         -1 * 2 ** (num_bits - 1),
         2 ** (num_bits - 1) - 1,
