@@ -50,6 +50,20 @@ def get_single_decoder(base, sub, arrlist):
         return decode_string
     elif base == 'uint':
         return UIntDecoder.as_decoder(value_bit_size=int(sub))
+    elif base == 'ureal':
+        high_bit_size, low_bit_size = [int(v) for v in sub.split('x')]
+        return UnsignedRealDecoder.as_decoder(
+            value_bit_size=high_bit_size + low_bit_size,
+            high_bit_size=high_bit_size,
+            low_bit_size=low_bit_size,
+        )
+    elif base == 'real':
+        high_bit_size, low_bit_size = [int(v) for v in sub.split('x')]
+        return SignedRealDecoder.as_decoder(
+            value_bit_size=high_bit_size + low_bit_size,
+            high_bit_size=high_bit_size,
+            low_bit_size=low_bit_size,
+        )
     else:
         raise ValueError(
             "Unsupported type: {0} - must be one of "
@@ -310,6 +324,42 @@ class BytesDecoder(Fixed32ByteSizeDecoder):
     @classmethod
     def decoder_fn(cls, data):
         return data
+
+
+class BaseRealDecoder(Fixed32ByteSizeDecoder):
+    high_bit_size = None
+    low_bit_size = None
+    data_byte_size = None
+    is_big_endian = True
+
+    @classmethod
+    def validate(cls):
+        super(BaseRealDecoder, cls).validate()
+
+        if cls.high_bit_size is None:
+            raise ValueError("`high_bit_size` cannot be null")
+        if cls.low_bit_size is None:
+            raise ValueError("`low_bit_size` cannot be null")
+        if cls.low_bit_size + cls.high_bit_size != cls.value_bit_size:
+            raise ValueError("high and low bitsizes must sum to the value_bit_size")
+
+
+class UnsignedRealDecoder(BaseRealDecoder):
+    @classmethod
+    def decoder_fn(cls, data):
+        value = big_endian_to_int(data)
+        return value * 1.0 / 2 ** cls.low_bit_size
+
+
+class SignedRealDecoder(BaseRealDecoder):
+    @classmethod
+    def decoder_fn(cls, data):
+        value = big_endian_to_int(data)
+        if value >= 2 ** (cls.high_bit_size + cls.low_bit_size - 1):
+            signed_value = value - 2 ** (cls.high_bit_size + cls.low_bit_size)
+        else:
+            signed_value = value
+        return signed_value * 1.0 / 2 ** cls.low_bit_size
 
 
 #

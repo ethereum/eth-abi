@@ -26,6 +26,8 @@ from eth_abi.exceptions import (
 from eth_abi.decoding import (
     UIntDecoder,
     IntDecoder,
+    UnsignedRealDecoder,
+    SignedRealDecoder,
     StringDecoder,
     BytesDecoder,
     MultiDecoder,
@@ -313,3 +315,125 @@ def test_multi_decoder():
     uint_v, bytes_v = decoder(stream)
     assert uint_v == 0
     assert bytes_v == b''
+
+
+@settings(max_examples=1000)
+@given(
+    high_bit_size=st.integers(min_value=1, max_value=32).map(lambda v: v * 8),
+    low_bit_size=st.integers(min_value=1, max_value=32).map(lambda v: v * 8),
+    integer_bit_size=st.integers(min_value=1, max_value=32).map(lambda v: v * 8),
+    stream_bytes=st.binary(min_size=0, max_size=32, average_size=32),
+    data_byte_size=st.integers(min_value=0, max_value=32),
+)
+def test_decode_unsigned_real(high_bit_size,
+                              low_bit_size,
+                              integer_bit_size,
+                              stream_bytes,
+                              data_byte_size):
+    if integer_bit_size > data_byte_size * 8:
+        with pytest.raises(ValueError):
+            UnsignedRealDecoder.as_decoder(
+                value_bit_size=integer_bit_size,
+                high_bit_size=high_bit_size,
+                low_bit_size=low_bit_size,
+                data_byte_size=data_byte_size,
+            )
+        return
+    elif high_bit_size + low_bit_size != integer_bit_size:
+        with pytest.raises(ValueError):
+            UnsignedRealDecoder.as_decoder(
+                value_bit_size=integer_bit_size,
+                high_bit_size=high_bit_size,
+                low_bit_size=low_bit_size,
+                data_byte_size=data_byte_size,
+            )
+        return
+    else:
+        decoder = UnsignedRealDecoder.as_decoder(
+            value_bit_size=integer_bit_size,
+            high_bit_size=high_bit_size,
+            low_bit_size=low_bit_size,
+            data_byte_size=data_byte_size,
+        )
+
+    stream = BytesIO(stream_bytes)
+    padding_bytes = stream_bytes[:data_byte_size][:data_byte_size - integer_bit_size // 8]
+
+    if len(stream_bytes) < data_byte_size:
+        with pytest.raises(InsufficientDataBytes):
+            decoder(stream)
+        return
+    elif is_non_empty_non_null_byte_string(padding_bytes):
+        with pytest.raises(NonEmptyPaddingBytes):
+            decoder(stream)
+        return
+    else:
+        decoded_value = decoder(stream)
+
+    actual_value = big_endian_to_int(stream_bytes[:data_byte_size]) * 1.0 / 2 ** low_bit_size
+
+    assert decoded_value == actual_value
+
+
+@settings(max_examples=1000)
+@given(
+    high_bit_size=st.integers(min_value=1, max_value=32).map(lambda v: v * 8),
+    low_bit_size=st.integers(min_value=1, max_value=32).map(lambda v: v * 8),
+    integer_bit_size=st.integers(min_value=1, max_value=32).map(lambda v: v * 8),
+    stream_bytes=st.binary(min_size=0, max_size=32, average_size=32),
+    data_byte_size=st.integers(min_value=0, max_value=32),
+)
+def test_decode_signed_real(high_bit_size,
+                            low_bit_size,
+                            integer_bit_size,
+                            stream_bytes,
+                            data_byte_size):
+    if integer_bit_size > data_byte_size * 8:
+        with pytest.raises(ValueError):
+            SignedRealDecoder.as_decoder(
+                value_bit_size=integer_bit_size,
+                high_bit_size=high_bit_size,
+                low_bit_size=low_bit_size,
+                data_byte_size=data_byte_size,
+            )
+        return
+    elif high_bit_size + low_bit_size != integer_bit_size:
+        with pytest.raises(ValueError):
+            SignedRealDecoder.as_decoder(
+                value_bit_size=integer_bit_size,
+                high_bit_size=high_bit_size,
+                low_bit_size=low_bit_size,
+                data_byte_size=data_byte_size,
+            )
+        return
+    else:
+        decoder = SignedRealDecoder.as_decoder(
+            value_bit_size=integer_bit_size,
+            high_bit_size=high_bit_size,
+            low_bit_size=low_bit_size,
+            data_byte_size=data_byte_size,
+        )
+
+    stream = BytesIO(stream_bytes)
+    padding_bytes = stream_bytes[:data_byte_size][:data_byte_size - integer_bit_size // 8]
+
+    if len(stream_bytes) < data_byte_size:
+        with pytest.raises(InsufficientDataBytes):
+            decoder(stream)
+        return
+    elif is_non_empty_non_null_byte_string(padding_bytes):
+        with pytest.raises(NonEmptyPaddingBytes):
+            decoder(stream)
+        return
+    else:
+        decoded_value = decoder(stream)
+
+    unsigned_value = big_endian_to_int(stream_bytes[:data_byte_size]) * 1.0 / 2 ** low_bit_size
+    if unsigned_value >= 2 ** (high_bit_size + low_bit_size - 1):
+        signed_value = unsigned_value - 2 ** (high_bit_size + low_bit_size)
+    else:
+        signed_value = unsigned_value
+
+    actual_value = signed_value / 2 ** low_bit_size
+
+    assert decoded_value == actual_value
