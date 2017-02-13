@@ -1,5 +1,7 @@
 from __future__ import unicode_literals
 
+import decimal
+
 from eth_utils import (
     force_text,
     to_tuple,
@@ -12,8 +14,12 @@ from eth_abi.exceptions import (
 )
 from eth_abi.utils.numeric import (
     big_endian_to_int,
+    quantize_value,
     ceil32,
 )
+
+
+decimal.DefaultContext.prec = 999
 
 
 def get_multi_decoder(processed_types):
@@ -27,14 +33,14 @@ def get_multi_decoder(processed_types):
 
 def get_single_decoder(base, sub, arrlist):
     if arrlist:
-        sub_decoder = get_single_decoder(base, sub, arrlist[:-1])
+        item_decoder = get_single_decoder(base, sub, arrlist[:-1])
         if arrlist[-1]:
             return SizedArrayDecoder.as_decoder(
                 array_size=arrlist[-1][0],
-                sub_decoder=sub_decoder,
+                item_decoder=item_decoder,
             )
         else:
-            return DynamicArrayDecoder.as_decoder(sub_decoder=sub_decoder)
+            return DynamicArrayDecoder.as_decoder(item_decoder=item_decoder)
     elif base == 'address':
         return decode_address
     elif base == 'bool':
@@ -97,20 +103,20 @@ class BaseDecoder(object):
 
 
 class HeadTailDecoder(BaseDecoder):
-    sub_decoder = None
+    tail_decoder = None
 
     @classmethod
     def validate(cls):
         super(HeadTailDecoder, cls).validate()
-        if cls.sub_decoder is None:
-            raise ValueError("No `sub_decoder` set")
+        if cls.tail_decoder is None:
+            raise ValueError("No `tail_decoder` set")
 
     @classmethod
     def decode(cls, stream):
         start_pos = decode_uint_256(stream)
         anchor_pos = stream.tell()
         stream.seek(start_pos)
-        value = cls.sub_decoder(stream)
+        value = cls.tail_decoder(stream)
         stream.seek(anchor_pos)
         return value
 
@@ -129,7 +135,7 @@ class MultiDecoder(BaseDecoder):
     def decode(cls, stream):
         for decoder in cls.decoders:
             if isinstance(decoder, (DynamicArrayDecoder, StringDecoder)):
-                yield HeadTailDecoder.as_decoder(sub_decoder=decoder)(stream)
+                yield HeadTailDecoder.as_decoder(tail_decoder=decoder)(stream)
             else:
                 yield decoder(stream)
 
@@ -161,13 +167,13 @@ class SingleDecoder(BaseDecoder):
 
 
 class BaseArrayDecoder(BaseDecoder):
-    sub_decoder = None
+    item_decoder = None
 
     @classmethod
     def validate(cls):
         super(BaseArrayDecoder, cls).validate()
-        if cls.sub_decoder is None:
-            raise ValueError("No `sub_decoder` set")
+        if cls.item_decoder is None:
+            raise ValueError("No `item_decoder` set")
 
 
 class SizedArrayDecoder(BaseArrayDecoder):
@@ -177,7 +183,7 @@ class SizedArrayDecoder(BaseArrayDecoder):
     @to_tuple
     def decode(cls, stream):
         for _ in range(cls.array_size):
-            yield cls.sub_decoder(stream)
+            yield cls.item_decoder(stream)
 
 
 class DynamicArrayDecoder(BaseArrayDecoder):
@@ -186,7 +192,7 @@ class DynamicArrayDecoder(BaseArrayDecoder):
     def decode(cls, stream):
         array_size = decode_uint_256(stream)
         for _ in range(array_size):
-            yield cls.sub_decoder(stream)
+            yield cls.item_decoder(stream)
 
 
 class FixedByteSizeDecoder(SingleDecoder):
@@ -348,7 +354,10 @@ class UnsignedRealDecoder(BaseRealDecoder):
     @classmethod
     def decoder_fn(cls, data):
         value = big_endian_to_int(data)
-        return value * 1.0 / 2 ** cls.low_bit_size
+        decimal_value = decimal.Decimal(value)
+        raw_real_value = decimal_value / 2 ** cls.low_bit_size
+        real_value = quantize_value(raw_real_value, cls.low_bit_size)
+        return real_value
 
 
 class SignedRealDecoder(BaseRealDecoder):
@@ -359,7 +368,10 @@ class SignedRealDecoder(BaseRealDecoder):
             signed_value = value - 2 ** (cls.high_bit_size + cls.low_bit_size)
         else:
             signed_value = value
-        return signed_value * 1.0 / 2 ** cls.low_bit_size
+        signed_decimal_value = decimal.Decimal(signed_value)
+        raw_real_value = signed_decimal_value / 2 ** cls.low_bit_size
+        real_value = quantize_value(raw_real_value, cls.low_bit_size)
+        return real_value
 
 
 #

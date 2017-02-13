@@ -1,4 +1,7 @@
-from hypothesis import given
+from hypothesis import (
+    given,
+    settings,
+)
 
 from eth_abi import (
     encode_abi,
@@ -13,6 +16,7 @@ from .abi_type_strategies import (
 )
 
 
+@settings(max_examples=1000)
 @given(multi_abi_strats)
 def test_multi_abi_reversability(types_and_values):
     """
@@ -26,6 +30,7 @@ def test_multi_abi_reversability(types_and_values):
 
 
 
+@settings(max_examples=1000)
 @given(single_abi_strats)
 def test_single_abi_reversability(type_and_value):
     """

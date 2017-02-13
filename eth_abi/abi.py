@@ -9,64 +9,20 @@ from io import BytesIO
 
 from eth_utils import (
     is_text,
-    is_bytes,
-    is_integer,
-    is_boolean,
-    is_list_like,
     force_text,
     force_bytes,
     remove_0x_prefix,
     decode_hex,
-    coerce_args_to_bytes,
-)
-
-from eth_abi.constants import (
-    TT255,
-    TT256,
-    TT256M1,
 )
 
 from eth_abi.decoding import (
     get_single_decoder,
     get_multi_decoder,
 )
-from eth_abi.exceptions import (
-    EncodingError,
-    ValueOutOfBounds,
+from eth_abi.encoding import (
+    get_single_encoder,
+    get_multi_encoder,
 )
-
-from eth_abi.utils.numeric import (
-    ceil32,
-    big_endian_to_int,
-    encode_int,
-)
-from eth_abi.utils.padding import (
-    zpad32,
-)
-
-
-# Decode an unsigned/signed integer
-@coerce_args_to_bytes
-def decint(n, signed=False):
-    if is_integer(n):
-        min, max = (-TT255, TT255 - 1) if signed else (0, TT256M1)
-        if n > max or n < min:
-            raise EncodingError("Number out of range: %r" % n)
-        return n
-    elif is_bytes(n):
-        if len(n) == 40:
-            n = decode_hex(n)
-        if len(n) > 32:
-            raise EncodingError("String too long: %r" % n)
-
-        i = big_endian_to_int(n)
-        return (i - TT256) if signed and i >= TT255 else i
-    elif n is True:
-        return 1
-    elif n is False or n is None:
-        return 0
-    else:
-        raise EncodingError("Cannot encode integer: %r" % n)
 
 
 # Encodes a base datum
@@ -79,84 +35,8 @@ def encode_single(typ, arg):
     if is_text(arg):
         arg = force_bytes(arg)
 
-    # Unsigned integers: uint<sz>
-    if base == 'uint':
-        sub = int(sub)
-        i = decint(arg, False)
-
-        if not 0 <= i < 2**sub:
-            raise ValueOutOfBounds(repr(arg))
-        return zpad32(encode_int(i))
-    # bool: int<sz>
-    elif base == 'bool':
-        if not is_boolean(arg):
-            raise EncodingError("Value must be a boolean")
-        return zpad32(encode_int(int(arg)))
-    # Signed integers: int<sz>
-    elif base == 'int':
-        sub = int(sub)
-        i = decint(arg, True)
-        if not -2**(sub - 1) <= i < 2**(sub - 1):
-            raise ValueOutOfBounds(repr(arg))
-        return zpad32(encode_int(i % 2**sub))
-    # Unsigned reals: ureal<high>x<low>
-    elif base == 'ureal':
-        high, low = [int(x) for x in sub.split('x')]
-        if not 0 <= arg < 2**high:
-            raise ValueOutOfBounds(repr(arg))
-        return zpad32(encode_int(int(arg * 2**low)))
-    # Signed reals: real<high>x<low>
-    elif base == 'real':
-        high, low = [int(x) for x in sub.split('x')]
-        if not -2**(high - 1) <= arg < 2**(high - 1):
-            raise ValueOutOfBounds(repr(arg))
-        i = int(arg * 2**low)
-        return zpad32(encode_int(i % 2**(high + low)))
-    # Strings
-    elif base == 'string' or base == 'bytes':
-        if not is_bytes(arg):
-            raise EncodingError("Expecting string: %r" % arg)
-        # Fixed length: string<sz>
-        if len(sub):
-            if int(sub) > 32:
-                raise EncodingError("Fixed length strings must be 32 bytes or less")
-            if len(arg) > int(sub):
-                raise EncodingError(
-                    "Value cannot exceed {0} bytes in length".format(sub)
-                )
-            return arg + b'\x00' * (32 - len(arg))
-        # Variable length: string
-        else:
-            return zpad32(encode_int(len(arg))) + \
-                arg + \
-                b'\x00' * (ceil32(len(arg)) - len(arg))
-    # Hashes: hash<sz>
-    elif base == 'hash':
-        if not (int(sub) and int(sub) <= 32):
-            raise EncodingError("too long: %r" % arg)
-        if is_integer(arg):
-            return zpad32(encode_int(arg))
-        elif len(arg) == int(sub):
-            return zpad32(arg)
-        elif len(arg) == int(sub) * 2:
-            return zpad32(decode_hex(arg))
-        else:
-            raise EncodingError("Could not parse hash: %r" % arg)
-    # Addresses: address (== hash160)
-    elif base == 'address':
-        if sub != '':
-            raise EncodingError("Address type cannot specify a byte size")
-        if is_integer(arg):
-            return zpad32(encode_int(arg))
-        elif len(arg) == 20:
-            return zpad32(arg)
-        elif len(arg) == 40:
-            return zpad32(decode_hex(arg))
-        elif len(arg) == 42 and arg[:2] == b'0x':
-            return zpad32(decode_hex(arg[2:]))
-        else:
-            raise EncodingError("Could not parse address: %r" % arg)
-    raise EncodingError("Unhandled type: %r %r" % (base, sub))
+    encoder = get_single_encoder(base, sub, arrlist)
+    return encoder(arg)
 
 
 def process_type(typ):
@@ -201,90 +81,10 @@ def process_type(typ):
     return base, sub, [ast.literal_eval(x) for x in arrlist]
 
 
-# Returns the static size of a type, or None if dynamic
-def get_size(typ):
-    base, sub, arrlist = typ
-    if not len(arrlist):
-        if base in ('string', 'bytes') and not sub:
-            return None
-        return 32
-    if arrlist[-1] == []:
-        return None
-    o = get_size((base, sub, arrlist[:-1]))
-    if o is None:
-        return None
-    return arrlist[-1][0] * o
-
-
-lentyp = 'uint', 256, []
-
-
-# Encodes a single value (static or dynamic)
-def enc(typ, arg):
-    base, sub, arrlist = typ
-    sz = get_size(typ)
-    # Encode dynamic-sized strings as <len(str)> + <str>
-    if base in ('string', 'bytes') and not sub:
-        if not is_bytes(arg):
-            raise EncodingError("Expecting a bytes type")
-        return enc(lentyp, len(arg)) + \
-            force_bytes(arg) + \
-            b'\x00' * (ceil32(len(arg)) - len(arg))
-    # Encode dynamic-sized lists via the head/tail mechanism described in
-    # https://github.com/ethereum/wiki/wiki/Proposal-for-new-ABI-value-encoding
-    elif sz is None:
-        if not is_list_like(arg):
-            raise EncodingError("Expecting a list argument")
-        subtyp = base, sub, arrlist[:-1]
-        subsize = get_size(subtyp)
-        myhead, mytail = b'', b''
-        if arrlist[-1] == []:
-            myhead += enc(lentyp, len(arg))
-        else:
-            if len(arg) != arrlist[-1][0]:
-                raise EncodingError(
-                    "Wrong array size: found {0:d}, expecting {1:d}".format(
-                        len(arg),
-                        arrlist[-1][0],
-                    )
-                )
-        for i in range(len(arg)):
-            if subsize is None:
-                myhead += enc(lentyp, 32 * len(arg) + len(mytail))
-                mytail += enc(subtyp, arg[i])
-            else:
-                myhead += enc(subtyp, arg[i])
-        return myhead + mytail
-    # Encode static-sized lists via sequential packing
-    else:
-        if arrlist == []:
-            return force_bytes(encode_single(typ, arg))
-        else:
-            subtyp = base, sub, arrlist[:-1]
-            o = b''
-            for x in arg:
-                o += enc(subtyp, x)
-            return o
-
-
-# Encodes multiple arguments using the head/tail mechanism
 def encode_abi(types, args):
-    headsize = 0
     proctypes = [process_type(typ) for typ in types]
-    sizes = [get_size(typ) for typ in proctypes]
-    for i, arg in enumerate(args):
-        if sizes[i] is None:
-            headsize += 32
-        else:
-            headsize += sizes[i]
-    myhead, mytail = b'', b''
-    for i, arg in enumerate(args):
-        if sizes[i] is None:
-            myhead += enc(lentyp, headsize + len(mytail))
-            mytail += enc(proctypes[i], args[i])
-        else:
-            myhead += enc(proctypes[i], args[i])
-    return myhead + mytail
+    encoder = get_multi_encoder(proctypes)
+    return encoder(args)
 
 
 HEX_CHARS = b'1234567890abcdef'

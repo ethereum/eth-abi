@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 
 import pytest
 
+import decimal
 from io import BytesIO
 
 from hypothesis import (
@@ -42,6 +43,8 @@ from eth_abi.utils.padding import (
 from eth_abi.utils.numeric import (
     big_endian_to_int,
     int_to_big_endian,
+    compute_signed_integer_bounds,
+    quantize_value,
     ceil32,
 )
 
@@ -292,7 +295,7 @@ def test_decode_array_of_unsigned_integers(array_size, array_values):
     stream_bytes = size_bytes + values_bytes
 
     decoder = DynamicArrayDecoder.as_decoder(
-        sub_decoder=UnsignedIntegerDecoder.as_decoder(value_bit_size=256),
+        item_decoder=UnsignedIntegerDecoder.as_decoder(value_bit_size=256),
     )
     stream = BytesIO(stream_bytes)
 
@@ -370,7 +373,9 @@ def test_decode_unsigned_real(high_bit_size,
     else:
         decoded_value = decoder(stream)
 
-    actual_value = big_endian_to_int(stream_bytes[:data_byte_size]) * 1.0 / 2 ** low_bit_size
+    unsigned_integer_value = big_endian_to_int(stream_bytes[:data_byte_size])
+    raw_real_value = decimal.Decimal(unsigned_integer_value) / 2 ** low_bit_size
+    actual_value = quantize_value(raw_real_value, low_bit_size)
 
     assert decoded_value == actual_value
 
@@ -428,12 +433,15 @@ def test_decode_signed_real(high_bit_size,
     else:
         decoded_value = decoder(stream)
 
-    unsigned_value = big_endian_to_int(stream_bytes[:data_byte_size]) * 1.0 / 2 ** low_bit_size
-    if unsigned_value >= 2 ** (high_bit_size + low_bit_size - 1):
-        signed_value = unsigned_value - 2 ** (high_bit_size + low_bit_size)
-    else:
-        signed_value = unsigned_value
+    _, upper_bound = compute_signed_integer_bounds(high_bit_size + low_bit_size)
 
-    actual_value = signed_value / 2 ** low_bit_size
+    unsigned_integer_value = big_endian_to_int(stream_bytes[:data_byte_size])
+    if unsigned_integer_value >= upper_bound:
+        signed_integer_value = unsigned_integer_value - 2 ** (high_bit_size + low_bit_size)
+    else:
+        signed_integer_value = unsigned_integer_value
+
+    raw_actual_value = decimal.Decimal(signed_integer_value) / 2 ** low_bit_size
+    actual_value = quantize_value(raw_actual_value, low_bit_size)
 
     assert decoded_value == actual_value
