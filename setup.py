@@ -22,7 +22,7 @@ setup(
     url='https://github.com/pipermerriam/ethereum-abi-utils',
     include_package_data=True,
     install_requires=[
-        'rlp>=0.4.6',
+        'ethereum-utils>=0.2.0',
     ],
     py_modules=['eth_abi'],
     license="MIT",
