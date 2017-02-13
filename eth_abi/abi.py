@@ -25,20 +25,6 @@ from eth_abi.encoding import (
 )
 
 
-# Encodes a base datum
-def encode_single(typ, arg):
-    try:
-        base, sub, arrlist = typ
-    except ValueError:
-        base, sub, arrlist = process_type(typ)
-
-    if is_text(arg):
-        arg = force_bytes(arg)
-
-    encoder = get_single_encoder(base, sub, arrlist)
-    return encoder(arg)
-
-
 def process_type(typ):
     # Crazy reg expression to separate out base type component (eg. uint),
     # size (eg. 256, 128x128, none), array component (eg. [], [45], none)
@@ -81,9 +67,22 @@ def process_type(typ):
     return base, sub, [ast.literal_eval(x) for x in arrlist]
 
 
+def encode_single(typ, arg):
+    try:
+        base, sub, arrlist = typ
+    except ValueError:
+        base, sub, arrlist = process_type(typ)
+
+    if is_text(arg):
+        arg = force_bytes(arg)
+
+    encoder = get_single_encoder(base, sub, arrlist)
+    return encoder(arg)
+
+
 def encode_abi(types, args):
-    proctypes = [process_type(typ) for typ in types]
-    encoder = get_multi_encoder(proctypes)
+    processed_types = [process_type(typ) for typ in types]
+    encoder = get_multi_encoder(processed_types)
     return encoder(args)
 
 
