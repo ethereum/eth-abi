@@ -387,7 +387,7 @@ class SignedRealEncoder(BaseRealEncoder):
 
 class AddressEncoder(Fixed32ByteSizeEncoder):
     value_bit_size = 20 * 8
-    encode_fn = to_canonical_address
+    encode_fn = staticmethod(to_canonical_address)
     is_big_endian = True
 
     @classmethod
