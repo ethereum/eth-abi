@@ -312,7 +312,6 @@ def test_decode_array_of_unsigned_integers(array_size, array_values):
     assert actual_values == array_values[:array_size]
 
 
-# TODO: make this generic
 @pytest.mark.parametrize(
     'types,data,expected',
     (
