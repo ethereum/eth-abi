@@ -2,12 +2,15 @@
 # -*- coding: utf-8 -*-
 import os
 
-from setuptools import setup
+from setuptools import (
+    setup,
+    find_packages,
+)
 
 
 DIR = os.path.dirname(os.path.abspath(__file__))
 
-version = '0.3.0'
+version = '0.3.1'
 
 readme = open(os.path.join(DIR, 'README.md')).read()
 
@@ -28,9 +31,7 @@ setup(
     license="MIT",
     zip_safe=False,
     keywords='ethereum',
-    packages=[
-        "eth_abi",
-    ],
+    packages=find_packages(exclude=["tests", "tests.*"]),
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
         'Intended Audience :: Developers',
