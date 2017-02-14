@@ -35,8 +35,12 @@ from eth_abi.decoding import (
     BooleanDecoder,
     AddressDecoder,
     DynamicArrayDecoder,
+    get_single_decoder,
 )
 
+from eth_abi.utils.parsing import (
+    process_type,
+)
 from eth_abi.utils.padding import (
     zpad32,
 )
@@ -309,15 +313,39 @@ def test_decode_array_of_unsigned_integers(array_size, array_values):
 
 
 # TODO: make this generic
-def test_multi_decoder():
-    decoder = MultiDecoder.as_decoder(decoders=(
-        UnsignedIntegerDecoder.as_decoder(value_bit_size=256),
-        StringDecoder.as_decoder(),
+@pytest.mark.parametrize(
+    'types,data,expected',
+    (
+        (
+            ('address', 'uint256'),
+            (
+                '0x'
+                '000000000000000000000000abf7d8b5c1322b3e553d2fac90ff006c30f1b875'
+                '0000000000000000000000000000000000000000000000000000005d21dba000'
+            ),
+            ('0xabf7d8b5c1322b3e553d2fac90ff006c30f1b875', 400000000000)
+        ),
+        (
+            ('uint256', 'bytes'),
+            (
+                '0x'
+                '0000000000000000000000000000000000000000000000000000000000000000'
+                '0000000000000000000000000000000000000000000000000000000000000040'
+                '0000000000000000000000000000000000000000000000000000000000000000'
+                '0000000000000000000000000000000000000000000000000000000000000000'
+            ),
+            (0, b''),
+        ),
+    ),
+)
+def test_multi_decoder(types, data, expected):
+    decoders = tuple((
+        get_single_decoder(*process_type(t)) for t in types
     ))
-    stream = BytesIO(decode_hex('0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'))
-    uint_v, bytes_v = decoder(stream)
-    assert uint_v == 0
-    assert bytes_v == b''
+    decoder = MultiDecoder.as_decoder(decoders=decoders)
+    stream = BytesIO(decode_hex(data))
+    actual = decoder(stream)
+    assert actual == expected
 
 
 @settings(max_examples=1000)
