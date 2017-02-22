@@ -49,6 +49,7 @@ from eth_abi.utils.numeric import (
     ceil32,
 )
 from eth_abi.utils.padding import (
+    fpad,
     zpad,
     zpad_right,
 )
@@ -76,6 +77,7 @@ def test_encode_boolean(bool_value, data_byte_size):
 
 
 @settings(max_examples=1000)
+@example(integer_value=-1, value_bit_size=8, data_byte_size=1)
 @given(
     integer_value=st.one_of(st.integers(), st.none()),
     value_bit_size=st.integers(min_value=1, max_value=32).map(lambda v: v * 8),
@@ -105,7 +107,11 @@ def test_encode_unsigned_integer(integer_value, value_bit_size, data_byte_size):
             encoder(integer_value)
         return
 
-    expected_value = zpad(int_to_big_endian(integer_value), data_byte_size)
+    if integer_value >= 0:
+        expected_value = zpad(int_to_big_endian(integer_value), data_byte_size)
+    else:
+        expected_value = fpad(int_to_big_endian(integer_value), data_byte_size)
+
     encoded_value = encoder(integer_value)
 
     assert encoded_value == expected_value
@@ -142,7 +148,17 @@ def test_encode_signed_integer(integer_value, value_bit_size, data_byte_size):
             encoder(integer_value)
         return
 
-    expected_value = zpad(int_to_big_endian(integer_value % 2**value_bit_size), data_byte_size)
+    if integer_value >= 0:
+        expected_value = zpad(
+            int_to_big_endian(integer_value % 2**value_bit_size),
+            data_byte_size
+        )
+    else:
+        expected_value = fpad(
+            int_to_big_endian(integer_value % 2**value_bit_size),
+            data_byte_size
+        )
+
     encoded_value = encoder(integer_value)
 
     assert encoded_value == expected_value

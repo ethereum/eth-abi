@@ -25,6 +25,7 @@ from eth_abi.utils.numeric import (
     ceil32,
 )
 from eth_abi.utils.padding import (
+    fpad,
     zpad,
     zpad_right,
 )
@@ -281,60 +282,6 @@ class UnsignedIntegerEncoder(NumberEncoder):
 encode_uint_256 = UnsignedIntegerEncoder.as_encoder(value_bit_size=256, data_byte_size=32)
 
 
-class BaseArrayEncoder(BaseEncoder):
-    item_encoder = None
-
-    @classmethod
-    def validate(cls):
-        super(BaseArrayEncoder, cls).validate()
-        if cls.item_encoder is None:
-            raise ValueError("`item_encoder` may not be none")
-
-    @classmethod
-    def encode_elements(cls, value):
-        if not is_list_like(value):
-            raise EncodingTypeError(
-                "Cannot encode value of type {0} using array encoder.  Must be "
-                "a list-like object such as an array or tuple".format(
-                    type(value),
-                )
-            )
-        encoded_elements = b''.join((
-            cls.item_encoder(item)
-            for item in value
-        ))
-        return encoded_elements
-
-
-class SizedArrayEncoder(BaseArrayEncoder):
-    array_size = None
-
-    @classmethod
-    def validate(cls):
-        super(SizedArrayEncoder, cls).validate()
-        if cls.array_size is None:
-            raise ValueError("`array_size` may not be none")
-
-    @classmethod
-    def encode(cls, value):
-        if len(value) != cls.array_size:
-            raise ValueOutOfBounds(
-                "Expected value with length {0}.  Provided value has {1} "
-                "elements".format(cls.array_size, len(value))
-            )
-        encoded_elements = cls.encode_elements(value)
-        return encoded_elements
-
-
-class DynamicArrayEncoder(BaseArrayEncoder):
-    @classmethod
-    def encode(cls, value):
-        encoded_size = encode_uint_256(len(value))
-        encoded_elements = cls.encode_elements(value)
-        encoded_value = encoded_size + encoded_elements
-        return encoded_value
-
-
 class SignedIntegerEncoder(NumberEncoder):
     bounds_fn = staticmethod(compute_signed_integer_bounds)
     type_check_fn = staticmethod(is_integer)
@@ -342,6 +289,17 @@ class SignedIntegerEncoder(NumberEncoder):
     @classmethod
     def encode_fn(cls, value):
         return int_to_big_endian(value % 2**cls.value_bit_size)
+
+    @classmethod
+    def encode(cls, value):
+        cls.validate_value(value)
+        base_encoded_value = cls.encode_fn(value)
+
+        if value >= 0:
+            padded_encoded_value = zpad(base_encoded_value, cls.data_byte_size)
+        else:
+            padded_encoded_value = fpad(base_encoded_value, cls.data_byte_size)
+        return padded_encoded_value
 
 
 class BaseRealEncoder(NumberEncoder):
@@ -383,6 +341,17 @@ class SignedRealEncoder(BaseRealEncoder):
         integer_value = int(scaled_value)
         unsigned_integer_value = integer_value % 2 ** (cls.high_bit_size + cls.low_bit_size)
         return int_to_big_endian(unsigned_integer_value)
+
+    @classmethod
+    def encode(cls, value):
+        cls.validate_value(value)
+        base_encoded_value = cls.encode_fn(value)
+
+        if value >= 0:
+            padded_encoded_value = zpad(base_encoded_value, cls.data_byte_size)
+        else:
+            padded_encoded_value = fpad(base_encoded_value, cls.data_byte_size)
+        return padded_encoded_value
 
 
 class AddressEncoder(Fixed32ByteSizeEncoder):
@@ -456,3 +425,57 @@ class StringEncoder(BaseEncoder):
 
 
 encode_string = encode_bytes = StringEncoder.as_encoder()
+
+
+class BaseArrayEncoder(BaseEncoder):
+    item_encoder = None
+
+    @classmethod
+    def validate(cls):
+        super(BaseArrayEncoder, cls).validate()
+        if cls.item_encoder is None:
+            raise ValueError("`item_encoder` may not be none")
+
+    @classmethod
+    def encode_elements(cls, value):
+        if not is_list_like(value):
+            raise EncodingTypeError(
+                "Cannot encode value of type {0} using array encoder.  Must be "
+                "a list-like object such as an array or tuple".format(
+                    type(value),
+                )
+            )
+        encoded_elements = b''.join((
+            cls.item_encoder(item)
+            for item in value
+        ))
+        return encoded_elements
+
+
+class SizedArrayEncoder(BaseArrayEncoder):
+    array_size = None
+
+    @classmethod
+    def validate(cls):
+        super(SizedArrayEncoder, cls).validate()
+        if cls.array_size is None:
+            raise ValueError("`array_size` may not be none")
+
+    @classmethod
+    def encode(cls, value):
+        if len(value) != cls.array_size:
+            raise ValueOutOfBounds(
+                "Expected value with length {0}.  Provided value has {1} "
+                "elements".format(cls.array_size, len(value))
+            )
+        encoded_elements = cls.encode_elements(value)
+        return encoded_elements
+
+
+class DynamicArrayEncoder(BaseArrayEncoder):
+    @classmethod
+    def encode(cls, value):
+        encoded_size = encode_uint_256(len(value))
+        encoded_elements = cls.encode_elements(value)
+        encoded_value = encoded_size + encoded_elements
+        return encoded_value

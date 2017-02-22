@@ -24,6 +24,20 @@ def test_0x_prefix_optional(input, expected):
 @pytest.mark.parametrize(
     'input,expected',
     (
+        ('0000000000000000000000000000000000000000000000000000000000000015', 21),
+        ('0000000000000000000000000000000000000000000000000000000000000001', 1),
+        ('ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff', -1),
+        ('ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff9c', -100),
+    )
+)
+def test_int8_decoding(input, expected):
+    output = decode_single('int8', input)
+    assert output == expected
+
+
+@pytest.mark.parametrize(
+    'input,expected',
+    (
         ('0x0000000000000000000000000000000000000000000000000000000000000015', 21),
         ('0x0000000000000000000000000000000000000000000000000000000000000001', 1),
         ('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff', -1),
