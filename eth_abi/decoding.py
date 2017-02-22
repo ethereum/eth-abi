@@ -150,10 +150,22 @@ class SingleDecoder(BaseDecoder):
             raise ValueError("No `decoder_fn` set")
 
     @classmethod
+    def validate_padding_bytes(cls, value, padding_bytes):
+        raise NotImplementedError("Must be implemented by subclasses")
+        value_byte_size = cls._get_value_byte_size()
+        padding_size = cls.data_byte_size - value_byte_size
+
+        if padding_bytes != b'\x00' * padding_size:
+            raise NonEmptyPaddingBytes(
+                "Padding bytes were not empty: {0}".format(force_text(padding_bytes))
+            )
+
+    @classmethod
     def decode(cls, stream):
         raw_data = cls.read_data_from_stream(stream)
-        data = cls.normalize_raw_data(raw_data)
+        data, padding_bytes = cls.split_data_and_padding(raw_data)
         value = cls.decoder_fn(data)
+        cls.validate_padding_bytes(value, padding_bytes)
 
         return value
 
@@ -162,8 +174,8 @@ class SingleDecoder(BaseDecoder):
         raise NotImplementedError("Must be implemented by subclasses")
 
     @classmethod
-    def normalize_raw_data(cls, raw_data):
-        return raw_data
+    def split_data_and_padding(cls, raw_data):
+        return raw_data, b''
 
 
 class BaseArrayDecoder(BaseDecoder):
@@ -239,7 +251,7 @@ class FixedByteSizeDecoder(SingleDecoder):
         return data
 
     @classmethod
-    def normalize_raw_data(cls, raw_data):
+    def split_data_and_padding(cls, raw_data):
         value_byte_size = cls._get_value_byte_size()
         padding_size = cls.data_byte_size - value_byte_size
 
@@ -250,12 +262,17 @@ class FixedByteSizeDecoder(SingleDecoder):
             data = raw_data[:value_byte_size]
             padding_bytes = raw_data[value_byte_size:]
 
+        return data, padding_bytes
+
+    @classmethod
+    def validate_padding_bytes(cls, value, padding_bytes):
+        value_byte_size = cls._get_value_byte_size()
+        padding_size = cls.data_byte_size - value_byte_size
+
         if padding_bytes != b'\x00' * padding_size:
             raise NonEmptyPaddingBytes(
                 "Padding bytes were not empty: {0}".format(force_text(padding_bytes))
             )
-
-        return data
 
     @classmethod
     def _get_value_byte_size(cls):
@@ -320,6 +337,21 @@ class SignedIntegerDecoder(Fixed32ByteSizeDecoder):
         else:
             return value
 
+    @classmethod
+    def validate_padding_bytes(cls, value, padding_bytes):
+        value_byte_size = cls._get_value_byte_size()
+        padding_size = cls.data_byte_size - value_byte_size
+
+        if value >= 0:
+            expected_padding_bytes = b'\x00' * padding_size
+        else:
+            expected_padding_bytes = b'\xff' * padding_size
+
+        if padding_bytes != expected_padding_bytes:
+            raise NonEmptyPaddingBytes(
+                "Padding bytes were not empty: {0}".format(force_text(padding_bytes))
+            )
+
 
 #
 # Bytes1..32
@@ -373,6 +405,21 @@ class SignedRealDecoder(BaseRealDecoder):
         real_value = quantize_value(raw_real_value, cls.low_bit_size)
         return real_value
 
+    @classmethod
+    def validate_padding_bytes(cls, value, padding_bytes):
+        value_byte_size = cls._get_value_byte_size()
+        padding_size = cls.data_byte_size - value_byte_size
+
+        if value >= 0:
+            expected_padding_bytes = b'\x00' * padding_size
+        else:
+            expected_padding_bytes = b'\xff' * padding_size
+
+        if padding_bytes != expected_padding_bytes:
+            raise NonEmptyPaddingBytes(
+                "Padding bytes were not empty: {0}".format(force_text(padding_bytes))
+            )
+
 
 #
 # String and Bytes
@@ -396,7 +443,19 @@ class StringDecoder(SingleDecoder):
                     len(data),
                 )
             )
+
+        padding_bytes = data[data_length:]
+
+        if padding_bytes != b'\x00' * (padded_length - data_length):
+            raise NonEmptyPaddingBytes(
+                "Padding bytes were not empty: {0}".format(force_text(padding_bytes))
+            )
+
         return data[:data_length]
+
+    @classmethod
+    def validate_padding_bytes(cls, value, padding_bytes):
+        pass
 
 
 decode_string = decode_bytes = StringDecoder.as_decoder()
