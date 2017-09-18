@@ -7,6 +7,15 @@ from eth_utils import (
 
 
 def process_type(typ):
+    if typ == 'function':
+        return process_strict_type('bytes24')
+    elif typ in ('int', 'uint'):
+        return process_strict_type(typ + '256')
+    else:
+        return process_strict_type(typ)
+
+
+def process_strict_type(typ):
     # Crazy reg expression to separate out base type component (eg. uint),
     # size (eg. 256, 128x128, none), array component (eg. [], [45], none)
     regexp = '([a-z]*)([0-9]*x?[0-9]*)((\[[0-9]*\])*)'
