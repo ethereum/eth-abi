@@ -70,6 +70,8 @@ def get_single_decoder(base, sub, arrlist):
             high_bit_size=high_bit_size,
             low_bit_size=low_bit_size,
         )
+    elif base == 'function':
+        return BytesDecoder.as_decoder(value_bit_size=int(24) * 8)
     else:
         raise ValueError(
             "Unsupported type: {0} - must be one of "

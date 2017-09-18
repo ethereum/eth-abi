@@ -79,6 +79,8 @@ def get_single_encoder(base, sub, arrlist):
             high_bit_size=high_bit_size,
             low_bit_size=low_bit_size,
         )
+    elif base == 'function':
+        return BytesEncoder.as_encoder(value_bit_size=int(24) * 8)
     else:
         raise ValueError(
             "Unsupported type: {0} - must be one of "
