@@ -37,6 +37,17 @@ def process_strict_type(typ):
             raise ValueError("Integer size out of bounds")
         if int(sub) % 8 != 0:
             raise ValueError("Integer size must be multiple of 8")
+    # Check validity of fixed type
+    elif base == 'ufixed' or base == 'fixed':
+        if not re.match('^[0-9]+x[0-9]+$', sub):
+            raise ValueError("Fixed type must have suffix of form <high>x<low>, eg. 128x128")
+        bits, minus_e = [int(x) for x in sub.split('x')]
+        if bits % 8 != 0:
+            raise ValueError("Fixed size must be multiple of 8")
+        if bits < 8 or bits > 256:
+            raise ValueError("Fixed size out of bounds (max 256 bits)")
+        if minus_e < 1 or minus_e > 80:
+            raise ValueError("Fixed size exponent is out of bounds, %s must be in 1-80" % minus_e)
     # Check validity of real type
     elif base == 'ureal' or base == 'real':
         if not re.match('^[0-9]+x[0-9]+$', sub):
