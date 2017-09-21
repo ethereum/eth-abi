@@ -14,16 +14,18 @@ DEFAULT_LENGTHS = (
 )
 
 
-def process_type(typ):
-    if typ == 'function':
-        return process_strict_type('bytes24')
-
-    for base, length in DEFAULT_LENGTHS:
-        if typ.startswith(base):
-            type_with_length = _specify_length_if_absent(base, typ, length)
-            return process_strict_type(type_with_length)
-
+def process_type(raw_type):
+    typ = normalize_type(raw_type)
     return process_strict_type(typ)
+
+
+def normalize_type(raw_type):
+    if raw_type == 'function':
+        return 'bytes24'
+    elif is_missing_length(raw_type):
+        return type_with_default_length(raw_type)
+    else:
+        return raw_type
 
 
 def process_strict_type(typ):
@@ -68,8 +70,25 @@ def process_strict_type(typ):
     return base, sub, [ast.literal_eval(x) for x in arrlist]
 
 
-def _specify_length_if_absent(base, typ, length):
-    if base == typ or typ[len(base)] not in string.digits:
-        return base + length + typ[len(base):]
+def is_missing_length(raw_type):
+    default_base, default_length = find_matching_default(raw_type)
+    if default_base:
+        raw_rest = raw_type[len(default_base):]
+        return not raw_rest or raw_rest[0] not in string.digits
     else:
-        return typ
+        return False
+
+
+def type_with_default_length(raw_type):
+    default_base, default_length = find_matching_default(raw_type)
+    if default_base:
+        return default_base + default_length + raw_type[len(default_base):]
+    else:
+        raise ValueError("Type %s has no default length" % raw_type)
+
+
+def find_matching_default(raw_type):
+    for test_base, default_length in DEFAULT_LENGTHS:
+        if raw_type.startswith(test_base):
+            return (test_base, default_length)
+    return (None, None)
