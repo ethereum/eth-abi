@@ -1,18 +1,29 @@
-import re
 import ast
+import re
+import string
 
 from eth_utils import (
     force_text,
+)
+
+DEFAULT_LENGTHS = (
+    ('int', '256'),
+    ('uint', '256'),
+    ('fixed', '128x19'),
+    ('ufixed', '128x19'),
 )
 
 
 def process_type(typ):
     if typ == 'function':
         return process_strict_type('bytes24')
-    elif typ in ('int', 'uint'):
-        return process_strict_type(typ + '256')
-    else:
-        return process_strict_type(typ)
+
+    for base, length in DEFAULT_LENGTHS:
+        if typ.startswith(base):
+            type_with_length = _specify_length_if_absent(base, typ, length)
+            return process_strict_type(type_with_length)
+
+    return process_strict_type(typ)
 
 
 def process_strict_type(typ):
@@ -55,3 +66,10 @@ def process_strict_type(typ):
         if sub != '':
             raise ValueError("Address cannot have suffix")
     return base, sub, [ast.literal_eval(x) for x in arrlist]
+
+
+def _specify_length_if_absent(base, typ, length):
+    if base == typ or typ[len(base)] not in string.digits:
+        return base + length + typ[len(base):]
+    else:
+        return typ
