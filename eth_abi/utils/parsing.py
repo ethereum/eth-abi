@@ -1,18 +1,31 @@
-import re
 import ast
+import re
+import string
 
 from eth_utils import (
     force_text,
 )
 
+DEFAULT_LENGTHS = (
+    ('int', '256'),
+    ('uint', '256'),
+    ('fixed', '128x19'),
+    ('ufixed', '128x19'),
+)
 
-def process_type(typ):
-    if typ == 'function':
-        return process_strict_type('bytes24')
-    elif typ in ('int', 'uint'):
-        return process_strict_type(typ + '256')
+
+def process_type(raw_type):
+    typ = normalize_type(raw_type)
+    return process_strict_type(typ)
+
+
+def normalize_type(raw_type):
+    if raw_type == 'function':
+        return 'bytes24'
+    elif is_missing_length(raw_type):
+        return type_with_default_length(raw_type)
     else:
-        return process_strict_type(typ)
+        return raw_type
 
 
 def process_strict_type(typ):
@@ -66,3 +79,27 @@ def process_strict_type(typ):
         if sub != '':
             raise ValueError("Address cannot have suffix")
     return base, sub, [ast.literal_eval(x) for x in arrlist]
+
+
+def is_missing_length(raw_type):
+    default_base, default_length = find_matching_default(raw_type)
+    if default_base:
+        raw_rest = raw_type[len(default_base):]
+        return not raw_rest or raw_rest[0] not in string.digits
+    else:
+        return False
+
+
+def type_with_default_length(raw_type):
+    default_base, default_length = find_matching_default(raw_type)
+    if default_base:
+        return default_base + default_length + raw_type[len(default_base):]
+    else:
+        raise ValueError("Type %s has no default length" % raw_type)
+
+
+def find_matching_default(raw_type):
+    for test_base, default_length in DEFAULT_LENGTHS:
+        if raw_type.startswith(test_base):
+            return (test_base, default_length)
+    return (None, None)
