@@ -21,8 +21,9 @@ from eth_abi.encoding import (
     get_multi_encoder,
 )
 
-from eth_abi.utils.parsing import (
+from eth_abi.utils.parsing import (  # noqa: F401
     process_type,
+    collapse_type,
 )
 
 

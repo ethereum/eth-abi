@@ -2,6 +2,7 @@
 import pytest
 
 from eth_abi.utils.parsing import (
+    collapse_type,
     process_type,
 )
 
@@ -9,6 +10,7 @@ from eth_abi.utils.parsing import (
 @pytest.mark.parametrize(
     'typestr, expected_parse',
     (
+        (b'uint256', ('uint', '256', [])),
         ('uint256', ('uint', '256', [])),
         ('uint', ('uint', '256', [])),
         ('uint256[]', ('uint', '256', [[]])),
@@ -41,3 +43,20 @@ def test_process_type(typestr, expected_parse):
 def test_process_exceptions(typestr):
     with pytest.raises(ValueError):
         process_type(typestr)
+
+
+@pytest.mark.parametrize(
+    'original, expected',
+    [
+        ('address', 'address'),
+        ('uint[2][]', 'uint256[2][]'),
+        ('uint256[2][]', 'uint256[2][]'),
+        ('function', 'bytes24'),
+        ('bool', 'bool'),
+        ('bytes32', 'bytes32'),
+        ('bytes', 'bytes'),
+        ('string', 'string'),
+    ],
+)
+def test_collapse_type(original, expected):
+    assert collapse_type(*process_type(original)) == expected
