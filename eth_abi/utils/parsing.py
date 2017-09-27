@@ -3,7 +3,7 @@ import re
 import string
 
 from eth_utils import (
-    force_text,
+    coerce_args_to_text,
 )
 
 DEFAULT_LENGTHS = (
@@ -14,9 +14,14 @@ DEFAULT_LENGTHS = (
 )
 
 
+@coerce_args_to_text
 def process_type(raw_type):
     typ = normalize_type(raw_type)
     return process_strict_type(typ)
+
+
+def collapse_type(base, sub, arrlist):
+    return str(base + sub + ''.join(map(repr, arrlist)))
 
 
 def normalize_type(raw_type):
@@ -32,7 +37,7 @@ def process_strict_type(typ):
     # Crazy reg expression to separate out base type component (eg. uint),
     # size (eg. 256, 128x128, none), array component (eg. [], [45], none)
     regexp = '([a-z]*)([0-9]*x?[0-9]*)((\[[0-9]*\])*)'
-    base, sub, arr, _ = re.match(regexp, force_text(typ)).groups()
+    base, sub, arr, _ = re.match(regexp, typ).groups()
     arrlist = re.findall('\[[0-9]*\]', arr)
     if len(''.join(arrlist)) != len(arr):
         raise ValueError("Unknown characters found in array declaration")
