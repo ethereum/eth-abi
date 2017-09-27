@@ -10,7 +10,7 @@ from setuptools import (
 
 DIR = os.path.dirname(os.path.abspath(__file__))
 
-version = '0.4.2'
+version = '0.4.3'
 
 readme = open(os.path.join(DIR, 'README.md')).read()
 
