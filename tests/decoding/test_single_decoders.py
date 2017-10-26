@@ -139,11 +139,16 @@ def test_decode_signed_int(integer_bit_size, stream_bytes, data_byte_size):
     else:
         actual_value = raw_value
 
+    padding_bytes = data_byte_size - integer_bit_size // 8
+
     if len(stream_bytes) < data_byte_size:
         with pytest.raises(InsufficientDataBytes):
             decoder(stream)
         return
-    elif raw_value > 2 ** integer_bit_size - 1:
+    elif (
+        raw_value > 2 ** integer_bit_size - 1 or
+        (actual_value < 0 and any(byte < 255 for byte in stream_bytes[:padding_bytes]))
+    ):
         with pytest.raises(NonEmptyPaddingBytes):
             decoder(stream)
         return
