@@ -109,6 +109,7 @@ def test_decode_unsigned_int(integer_bit_size, stream_bytes, data_byte_size):
     data_byte_size=st.integers(min_value=0, max_value=32),
 )
 @example(8, b'\x00\x80', 2)
+@example(8, b'\xff\xff', 2)
 def test_decode_signed_int(integer_bit_size, stream_bytes, data_byte_size):
     if integer_bit_size % 8 != 0:
         with pytest.raises(ValueError):
@@ -133,21 +134,21 @@ def test_decode_signed_int(integer_bit_size, stream_bytes, data_byte_size):
 
     stream = BytesIO(stream_bytes)
 
-    raw_value = big_endian_to_int(stream_bytes[:data_byte_size])
+    padding_bytes = data_byte_size - integer_bit_size // 8
+
+    raw_value = big_endian_to_int(stream_bytes[padding_bytes:data_byte_size])
     if raw_value >= 2 ** (integer_bit_size - 1):
         actual_value = raw_value - 2 ** integer_bit_size
     else:
         actual_value = raw_value
-
-    padding_bytes = data_byte_size - integer_bit_size // 8
 
     if len(stream_bytes) < data_byte_size:
         with pytest.raises(InsufficientDataBytes):
             decoder(stream)
         return
     elif (
-        raw_value > 2 ** integer_bit_size - 1 or
-        (actual_value < 0 and any(byte < 255 for byte in stream_bytes[:padding_bytes]))
+        (actual_value >= 0 and any(byte != 0 for byte in stream_bytes[:padding_bytes])) or
+        (actual_value < 0 and any(byte != 255 for byte in stream_bytes[:padding_bytes]))
     ):
         with pytest.raises(NonEmptyPaddingBytes):
             decoder(stream)
