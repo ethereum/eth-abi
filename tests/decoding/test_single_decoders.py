@@ -108,6 +108,7 @@ def test_decode_unsigned_int(integer_bit_size, stream_bytes, data_byte_size):
     stream_bytes=st.binary(min_size=0, max_size=32, average_size=32),
     data_byte_size=st.integers(min_value=0, max_value=32),
 )
+@example(8, b'\x00\x80', 2)
 def test_decode_signed_int(integer_bit_size, stream_bytes, data_byte_size):
     if integer_bit_size % 8 != 0:
         with pytest.raises(ValueError):
