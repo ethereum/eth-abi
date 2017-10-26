@@ -217,7 +217,7 @@ class BooleanEncoder(Fixed32ByteSizeEncoder):
     def validate_value(cls, value):
         if not is_boolean(value):
             raise EncodingTypeError(
-                "Value of type {0} cannot be encoded by {0}".format(
+                "Value of type {0} cannot be encoded by {1}".format(
                     type(value),
                     cls.__name__,
                 )
@@ -253,7 +253,7 @@ class NumberEncoder(Fixed32ByteSizeEncoder):
     def validate_value(cls, value):
         if not cls.type_check_fn(value):
             raise EncodingTypeError(
-                "Value of type {0} cannot be encoded by {0}".format(
+                "Value of type {0} cannot be encoded by {1}".format(
                     type(value),
                     cls.__name__,
                 )
@@ -363,7 +363,7 @@ class AddressEncoder(Fixed32ByteSizeEncoder):
     def validate_value(cls, value):
         if not is_address(value):
             raise EncodingTypeError(
-                "Value of type {0} cannot be encoded by {0}".format(
+                "Value of type {0} cannot be encoded by {1}".format(
                     type(value),
                     cls.__name__,
                 )
@@ -386,7 +386,7 @@ class BytesEncoder(Fixed32ByteSizeEncoder):
     def validate_value(cls, value):
         if not is_bytes(value):
             raise EncodingTypeError(
-                "Value of type {0} cannot be encoded by {0}".format(
+                "Value of type {0} cannot be encoded by {1}".format(
                     type(value),
                     cls.__name__,
                 )
@@ -409,7 +409,7 @@ class StringEncoder(BaseEncoder):
     def encode(cls, value):
         if not is_bytes(value):
             raise EncodingTypeError(
-                "Value of type {0} cannot be encoded as a string".format(
+                "Value of type {0} cannot be encoded by StringEncoder".format(
                     type(value),
                 )
             )
