@@ -4,6 +4,7 @@ import pytest
 
 import decimal
 from io import BytesIO
+import sys
 
 from hypothesis import (
     given,
@@ -57,6 +58,13 @@ def is_non_empty_non_null_byte_string(value):
     return value and big_endian_to_int(value) != 0
 
 
+def all_bytes_equal(test_bytes, target):
+    if sys.version_info.major < 3:
+        return all(byte == chr(target) for byte in test_bytes)
+    else:
+        return all(byte == target for byte in test_bytes)
+
+
 @settings(max_examples=1000)
 @given(
     integer_bit_size=st.integers(min_value=1, max_value=32).map(lambda v: v * 8),
@@ -108,6 +116,8 @@ def test_decode_unsigned_int(integer_bit_size, stream_bytes, data_byte_size):
     stream_bytes=st.binary(min_size=0, max_size=32, average_size=32),
     data_byte_size=st.integers(min_value=0, max_value=32),
 )
+@example(8, b'\x00\x80', 2)
+@example(8, b'\xff\xff', 2)
 def test_decode_signed_int(integer_bit_size, stream_bytes, data_byte_size):
     if integer_bit_size % 8 != 0:
         with pytest.raises(ValueError):
@@ -132,7 +142,9 @@ def test_decode_signed_int(integer_bit_size, stream_bytes, data_byte_size):
 
     stream = BytesIO(stream_bytes)
 
-    raw_value = big_endian_to_int(stream_bytes[:data_byte_size])
+    padding_bytes = data_byte_size - integer_bit_size // 8
+
+    raw_value = big_endian_to_int(stream_bytes[padding_bytes:data_byte_size])
     if raw_value >= 2 ** (integer_bit_size - 1):
         actual_value = raw_value - 2 ** integer_bit_size
     else:
@@ -142,7 +154,10 @@ def test_decode_signed_int(integer_bit_size, stream_bytes, data_byte_size):
         with pytest.raises(InsufficientDataBytes):
             decoder(stream)
         return
-    elif raw_value > 2 ** integer_bit_size - 1:
+    elif (
+        (actual_value >= 0 and not all_bytes_equal(stream_bytes[:padding_bytes], 0)) or
+        (actual_value < 0 and not all_bytes_equal(stream_bytes[:padding_bytes], 255))
+    ):
         with pytest.raises(NonEmptyPaddingBytes):
             decoder(stream)
         return
