@@ -4,6 +4,7 @@ import pytest
 
 import decimal
 from io import BytesIO
+import sys
 
 from hypothesis import (
     given,
@@ -55,6 +56,13 @@ from eth_abi.utils.numeric import (
 
 def is_non_empty_non_null_byte_string(value):
     return value and big_endian_to_int(value) != 0
+
+
+def all_bytes_equal(test_bytes, target):
+    if sys.version_info.major < 3:
+        return all(byte == chr(target) for byte in test_bytes)
+    else:
+        return all(byte == target for byte in test_bytes)
 
 
 @settings(max_examples=1000)
@@ -147,8 +155,8 @@ def test_decode_signed_int(integer_bit_size, stream_bytes, data_byte_size):
             decoder(stream)
         return
     elif (
-        (actual_value >= 0 and any(byte != 0 for byte in stream_bytes[:padding_bytes])) or
-        (actual_value < 0 and any(byte != 255 for byte in stream_bytes[:padding_bytes]))
+        (actual_value >= 0 and not all_bytes_equal(stream_bytes[:padding_bytes], 0)) or
+        (actual_value < 0 and not all_bytes_equal(stream_bytes[:padding_bytes], 255))
     ):
         with pytest.raises(NonEmptyPaddingBytes):
             decoder(stream)
