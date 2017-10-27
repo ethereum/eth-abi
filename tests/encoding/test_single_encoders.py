@@ -66,8 +66,9 @@ def test_encode_boolean(bool_value, data_byte_size):
 
 
     if not is_boolean(bool_value):
-        with pytest.raises(EncodingTypeError):
+        with pytest.raises(EncodingTypeError) as exception_info:
             encoder(bool_value)
+        assert 'BooleanEncoder' in str(exception_info.value)
         return
 
     expected_value = zpad(b'\x01' if bool_value else b'\x00', data_byte_size)
@@ -85,7 +86,7 @@ def test_encode_boolean(bool_value, data_byte_size):
 )
 def test_encode_unsigned_integer(integer_value, value_bit_size, data_byte_size):
     if value_bit_size > data_byte_size * 8:
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError) as exception_info:
             UnsignedIntegerEncoder.as_encoder(
                 value_bit_size=value_bit_size,
                 data_byte_size=data_byte_size,
@@ -99,8 +100,9 @@ def test_encode_unsigned_integer(integer_value, value_bit_size, data_byte_size):
     lower_bound, upper_bound = compute_unsigned_integer_bounds(value_bit_size)
 
     if not is_integer(integer_value):
-        with pytest.raises(EncodingTypeError):
+        with pytest.raises(EncodingTypeError) as exception_info:
             encoder(integer_value)
+        assert 'UnsignedInteger' in str(exception_info.value)
         return
     elif integer_value < lower_bound or integer_value > upper_bound:
         with pytest.raises(ValueOutOfBounds):
@@ -140,8 +142,9 @@ def test_encode_signed_integer(integer_value, value_bit_size, data_byte_size):
     lower_bound, upper_bound = compute_signed_integer_bounds(value_bit_size)
 
     if not is_integer(integer_value):
-        with pytest.raises(EncodingTypeError):
+        with pytest.raises(EncodingTypeError) as exception_info:
             encoder(integer_value)
+        assert 'SignedInteger' in str(exception_info.value)
         return
     elif integer_value < lower_bound or integer_value > upper_bound:
         with pytest.raises(ValueOutOfBounds):
@@ -197,8 +200,9 @@ def test_encode_address(address_value, value_bit_size, data_byte_size):
     )
 
     if not is_address(address_value):
-        with pytest.raises(EncodingTypeError):
+        with pytest.raises(EncodingTypeError) as exception_info:
             encoder(address_value)
+        assert 'AddressEncoder' in str(exception_info.value)
         return
 
     expected_value = zpad(to_canonical_address(address_value), data_byte_size)
@@ -231,8 +235,9 @@ def test_encode_bytes_xx(bytes_value, value_bit_size, data_byte_size):
     )
 
     if not is_bytes(bytes_value):
-        with pytest.raises(EncodingTypeError):
+        with pytest.raises(EncodingTypeError) as exception_info:
             encoder(bytes_value)
+        assert 'BytesEncoder' in str(exception_info.value)
         return
     elif len(bytes_value) * 8 > value_bit_size:
         with pytest.raises(ValueOutOfBounds):
@@ -256,8 +261,9 @@ def test_encode_string(string_value):
     encoder = StringEncoder.as_encoder()
 
     if not is_bytes(string_value):
-        with pytest.raises(EncodingTypeError):
+        with pytest.raises(EncodingTypeError) as exception_info:
             encoder(string_value)
+        assert 'StringEncoder' in str(exception_info.value)
         return
 
     expected_value = (
@@ -313,8 +319,9 @@ def test_encode_unsigned_real(base_integer_value,
     )
 
     if not is_number(base_integer_value):
-        with pytest.raises(EncodingTypeError):
+        with pytest.raises(EncodingTypeError) as exception_info:
             encoder(base_integer_value)
+        assert 'UnsignedReal' in str(exception_info.value)
         return
 
     real_value = decimal.Decimal(base_integer_value) / 2 ** low_bit_size
@@ -374,8 +381,9 @@ def test_encode_signed_real(base_integer_value,
     )
 
     if not is_number(base_integer_value):
-        with pytest.raises(EncodingTypeError):
+        with pytest.raises(EncodingTypeError) as exception_info:
             encoder(base_integer_value)
+        assert 'SignedReal' in str(exception_info.value)
         return
 
     unsigned_integer_value = base_integer_value % 2**(high_bit_size + low_bit_size)
