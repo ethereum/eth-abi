@@ -10,22 +10,20 @@ from setuptools import (
 
 DIR = os.path.dirname(os.path.abspath(__file__))
 
-version = '0.4.4'
-
 readme = open(os.path.join(DIR, 'README.md')).read()
 
 
 setup(
-    name='ethereum-abi-utils',
-    version=version,
+    name='eth-abi-utils',
+    version='0.5.0',
     description="""Ethereum ABI Utils""",
     long_description=readme,
     author='Piper Merriam',
     author_email='pipermerriam@gmail.com',
-    url='https://github.com/pipermerriam/ethereum-abi-utils',
+    url='https://github.com/ethereum/eth-abi-utils',
     include_package_data=True,
     install_requires=[
-        'ethereum-utils>=0.2.0',
+        'eth-utils>=0.7.0',
     ],
     py_modules=['eth_abi'],
     license="MIT",
