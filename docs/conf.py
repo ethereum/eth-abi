@@ -46,7 +46,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'Ethereum ABI Utils'
-copyright = u'2016, Piper Merriam <pipermerriam@gmail.com>'
+copyright = u'2017, Piper Merriam <pipermerriam@gmail.com>'
 author = u'Piper Merriam <pipermerriam@gmail.com>'
 
 # The version info for the project you're documenting, acts as replacement for

@@ -1,2 +1,0 @@
-sphinx-better-theme==0.1.4
-rlp==0.4.6

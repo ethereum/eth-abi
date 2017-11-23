@@ -1,32 +1,25 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import os
-
 from setuptools import (
     setup,
     find_packages,
 )
 
 
-DIR = os.path.dirname(os.path.abspath(__file__))
-
-version = '0.4.4'
-
-readme = open(os.path.join(DIR, 'README.md')).read()
-
-
 setup(
-    name='ethereum-abi-utils',
-    version=version,
+    name='eth-abi',
+    # *IMPORTANT*: Don't manually change the version here. Use the 'bumpversion' utility.
+    version='0.4.4',
     description="""Ethereum ABI Utils""",
-    long_description=readme,
+    long_description_markdown_filename='README.md',
     author='Piper Merriam',
     author_email='pipermerriam@gmail.com',
-    url='https://github.com/pipermerriam/ethereum-abi-utils',
+    url='https://github.com/ethereum/eth-abi',
     include_package_data=True,
     install_requires=[
-        'ethereum-utils>=0.2.0',
+        'eth-utils==0.7.*',
     ],
+    setup_requires=['setuptools-markdown'],
     py_modules=['eth_abi'],
     license="MIT",
     zip_safe=False,

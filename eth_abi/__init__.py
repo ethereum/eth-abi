@@ -8,4 +8,4 @@ from eth_abi.abi import (  # NOQA
 )
 
 
-__version__ = pkg_resources.get_distribution('ethereum-abi-utils').version
+__version__ = pkg_resources.get_distribution('eth-abi').version

@@ -6,7 +6,7 @@ These functions are intended for encoding python values into representations
 that are suitable for interacting with the EVM.
 
 
-* ``eth_alarm.encode_single(type, value)``
+* ``eth_abi.encode_single(type, value)``
 
 This function encodes ``value`` in the ABI encoding for the provided ``type``.
 
@@ -22,7 +22,7 @@ The **value** parameter is expected to be one of the recognized EVM types.
 .. note:: This function cannot be used to encode array types such as ``bytes32[]``.
 
 
-* ``eth_alarm.encode_abi(types, values)``
+* ``eth_abi.encode_abi(types, values)``
 
 This function encodes ``values`` in the ABI encoding for the corresponding type
 provided by the ``types`` argument.
