@@ -1,3 +1,8 @@
+0.5.0
+-----
+
+- Rename to `eth-abi` for consistency across github/pypi/python-module
+
 0.4.4
 -----
 
