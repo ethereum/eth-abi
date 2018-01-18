@@ -50,6 +50,8 @@ HEX_CHARS = b'1234567890abcdef'
 
 
 def is_hex_encoded_value(v):
+    if v == b'':
+        return False
     if not remove_0x_prefix(force_bytes(v)).lower().strip(HEX_CHARS) == b'':
         return False
     if len(remove_0x_prefix(v)) % 64 and len(remove_0x_prefix(v)) % 40:
