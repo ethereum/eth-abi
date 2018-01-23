@@ -15,6 +15,92 @@ Python utilities for working with the Ethereum ABI
 pip install eth-abi
 ```
 
+
+
+## Documentation
+
+### Decoding
+
+
+These functions are intended for decoding return values from the EVM.
+
+
+* ``eth_abi.decode_single(type, data)``
+
+This function tries to decode ``data`` into the python type that corresponds
+to the provided ``type``.  This function accepts data of type bytes.
+
+
+.. code-block:: python
+
+    >>> decode_single('uint256', b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0009')
+    12345
+
+
+The **value** parameter is expected to be one of the recognized EVM types.
+
+
+.. note:: This function cannot be used to decode dynamic or array types such as ``bytes32[]``.
+
+
+* ``eth_abi.decode_abi(types, data)``
+
+This function decodes ``data`` into the python type corresponding to the
+provided ``types``.  This function accepts arrays of type byte.
+
+
+.. code-block:: python
+
+    >>> decode_abi(['uint256'], b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0009')
+    [12345]
+    >>> decode_abi(['bytes32', 'bytes32'], b'a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00b\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00')
+    ['a', 'b']
+
+
+The **values** parameter is expected to be an iterable whose values are all one
+of the recognized EVM types.
+
+### Encoding
+
+
+These functions are intended for encoding python values into representations
+that are suitable for interacting with the EVM.
+
+
+* ``eth_abi.encode_single(type, value)``
+
+This function encodes ``value`` in the ABI encoding for the provided ``type``.
+
+
+.. code-block:: python
+
+    >>> encode_single('uint256', 12345)
+    b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0009'
+
+
+The **value** parameter is expected to be one of the recognized EVM types.
+
+.. note:: This function cannot be used to encode array types such as ``bytes32[]``.
+
+
+* ``eth_abi.encode_abi(types, values)``
+
+This function encodes ``values`` in the ABI encoding for the corresponding type
+provided by the ``types`` argument.
+
+
+.. code-block:: python
+
+    >>> encode_abi(['uint256'], [12345])
+    b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0009'
+    >>> encode_abi(['bytes32', 'bytes32'], ['a', 'b'])
+    b'a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00b\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
+
+
+The **values** parameter is expected to be an iterable whose values are all one
+of the recognized EVM types.
+
+
 ## Development
 
 Clone the repository and then run:
@@ -59,94 +145,6 @@ bumpversion $$VERSION_PART_TO_BUMP$$
 git push && git push --tags
 make release
 ```
-
-
-## Documentation
-
-### Decoding
-
-
-These functions are intended for decoding return values from the EVM.
-
-
-* ``eth_abi.decode_single(type, data)``
-
-This function tries to decode ``data`` into the python type that corresponds
-to the provided ``type``.  This function accepts data of type bytes.
-
-
-.. code-block:: python
-
-    >>> decode_single('uint256', b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0009')
-    12345
-    >>> decode_single('uint256', '0x0000000000000000000000000000000000000000000000000000000000003039')
-    12345
-
-
-The **value** parameter is expected to be one of the recognized EVM types.
-
-
-.. note:: This function cannot be used to decode dynamic or array types such as ``bytes32[]``.
-
-
-* ``eth_abi.decode_abi(types, data)``
-
-This function decodes ``data`` into the python type corresponding to the
-provided ``types``.  This function accepts arrays of type byte.
-
-
-.. code-block:: python
-
-    >>> decode_abi(['uint256'], '\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0009')
-    [12345]
-    >>> decode_abi(['bytes32', 'bytes32'], 'a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00b\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00')
-    ['a', 'b']
-
-
-The **values** parameter is expected to be an iterable whose values are all one
-of the recognized EVM types.
-
-### Encoding
-
-
-These functions are intended for encoding python values into representations
-that are suitable for interacting with the EVM.
-
-
-* ``eth_abi.encode_single(type, value)``
-
-This function encodes ``value`` in the ABI encoding for the provided ``type``.
-
-
-.. code-block:: python
-
-    >>> encode_single('uint256', 12345)
-    '\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0009'
-
-
-The **value** parameter is expected to be one of the recognized EVM types.
-
-.. note:: This function cannot be used to encode array types such as ``bytes32[]``.
-
-
-* ``eth_abi.encode_abi(types, values)``
-
-This function encodes ``values`` in the ABI encoding for the corresponding type
-provided by the ``types`` argument.
-
-
-.. code-block:: python
-
-    >>> encode_abi(['uint256'], [12345])
-    '\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0009'
-    >>> encode_abi(['bytes32', 'bytes32'], ['a', 'b'])
-    'a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00b\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
-
-
-The **values** parameter is expected to be an iterable whose values are all one
-of the recognized EVM types.
-
-
 
 #### How to bumpversion
 
