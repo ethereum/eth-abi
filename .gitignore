@@ -8,6 +8,7 @@
 *.egg-info
 dist
 build
+.eggs
 eggs
 parts
 bin
@@ -27,6 +28,7 @@ pip-log.txt
 .tox
 nosetests.xml
 .cache
+.pytest_cache
 
 # Translations
 *.mo
@@ -45,3 +47,6 @@ docs/_build
 
 # Hypothesis
 .hypothesis
+
+# Editors
+.swp

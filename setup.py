@@ -17,7 +17,7 @@ setup(
     url='https://github.com/ethereum/eth-abi',
     include_package_data=True,
     install_requires=[
-        'eth-utils==0.7.*',
+        'eth-utils>=1.0.0b1,<2.0.0',
     ],
     setup_requires=['setuptools-markdown'],
     py_modules=['eth_abi'],
@@ -30,10 +30,8 @@ setup(
         'Intended Audience :: Developers',
         'License :: OSI Approved :: BSD License',
         'Natural Language :: English',
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.3',
-        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
     ],
 )
