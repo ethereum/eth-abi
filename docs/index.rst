@@ -6,19 +6,24 @@
 Welcome to Ethereum ABI Utils's documentation!
 ==============================================
 
-Contents:
+This provides relatively low-level python utilities for encoding data
+using Ethereum ABI definitiens.
+
+Table of Contents
+========================
 
 .. toctree::
+    :maxdepth: 1
+
     overview
     encoding
     decoding
-
-    :maxdepth: 2
+    eth_abi
+    releases
 
 
 Indices and tables
-==================
+------------------
 
-* :ref:`genindex`
+* :ref:`API Glossary <genindex>`
 * :ref:`modindex`
-* :ref:`search`
