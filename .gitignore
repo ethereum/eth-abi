@@ -49,4 +49,4 @@ docs/_build
 .hypothesis
 
 # Editors
-.swp
+*.swp

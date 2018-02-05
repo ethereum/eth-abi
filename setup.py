@@ -19,6 +19,12 @@ setup(
     install_requires=[
         'eth-utils>=1.0.0b1,<2.0.0',
     ],
+    extras_require={
+        'doc': [
+            "Sphinx>=1.6.5,<2",
+            "sphinx_rtd_theme>=0.1.9",
+        ],
+    },
     setup_requires=['setuptools-markdown'],
     py_modules=['eth_abi'],
     license="MIT",

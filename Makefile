@@ -30,6 +30,17 @@ test:
 test-all:
 	tox
 
+build-docs:
+	sphinx-apidoc -o docs/ . setup.py "eth_abi/utils/*" "*conftest*"
+	$(MAKE) -C docs clean
+	$(MAKE) -C docs html
+
+docs: build-docs
+	open docs/_build/html/index.html
+
+linux-docs: build-docs
+	xdg-open docs/_build/html/index.html
+
 release: clean
 	python setup.py sdist bdist_wheel upload
 
