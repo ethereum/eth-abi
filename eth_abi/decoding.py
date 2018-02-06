@@ -13,6 +13,7 @@ from eth_abi.exceptions import (
     NonEmptyPaddingBytes,
 )
 from eth_abi.utils.numeric import (
+    abi_decimal_context,
     big_endian_to_int,
     quantize_value,
     ceil32,
@@ -386,9 +387,10 @@ class UnsignedRealDecoder(BaseRealDecoder):
     @classmethod
     def decoder_fn(cls, data):
         value = big_endian_to_int(data)
-        decimal_value = decimal.Decimal(value)
-        raw_real_value = decimal_value / 2 ** cls.low_bit_size
-        real_value = quantize_value(raw_real_value, cls.low_bit_size)
+        with decimal.localcontext(abi_decimal_context):
+            decimal_value = decimal.Decimal(value)
+            raw_real_value = decimal_value / 2 ** cls.low_bit_size
+            real_value = quantize_value(raw_real_value, cls.low_bit_size)
         return real_value
 
 

@@ -46,6 +46,7 @@ from eth_abi.utils.padding import (
     zpad32,
 )
 from eth_abi.utils.numeric import (
+    abi_decimal_context,
     big_endian_to_int,
     int_to_big_endian,
     compute_signed_integer_bounds,
@@ -416,7 +417,10 @@ def test_decode_unsigned_real(high_bit_size,
         decoded_value = decoder(stream)
 
     unsigned_integer_value = big_endian_to_int(stream_bytes[:data_byte_size])
-    raw_real_value = decimal.Decimal(unsigned_integer_value) / 2 ** low_bit_size
+
+    with decimal.localcontext(abi_decimal_context):
+        raw_real_value = decimal.Decimal(unsigned_integer_value) / 2 ** low_bit_size
+
     actual_value = quantize_value(raw_real_value, low_bit_size)
 
     assert decoded_value == actual_value
@@ -483,7 +487,9 @@ def test_decode_signed_real(high_bit_size,
     else:
         signed_integer_value = unsigned_integer_value
 
-    raw_actual_value = decimal.Decimal(signed_integer_value) / 2 ** low_bit_size
+    with decimal.localcontext(abi_decimal_context):
+        raw_actual_value = decimal.Decimal(signed_integer_value) / 2 ** low_bit_size
+
     actual_value = quantize_value(raw_actual_value, low_bit_size)
 
     assert decoded_value == actual_value
