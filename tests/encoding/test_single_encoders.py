@@ -287,6 +287,13 @@ def test_encode_string(string_value):
     value_bit_size=st.integers(min_value=1, max_value=32).map(lambda v: v * 8),
     data_byte_size=st.integers(min_value=1, max_value=32),
 )
+@example(
+    base_integer_value=384,
+    value_bit_size=232,
+    high_bit_size=64,
+    low_bit_size=168,
+    data_byte_size=29,
+)
 def test_encode_unsigned_real(base_integer_value,
                               value_bit_size,
                               high_bit_size,
@@ -324,7 +331,10 @@ def test_encode_unsigned_real(base_integer_value,
         assert 'UnsignedReal' in str(exception_info.value)
         return
 
-    real_value = decimal.Decimal(base_integer_value) / 2 ** low_bit_size
+    with decimal.localcontext() as ctx:
+        ctx.prec = 999
+        real_value = decimal.Decimal(base_integer_value) / 2 ** low_bit_size
+
     lower_bound, upper_bound = compute_unsigned_real_bounds(
         high_bit_size,
         low_bit_size,
