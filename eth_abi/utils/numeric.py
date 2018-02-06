@@ -89,8 +89,8 @@ def quantize_value(value, decimal_bit_size):
     with decimal.localcontext() as ctx:
         ctx.prec = 999
         if num_decimals == 0:
-            quantize_value = decimal.Decimal('1', context=ctx)
+            quantize_value = decimal.Decimal('1')
         else:
-            quantize_value = decimal.Decimal('1.{0}'.format(''.zfill(num_decimals)), context=ctx)
-        decimal_value = decimal.Decimal(value, context=ctx)
-        return decimal_value.quantize(quantize_value, context=ctx)
+            quantize_value = decimal.Decimal('1.{0}'.format(''.zfill(num_decimals)))
+        decimal_value = decimal.Decimal(value)
+        return decimal_value.quantize(quantize_value)
