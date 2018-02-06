@@ -39,6 +39,9 @@ else:
         return int.from_bytes(value, byteorder='big')
 
 
+abi_decimal_context = decimal.Context(prec=999)
+
+
 def ceil32(x):
     return x if x % 32 == 0 else x + 32 - (x % 32)
 
@@ -86,8 +89,7 @@ def compute_signed_real_bounds(num_high_bits, num_low_bits):
 
 def quantize_value(value, decimal_bit_size):
     num_decimals = int(math.ceil(math.log10(2 ** decimal_bit_size)))
-    with decimal.localcontext() as ctx:
-        ctx.prec = 999
+    with decimal.localcontext(abi_decimal_context):
         if num_decimals == 0:
             quantize_value = decimal.Decimal('1')
         else:

@@ -41,6 +41,7 @@ from eth_abi.encoding import (
 )
 
 from eth_abi.utils.numeric import (
+    abi_decimal_context,
     int_to_big_endian,
     compute_unsigned_integer_bounds,
     compute_signed_integer_bounds,
@@ -331,8 +332,7 @@ def test_encode_unsigned_real(base_integer_value,
         assert 'UnsignedReal' in str(exception_info.value)
         return
 
-    with decimal.localcontext() as ctx:
-        ctx.prec = 999
+    with decimal.localcontext(abi_decimal_context):
         real_value = decimal.Decimal(base_integer_value) / 2 ** low_bit_size
 
     lower_bound, upper_bound = compute_unsigned_real_bounds(
@@ -397,7 +397,10 @@ def test_encode_signed_real(base_integer_value,
         return
 
     unsigned_integer_value = base_integer_value % 2**(high_bit_size + low_bit_size)
-    real_value = decimal.Decimal(unsigned_integer_value) / 2 ** low_bit_size
+
+    with decimal.localcontext(abi_decimal_context):
+        real_value = decimal.Decimal(unsigned_integer_value) / 2 ** low_bit_size
+
     lower_bound, upper_bound = compute_signed_real_bounds(
         high_bit_size,
         low_bit_size,
