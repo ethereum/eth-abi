@@ -1,15 +1,33 @@
-import functools
+def just(value, length, fillerchar, direction='left'):
+    if isinstance(value, str):
+        _fillerchar = fillerchar.decode()
+    elif isinstance(value, bytes):
+        _fillerchar = fillerchar
+    if direction == 'left':
+        return value.rjust(length, _fillerchar)
+    if direction == 'right':
+            return value.ljust(length, _fillerchar)
 
-from eth_utils import (
-    pad_left,
-    pad_right,
-)
+
+def zpad(value, length):
+    return just(value, length, b'\x00')
 
 
-zpad = functools.partial(pad_left, pad_with='\x00')
-zpad32 = functools.partial(pad_left, to_size=32, pad_with='\x00')
-zpad_right = functools.partial(pad_right, pad_with='\x00')
-zpad32_right = functools.partial(pad_right, to_size=32, pad_with='\x00')
+def zpad32(value):
+    return just(value, 32, b'\x00')
 
-fpad = functools.partial(pad_left, pad_with='\xff')
-fpad32 = functools.partial(pad_left, to_size=32, pad_with='\xff')
+
+def zpad_right(value, length):
+    return just(value, length, b'\x00', direction='right')
+
+
+def zpad32_right(value):
+    return just(value, 32, b'\x00', direction='right')
+
+
+def fpad(value, length):
+    return just(value, length, b'\xff')
+
+
+def fpad32(value):
+    return just(value, 32, b'\xff')
