@@ -3,8 +3,9 @@ import re
 import string
 
 from eth_utils import (
-    coerce_args_to_text,
+    is_text,
 )
+
 
 DEFAULT_LENGTHS = (
     ('int', '256'),
@@ -14,8 +15,9 @@ DEFAULT_LENGTHS = (
 )
 
 
-@coerce_args_to_text
 def process_type(raw_type):
+    if not is_text(raw_type):
+        raise TypeError("The type must be a text string.  Got {0}".format(type(raw_type)))
     typ = normalize_type(raw_type)
     return process_strict_type(typ)
 
