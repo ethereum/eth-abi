@@ -10,7 +10,6 @@ from eth_abi.utils.parsing import (
 @pytest.mark.parametrize(
     'typestr, expected_parse',
     (
-        (b'uint256', ('uint', '256', [])),
         ('uint256', ('uint', '256', [])),
         ('uint', ('uint', '256', [])),
         ('uint256[]', ('uint', '256', [[]])),
@@ -23,6 +22,11 @@ from eth_abi.utils.parsing import (
 )
 def test_process_type(typestr, expected_parse):
     assert process_type(typestr) == expected_parse
+
+
+def test_process_type_requires_string_type():
+    with pytest.raises(TypeError):
+        process_type(b'uint256')
 
 
 @pytest.mark.parametrize(

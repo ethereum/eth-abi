@@ -59,6 +59,17 @@ def is_non_empty_non_null_byte_string(value):
     return value and big_endian_to_int(value) != 0
 
 
+def is_invalid_padding_bytes(value):
+    if not value:
+        return False
+    elif value.replace(b'\x00', b'') == b'':
+        return False
+    elif value.replace(b'\xff', b'') == b'':
+        return False
+    else:
+        return True
+
+
 def all_bytes_equal(test_bytes, target):
     if sys.version_info.major < 3:
         return all(byte == chr(target) for byte in test_bytes)
@@ -434,6 +445,13 @@ def test_decode_unsigned_real(high_bit_size,
     stream_bytes=st.binary(min_size=0, max_size=32, average_size=32),
     data_byte_size=st.integers(min_value=0, max_value=32),
 )
+@example(
+    high_bit_size=8,
+    low_bit_size=8,
+    integer_bit_size=16,
+    stream_bytes=b'\xff\xff\xff\xa9\xf5\xb3',
+    data_byte_size=3,
+)
 def test_decode_signed_real(high_bit_size,
                             low_bit_size,
                             integer_bit_size,
@@ -466,22 +484,33 @@ def test_decode_signed_real(high_bit_size,
         )
 
     stream = BytesIO(stream_bytes)
-    padding_bytes = stream_bytes[:data_byte_size][:data_byte_size - integer_bit_size // 8]
+
+    padding_offset = data_byte_size - integer_bit_size // 8
+    data_offset = padding_offset + integer_bit_size // 8
+
+    padding_bytes = stream_bytes[:data_byte_size][:padding_offset]
+    data_bytes = stream_bytes[:data_byte_size][padding_offset:data_offset]
 
     if len(stream_bytes) < data_byte_size:
         with pytest.raises(InsufficientDataBytes):
             decoder(stream)
         return
-    elif is_non_empty_non_null_byte_string(padding_bytes):
+    elif is_invalid_padding_bytes(padding_bytes):
         with pytest.raises(NonEmptyPaddingBytes):
             decoder(stream)
         return
     else:
         decoded_value = decoder(stream)
 
+    if padding_bytes:
+        if decoded_value >= 0:
+            assert bytes(set(padding_bytes)) == b'\x00'
+        else:
+            assert bytes(set(padding_bytes)) == b'\xff'
+
     _, upper_bound = compute_signed_integer_bounds(high_bit_size + low_bit_size)
 
-    unsigned_integer_value = big_endian_to_int(stream_bytes[:data_byte_size])
+    unsigned_integer_value = big_endian_to_int(data_bytes)
     if unsigned_integer_value >= upper_bound:
         signed_integer_value = unsigned_integer_value - 2 ** (high_bit_size + low_bit_size)
     else:
