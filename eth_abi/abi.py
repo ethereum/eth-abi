@@ -46,13 +46,13 @@ def encode_abi(types, args):
     return encoder(args)
 
 
-HEX_CHARS = b'1234567890abcdef'
+HEX_CHARS = '1234567890abcdef'
 
 
 def is_hex_encoded_value(v):
-    if v == b'':
+    if v == '':
         return False
-    if not remove_0x_prefix(force_bytes(v)).lower().strip(HEX_CHARS) == b'':
+    if not remove_0x_prefix(v).lower().strip(HEX_CHARS) == '':
         return False
     if len(remove_0x_prefix(v)) % 64 and len(remove_0x_prefix(v)) % 40:
         return False
