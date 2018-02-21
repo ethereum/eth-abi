@@ -3,7 +3,6 @@ from __future__ import unicode_literals
 import decimal
 
 from eth_utils import (
-    force_text,
     to_tuple,
     to_normalized_address,
 )
@@ -158,7 +157,7 @@ class SingleDecoder(BaseDecoder):
 
         if padding_bytes != b'\x00' * padding_size:
             raise NonEmptyPaddingBytes(
-                "Padding bytes were not empty: {0}".format(force_text(padding_bytes))
+                "Padding bytes were not empty: {0}".format(repr(padding_bytes))
             )
 
     @classmethod
@@ -272,7 +271,7 @@ class FixedByteSizeDecoder(SingleDecoder):
 
         if padding_bytes != b'\x00' * padding_size:
             raise NonEmptyPaddingBytes(
-                "Padding bytes were not empty: {0}".format(force_text(padding_bytes))
+                "Padding bytes were not empty: {0}".format(repr(padding_bytes))
             )
 
     @classmethod
@@ -297,7 +296,7 @@ class BooleanDecoder(Fixed32ByteSizeDecoder):
             return True
         else:
             raise NonEmptyPaddingBytes(
-                "Boolean must be either 0x0 or 0x1.  Got: {0}".format(force_text(data))
+                "Boolean must be either 0x0 or 0x1.  Got: {0}".format(repr(data))
             )
 
 
@@ -350,7 +349,7 @@ class SignedIntegerDecoder(Fixed32ByteSizeDecoder):
 
         if padding_bytes != expected_padding_bytes:
             raise NonEmptyPaddingBytes(
-                "Padding bytes were not empty: {0}".format(force_text(padding_bytes))
+                "Padding bytes were not empty: {0}".format(repr(padding_bytes))
             )
 
 
@@ -419,7 +418,7 @@ class SignedRealDecoder(BaseRealDecoder):
 
         if padding_bytes != expected_padding_bytes:
             raise NonEmptyPaddingBytes(
-                "Padding bytes were not empty: {0}".format(force_text(padding_bytes))
+                "Padding bytes were not empty: {0}".format(repr(padding_bytes))
             )
 
 
@@ -450,7 +449,7 @@ class StringDecoder(SingleDecoder):
 
         if padding_bytes != b'\x00' * (padded_length - data_length):
             raise NonEmptyPaddingBytes(
-                "Padding bytes were not empty: {0}".format(force_text(padding_bytes))
+                "Padding bytes were not empty: {0}".format(repr(padding_bytes))
             )
 
         return data[:data_length]

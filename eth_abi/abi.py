@@ -1,15 +1,10 @@
 """
 Vendored from `pyethereum.abi`
 """
-import warnings
-
 from io import BytesIO
 
 from eth_utils import (
-    is_text,
-    force_bytes,
-    remove_0x_prefix,
-    decode_hex,
+    is_bytes,
 )
 
 from eth_abi.decoding import (
@@ -33,9 +28,6 @@ def encode_single(typ, arg):
     except ValueError:
         base, sub, arrlist = process_type(typ)
 
-    if is_text(arg):
-        arg = force_bytes(arg)
-
     encoder = get_single_encoder(base, sub, arrlist)
     return encoder(arg)
 
@@ -46,37 +38,10 @@ def encode_abi(types, args):
     return encoder(args)
 
 
-HEX_CHARS = b'1234567890abcdef'
-
-
-def is_hex_encoded_value(v):
-    if v == b'':
-        return False
-    if not remove_0x_prefix(force_bytes(v)).lower().strip(HEX_CHARS) == b'':
-        return False
-    if len(remove_0x_prefix(v)) % 64 and len(remove_0x_prefix(v)) % 40:
-        return False
-    return True
-
-
 # Decodes a single base datum
 def decode_single(typ, data):
-    if is_hex_encoded_value(data):
-        warnings.warn(DeprecationWarning(
-            "Automatic inference of hex encoded data has been deprecated. "
-            "Please adjust your code to ensure that the data argument for "
-            "`decode_single` is a byte string"
-        ))
-        data = decode_hex(remove_0x_prefix(data))
-
-    if is_text(data):
-        warnings.warn(DeprecationWarning(
-            "Automatic conversion of encoded data to bytes has been deprecated. "
-            "Please adjust your code to ensure that the data argument for "
-            "`decode_single` is a byte string"
-        ))
-        data = force_bytes(data)
-
+    if not is_bytes(data):
+        raise TypeError("The `data` value must be of bytes type.  Got {0}".format(type(data)))
     try:
         base, sub, arrlist = typ
     except ValueError:
@@ -89,21 +54,8 @@ def decode_single(typ, data):
 
 # Decodes multiple arguments using the head/tail mechanism
 def decode_abi(types, data):
-    if is_hex_encoded_value(data):
-        warnings.warn(DeprecationWarning(
-            "Automatic inference of hex encoded data has been deprecated. "
-            "Please adjust your code to ensure that the data argument for "
-            "`decode_single` is a byte string"
-        ))
-        data = decode_hex(remove_0x_prefix(data))
-
-    if is_text(data):
-        warnings.warn(DeprecationWarning(
-            "Automatic conversion of encoded data to bytes has been deprecated. "
-            "Please adjust your code to ensure that the data argument for "
-            "`decode_abi` is a byte string"
-        ))
-        data = force_bytes(data)
+    if not is_bytes(data):
+        raise TypeError("The `data` value must be of bytes type.  Got {0}".format(type(data)))
 
     processed_types = tuple(process_type(_type) for _type in types)
     decoder = get_multi_decoder(processed_types)

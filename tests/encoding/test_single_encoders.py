@@ -1,8 +1,9 @@
 from __future__ import absolute_import
 
-import pytest
-
+import codecs
 import decimal
+
+import pytest
 
 from hypothesis import (
     given,
@@ -17,6 +18,7 @@ from eth_utils import (
     is_number,
     is_address,
     is_bytes,
+    is_text,
     to_normalized_address,
     to_canonical_address,
     to_checksum_address,
@@ -33,7 +35,8 @@ from eth_abi.encoding import (
     SignedIntegerEncoder,
     AddressEncoder,
     BytesEncoder,
-    StringEncoder,
+    ByteStringEncoder,
+    TextStringEncoder,
     encode_uint_256,
     UnsignedRealEncoder,
     SignedRealEncoder,
@@ -255,22 +258,58 @@ def test_encode_bytes_xx(bytes_value, value_bit_size, data_byte_size):
 @given(
     string_value=st.one_of(
         st.none(),
+        st.text(min_size=0, max_size=256),
         st.binary(min_size=0, max_size=256),
     ),
 )
-def test_encode_string(string_value):
-    encoder = StringEncoder.as_encoder()
+def test_encode_byte_string(string_value):
+    encoder = ByteStringEncoder.as_encoder()
 
     if not is_bytes(string_value):
         with pytest.raises(EncodingTypeError) as exception_info:
             encoder(string_value)
-        assert 'StringEncoder' in str(exception_info.value)
+        assert 'ByteStringEncoder' in str(exception_info.value)
         return
 
     expected_value = (
         encode_uint_256(len(string_value)) +
         (
             zpad_right(string_value, ceil32(len(string_value)))
+            if string_value
+            else b'\x00' * 32
+        )
+    )
+    encoded_value = encoder(string_value)
+
+    assert encoded_value == expected_value
+
+
+@settings(max_examples=1000)
+@given(
+    string_value=st.one_of(
+        st.none(),
+        st.text(min_size=0, max_size=256),
+        st.binary(min_size=0, max_size=256),
+    ),
+)
+def test_encode_text_string(string_value):
+    encoder = TextStringEncoder.as_encoder()
+
+    if not is_text(string_value):
+        with pytest.raises(EncodingTypeError) as exception_info:
+            encoder(string_value)
+        assert 'TextStringEncoder' in str(exception_info.value)
+        return
+
+    string_value_as_bytes = codecs.encode(string_value, 'utf8')
+
+    expected_value = (
+        encode_uint_256(len(string_value_as_bytes)) +
+        (
+            zpad_right(
+                string_value_as_bytes,
+                ceil32(len(string_value_as_bytes)),
+            )
             if string_value
             else b'\x00' * 32
         )
@@ -421,7 +460,7 @@ def test_encode_signed_real(base_integer_value,
 def test_multi_encoder():
     encoder = MultiEncoder.as_encoder(encoders=(
         UnsignedIntegerEncoder.as_encoder(value_bit_size=256),
-        StringEncoder.as_encoder(),
+        ByteStringEncoder.as_encoder(),
     ))
     expected = decode_hex('0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000')
     actual = encoder((0, b''))

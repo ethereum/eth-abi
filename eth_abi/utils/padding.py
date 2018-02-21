@@ -1,15 +1,27 @@
-import functools
-
-from eth_utils import (
-    pad_left,
-    pad_right,
+from cytoolz import (
+    curry,
 )
 
 
-zpad = functools.partial(pad_left, pad_with='\x00')
-zpad32 = functools.partial(pad_left, to_size=32, pad_with='\x00')
-zpad_right = functools.partial(pad_right, pad_with='\x00')
-zpad32_right = functools.partial(pad_right, to_size=32, pad_with='\x00')
+@curry
+def zpad(value, length):
+    return value.rjust(length, b'\x00')
 
-fpad = functools.partial(pad_left, pad_with='\xff')
-fpad32 = functools.partial(pad_left, to_size=32, pad_with='\xff')
+
+zpad32 = zpad(length=32)
+
+
+@curry
+def zpad_right(value, length):
+    return value.ljust(length, b'\x00')
+
+
+zpad32_right = zpad_right(length=32)
+
+
+@curry
+def fpad(value, length):
+    return value.rjust(length, b'\xff')
+
+
+fpad32 = fpad(length=32)
