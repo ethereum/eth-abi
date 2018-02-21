@@ -19,9 +19,6 @@ from eth_abi.utils.numeric import (
 )
 
 
-decimal.DefaultContext.prec = 999
-
-
 def get_multi_decoder(processed_types):
     """
     """
@@ -401,9 +398,10 @@ class SignedRealDecoder(BaseRealDecoder):
             signed_value = value - 2 ** (cls.high_bit_size + cls.low_bit_size)
         else:
             signed_value = value
-        signed_decimal_value = decimal.Decimal(signed_value)
-        raw_real_value = signed_decimal_value / 2 ** cls.low_bit_size
-        real_value = quantize_value(raw_real_value, cls.low_bit_size)
+        with decimal.localcontext(abi_decimal_context):
+            signed_decimal_value = decimal.Decimal(signed_value)
+            raw_real_value = signed_decimal_value / 2 ** cls.low_bit_size
+            real_value = quantize_value(raw_real_value, cls.low_bit_size)
         return real_value
 
     @classmethod
