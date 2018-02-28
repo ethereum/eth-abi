@@ -4,4 +4,4 @@ pytest-pythonpath>=0.7.1
 tox>=2.4.1
 hypothesis>=3.6.1
 bumpversion==0.5.3
-eth-hash[pycryptodome]>=0.1.0a2,<1.0.0
+eth-hash[pycryptodome]>=0.1.0,<1.0.0
