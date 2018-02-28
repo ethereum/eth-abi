@@ -17,7 +17,7 @@ setup(
     url='https://github.com/ethereum/eth-abi',
     include_package_data=True,
     install_requires=[
-        'eth-utils>=1.0.0b2,<2.0.0',
+        'eth-utils>=1.0.1,<2.0.0',
     ],
     extras_require={
         'doc': [
