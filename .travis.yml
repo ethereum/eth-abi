@@ -10,7 +10,7 @@ matrix:
     - python: "pypy3.5"
       env: TOX_ENV=pypy3
     - python: "3.5"
-      env: TOX_ENV=flake8
+      env: TOX_ENV=lint
 cache:
   pip: true
 install:
