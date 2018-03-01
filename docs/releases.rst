@@ -1,6 +1,15 @@
 Release Notes
 =============
 
+v1.0.0
+-------------
+
+Released Feb 28, 2018
+
+- Confirmed pypy3 compatibility
+- Add support for eth-utils v1.0.0-beta2 and v1.0.1 stable
+- Testing improvements
+
 v1.0.0-beta.0
 -------------
 
