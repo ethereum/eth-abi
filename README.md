@@ -2,8 +2,8 @@
 
 [![Build Status](https://travis-ci.org/ethereum/eth-abi.png)](https://travis-ci.org/ethereum/eth-abi)
 [![Documentation Status](https://readthedocs.org/projects/eth-abi/badge/?version=latest)](https://readthedocs.org/projects/eth-abi/?badge=latest)
-[![PyPi version](https://pypip.in/v/eth-abi/badge.png)](https://pypi.python.org/pypi/eth-abi)
-[![PyPi downloads](https://pypip.in/d/eth-abi/badge.png)](https://pypi.python.org/pypi/eth-ipc-utils)
+[![PyPi version](https://img.shields.io/pypi/v/eth-abi.svg)](https://pypi.python.org/pypi/eth-abi)
+[![PyPi downloads](https://img.shields.io/pypi/dm/eth-abi.svg)](https://pypi.python.org/pypi/eth-ipc-utils)
 
 
 Python utilities for working with the Ethereum ABI
