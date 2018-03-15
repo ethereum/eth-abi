@@ -7,6 +7,17 @@ from eth_utils import (
 )
 
 
+TYPE_COMPONENTS_RE = re.compile(
+    r'([a-z]*)'          # Base type component (eg. uint)
+    r'([0-9]*x?[0-9]*)'  # Size component (eg. 256, 128x128, none)
+    r'((\[[0-9]*\])*)'   # Array component (eg. [], [45], none)
+)
+ARR_COMPONENT_RE = re.compile(r'\[[0-9]*\]')
+OPTIONAL_SIZE_RE = re.compile(r'^[0-9]*$')
+SIZE_RE = re.compile(r'^[0-9]+$')
+TWO_SIZE_RE = re.compile(r'^[0-9]+x[0-9]+$')
+
+
 DEFAULT_LENGTHS = (
     ('int', '256'),
     ('uint', '256'),
@@ -36,22 +47,21 @@ def normalize_type(raw_type):
 
 
 def process_strict_type(typ):
-    # Crazy reg expression to separate out base type component (eg. uint),
-    # size (eg. 256, 128x128, none), array component (eg. [], [45], none)
-    regexp = '([a-z]*)([0-9]*x?[0-9]*)((\[[0-9]*\])*)'
-    base, sub, arr, _ = re.match(regexp, typ).groups()
-    arrlist = re.findall('\[[0-9]*\]', arr)
+    base, sub, arr, _ = TYPE_COMPONENTS_RE.match(typ).groups()
+
+    arrlist = ARR_COMPONENT_RE.findall(arr)
     if len(''.join(arrlist)) != len(arr):
         raise ValueError("Unknown characters found in array declaration")
+
     # Check validity of string type
     if base == 'string' or base == 'bytes':
-        if not re.match('^[0-9]*$', sub):
+        if not OPTIONAL_SIZE_RE.match(sub):
             raise ValueError("String type must have no suffix or numerical suffix")
         if sub and int(sub) > 32:
             raise ValueError("Maximum 32 bytes for fixed-length str or bytes")
     # Check validity of integer type
     elif base == 'uint' or base == 'int':
-        if not re.match('^[0-9]+$', sub):
+        if not SIZE_RE.match(sub):
             raise ValueError("Integer type must have numerical suffix")
         if 8 > int(sub) or int(sub) > 256:
             raise ValueError("Integer size out of bounds")
@@ -59,7 +69,7 @@ def process_strict_type(typ):
             raise ValueError("Integer size must be multiple of 8")
     # Check validity of fixed type
     elif base == 'ufixed' or base == 'fixed':
-        if not re.match('^[0-9]+x[0-9]+$', sub):
+        if not TWO_SIZE_RE.match(sub):
             raise ValueError("Fixed type must have suffix of form <high>x<low>, eg. 128x128")
         bits, minus_e = [int(x) for x in sub.split('x')]
         if bits % 8 != 0:
@@ -70,7 +80,7 @@ def process_strict_type(typ):
             raise ValueError("Fixed size exponent is out of bounds, %s must be in 1-80" % minus_e)
     # Check validity of real type
     elif base == 'ureal' or base == 'real':
-        if not re.match('^[0-9]+x[0-9]+$', sub):
+        if not TWO_SIZE_RE.match(sub):
             raise ValueError("Real type must have suffix of form <high>x<low>, eg. 128x128")
         high, low = [int(x) for x in sub.split('x')]
         if 8 > (high + low) or (high + low) > 256:
@@ -79,12 +89,13 @@ def process_strict_type(typ):
             raise ValueError("Real high/low sizes must be multiples of 8")
     # Check validity of hash type
     elif base == 'hash':
-        if not re.match('^[0-9]+$', sub):
+        if not SIZE_RE.match(sub):
             raise ValueError("Hash type must have numerical suffix")
     # Check validity of address type
     elif base == 'address':
         if sub != '':
             raise ValueError("Address cannot have suffix")
+
     return base, sub, [ast.literal_eval(x) for x in arrlist]
 
 
