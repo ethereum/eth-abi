@@ -94,9 +94,12 @@ class BaseEncoder(object):
         for key in kwargs:
             if not hasattr(cls, key):
                 raise AttributeError(
-                    "Property {0} not found on Decoder class. "
-                    "`Decoder.factory` only accepts keyword arguments which are "
-                    "present on the Decoder class".format(key)
+                    "Property `{key}` not found on {cls_name} class. "
+                    "`{cls_name}.as_encoder` only accepts keyword arguments which are "
+                    "present on the {cls_name} class.".format(
+                        key=key,
+                        cls_name=cls.__name__,
+                    )
                 )
         if name is None:
             name = cls.__name__
