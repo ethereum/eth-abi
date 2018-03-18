@@ -59,15 +59,23 @@ def is_non_empty_non_null_byte_string(value):
     return value and big_endian_to_int(value) != 0
 
 
-def is_invalid_padding_bytes(value):
-    if not value:
-        return False
-    elif value.replace(b'\x00', b'') == b'':
-        return False
-    elif value.replace(b'\xff', b'') == b'':
-        return False
-    else:
+def is_valid_padding_bytes(padding_bytes, data_bytes):
+    # Empty padding is always valid
+    if len(padding_bytes) == 0:
         return True
+
+    leading_data_bit_is_one = (data_bytes[0] & 0b10000000) == 0b10000000
+
+    if leading_data_bit_is_one:
+        # All padding bits must be 1
+        if padding_bytes.replace(b'\xff', b'') == b'':
+            return True
+    else:
+        # All padding bits must be 0
+        if padding_bytes.replace(b'\x00', b'') == b'':
+            return True
+
+    return False
 
 
 def all_bytes_equal(test_bytes, target):
@@ -495,7 +503,7 @@ def test_decode_signed_real(high_bit_size,
         with pytest.raises(InsufficientDataBytes):
             decoder(stream)
         return
-    elif is_invalid_padding_bytes(padding_bytes):
+    elif not is_valid_padding_bytes(padding_bytes, data_bytes):
         with pytest.raises(NonEmptyPaddingBytes):
             decoder(stream)
         return
