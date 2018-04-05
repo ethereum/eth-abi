@@ -84,12 +84,12 @@ sized_list_strats = [
     st.tuples(
         st.shared(
             st.integers(min_value=MIN_LIST_SIZE, max_value=MAX_LIST_SIZE),
-            key="n",
-        ).map(lambda n: type_str + "[{0}]".format(n)),
+            key="sized_list_strats",
+        ).map(lambda n, type_str=type_str: type_str + "[{0}]".format(n)),
         st.shared(
             st.integers(min_value=MIN_LIST_SIZE, max_value=MAX_LIST_SIZE),
-            key="n",
-        ).flatmap(lambda n: st.lists(type_strat, min_size=n, max_size=n).map(tuple))
+            key="sized_list_strats",
+        ).flatmap(lambda n, type_strat=type_strat: st.lists(type_strat, min_size=n, max_size=n).map(tuple))
     ) for type_str, type_strat in all_basic_raw_strats
 ]
 
