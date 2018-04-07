@@ -152,13 +152,6 @@ class SingleDecoder(BaseDecoder):
     @classmethod
     def validate_padding_bytes(cls, value, padding_bytes):
         raise NotImplementedError("Must be implemented by subclasses")
-        value_byte_size = cls._get_value_byte_size()
-        padding_size = cls.data_byte_size - value_byte_size
-
-        if padding_bytes != b'\x00' * padding_size:
-            raise NonEmptyPaddingBytes(
-                "Padding bytes were not empty: {0}".format(repr(padding_bytes))
-            )
 
     @classmethod
     def decode(cls, stream):
