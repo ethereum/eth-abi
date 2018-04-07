@@ -1,4 +1,3 @@
-from __future__ import unicode_literals
 import pytest
 
 from eth_abi.abi import encode_single

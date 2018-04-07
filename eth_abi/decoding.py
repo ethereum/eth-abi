@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 import decimal
 
 from eth_utils import (
@@ -107,7 +105,7 @@ class HeadTailDecoder(BaseDecoder):
 
     @classmethod
     def validate(cls):
-        super(HeadTailDecoder, cls).validate()
+        super().validate()
         if cls.tail_decoder is None:
             raise ValueError("No `tail_decoder` set")
 
@@ -126,7 +124,7 @@ class MultiDecoder(BaseDecoder):
 
     @classmethod
     def validate(cls):
-        super(MultiDecoder, cls).validate()
+        super().validate()
         if cls.decoders is None:
             raise ValueError("No `decoders` set")
 
@@ -145,7 +143,7 @@ class SingleDecoder(BaseDecoder):
 
     @classmethod
     def validate(cls):
-        super(SingleDecoder, cls).validate()
+        super().validate()
         if cls.decoder_fn is None:
             raise ValueError("No `decoder_fn` set")
 
@@ -183,7 +181,7 @@ class BaseArrayDecoder(BaseDecoder):
 
     @classmethod
     def validate(cls):
-        super(BaseArrayDecoder, cls).validate()
+        super().validate()
         if cls.item_decoder is None:
             raise ValueError("No `item_decoder` set")
 
@@ -215,7 +213,7 @@ class FixedByteSizeDecoder(SingleDecoder):
 
     @classmethod
     def validate(cls):
-        super(FixedByteSizeDecoder, cls).validate()
+        super().validate()
 
         if cls.value_bit_size is None:
             raise ValueError("`value_bit_size` may not be None")
@@ -372,7 +370,7 @@ class BaseRealDecoder(Fixed32ByteSizeDecoder):
 
     @classmethod
     def validate(cls):
-        super(BaseRealDecoder, cls).validate()
+        super().validate()
 
         if cls.high_bit_size is None:
             raise ValueError("`high_bit_size` cannot be null")
