@@ -121,7 +121,7 @@ class MultiEncoder(BaseEncoder):
 
     @classmethod
     def validate(cls):
-        super(MultiEncoder, cls).validate()
+        super().validate()
         if cls.encoders is None:
             raise ValueError("`encoders` may not be none")
 
@@ -174,7 +174,7 @@ class FixedSizeEncoder(BaseEncoder):
 
     @classmethod
     def validate(cls):
-        super(FixedSizeEncoder, cls).validate()
+        super().validate()
         if cls.value_bit_size is None:
             raise ValueError("`value_bit_size` may not be none")
         if cls.data_byte_size is None:
@@ -248,7 +248,7 @@ class NumberEncoder(Fixed32ByteSizeEncoder):
 
     @classmethod
     def validate(cls):
-        super(NumberEncoder, cls).validate()
+        super().validate()
         if cls.bounds_fn is None:
             raise ValueError("`bounds_fn` cannot be null")
         if cls.type_check_fn is None:
@@ -314,7 +314,7 @@ class BaseRealEncoder(NumberEncoder):
 
     @classmethod
     def validate(cls):
-        super(BaseRealEncoder, cls).validate()
+        super().validate()
         if cls.high_bit_size is None:
             raise ValueError("`high_bit_size` cannot be null")
         if cls.low_bit_size is None:
@@ -376,7 +376,7 @@ class AddressEncoder(Fixed32ByteSizeEncoder):
 
     @classmethod
     def validate(cls):
-        super(AddressEncoder, cls).validate()
+        super().validate()
         if cls.value_bit_size != 20 * 8:
             raise ValueError('Addresses must be 160 bits in length')
 
@@ -453,7 +453,7 @@ class BaseArrayEncoder(BaseEncoder):
 
     @classmethod
     def validate(cls):
-        super(BaseArrayEncoder, cls).validate()
+        super().validate()
         if cls.item_encoder is None:
             raise ValueError("`item_encoder` may not be none")
 
@@ -478,7 +478,7 @@ class SizedArrayEncoder(BaseArrayEncoder):
 
     @classmethod
     def validate(cls):
-        super(SizedArrayEncoder, cls).validate()
+        super().validate()
         if cls.array_size is None:
             raise ValueError("`array_size` may not be none")
 
