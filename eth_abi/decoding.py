@@ -22,61 +22,6 @@ from eth_abi.utils.numeric import (
 )
 
 
-def get_multi_decoder(processed_types):
-    """
-    """
-    decoders = tuple(
-        get_single_decoder(base, sub, arrlist) for base, sub, arrlist in processed_types
-    )
-    return MultiDecoder.as_decoder(decoders=decoders)
-
-
-def get_single_decoder(base, sub, arrlist):
-    if arrlist:
-        item_decoder = get_single_decoder(base, sub, arrlist[:-1])
-        if arrlist[-1]:
-            return SizedArrayDecoder.as_decoder(
-                array_size=arrlist[-1][0],
-                item_decoder=item_decoder,
-            )
-        else:
-            return DynamicArrayDecoder.as_decoder(item_decoder=item_decoder)
-    elif base == 'address':
-        return decode_address
-    elif base == 'bool':
-        return decode_bool
-    elif base == 'bytes':
-        if sub:
-            return BytesDecoder.as_decoder(value_bit_size=int(sub) * 8)
-        else:
-            return decode_bytes
-    elif base == 'int':
-        return SignedIntegerDecoder.as_decoder(value_bit_size=int(sub))
-    elif base == 'string':
-        return decode_string
-    elif base == 'uint':
-        return UnsignedIntegerDecoder.as_decoder(value_bit_size=int(sub))
-    elif base == 'ureal':
-        high_bit_size, low_bit_size = [int(v) for v in sub.split('x')]
-        return UnsignedRealDecoder.as_decoder(
-            value_bit_size=high_bit_size + low_bit_size,
-            high_bit_size=high_bit_size,
-            low_bit_size=low_bit_size,
-        )
-    elif base == 'real':
-        high_bit_size, low_bit_size = [int(v) for v in sub.split('x')]
-        return SignedRealDecoder.as_decoder(
-            value_bit_size=high_bit_size + low_bit_size,
-            high_bit_size=high_bit_size,
-            low_bit_size=low_bit_size,
-        )
-    else:
-        raise ValueError(
-            "Unsupported type: {0} - must be one of "
-            "address/bool/bytesXX/bytes/string/uintXXX/intXXX"
-        )
-
-
 class BaseDecoder(BaseCoder):
     @classmethod
     def as_decoder(cls, name=None, **kwargs):

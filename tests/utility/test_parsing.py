@@ -1,5 +1,6 @@
-
 import pytest
+
+from eth_abi.exceptions import ParseError
 
 from eth_abi.utils.parsing import (
     collapse_type,
@@ -32,20 +33,30 @@ def test_process_type_requires_string_type():
 @pytest.mark.parametrize(
     'typestr',
     (
-        ('fixed0x1'),
-        ('fixed264x1'),
-        ('fixed9x1'),
-        ('fixed256x0'),
-        ('fixed256x81'),
-        ('ufixed0x1'),
-        ('ufixed264x1'),
-        ('ufixed9x1'),
-        ('ufixed256x0'),
-        ('ufixed256x81'),
+        'fixed264x1',
+        'fixed9x1',
+        'fixed256x81',
+        'ufixed264x1',
+        'ufixed9x1',
+        'ufixed256x81',
     )
 )
-def test_process_exceptions(typestr):
+def test_process_validation_errors(typestr):
     with pytest.raises(ValueError):
+        process_type(typestr)
+
+
+@pytest.mark.parametrize(
+    'typestr',
+    (
+        'fixed0x1',
+        'fixed256x0',
+        'ufixed0x1',
+        'ufixed256x0',
+    )
+)
+def test_process_parsing_errors(typestr):
+    with pytest.raises(ParseError):
         process_type(typestr)
 
 

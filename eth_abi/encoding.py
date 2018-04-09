@@ -38,61 +38,6 @@ from eth_abi.utils.padding import (
 )
 
 
-def get_multi_encoder(processed_types):
-    """
-    """
-    encoders = tuple(
-        get_single_encoder(base, sub, arrlist) for base, sub, arrlist in processed_types
-    )
-    return MultiEncoder.as_encoder(encoders=encoders)
-
-
-def get_single_encoder(base, sub, arrlist):
-    if arrlist:
-        item_encoder = get_single_encoder(base, sub, arrlist[:-1])
-        if arrlist[-1]:
-            return SizedArrayEncoder.as_encoder(
-                array_size=arrlist[-1][0],
-                item_encoder=item_encoder,
-            )
-        else:
-            return DynamicArrayEncoder.as_encoder(item_encoder=item_encoder)
-    elif base == 'address':
-        return encode_address
-    elif base == 'bool':
-        return encode_bool
-    elif base == 'bytes':
-        if sub:
-            return BytesEncoder.as_encoder(value_bit_size=int(sub) * 8)
-        else:
-            return encode_bytes
-    elif base == 'int':
-        return SignedIntegerEncoder.as_encoder(value_bit_size=int(sub))
-    elif base == 'string':
-        return encode_string
-    elif base == 'uint':
-        return UnsignedIntegerEncoder.as_encoder(value_bit_size=int(sub))
-    elif base == 'ureal':
-        high_bit_size, low_bit_size = [int(v) for v in sub.split('x')]
-        return UnsignedRealEncoder.as_encoder(
-            value_bit_size=high_bit_size + low_bit_size,
-            high_bit_size=high_bit_size,
-            low_bit_size=low_bit_size,
-        )
-    elif base == 'real':
-        high_bit_size, low_bit_size = [int(v) for v in sub.split('x')]
-        return SignedRealEncoder.as_encoder(
-            value_bit_size=high_bit_size + low_bit_size,
-            high_bit_size=high_bit_size,
-            low_bit_size=low_bit_size,
-        )
-    else:
-        raise ValueError(
-            "Unsupported type: {0} - must be one of "
-            "address/bool/bytesXX/bytes/string/uintXXX/intXXX"
-        )
-
-
 class BaseEncoder(BaseCoder):
     @classmethod
     def as_encoder(cls, name=None, **kwargs):

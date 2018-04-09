@@ -7,14 +7,10 @@ from eth_utils import (
     is_bytes,
 )
 
-from eth_abi.decoding import (
-    get_single_decoder,
-    get_multi_decoder,
-)
-from eth_abi.encoding import (
-    get_single_encoder,
-    get_multi_encoder,
-)
+from eth_abi.decoding import MultiDecoder
+from eth_abi.encoding import MultiEncoder
+
+from eth_abi.registry import registry
 
 from eth_abi.utils.parsing import (  # noqa: F401
     process_type,
@@ -26,15 +22,23 @@ def encode_single(typ, arg):
     try:
         base, sub, arrlist = typ
     except ValueError:
-        base, sub, arrlist = process_type(typ)
+        type_str = typ
+    else:
+        type_str = collapse_type(base, sub, arrlist)
 
-    encoder = get_single_encoder(base, sub, arrlist)
+    encoder = registry.get_encoder(type_str)
+
     return encoder(arg)
 
 
 def encode_abi(types, args):
-    processed_types = [process_type(typ) for typ in types]
-    encoder = get_multi_encoder(processed_types)
+    encoders = [
+        registry.get_encoder(type_str)
+        for type_str in types
+    ]
+
+    encoder = MultiEncoder.as_encoder(encoders=encoders)
+
     return encoder(args)
 
 
@@ -42,13 +46,17 @@ def encode_abi(types, args):
 def decode_single(typ, data):
     if not is_bytes(data):
         raise TypeError("The `data` value must be of bytes type.  Got {0}".format(type(data)))
+
     try:
         base, sub, arrlist = typ
     except ValueError:
-        base, sub, arrlist = process_type(typ)
+        type_str = typ
+    else:
+        type_str = collapse_type(base, sub, arrlist)
 
-    decoder = get_single_decoder(base, sub, arrlist)
+    decoder = registry.get_decoder(type_str)
     stream = BytesIO(data)
+
     return decoder(stream)
 
 
@@ -57,7 +65,12 @@ def decode_abi(types, data):
     if not is_bytes(data):
         raise TypeError("The `data` value must be of bytes type.  Got {0}".format(type(data)))
 
-    processed_types = tuple(process_type(_type) for _type in types)
-    decoder = get_multi_decoder(processed_types)
+    decoders = [
+        registry.get_decoder(type_str)
+        for type_str in types
+    ]
+
+    decoder = MultiDecoder.as_decoder(decoders=decoders)
     stream = BytesIO(data)
+
     return decoder(stream)

@@ -34,12 +34,10 @@ from eth_abi.decoding import (
     BooleanDecoder,
     AddressDecoder,
     DynamicArrayDecoder,
-    get_single_decoder,
 )
 
-from eth_abi.utils.parsing import (
-    process_type,
-)
+from eth_abi.registry import registry
+
 from eth_abi.utils.padding import (
     zpad32,
 )
@@ -371,9 +369,7 @@ def test_decode_array_of_unsigned_integers(array_size, array_values):
     ),
 )
 def test_multi_decoder(types, data, expected):
-    decoders = tuple((
-        get_single_decoder(*process_type(t)) for t in types
-    ))
+    decoders = [registry.get_decoder(t) for t in types]
     decoder = MultiDecoder.as_decoder(decoders=decoders)
     stream = BytesIO(decode_hex(data))
     actual = decoder(stream)
