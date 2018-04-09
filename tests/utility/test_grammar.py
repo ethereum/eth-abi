@@ -69,6 +69,11 @@ from ..property.abi_type_strategies import (
                 )),
             )),
         ),
+        ('()', TupleType(tuple())),
+        (
+            '(int,(),())',
+            TupleType((BasicType('int'), TupleType(tuple()), TupleType(tuple()))),
+        ),
     )
 )
 def test_parsing_with_parsimonious_grammar_and_node_visitor_works(type_str, expected_type):
