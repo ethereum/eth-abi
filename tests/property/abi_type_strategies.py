@@ -64,10 +64,10 @@ def join_tuple(xs):
 
 
 tuple_type_strs = st.recursive(
-    st.lists(non_tuple_type_strs, min_size=2, max_size=2),
+    st.lists(non_tuple_type_strs, min_size=0, max_size=10),
     lambda this_strategy: st.lists(
         st.one_of(non_tuple_type_strs, this_strategy),
-        min_size=2, max_size=10,
+        min_size=0, max_size=10,
     ),
 ).map(join_tuple)
 
@@ -92,10 +92,10 @@ malformed_non_tuple_type_strs = st.tuples(
 ).map(guaranteed_permute).map(join)
 
 malformed_tuple_type_strs = st.recursive(
-    st.lists(malformed_non_tuple_type_strs, min_size=2, max_size=2),
+    st.lists(malformed_non_tuple_type_strs, min_size=1, max_size=10),
     lambda this_strategy: st.lists(
         st.one_of(malformed_non_tuple_type_strs, this_strategy),
-        min_size=2, max_size=10,
+        min_size=1, max_size=10,
     ),
 ).map(join_tuple)
 
