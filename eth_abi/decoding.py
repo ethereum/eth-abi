@@ -358,7 +358,6 @@ class BytesDecoder(Fixed32ByteSizeDecoder):
 class BaseRealDecoder(Fixed32ByteSizeDecoder):
     high_bit_size = None
     low_bit_size = None
-    data_byte_size = None
     is_big_endian = True
 
     @classmethod
