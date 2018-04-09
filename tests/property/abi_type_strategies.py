@@ -49,7 +49,7 @@ address_strat = st.tuples(
 )
 
 
-bytes_raw_strat = st.binary(min_size=0, max_size=4096, average_size=128)
+bytes_raw_strat = st.binary(min_size=0, max_size=4096)
 bytes_strat = st.tuples(
     st.just('bytes'),
     bytes_raw_strat,
