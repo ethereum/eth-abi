@@ -5,6 +5,11 @@ from eth_utils import (
     to_normalized_address,
 )
 
+from eth_abi.base import (
+    BaseCoder,
+    parse_type_str,
+)
+
 from eth_abi.exceptions import (
     InsufficientDataBytes,
     NonEmptyPaddingBytes,
@@ -17,62 +22,7 @@ from eth_abi.utils.numeric import (
 )
 
 
-def get_multi_decoder(processed_types):
-    """
-    """
-    decoders = tuple(
-        get_single_decoder(base, sub, arrlist) for base, sub, arrlist in processed_types
-    )
-    return MultiDecoder.as_decoder(decoders=decoders)
-
-
-def get_single_decoder(base, sub, arrlist):
-    if arrlist:
-        item_decoder = get_single_decoder(base, sub, arrlist[:-1])
-        if arrlist[-1]:
-            return SizedArrayDecoder.as_decoder(
-                array_size=arrlist[-1][0],
-                item_decoder=item_decoder,
-            )
-        else:
-            return DynamicArrayDecoder.as_decoder(item_decoder=item_decoder)
-    elif base == 'address':
-        return decode_address
-    elif base == 'bool':
-        return decode_bool
-    elif base == 'bytes':
-        if sub:
-            return BytesDecoder.as_decoder(value_bit_size=int(sub) * 8)
-        else:
-            return decode_bytes
-    elif base == 'int':
-        return SignedIntegerDecoder.as_decoder(value_bit_size=int(sub))
-    elif base == 'string':
-        return decode_string
-    elif base == 'uint':
-        return UnsignedIntegerDecoder.as_decoder(value_bit_size=int(sub))
-    elif base == 'ureal':
-        high_bit_size, low_bit_size = [int(v) for v in sub.split('x')]
-        return UnsignedRealDecoder.as_decoder(
-            value_bit_size=high_bit_size + low_bit_size,
-            high_bit_size=high_bit_size,
-            low_bit_size=low_bit_size,
-        )
-    elif base == 'real':
-        high_bit_size, low_bit_size = [int(v) for v in sub.split('x')]
-        return SignedRealDecoder.as_decoder(
-            value_bit_size=high_bit_size + low_bit_size,
-            high_bit_size=high_bit_size,
-            low_bit_size=low_bit_size,
-        )
-    else:
-        raise ValueError(
-            "Unsupported type: {0} - must be one of "
-            "address/bool/bytesXX/bytes/string/uintXXX/intXXX"
-        )
-
-
-class BaseDecoder(object):
+class BaseDecoder(BaseCoder):
     @classmethod
     def as_decoder(cls, name=None, **kwargs):
         for key in kwargs:
@@ -177,6 +127,21 @@ class BaseArrayDecoder(BaseDecoder):
         super().validate()
         if cls.item_decoder is None:
             raise ValueError("No `item_decoder` set")
+
+    @parse_type_str(with_arrlist=True)
+    def from_type_str(cls, abi_type, registry):
+        item_decoder = registry.get_decoder(str(abi_type.item_type))
+
+        array_spec = abi_type.arrlist[-1]
+        if len(array_spec) == 1:
+            # If array dimension is fixed
+            return SizedArrayDecoder.as_decoder(
+                array_size=array_spec[0],
+                item_decoder=item_decoder,
+            )
+        else:
+            # If array dimension is dynamic
+            return DynamicArrayDecoder.as_decoder(item_decoder=item_decoder)
 
 
 class SizedArrayDecoder(BaseArrayDecoder):
@@ -290,6 +255,10 @@ class BooleanDecoder(Fixed32ByteSizeDecoder):
                 "Boolean must be either 0x0 or 0x1.  Got: {0}".format(repr(data))
             )
 
+    @parse_type_str('bool')
+    def from_type_str(cls, abi_type, registry):
+        return cls.as_decoder()
+
 
 decode_bool = BooleanDecoder.as_decoder()
 
@@ -298,6 +267,10 @@ class AddressDecoder(Fixed32ByteSizeDecoder):
     value_bit_size = 20 * 8
     is_big_endian = True
     decoder_fn = staticmethod(to_normalized_address)
+
+    @parse_type_str('address')
+    def from_type_str(cls, abi_type, registry):
+        return cls.as_decoder()
 
 
 decode_address = AddressDecoder.as_decoder()
@@ -309,6 +282,10 @@ decode_address = AddressDecoder.as_decoder()
 class UnsignedIntegerDecoder(Fixed32ByteSizeDecoder):
     decoder_fn = staticmethod(big_endian_to_int)
     is_big_endian = True
+
+    @parse_type_str('uint')
+    def from_type_str(cls, abi_type, registry):
+        return cls.as_decoder(value_bit_size=abi_type.sub)
 
 
 decode_uint_256 = UnsignedIntegerDecoder.as_decoder(value_bit_size=256)
@@ -343,6 +320,10 @@ class SignedIntegerDecoder(Fixed32ByteSizeDecoder):
                 "Padding bytes were not empty: {0}".format(repr(padding_bytes))
             )
 
+    @parse_type_str('int')
+    def from_type_str(cls, abi_type, registry):
+        return cls.as_decoder(value_bit_size=abi_type.sub)
+
 
 #
 # Bytes1..32
@@ -354,11 +335,14 @@ class BytesDecoder(Fixed32ByteSizeDecoder):
     def decoder_fn(cls, data):
         return data
 
+    @parse_type_str('bytes')
+    def from_type_str(cls, abi_type, registry):
+        return cls.as_decoder(value_bit_size=abi_type.sub * 8)
+
 
 class BaseRealDecoder(Fixed32ByteSizeDecoder):
     high_bit_size = None
     low_bit_size = None
-    data_byte_size = None
     is_big_endian = True
 
     @classmethod
@@ -382,6 +366,16 @@ class UnsignedRealDecoder(BaseRealDecoder):
             raw_real_value = decimal_value / 2 ** cls.low_bit_size
             real_value = quantize_value(raw_real_value, cls.low_bit_size)
         return real_value
+
+    @parse_type_str('ureal')
+    def from_type_str(cls, abi_type, registry):
+        high_bit_size, low_bit_size = abi_type.sub
+
+        return cls.as_decoder(
+            value_bit_size=high_bit_size + low_bit_size,
+            high_bit_size=high_bit_size,
+            low_bit_size=low_bit_size,
+        )
 
 
 class SignedRealDecoder(BaseRealDecoder):
@@ -412,6 +406,16 @@ class SignedRealDecoder(BaseRealDecoder):
             raise NonEmptyPaddingBytes(
                 "Padding bytes were not empty: {0}".format(repr(padding_bytes))
             )
+
+    @parse_type_str('real')
+    def from_type_str(cls, abi_type, registry):
+        high_bit_size, low_bit_size = abi_type.sub
+
+        return cls.as_decoder(
+            value_bit_size=high_bit_size + low_bit_size,
+            high_bit_size=high_bit_size,
+            low_bit_size=low_bit_size,
+        )
 
 
 #
@@ -450,5 +454,18 @@ class StringDecoder(SingleDecoder):
     def validate_padding_bytes(cls, value, padding_bytes):
         pass
 
+    @parse_type_str('string')
+    def from_type_str(cls, abi_type, registry):
+        return cls.as_decoder()
 
-decode_string = decode_bytes = StringDecoder.as_decoder()
+
+decode_string = StringDecoder.as_decoder()
+
+
+class ByteStringDecoder(StringDecoder):
+    @parse_type_str('bytes')
+    def from_type_str(cls, abi_type, registry):
+        return cls.as_decoder()
+
+
+decode_bytes = ByteStringDecoder.as_decoder()

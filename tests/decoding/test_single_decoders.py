@@ -34,12 +34,10 @@ from eth_abi.decoding import (
     BooleanDecoder,
     AddressDecoder,
     DynamicArrayDecoder,
-    get_single_decoder,
 )
 
-from eth_abi.utils.parsing import (
-    process_type,
-)
+from eth_abi.registry import registry
+
 from eth_abi.utils.padding import (
     zpad32,
 )
@@ -86,7 +84,7 @@ def all_bytes_equal(test_bytes, target):
 @settings(max_examples=1000)
 @given(
     integer_bit_size=st.integers(min_value=1, max_value=32).map(lambda v: v * 8),
-    stream_bytes=st.binary(min_size=0, max_size=32, average_size=32),
+    stream_bytes=st.binary(min_size=0, max_size=32),
     data_byte_size=st.integers(min_value=0, max_value=32),
 )
 def test_decode_unsigned_int(integer_bit_size, stream_bytes, data_byte_size):
@@ -131,7 +129,7 @@ def test_decode_unsigned_int(integer_bit_size, stream_bytes, data_byte_size):
 @settings(max_examples=1000)
 @given(
     integer_bit_size=st.integers(min_value=1, max_value=32).map(lambda v: v * 8),
-    stream_bytes=st.binary(min_size=0, max_size=32, average_size=32),
+    stream_bytes=st.binary(min_size=0, max_size=32),
     data_byte_size=st.integers(min_value=0, max_value=32),
 )
 @example(8, b'\x00\x80', 2)
@@ -209,7 +207,7 @@ def test_decode_bytes_and_string(string_bytes, pad_size):
 
 @settings(max_examples=1000)
 @given(
-    stream_bytes=st.binary(min_size=1, max_size=32, average_size=32),
+    stream_bytes=st.binary(min_size=1, max_size=32),
     data_byte_size=st.integers(min_value=1, max_value=32),
 )
 def test_decode_boolean(stream_bytes, data_byte_size):
@@ -246,7 +244,7 @@ def test_decode_boolean(stream_bytes, data_byte_size):
 @settings(max_examples=1000)
 @given(
     value_byte_size=st.integers(min_value=1, max_value=32),
-    stream_bytes=st.binary(min_size=0, max_size=32, average_size=32),
+    stream_bytes=st.binary(min_size=0, max_size=32),
     data_byte_size=st.integers(min_value=0, max_value=32),
 )
 def test_decode_bytes_xx(value_byte_size, stream_bytes, data_byte_size):
@@ -283,7 +281,7 @@ def test_decode_bytes_xx(value_byte_size, stream_bytes, data_byte_size):
 
 @settings(max_examples=1000)
 @given(
-    address_bytes=st.binary(min_size=0, max_size=32, average_size=20),
+    address_bytes=st.binary(min_size=0, max_size=32),
     padding_size=st.integers(min_value=10, max_value=14),
     data_byte_size=st.integers(min_value=0, max_value=32),
 )
@@ -322,7 +320,7 @@ def test_decode_address(address_bytes, padding_size, data_byte_size):
 @settings(max_examples=1000)
 @given(
     array_size=st.integers(min_value=0, max_value=32),
-    array_values=st.lists(st.integers(min_value=0, max_value=TT256M1), min_size=0, max_size=64, average_size=32).map(tuple),
+    array_values=st.lists(st.integers(min_value=0, max_value=TT256M1), min_size=0, max_size=64).map(tuple),
 )
 def test_decode_array_of_unsigned_integers(array_size, array_values):
     size_bytes = zpad32(int_to_big_endian(array_size))
@@ -371,9 +369,7 @@ def test_decode_array_of_unsigned_integers(array_size, array_values):
     ),
 )
 def test_multi_decoder(types, data, expected):
-    decoders = tuple((
-        get_single_decoder(*process_type(t)) for t in types
-    ))
+    decoders = [registry.get_decoder(t) for t in types]
     decoder = MultiDecoder.as_decoder(decoders=decoders)
     stream = BytesIO(decode_hex(data))
     actual = decoder(stream)
@@ -385,7 +381,7 @@ def test_multi_decoder(types, data, expected):
     high_bit_size=st.integers(min_value=1, max_value=32).map(lambda v: v * 8),
     low_bit_size=st.integers(min_value=1, max_value=32).map(lambda v: v * 8),
     integer_bit_size=st.integers(min_value=1, max_value=32).map(lambda v: v * 8),
-    stream_bytes=st.binary(min_size=0, max_size=32, average_size=32),
+    stream_bytes=st.binary(min_size=0, max_size=32),
     data_byte_size=st.integers(min_value=0, max_value=32),
 )
 def test_decode_unsigned_real(high_bit_size,
@@ -448,7 +444,7 @@ def test_decode_unsigned_real(high_bit_size,
     high_bit_size=st.integers(min_value=1, max_value=32).map(lambda v: v * 8),
     low_bit_size=st.integers(min_value=1, max_value=32).map(lambda v: v * 8),
     integer_bit_size=st.integers(min_value=1, max_value=32).map(lambda v: v * 8),
-    stream_bytes=st.binary(min_size=0, max_size=32, average_size=32),
+    stream_bytes=st.binary(min_size=0, max_size=32),
     data_byte_size=st.integers(min_value=0, max_value=32),
 )
 @example(

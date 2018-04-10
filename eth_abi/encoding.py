@@ -13,6 +13,11 @@ from eth_utils import (
     to_canonical_address,
 )
 
+from eth_abi.base import (
+    BaseCoder,
+    parse_type_str,
+)
+
 from eth_abi.exceptions import (
     EncodingTypeError,
     ValueOutOfBounds,
@@ -33,62 +38,7 @@ from eth_abi.utils.padding import (
 )
 
 
-def get_multi_encoder(processed_types):
-    """
-    """
-    encoders = tuple(
-        get_single_encoder(base, sub, arrlist) for base, sub, arrlist in processed_types
-    )
-    return MultiEncoder.as_encoder(encoders=encoders)
-
-
-def get_single_encoder(base, sub, arrlist):
-    if arrlist:
-        item_encoder = get_single_encoder(base, sub, arrlist[:-1])
-        if arrlist[-1]:
-            return SizedArrayEncoder.as_encoder(
-                array_size=arrlist[-1][0],
-                item_encoder=item_encoder,
-            )
-        else:
-            return DynamicArrayEncoder.as_encoder(item_encoder=item_encoder)
-    elif base == 'address':
-        return encode_address
-    elif base == 'bool':
-        return encode_bool
-    elif base == 'bytes':
-        if sub:
-            return BytesEncoder.as_encoder(value_bit_size=int(sub) * 8)
-        else:
-            return encode_bytes
-    elif base == 'int':
-        return SignedIntegerEncoder.as_encoder(value_bit_size=int(sub))
-    elif base == 'string':
-        return encode_string
-    elif base == 'uint':
-        return UnsignedIntegerEncoder.as_encoder(value_bit_size=int(sub))
-    elif base == 'ureal':
-        high_bit_size, low_bit_size = [int(v) for v in sub.split('x')]
-        return UnsignedRealEncoder.as_encoder(
-            value_bit_size=high_bit_size + low_bit_size,
-            high_bit_size=high_bit_size,
-            low_bit_size=low_bit_size,
-        )
-    elif base == 'real':
-        high_bit_size, low_bit_size = [int(v) for v in sub.split('x')]
-        return SignedRealEncoder.as_encoder(
-            value_bit_size=high_bit_size + low_bit_size,
-            high_bit_size=high_bit_size,
-            low_bit_size=low_bit_size,
-        )
-    else:
-        raise ValueError(
-            "Unsupported type: {0} - must be one of "
-            "address/bool/bytesXX/bytes/string/uintXXX/intXXX"
-        )
-
-
-class BaseEncoder(object):
+class BaseEncoder(BaseCoder):
     @classmethod
     def as_encoder(cls, name=None, **kwargs):
         for key in kwargs:
@@ -237,6 +187,10 @@ class BooleanEncoder(Fixed32ByteSizeEncoder):
         else:
             raise ValueError("Invariant")
 
+    @parse_type_str('bool')
+    def from_type_str(cls, abi_type, registry):
+        return cls.as_encoder()
+
 
 encode_bool = BooleanEncoder.as_encoder()
 
@@ -283,6 +237,10 @@ class UnsignedIntegerEncoder(NumberEncoder):
     bounds_fn = staticmethod(compute_unsigned_integer_bounds)
     type_check_fn = staticmethod(is_integer)
 
+    @parse_type_str('uint')
+    def from_type_str(cls, abi_type, registry):
+        return cls.as_encoder(value_bit_size=abi_type.sub)
+
 
 encode_uint_256 = UnsignedIntegerEncoder.as_encoder(value_bit_size=256, data_byte_size=32)
 
@@ -305,6 +263,10 @@ class SignedIntegerEncoder(NumberEncoder):
         else:
             padded_encoded_value = fpad(base_encoded_value, cls.data_byte_size)
         return padded_encoded_value
+
+    @parse_type_str('int')
+    def from_type_str(cls, abi_type, registry):
+        return cls.as_encoder(value_bit_size=abi_type.sub)
 
 
 class BaseRealEncoder(NumberEncoder):
@@ -334,6 +296,16 @@ class UnsignedRealEncoder(BaseRealEncoder):
         integer_value = int(scaled_value)
         return int_to_big_endian(integer_value)
 
+    @parse_type_str('ureal')
+    def from_type_str(cls, abi_type, registry):
+        high_bit_size, low_bit_size = abi_type.sub
+
+        return cls.as_encoder(
+            value_bit_size=high_bit_size + low_bit_size,
+            high_bit_size=high_bit_size,
+            low_bit_size=low_bit_size,
+        )
+
 
 class SignedRealEncoder(BaseRealEncoder):
     @classmethod
@@ -358,6 +330,16 @@ class SignedRealEncoder(BaseRealEncoder):
             padded_encoded_value = fpad(base_encoded_value, cls.data_byte_size)
         return padded_encoded_value
 
+    @parse_type_str('real')
+    def from_type_str(cls, abi_type, registry):
+        high_bit_size, low_bit_size = abi_type.sub
+
+        return cls.as_encoder(
+            value_bit_size=high_bit_size + low_bit_size,
+            high_bit_size=high_bit_size,
+            low_bit_size=low_bit_size,
+        )
+
 
 class AddressEncoder(Fixed32ByteSizeEncoder):
     value_bit_size = 20 * 8
@@ -379,6 +361,10 @@ class AddressEncoder(Fixed32ByteSizeEncoder):
         super().validate()
         if cls.value_bit_size != 20 * 8:
             raise ValueError('Addresses must be 160 bits in length')
+
+    @parse_type_str('address')
+    def from_type_str(cls, abi_type, registry):
+        return cls.as_encoder()
 
 
 encode_address = AddressEncoder.as_encoder()
@@ -408,6 +394,10 @@ class BytesEncoder(Fixed32ByteSizeEncoder):
     def encode_fn(cls, value):
         return value
 
+    @parse_type_str('bytes')
+    def from_type_str(cls, abi_type, registry):
+        return cls.as_encoder(value_bit_size=abi_type.sub * 8)
+
 
 class ByteStringEncoder(BaseEncoder):
     @classmethod
@@ -428,6 +418,10 @@ class ByteStringEncoder(BaseEncoder):
 
         return encoded_value
 
+    @parse_type_str('bytes')
+    def from_type_str(cls, abi_type, registry):
+        return cls.as_encoder()
+
 
 encode_bytes = ByteStringEncoder.as_encoder()
 
@@ -443,6 +437,10 @@ class TextStringEncoder(ByteStringEncoder):
             )
         value_as_bytes = codecs.encode(value, 'utf8')
         return super().encode(value_as_bytes)
+
+    @parse_type_str('string')
+    def from_type_str(cls, abi_type, registry):
+        return cls.as_encoder()
 
 
 encode_string = TextStringEncoder.as_encoder()
@@ -471,6 +469,21 @@ class BaseArrayEncoder(BaseEncoder):
             for item in value
         ))
         return encoded_elements
+
+    @parse_type_str(with_arrlist=True)
+    def from_type_str(cls, abi_type, registry):
+        item_encoder = registry.get_encoder(str(abi_type.item_type))
+
+        array_spec = abi_type.arrlist[-1]
+        if len(array_spec) == 1:
+            # If array dimension is fixed
+            return SizedArrayEncoder.as_encoder(
+                array_size=array_spec[0],
+                item_encoder=item_encoder,
+            )
+        else:
+            # If array dimension is dynamic
+            return DynamicArrayEncoder.as_encoder(item_encoder=item_encoder)
 
 
 class SizedArrayEncoder(BaseArrayEncoder):

@@ -18,6 +18,7 @@ setup(
     include_package_data=True,
     install_requires=[
         'eth-utils>=1.0.1,<2.0.0',
+        'parsimonious==0.8.0',
     ],
     extras_require={
         'doc': [

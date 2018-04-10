@@ -1,3 +1,6 @@
+import parsimonious
+
+
 class EncodingError(Exception):
     pass
 
@@ -27,4 +30,17 @@ class InsufficientDataBytes(DecodingError):
 
 
 class NonEmptyPaddingBytes(DecodingError):
+    pass
+
+
+class ParseError(parsimonious.ParseError):
+    def __str__(self):
+        return "Parse error at '{}' (column {}) in type string '{}'".format(
+            self.text[self.pos:self.pos + 5],
+            self.column(),
+            self.text,
+        )
+
+
+class ABITypeError(ValueError):
     pass

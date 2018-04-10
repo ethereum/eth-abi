@@ -1,4 +1,5 @@
 import itertools
+import random
 
 from eth_utils import (
     encode_hex,
@@ -8,11 +9,111 @@ from eth_utils import (
 import hypothesis.strategies as st
 
 
+##########################
+# Type string strategies #
+##########################
+
+join = lambda xs: ''.join(map(str, xs))
+join_with_x = lambda xs: 'x'.join(map(str, xs))
+
+bare_type_strs = st.sampled_from([
+    'uint', 'int', 'ufixed', 'fixed', 'address', 'bool', 'bytes', 'function',
+    'string',
+])
+
+total_bits = st.integers(min_value=1, max_value=32).map(lambda n: n * 8)
+frac_places = st.integers(min_value=1, max_value=80)
+bytes_sizes = st.integers(min_value=1, max_value=32)
+
+fixed_sizes = st.tuples(total_bits, frac_places)
+fixed_size_strs = fixed_sizes.map(join_with_x)
+
+fixed_bytes_type_strs = st.tuples(st.just('bytes'), bytes_sizes).map(join)
+uint_type_strs = st.tuples(st.just('uint'), total_bits).map(join)
+int_type_strs = st.tuples(st.just('int'), total_bits).map(join)
+
+ufixed_type_strs = st.tuples(st.just('ufixed'), fixed_size_strs).map(join)
+fixed_type_strs = st.tuples(st.just('fixed'), fixed_size_strs).map(join)
+
+non_array_type_strs = st.one_of(
+    bare_type_strs,
+    fixed_bytes_type_strs,
+    uint_type_strs,
+    int_type_strs,
+    ufixed_type_strs,
+    fixed_type_strs,
+)
+
+dynam_array_components = st.just(tuple())
+fixed_array_components = st.integers(min_value=1).map(lambda x: (x,))
+array_components = st.one_of(dynam_array_components, fixed_array_components)
+
+array_lists = st.lists(array_components, min_size=1, max_size=6)
+array_list_strs = array_lists.map(lambda x: ''.join(repr(list(i)) for i in x))
+
+array_type_strs = st.tuples(non_array_type_strs, array_list_strs).map(join)
+
+non_tuple_type_strs = st.one_of(non_array_type_strs, array_type_strs)
+
+
+def join_tuple(xs):
+    if not isinstance(xs, list):
+        return xs
+
+    return '({})'.format(','.join(join_tuple(x) for x in xs))
+
+
+tuple_type_strs = st.recursive(
+    st.lists(non_tuple_type_strs, min_size=0, max_size=10),
+    lambda this_strategy: st.lists(
+        st.one_of(non_tuple_type_strs, this_strategy),
+        min_size=0, max_size=10,
+    ),
+).map(join_tuple)
+
+type_strs = st.one_of(non_tuple_type_strs, tuple_type_strs)
+
+
+def guaranteed_permute(xs):
+    len_xs = len(xs)
+    indices = tuple(range(len_xs))
+
+    shuffled_indices = indices
+    while indices == shuffled_indices:
+        shuffled_indices = tuple(random.sample(indices, k=len_xs))
+
+    return tuple(xs[i] for i in shuffled_indices)
+
+
+malformed_non_tuple_type_strs = st.tuples(
+    st.one_of(bare_type_strs, st.text()),
+    st.one_of(total_bits, fixed_size_strs),
+    array_list_strs,
+).map(guaranteed_permute).map(join)
+
+malformed_tuple_type_strs = st.recursive(
+    st.lists(malformed_non_tuple_type_strs, min_size=1, max_size=10),
+    lambda this_strategy: st.lists(
+        st.one_of(malformed_non_tuple_type_strs, this_strategy),
+        min_size=1, max_size=10,
+    ),
+).map(join_tuple)
+
+malformed_type_strs = st.one_of(
+    malformed_non_tuple_type_strs,
+    malformed_tuple_type_strs,
+)
+
+
+#################################
+# Type string w/data strategies #
+#################################
+
 strat_int256 = st.integers(min_value=-1 * 2**255, max_value=2**255 - 1)
 strat_uint256 = st.integers(min_value=0, max_value=2**256 - 1)
 
 MAX_LIST_SIZE = 8
-MIN_LIST_SIZE = 0
+MIN_LIST_SIZE = 1
 
 
 uint_raw_strats = [
@@ -49,7 +150,7 @@ address_strat = st.tuples(
 )
 
 
-bytes_raw_strat = st.binary(min_size=0, max_size=4096, average_size=128)
+bytes_raw_strat = st.binary(min_size=0, max_size=4096)
 bytes_strat = st.tuples(
     st.just('bytes'),
     bytes_raw_strat,
