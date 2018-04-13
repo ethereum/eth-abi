@@ -362,7 +362,7 @@ class UnsignedFixedDecoder(BaseFixedDecoder):
         value = big_endian_to_int(data)
 
         with decimal.localcontext(abi_decimal_context):
-            decimal_value = decimal.Decimal(value) * TEN ** -cls.frac_places
+            decimal_value = decimal.Decimal(value) / TEN ** cls.frac_places
 
         return decimal_value
 
@@ -383,7 +383,7 @@ class SignedFixedDecoder(BaseFixedDecoder):
             signed_value = value
 
         with decimal.localcontext(abi_decimal_context):
-            decimal_value = decimal.Decimal(signed_value) * TEN ** -cls.frac_places
+            decimal_value = decimal.Decimal(signed_value) / TEN ** cls.frac_places
 
         return decimal_value
 
