@@ -13,7 +13,19 @@ class EncodingTypeError(EncodingError):
     pass
 
 
-class ValueOutOfBounds(EncodingError):
+class IllegalValue(EncodingError):
+    """
+    Raised when trying to encode a value which is not considered legal for a
+    data type.
+
+    Examples:
+    fixed128x19_encoder(Decimal('NaN'))  # cannot encode NaN
+    ufixed8x1_encoder(Decimal('25.6'))  # out of bounds
+    """
+    pass
+
+
+class ValueOutOfBounds(IllegalValue):
     """
     Raised when trying to encode a value which is out bounds for the desired
     type.

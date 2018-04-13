@@ -21,6 +21,7 @@ from eth_abi.base import (
 
 from eth_abi.exceptions import (
     EncodingTypeError,
+    IllegalValue,
     ValueOutOfBounds,
 )
 
@@ -203,6 +204,7 @@ encode_bool = BooleanEncoder.as_encoder()
 class NumberEncoder(Fixed32ByteSizeEncoder):
     is_big_endian = True
     bounds_fn = None
+    illegal_value_fn = None
     type_check_fn = None
 
     @classmethod
@@ -223,8 +225,16 @@ class NumberEncoder(Fixed32ByteSizeEncoder):
                 )
             )
 
-        lower_bound, upper_bound = cls.bounds_fn(cls.value_bit_size)
+        illegal_value = (
+            cls.illegal_value_fn is not None
+            and cls.illegal_value_fn(value)
+        )
+        if illegal_value:
+            raise IllegalValue(
+                'Value {} cannot be encoded by {}'.format(repr(value), cls.__name__)
+            )
 
+        lower_bound, upper_bound = cls.bounds_fn(cls.value_bit_size)
         if value < lower_bound or value > upper_bound:
             raise ValueOutOfBounds(
                 "Value {0} cannot be encoded in {1} bits.  Must be bounded "
@@ -277,6 +287,13 @@ class SignedIntegerEncoder(NumberEncoder):
 class BaseFixedEncoder(NumberEncoder):
     frac_places = None
     type_check_fn = staticmethod(is_number)
+
+    @classmethod
+    def illegal_value_fn(cls, value):
+        if isinstance(value, decimal.Decimal):
+            return value.is_nan() or value.is_infinite()
+
+        return False
 
     @classmethod
     def validate(cls):
