@@ -266,7 +266,7 @@ class SignedIntegerEncoder(NumberEncoder):
 
     @classmethod
     def encode_fn(cls, value):
-        return int_to_big_endian(value % 2**cls.value_bit_size)
+        return int_to_big_endian(value % (2 ** cls.value_bit_size))
 
     @classmethod
     def encode(cls, value):
@@ -340,7 +340,7 @@ class SignedFixedEncoder(BaseFixedEncoder):
             scaled_value = value * TEN ** cls.frac_places
             integer_value = int(scaled_value)
 
-        unsigned_integer_value = integer_value % 2 ** cls.value_bit_size
+        unsigned_integer_value = integer_value % (2 ** cls.value_bit_size)
 
         return int_to_big_endian(unsigned_integer_value)
 
@@ -413,7 +413,7 @@ class SignedRealEncoder(BaseRealEncoder):
     def encode_fn(cls, value):
         scaled_value = value * 2 ** cls.low_bit_size
         integer_value = int(scaled_value)
-        unsigned_integer_value = integer_value % 2 ** (cls.high_bit_size + cls.low_bit_size)
+        unsigned_integer_value = integer_value % (2 ** (cls.high_bit_size + cls.low_bit_size))
         return int_to_big_endian(unsigned_integer_value)
 
     @classmethod
