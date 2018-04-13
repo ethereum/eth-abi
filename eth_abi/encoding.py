@@ -302,7 +302,7 @@ class BaseFixedEncoder(NumberEncoder):
         if cls.frac_places is None:
             raise ValueError("must specify `frac_places`")
 
-        if not (cls.frac_places > 0 or cls.frac_places <= 80):
+        if cls.frac_places <= 0 or cls.frac_places > 80:
             raise ValueError("`frac_places` must be in range (0, 80]")
 
 
