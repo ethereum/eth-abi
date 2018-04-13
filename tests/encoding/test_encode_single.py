@@ -1,6 +1,13 @@
+import decimal
+
 import pytest
 
 from eth_abi.abi import encode_single
+
+from eth_abi.utils.padding import (
+    fpad32,
+    zpad32,
+)
 
 
 @pytest.mark.parametrize(
@@ -66,6 +73,39 @@ from eth_abi.abi import encode_single
             False,
             b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
         ),
+        # fixed values
+        ('fixed8x1', decimal.Decimal('127e-1'), zpad32(b'\x7f')),
+        ('fixed8x1', decimal.Decimal('1e-1'), zpad32(b'\x01')),
+        ('fixed8x1', decimal.Decimal('0'), zpad32(b'\x00')),
+        ('fixed8x1', decimal.Decimal('-1e-1'), fpad32(b'\xff')),
+        ('fixed8x1', decimal.Decimal('-128e-1'), fpad32(b'\x80')),
+
+        ('fixed128x19', decimal.Decimal('127e-19'), zpad32(b'\x7f')),
+        ('fixed128x19', decimal.Decimal('1e-19'), zpad32(b'\x01')),
+        ('fixed128x19', decimal.Decimal('0'), zpad32(b'\x00')),
+        ('fixed128x19', decimal.Decimal('-1e-19'), fpad32(b'\xff')),
+        ('fixed128x19', decimal.Decimal('-128e-19'), fpad32(b'\x80')),
+
+        ('fixed256x80', decimal.Decimal('127e-80'), zpad32(b'\x7f')),
+        ('fixed256x80', decimal.Decimal('1e-80'), zpad32(b'\x01')),
+        ('fixed256x80', decimal.Decimal('0'), zpad32(b'\x00')),
+        ('fixed256x80', decimal.Decimal('-1e-80'), fpad32(b'\xff')),
+        ('fixed256x80', decimal.Decimal('-128e-80'), fpad32(b'\x80')),
+
+        ('ufixed8x1', decimal.Decimal('255e-1'), zpad32(b'\xff')),
+        ('ufixed8x1', decimal.Decimal('254e-1'), zpad32(b'\xfe')),
+        ('ufixed8x1', decimal.Decimal('1e-1'), zpad32(b'\x01')),
+        ('ufixed8x1', decimal.Decimal('0'), zpad32(b'\x00')),
+
+        ('ufixed128x19', decimal.Decimal('255e-19'), zpad32(b'\xff')),
+        ('ufixed128x19', decimal.Decimal('254e-19'), zpad32(b'\xfe')),
+        ('ufixed128x19', decimal.Decimal('1e-19'), zpad32(b'\x01')),
+        ('ufixed128x19', decimal.Decimal('0'), zpad32(b'\x00')),
+
+        ('ufixed256x80', decimal.Decimal('255e-80'), zpad32(b'\xff')),
+        ('ufixed256x80', decimal.Decimal('254e-80'), zpad32(b'\xfe')),
+        ('ufixed256x80', decimal.Decimal('1e-80'), zpad32(b'\x01')),
+        ('ufixed256x80', decimal.Decimal('0'), zpad32(b'\x00')),
     )
 )
 def test_encode_single_fixed_length(_type, value, expected):

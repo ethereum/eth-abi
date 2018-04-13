@@ -28,6 +28,8 @@ from eth_abi.decoding import (
     SignedIntegerDecoder,
     UnsignedRealDecoder,
     SignedRealDecoder,
+    UnsignedFixedDecoder,
+    SignedFixedDecoder,
     StringDecoder,
     BytesDecoder,
     MultiDecoder,
@@ -39,6 +41,7 @@ from eth_abi.decoding import (
 from eth_abi.registry import registry
 
 from eth_abi.utils.padding import (
+    fpad32,
     zpad32,
 )
 from eth_abi.utils.numeric import (
@@ -524,3 +527,99 @@ def test_decode_signed_real(high_bit_size,
     actual_value = quantize_value(raw_actual_value, low_bit_size)
 
     assert decoded_value == actual_value
+
+
+@settings(max_examples=1000)
+@given(
+    value_bit_size=st.integers(min_value=1, max_value=32).map(lambda v: v * 8),
+    frac_places=st.integers(min_value=1, max_value=80),
+    stream_bytes=st.binary(min_size=0, max_size=32),
+    data_byte_size=st.integers(min_value=0, max_value=32),
+)
+def test_decode_unsigned_fixed(value_bit_size,
+                              frac_places,
+                              stream_bytes,
+                              data_byte_size):
+    if value_bit_size > data_byte_size * 8:
+        with pytest.raises(ValueError):
+            UnsignedFixedDecoder.as_decoder(
+                value_bit_size=value_bit_size,
+                frac_places=frac_places,
+                data_byte_size=data_byte_size,
+            )
+        return
+
+    decoder = UnsignedFixedDecoder.as_decoder(
+        value_bit_size=value_bit_size,
+        frac_places=frac_places,
+        data_byte_size=data_byte_size,
+    )
+
+    stream = BytesIO(stream_bytes)
+    padding_bytes = stream_bytes[:data_byte_size][:data_byte_size - value_bit_size // 8]
+
+    if len(stream_bytes) < data_byte_size:
+        with pytest.raises(InsufficientDataBytes):
+            decoder(stream)
+        return
+
+    if is_non_empty_non_null_byte_string(padding_bytes):
+        with pytest.raises(NonEmptyPaddingBytes):
+            decoder(stream)
+        return
+
+    # Ensure no exceptions
+    actual_value = decoder(stream)
+
+
+@settings(max_examples=1000)
+@given(
+    value_bit_size=st.integers(min_value=1, max_value=32).map(lambda v: v * 8),
+    frac_places=st.integers(min_value=1, max_value=80),
+    stream_bytes=st.binary(min_size=0, max_size=32),
+    data_byte_size=st.integers(min_value=0, max_value=32),
+)
+def test_decode_signed_fixed(value_bit_size,
+                             frac_places,
+                             stream_bytes,
+                             data_byte_size):
+    if value_bit_size > data_byte_size * 8:
+        with pytest.raises(ValueError):
+            SignedFixedDecoder.as_decoder(
+                value_bit_size=value_bit_size,
+                frac_places=frac_places,
+                data_byte_size=data_byte_size,
+            )
+        return
+
+    decoder = SignedFixedDecoder.as_decoder(
+        value_bit_size=value_bit_size,
+        frac_places=frac_places,
+        data_byte_size=data_byte_size,
+    )
+
+    stream = BytesIO(stream_bytes)
+
+    padding_offset = data_byte_size - value_bit_size // 8
+    data_offset = padding_offset + value_bit_size // 8
+
+    padding_bytes = stream_bytes[:data_byte_size][:padding_offset]
+    data_bytes = stream_bytes[:data_byte_size][padding_offset:data_offset]
+
+    if len(stream_bytes) < data_byte_size:
+        with pytest.raises(InsufficientDataBytes):
+            decoder(stream)
+        return
+
+    if not is_valid_padding_bytes(padding_bytes, data_bytes):
+        with pytest.raises(NonEmptyPaddingBytes):
+            decoder(stream)
+        return
+
+    actual_value = decoder(stream)
+
+    if padding_bytes:
+        if actual_value >= 0:
+            assert bytes(set(padding_bytes)) == b'\x00'
+        else:
+            assert bytes(set(padding_bytes)) == b'\xff'
