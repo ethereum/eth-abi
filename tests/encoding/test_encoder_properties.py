@@ -25,6 +25,7 @@ from eth_utils import (
 
 from eth_abi.exceptions import (
     EncodingTypeError,
+    IllegalValue,
     ValueOutOfBounds,
 )
 from eth_abi.encoding import (
@@ -36,6 +37,8 @@ from eth_abi.encoding import (
     ByteStringEncoder,
     TextStringEncoder,
     encode_uint_256,
+    UnsignedFixedEncoder,
+    SignedFixedEncoder,
     UnsignedRealEncoder,
     SignedRealEncoder,
     MultiEncoder,
@@ -46,6 +49,8 @@ from eth_abi.utils.numeric import (
     int_to_big_endian,
     compute_unsigned_integer_bounds,
     compute_signed_integer_bounds,
+    compute_unsigned_fixed_bounds,
+    compute_signed_fixed_bounds,
     compute_unsigned_real_bounds,
     compute_signed_real_bounds,
     ceil32,
@@ -452,6 +457,106 @@ def test_encode_signed_real(base_integer_value,
     encoded_value = encoder(real_value)
 
     assert encoded_value == expected_value
+
+
+@settings(max_examples=1000)
+@given(
+    value=st.one_of(st.integers(), st.decimals(), st.none()),
+    value_bit_size=st.integers(min_value=1, max_value=32).map(lambda v: v * 8),
+    frac_places=st.integers(min_value=1, max_value=80),
+    data_byte_size=st.integers(min_value=0, max_value=32),
+)
+def test_encode_unsigned_fixed(value,
+                               value_bit_size,
+                               frac_places,
+                               data_byte_size):
+    if value_bit_size > data_byte_size * 8:
+        pattern = r'Value byte size exceeds data size'
+        with pytest.raises(ValueError, match=pattern):
+            UnsignedFixedEncoder.as_encoder(
+                value_bit_size=value_bit_size,
+                frac_places=frac_places,
+                data_byte_size=data_byte_size,
+            )
+        return
+
+    encoder = UnsignedFixedEncoder.as_encoder(
+        value_bit_size=value_bit_size,
+        frac_places=frac_places,
+        data_byte_size=data_byte_size,
+    )
+
+    if not is_number(value):
+        pattern = r'Value of type .*NoneType.* cannot be encoded by UnsignedFixedEncoder'
+        with pytest.raises(EncodingTypeError, match=pattern):
+            encoder(value)
+        return
+
+    if UnsignedFixedEncoder.illegal_value_fn(value):
+        pattern = r'Value .*(NaN|Infinity|-Infinity).* cannot be encoded by UnsignedFixedEncoder'
+        with pytest.raises(IllegalValue, match=pattern):
+            encoder(value)
+        return
+
+    lower, upper = compute_unsigned_fixed_bounds(value_bit_size, frac_places)
+    if value < lower or value > upper:
+        pattern = r'Value .* cannot be encoded in .* bits'
+        with pytest.raises(ValueOutOfBounds, match=pattern):
+            encoder(value)
+        return
+
+    # Ensure no exception
+    encoder(value)
+
+
+@settings(max_examples=1000)
+@given(
+    value=st.one_of(st.integers(), st.decimals(), st.none()),
+    value_bit_size=st.integers(min_value=1, max_value=32).map(lambda v: v * 8),
+    frac_places=st.integers(min_value=1, max_value=80),
+    data_byte_size=st.integers(min_value=0, max_value=32),
+)
+def test_encode_signed_fixed(value,
+                             value_bit_size,
+                             frac_places,
+                             data_byte_size):
+    if value_bit_size > data_byte_size * 8:
+        pattern = r'Value byte size exceeds data size'
+        with pytest.raises(ValueError, match=pattern):
+            SignedFixedEncoder.as_encoder(
+                value_bit_size=value_bit_size,
+                frac_places=frac_places,
+                data_byte_size=data_byte_size,
+            )
+        return
+
+    encoder = SignedFixedEncoder.as_encoder(
+        value_bit_size=value_bit_size,
+        frac_places=frac_places,
+        data_byte_size=data_byte_size,
+    )
+
+    if not is_number(value):
+        pattern = r'Value of type .*NoneType.* cannot be encoded by SignedFixedEncoder'
+        with pytest.raises(EncodingTypeError, match=pattern):
+            encoder(value)
+        return
+
+    if SignedFixedEncoder.illegal_value_fn(value):
+        pattern = r'Value .*(NaN|Infinity|-Infinity).* cannot be encoded by SignedFixedEncoder'
+        with pytest.raises(IllegalValue, match=pattern):
+            encoder(value)
+        return
+
+    lower, upper = compute_signed_fixed_bounds(value_bit_size, frac_places)
+    if value < lower or value > upper:
+        pattern = r'Value .* cannot be encoded in .* bits'
+        with pytest.raises(ValueOutOfBounds, match=pattern):
+            encoder(value)
+        return
+
+    # Ensure no exception
+    encoder(value)
 
 
 # TODO: make this generic

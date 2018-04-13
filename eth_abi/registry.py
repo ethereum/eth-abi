@@ -381,3 +381,13 @@ registry.register(
     encoding.SignedRealEncoder, decoding.SignedRealDecoder,
     label='real',
 )
+registry.register(
+    BaseEquals('ufixed'),
+    encoding.UnsignedFixedEncoder, decoding.UnsignedFixedDecoder,
+    label='ufixed',
+)
+registry.register(
+    BaseEquals('fixed'),
+    encoding.SignedFixedEncoder, decoding.SignedFixedDecoder,
+    label='fixed',
+)

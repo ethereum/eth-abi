@@ -1,4 +1,5 @@
 import codecs
+import decimal
 import itertools
 
 from eth_utils import (
@@ -20,13 +21,18 @@ from eth_abi.base import (
 
 from eth_abi.exceptions import (
     EncodingTypeError,
+    IllegalValue,
     ValueOutOfBounds,
 )
 
 from eth_abi.utils.numeric import (
+    TEN,
+    abi_decimal_context,
     int_to_big_endian,
     compute_signed_integer_bounds,
     compute_unsigned_integer_bounds,
+    compute_signed_fixed_bounds,
+    compute_unsigned_fixed_bounds,
     compute_signed_real_bounds,
     compute_unsigned_real_bounds,
     ceil32,
@@ -198,6 +204,7 @@ encode_bool = BooleanEncoder.as_encoder()
 class NumberEncoder(Fixed32ByteSizeEncoder):
     is_big_endian = True
     bounds_fn = None
+    illegal_value_fn = None
     type_check_fn = None
 
     @classmethod
@@ -218,13 +225,21 @@ class NumberEncoder(Fixed32ByteSizeEncoder):
                 )
             )
 
-        lower_bound, upper_bound = cls.bounds_fn(cls.value_bit_size)
+        illegal_value = (
+            cls.illegal_value_fn is not None
+            and cls.illegal_value_fn(value)
+        )
+        if illegal_value:
+            raise IllegalValue(
+                'Value {} cannot be encoded by {}'.format(repr(value), cls.__name__)
+            )
 
+        lower_bound, upper_bound = cls.bounds_fn(cls.value_bit_size)
         if value < lower_bound or value > upper_bound:
             raise ValueOutOfBounds(
-                "Value '{0}' cannot be encoded in {1} bits.  Must be bounded "
+                "Value {0} cannot be encoded in {1} bits.  Must be bounded "
                 "between [{2}, {3}]".format(
-                    value,
+                    repr(value),
                     cls.value_bit_size,
                     lower_bound,
                     upper_bound,
@@ -251,7 +266,7 @@ class SignedIntegerEncoder(NumberEncoder):
 
     @classmethod
     def encode_fn(cls, value):
-        return int_to_big_endian(value % 2**cls.value_bit_size)
+        return int_to_big_endian(value % (2 ** cls.value_bit_size))
 
     @classmethod
     def encode(cls, value):
@@ -267,6 +282,88 @@ class SignedIntegerEncoder(NumberEncoder):
     @parse_type_str('int')
     def from_type_str(cls, abi_type, registry):
         return cls.as_encoder(value_bit_size=abi_type.sub)
+
+
+class BaseFixedEncoder(NumberEncoder):
+    frac_places = None
+    type_check_fn = staticmethod(is_number)
+
+    @classmethod
+    def illegal_value_fn(cls, value):
+        if isinstance(value, decimal.Decimal):
+            return value.is_nan() or value.is_infinite()
+
+        return False
+
+    @classmethod
+    def validate(cls):
+        super().validate()
+
+        if cls.frac_places is None:
+            raise ValueError("must specify `frac_places`")
+
+        if cls.frac_places <= 0 or cls.frac_places > 80:
+            raise ValueError("`frac_places` must be in range (0, 80]")
+
+
+class UnsignedFixedEncoder(BaseFixedEncoder):
+    @classmethod
+    def bounds_fn(cls, value_bit_size):
+        return compute_unsigned_fixed_bounds(cls.value_bit_size, cls.frac_places)
+
+    @classmethod
+    def encode_fn(cls, value):
+        with decimal.localcontext(abi_decimal_context):
+            scaled_value = value * TEN ** cls.frac_places
+            integer_value = int(scaled_value)
+
+        return int_to_big_endian(integer_value)
+
+    @parse_type_str('ufixed')
+    def from_type_str(cls, abi_type, registry):
+        value_bit_size, frac_places = abi_type.sub
+
+        return cls.as_encoder(
+            value_bit_size=value_bit_size,
+            frac_places=frac_places,
+        )
+
+
+class SignedFixedEncoder(BaseFixedEncoder):
+    @classmethod
+    def bounds_fn(cls, value_bit_size):
+        return compute_signed_fixed_bounds(cls.value_bit_size, cls.frac_places)
+
+    @classmethod
+    def encode_fn(cls, value):
+        with decimal.localcontext(abi_decimal_context):
+            scaled_value = value * TEN ** cls.frac_places
+            integer_value = int(scaled_value)
+
+        unsigned_integer_value = integer_value % (2 ** cls.value_bit_size)
+
+        return int_to_big_endian(unsigned_integer_value)
+
+    @classmethod
+    def encode(cls, value):
+        cls.validate_value(value)
+        base_encoded_value = cls.encode_fn(value)
+
+        if value >= 0:
+            padded_encoded_value = zpad(base_encoded_value, cls.data_byte_size)
+        else:
+            padded_encoded_value = fpad(base_encoded_value, cls.data_byte_size)
+
+        return padded_encoded_value
+
+    @parse_type_str('fixed')
+    def from_type_str(cls, abi_type, registry):
+        value_bit_size, frac_places = abi_type.sub
+
+        return cls.as_encoder(
+            value_bit_size=value_bit_size,
+            frac_places=frac_places,
+        )
 
 
 class BaseRealEncoder(NumberEncoder):
@@ -316,7 +413,7 @@ class SignedRealEncoder(BaseRealEncoder):
     def encode_fn(cls, value):
         scaled_value = value * 2 ** cls.low_bit_size
         integer_value = int(scaled_value)
-        unsigned_integer_value = integer_value % 2 ** (cls.high_bit_size + cls.low_bit_size)
+        unsigned_integer_value = integer_value % (2 ** (cls.high_bit_size + cls.low_bit_size))
         return int_to_big_endian(unsigned_integer_value)
 
     @classmethod

@@ -9,18 +9,17 @@ from eth_abi import (
 )
 
 from .abi_type_strategies import (
-    uint_strats,
+    uint_strs,
+    uint_values,
 )
 
 
-@given(st.one_of(uint_strats))
-def test_always_positive_multi(type_and_value):
+@given(uint_strs, uint_values)
+def test_always_positive_multi(_type, value):
     """
     Tests round trip encoding and decoding for basic types and lists of basic
     types.
     """
-    _type, value = type_and_value
-
     assert value >= 0
 
     encoded_value = encode_abi([_type], [value])
@@ -29,14 +28,12 @@ def test_always_positive_multi(type_and_value):
     assert decoded_value[0] >= 0
 
 
-@given(st.one_of(uint_strats))
-def test_always_positive_single(type_and_value):
+@given(uint_strs, uint_values)
+def test_always_positive_single(_type, value):
     """
     Tests round trip encoding and decoding for basic types and lists of basic
     types.
     """
-    _type, value = type_and_value
-
     assert value >= 0
 
     encoded_value = encode_single(_type, value)
