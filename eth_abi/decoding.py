@@ -17,8 +17,8 @@ from eth_abi.exceptions import (
 from eth_abi.utils.numeric import (
     abi_decimal_context,
     big_endian_to_int,
-    quantize_value,
     ceil32,
+    quantize_value,
 )
 
 
