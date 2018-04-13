@@ -1,5 +1,4 @@
 import decimal
-import itertools
 import random
 
 from eth_abi.utils.numeric import abi_decimal_context
