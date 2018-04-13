@@ -40,6 +40,9 @@ else:
 
 
 abi_decimal_context = decimal.Context(prec=999)
+with decimal.localcontext(abi_decimal_context):
+    ZERO = decimal.Decimal(0)
+    TEN = decimal.Decimal(10)
 
 
 def ceil32(x):
@@ -65,6 +68,26 @@ def compute_signed_integer_bounds(num_bits):
         -1 * 2 ** (num_bits - 1),
         2 ** (num_bits - 1) - 1,
     )
+
+
+def compute_unsigned_fixed_bounds(num_bits, frac_places):
+    int_upper = compute_unsigned_integer_bounds(num_bits)[1]
+
+    with decimal.localcontext(abi_decimal_context):
+        upper = decimal.Decimal(int_upper) * TEN ** -frac_places
+
+    return ZERO, upper
+
+
+def compute_signed_fixed_bounds(num_bits, frac_places):
+    int_lower, int_upper = compute_signed_integer_bounds(num_bits)
+
+    with decimal.localcontext(abi_decimal_context):
+        exp = TEN ** -frac_places
+        lower = decimal.Decimal(int_lower) * exp
+        upper = decimal.Decimal(int_upper) * exp
+
+    return lower, upper
 
 
 def compute_unsigned_real_bounds(num_high_bits, num_low_bits):

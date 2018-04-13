@@ -1,4 +1,5 @@
 import codecs
+import decimal
 import itertools
 
 from eth_utils import (
@@ -24,9 +25,13 @@ from eth_abi.exceptions import (
 )
 
 from eth_abi.utils.numeric import (
+    TEN,
+    abi_decimal_context,
     int_to_big_endian,
     compute_signed_integer_bounds,
     compute_unsigned_integer_bounds,
+    compute_signed_fixed_bounds,
+    compute_unsigned_fixed_bounds,
     compute_signed_real_bounds,
     compute_unsigned_real_bounds,
     ceil32,
@@ -267,6 +272,81 @@ class SignedIntegerEncoder(NumberEncoder):
     @parse_type_str('int')
     def from_type_str(cls, abi_type, registry):
         return cls.as_encoder(value_bit_size=abi_type.sub)
+
+
+class BaseFixedEncoder(NumberEncoder):
+    frac_places = None
+    type_check_fn = staticmethod(is_number)
+
+    @classmethod
+    def validate(cls):
+        super().validate()
+
+        if cls.frac_places is None:
+            raise ValueError("must specify `frac_places`")
+
+        if not (cls.frac_places > 0 or cls.frac_places <= 80):
+            raise ValueError("`frac_places` must be in range (0, 80]")
+
+
+class UnsignedFixedEncoder(BaseFixedEncoder):
+    @classmethod
+    def bounds_fn(cls, value_bit_size):
+        return compute_unsigned_fixed_bounds(cls.value_bit_size, cls.frac_places)
+
+    @classmethod
+    def encode_fn(cls, value):
+        with decimal.localcontext(abi_decimal_context):
+            scaled_value = value * TEN ** cls.frac_places
+            integer_value = int(scaled_value)
+
+        return int_to_big_endian(integer_value)
+
+    @parse_type_str('ufixed')
+    def from_type_str(cls, abi_type, registry):
+        value_bit_size, frac_places = abi_type.sub
+
+        return cls.as_encoder(
+            value_bit_size=value_bit_size,
+            frac_places=frac_places,
+        )
+
+
+class SignedFixedEncoder(BaseFixedEncoder):
+    @classmethod
+    def bounds_fn(cls, value_bit_size):
+        return compute_signed_fixed_bounds(cls.value_bit_size, cls.frac_places)
+
+    @classmethod
+    def encode_fn(cls, value):
+        with decimal.localcontext(abi_decimal_context):
+            scaled_value = value * TEN ** cls.frac_places
+            integer_value = int(scaled_value)
+
+        unsigned_integer_value = integer_value % 2 ** cls.value_bit_size
+
+        return int_to_big_endian(unsigned_integer_value)
+
+    @classmethod
+    def encode(cls, value):
+        cls.validate_value(value)
+        base_encoded_value = cls.encode_fn(value)
+
+        if value >= 0:
+            padded_encoded_value = zpad(base_encoded_value, cls.data_byte_size)
+        else:
+            padded_encoded_value = fpad(base_encoded_value, cls.data_byte_size)
+
+        return padded_encoded_value
+
+    @parse_type_str('fixed')
+    def from_type_str(cls, abi_type, registry):
+        value_bit_size, frac_places = abi_type.sub
+
+        return cls.as_encoder(
+            value_bit_size=value_bit_size,
+            frac_places=frac_places,
+        )
 
 
 class BaseRealEncoder(NumberEncoder):

@@ -15,6 +15,7 @@ from eth_abi.exceptions import (
     NonEmptyPaddingBytes,
 )
 from eth_abi.utils.numeric import (
+    TEN,
     abi_decimal_context,
     big_endian_to_int,
     ceil32,
@@ -338,6 +339,74 @@ class BytesDecoder(Fixed32ByteSizeDecoder):
     @parse_type_str('bytes')
     def from_type_str(cls, abi_type, registry):
         return cls.as_decoder(value_bit_size=abi_type.sub * 8)
+
+
+class BaseFixedDecoder(Fixed32ByteSizeDecoder):
+    frac_places = None
+    is_big_endian = True
+
+    @classmethod
+    def validate(cls):
+        super().validate()
+
+        if cls.frac_places is None:
+            raise ValueError("must specify `frac_places`")
+
+        if not (cls.frac_places > 0 or cls.frac_places <= 80):
+            raise ValueError("`frac_places` must be in range (0, 80]")
+
+
+class UnsignedFixedDecoder(BaseFixedDecoder):
+    @classmethod
+    def decoder_fn(cls, data):
+        value = big_endian_to_int(data)
+
+        with decimal.localcontext(abi_decimal_context):
+            decimal_value = decimal.Decimal(value) * TEN ** -cls.frac_places
+
+        return decimal_value
+
+    @parse_type_str('ufixed')
+    def from_type_str(cls, abi_type, registry):
+        value_bit_size, frac_places = abi_type.sub
+
+        return cls.as_decoder(value_bit_size=value_bit_size, frac_places=frac_places)
+
+
+class SignedFixedDecoder(BaseFixedDecoder):
+    @classmethod
+    def decoder_fn(cls, data):
+        value = big_endian_to_int(data)
+        if value >= 2 ** (cls.value_bit_size - 1):
+            signed_value = value - 2 ** cls.value_bit_size
+        else:
+            signed_value = value
+
+        with decimal.localcontext(abi_decimal_context):
+            decimal_value = decimal.Decimal(signed_value) * TEN ** -cls.frac_places
+
+        return decimal_value
+
+    @classmethod
+    def validate_padding_bytes(cls, value, padding_bytes):
+        value_byte_size = cls._get_value_byte_size()
+        padding_size = cls.data_byte_size - value_byte_size
+
+        if value >= 0:
+            expected_padding_bytes = b'\x00' * padding_size
+        else:
+            expected_padding_bytes = b'\xff' * padding_size
+
+        if padding_bytes != expected_padding_bytes:
+            raise NonEmptyPaddingBytes(
+                "Padding bytes were not empty: {0}".format(repr(padding_bytes))
+            )
+
+    @parse_type_str('fixed')
+    def from_type_str(cls, abi_type, registry):
+        value_bit_size, frac_places = abi_type.sub
+
+        return cls.as_decoder(value_bit_size=value_bit_size, frac_places=frac_places)
 
 
 class BaseRealDecoder(Fixed32ByteSizeDecoder):
