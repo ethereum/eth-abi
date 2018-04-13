@@ -9,31 +9,37 @@ from eth_utils import (
 import hypothesis.strategies as st
 
 
+total_bits = st.integers(min_value=1, max_value=32).map(lambda n: n * 8)
+frac_places = st.integers(min_value=1, max_value=80)
+bytes_sizes = st.integers(min_value=1, max_value=32)
+
+fixed_sizes = st.tuples(total_bits, frac_places)
+
+
 ##########################
 # Type string strategies #
 ##########################
 
-join = lambda xs: ''.join(map(str, xs))
-join_with_x = lambda xs: 'x'.join(map(str, xs))
+def join(xs):
+    return ''.join(map(str, xs))
+
+
+def join_with_x(xs):
+    return 'x'.join(map(str, xs))
+
 
 bare_type_strs = st.sampled_from([
     'uint', 'int', 'ufixed', 'fixed', 'address', 'bool', 'bytes', 'function',
     'string',
 ])
 
-total_bits = st.integers(min_value=1, max_value=32).map(lambda n: n * 8)
-frac_places = st.integers(min_value=1, max_value=80)
-bytes_sizes = st.integers(min_value=1, max_value=32)
+fixed_bytes_type_strs = bytes_sizes.map('bytes{}'.format)
+uint_type_strs = total_bits.map('uint{}'.format)
+int_type_strs = total_bits.map('int{}'.format)
 
-fixed_sizes = st.tuples(total_bits, frac_places)
 fixed_size_strs = fixed_sizes.map(join_with_x)
-
-fixed_bytes_type_strs = st.tuples(st.just('bytes'), bytes_sizes).map(join)
-uint_type_strs = st.tuples(st.just('uint'), total_bits).map(join)
-int_type_strs = st.tuples(st.just('int'), total_bits).map(join)
-
-ufixed_type_strs = st.tuples(st.just('ufixed'), fixed_size_strs).map(join)
-fixed_type_strs = st.tuples(st.just('fixed'), fixed_size_strs).map(join)
+ufixed_type_strs = fixed_size_strs.map('ufixed{}'.format)
+fixed_type_strs = fixed_size_strs.map('fixed{}'.format)
 
 non_array_type_strs = st.one_of(
     bare_type_strs,
