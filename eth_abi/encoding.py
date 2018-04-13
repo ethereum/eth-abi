@@ -227,9 +227,9 @@ class NumberEncoder(Fixed32ByteSizeEncoder):
 
         if value < lower_bound or value > upper_bound:
             raise ValueOutOfBounds(
-                "Value '{0}' cannot be encoded in {1} bits.  Must be bounded "
+                "Value {0} cannot be encoded in {1} bits.  Must be bounded "
                 "between [{2}, {3}]".format(
-                    value,
+                    repr(value),
                     cls.value_bit_size,
                     lower_bound,
                     upper_bound,
