@@ -1,5 +1,8 @@
+import decimal
 import itertools
 import random
+
+from eth_abi.utils.numeric import abi_decimal_context
 
 from eth_utils import (
     encode_hex,
@@ -132,6 +135,34 @@ int_values = int_total_bits.flatmap(lambda n: st.integers(
     max_value=2 ** (n - 1) - 1,
 ))
 
+
+def scale_places(places):
+    """
+    Scaling must happen with adequate precision.  Otherwise, we get bounds
+    checking errors.
+    """
+    def f(x):
+        with decimal.localcontext(abi_decimal_context):
+            return x / 10 ** places
+    return f
+
+
+ufixed_size_tuples = st.shared(fixed_sizes, key='ufixed_size_tuples')
+ufixed_strs = ufixed_size_tuples.map(join_with_x).map('ufixed{}'.format)
+ufixed_values = ufixed_size_tuples.flatmap(lambda sz: st.decimals(
+    min_value=0,
+    max_value=2 ** sz[0] - 1,
+    places=0,
+).map(scale_places(sz[1])))
+
+fixed_size_tuples = st.shared(fixed_sizes, key='fixed_size_tuples')
+fixed_strs = fixed_size_tuples.map(join_with_x).map('fixed{}'.format)
+fixed_values = fixed_size_tuples.flatmap(lambda sz: st.decimals(
+    min_value=-2 ** (sz[0] - 1),
+    max_value=2 ** (sz[0] - 1) - 1,
+    places=0,
+).map(scale_places(sz[1])))
+
 fixed_bytes_sizes = st.shared(bytes_sizes, key='fixed_bytes_sizes')
 fixed_bytes_strs = fixed_bytes_sizes.map('bytes{}'.format)
 fixed_bytes_values = fixed_bytes_sizes.flatmap(lambda n: st.binary(
@@ -150,6 +181,8 @@ bytes_strs_and_values = st.tuples(
 non_array = (
     (uint_strs, uint_values),
     (int_strs, int_values),
+    (ufixed_strs, ufixed_values),
+    (fixed_strs, fixed_values),
     (fixed_bytes_strs, fixed_bytes_values),
     (address_strs, address_values),
 )
