@@ -40,9 +40,9 @@ else:
 
 
 abi_decimal_context = decimal.Context(prec=999)
-with decimal.localcontext(abi_decimal_context):
-    ZERO = decimal.Decimal(0)
-    TEN = decimal.Decimal(10)
+
+ZERO = decimal.Decimal(0)
+TEN = decimal.Decimal(10)
 
 
 def ceil32(x):
