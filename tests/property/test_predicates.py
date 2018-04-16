@@ -2,7 +2,6 @@ import re
 
 from hypothesis import (
     event,
-    example,
     given,
     settings,
     strategies as st,
