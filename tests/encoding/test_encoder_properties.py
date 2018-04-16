@@ -1,5 +1,6 @@
 import codecs
 import decimal
+import re
 
 import pytest
 
@@ -45,6 +46,7 @@ from eth_abi.encoding import (
 )
 
 from eth_abi.utils.numeric import (
+    TEN,
     abi_decimal_context,
     int_to_big_endian,
     compute_unsigned_integer_bounds,
@@ -505,6 +507,21 @@ def test_encode_unsigned_fixed(value,
             encoder(value)
         return
 
+    with decimal.localcontext(abi_decimal_context):
+        residue = value % (TEN ** -frac_places)
+    if residue > 0:
+        pattern = re.escape(
+            'UnsignedFixedEncoder cannot encode value {}: '
+            'residue {} outside allowed fractional precision of {}'.format(
+                repr(value),
+                repr(residue),
+                frac_places,
+            )
+        )
+        with pytest.raises(ValueError, match=pattern):
+            encoder(value)
+        return
+
     # Ensure no exception
     encoder(value)
 
@@ -552,6 +569,21 @@ def test_encode_signed_fixed(value,
     if value < lower or value > upper:
         pattern = r'Value .* cannot be encoded in .* bits'
         with pytest.raises(ValueOutOfBounds, match=pattern):
+            encoder(value)
+        return
+
+    with decimal.localcontext(abi_decimal_context):
+        residue = value % (TEN ** -frac_places)
+    if residue > 0:
+        pattern = re.escape(
+            'SignedFixedEncoder cannot encode value {}: '
+            'residue {} outside allowed fractional precision of {}'.format(
+                repr(value),
+                repr(residue),
+                frac_places,
+            )
+        )
+        with pytest.raises(ValueError, match=pattern):
             encoder(value)
         return
 

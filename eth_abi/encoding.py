@@ -296,6 +296,24 @@ class BaseFixedEncoder(NumberEncoder):
         return False
 
     @classmethod
+    def validate_value(cls, value):
+        super().validate_value(value)
+
+        with decimal.localcontext(abi_decimal_context):
+            residue = value % (TEN ** -cls.frac_places)
+
+        if residue > 0:
+            raise ValueError(
+                '{} cannot encode value {}: '
+                'residue {} outside allowed fractional precision of {}'.format(
+                    cls.__name__,
+                    repr(value),
+                    repr(residue),
+                    cls.frac_places,
+                )
+            )
+
+    @classmethod
     def validate(cls):
         super().validate()
 
