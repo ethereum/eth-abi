@@ -1,6 +1,6 @@
 import functools
 
-from .utils.grammar import (
+from .grammar import (
     BasicType,
     normalize,
     parse,
