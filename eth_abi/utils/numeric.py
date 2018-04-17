@@ -2,21 +2,13 @@ import math
 import decimal
 
 from eth_utils import (
+    int_to_big_endian,
     is_number,
 )
 
 from eth_abi.constants import (
     TT256,
 )
-
-
-def int_to_big_endian(value):
-    byte_length = math.ceil(value.bit_length() / 8)
-    return value.to_bytes(byte_length, byteorder='big')
-
-
-def big_endian_to_int(value):
-    return int.from_bytes(value, byteorder='big')
 
 
 abi_decimal_context = decimal.Context(prec=999)

@@ -3,6 +3,7 @@ import decimal
 import itertools
 
 from eth_utils import (
+    int_to_big_endian,
     is_boolean,
     is_integer,
     is_number,
@@ -28,7 +29,6 @@ from eth_abi.exceptions import (
 from eth_abi.utils.numeric import (
     TEN,
     abi_decimal_context,
-    int_to_big_endian,
     compute_signed_integer_bounds,
     compute_unsigned_integer_bounds,
     compute_signed_fixed_bounds,

@@ -12,7 +12,9 @@ from hypothesis import (
 )
 
 from eth_utils import (
+    big_endian_to_int,
     decode_hex,
+    int_to_big_endian,
     to_normalized_address,
 )
 
@@ -46,8 +48,6 @@ from eth_abi.utils.padding import (
 )
 from eth_abi.utils.numeric import (
     abi_decimal_context,
-    big_endian_to_int,
-    int_to_big_endian,
     compute_signed_integer_bounds,
     quantize_value,
     ceil32,
