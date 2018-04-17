@@ -57,11 +57,15 @@ class BaseEncoder(BaseCoder):
                         cls_name=cls.__name__,
                     )
                 )
+
         if name is None:
             name = cls.__name__
+
         sub_cls = type(name, (cls,), kwargs)
         sub_cls.validate()
+
         instance = sub_cls()
+
         return instance
 
     @classmethod
@@ -131,6 +135,7 @@ class FixedSizeEncoder(BaseEncoder):
     @classmethod
     def validate(cls):
         super().validate()
+
         if cls.value_bit_size is None:
             raise ValueError("`value_bit_size` may not be none")
         if cls.data_byte_size is None:
