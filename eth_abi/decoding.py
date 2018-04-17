@@ -1,6 +1,7 @@
 import decimal
 
 from eth_utils import (
+    big_endian_to_int,
     to_tuple,
     to_normalized_address,
 )
@@ -17,7 +18,6 @@ from eth_abi.exceptions import (
 from eth_abi.utils.numeric import (
     TEN,
     abi_decimal_context,
-    big_endian_to_int,
     ceil32,
     quantize_value,
 )

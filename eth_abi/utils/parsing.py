@@ -1,7 +1,7 @@
 """
 This module provided for backwards compatibility.
 """
-from .grammar import (
+from eth_abi.grammar import (
     TupleType,
     normalize,
     parse,

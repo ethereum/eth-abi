@@ -11,7 +11,7 @@ from eth_abi.exceptions import (
     ParseError,
 )
 
-from eth_abi.utils.grammar import (
+from eth_abi.grammar import (
     BasicType,
     TYPE_ALIASES,
     TupleType,

@@ -1,5 +1,4 @@
 from hypothesis import given
-import hypothesis.strategies as st
 
 from eth_abi import (
     encode_abi,

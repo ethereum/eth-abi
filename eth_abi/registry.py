@@ -4,11 +4,10 @@ from . import (
     decoding,
     encoding,
     exceptions,
+    grammar,
 )
 
 from .base import BaseCoder
-
-from .utils import grammar
 
 
 class PredicateMapping:
