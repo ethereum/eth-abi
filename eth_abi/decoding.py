@@ -36,11 +36,15 @@ class BaseDecoder(BaseCoder):
                         cls_name=cls.__name__,
                     )
                 )
+
         if name is None:
             name = cls.__name__
+
         sub_cls = type(name, (cls,), kwargs)
         sub_cls.validate()
+
         instance = sub_cls()
+
         return instance
 
     @classmethod
@@ -95,6 +99,7 @@ class SingleDecoder(BaseDecoder):
     @classmethod
     def validate(cls):
         super().validate()
+
         if cls.decoder_fn is None:
             raise ValueError("No `decoder_fn` set")
 
@@ -126,6 +131,7 @@ class BaseArrayDecoder(BaseDecoder):
     @classmethod
     def validate(cls):
         super().validate()
+
         if cls.item_decoder is None:
             raise ValueError("No `item_decoder` set")
 
