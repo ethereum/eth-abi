@@ -10,6 +10,17 @@ common: &common
         keys:
           - cache-{{ .Environment.CIRCLE_JOB }}-{{ checksum "setup.py" }}-{{ checksum "tox.ini" }}
     - run:
+        name: merge pull request base
+        command: |
+          if [[ -n "${CIRCLE_PR_NUMBER}" ]]; then
+            PR_INFO_URL=https://api.github.com/repos/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/pulls/$CIRCLE_PR_NUMBER
+
+            PR_BASE_SHA=$(curl "$PR_INFO_URL" | jq -r '.base.sha')
+            git fetch origin "+${PR_BASE_SHA}:circleci/pr-base"
+
+            git merge --no-edit circleci/pr-base
+          fi
+    - run:
         name: install dependencies
         command: pip install --user tox
     - run:
