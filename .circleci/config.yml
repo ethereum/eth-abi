@@ -15,6 +15,9 @@ common: &common
     - run:
         name: run tox
         command: ~/.local/bin/tox
+    - run:
+        name: test no conflict
+        command: printf 'No conflict!\n'
     - save_cache:
         paths:
           - .tox
