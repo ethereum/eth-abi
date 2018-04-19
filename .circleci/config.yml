@@ -18,7 +18,7 @@ common: &common
             # We need these config values or git complains when creating the
             # merge commit
             git config --global user.name "Circle CI"
-            git config --global user.email "circleci@ethereum.org"
+            git config --global user.email "circleci@example.com"
 
             git merge --no-edit circleci/pr-base
           fi
