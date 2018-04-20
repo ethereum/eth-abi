@@ -1,6 +1,6 @@
 # Ethereum Contract
 
-[![Build Status](https://circleci.com/gh/ethereum/eth-abi.svg?style=svg)](https://circleci.com/gh/ethereum/eth-abi)
+[![Build Status](https://circleci.com/gh/ethereum/eth-abi.svg?style=shield)](https://circleci.com/gh/ethereum/eth-abi)
 [![Documentation Status](https://readthedocs.org/projects/eth-abi/badge/?version=latest)](https://readthedocs.org/projects/eth-abi/?badge=latest)
 [![PyPi version](https://img.shields.io/pypi/v/eth-abi.svg)](https://pypi.python.org/pypi/eth-abi)
 
