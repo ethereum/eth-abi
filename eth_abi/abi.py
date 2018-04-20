@@ -70,7 +70,7 @@ def decode_abi(types, data):
         for type_str in types
     ]
 
-    decoder = MultiDecoder.as_decoder(decoders=decoders)
+    decoder = MultiDecoder(decoders=decoders)
     stream = BytesIO(data)
 
     return decoder(stream)
