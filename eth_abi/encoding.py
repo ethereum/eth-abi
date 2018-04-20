@@ -1,3 +1,4 @@
+import abc
 import codecs
 import decimal
 import itertools
@@ -44,12 +45,13 @@ from eth_abi.utils.padding import (
 )
 
 
-class BaseEncoder(BaseCoder):
+class BaseEncoder(BaseCoder, metaclass=abc.ABCMeta):
+    @abc.abstractmethod
     def encode(self, value):  # pragma: no cover
         """
         Encodes the given Python value as a sequence of bytes.
         """
-        raise NotImplementedError('Must implement `encode`')
+        pass
 
     def __call__(self, value):
         return self.encode(value)

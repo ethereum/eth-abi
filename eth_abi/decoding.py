@@ -1,3 +1,4 @@
+import abc
 import decimal
 
 from eth_utils import (
@@ -23,12 +24,13 @@ from eth_abi.utils.numeric import (
 )
 
 
-class BaseDecoder(BaseCoder):
+class BaseDecoder(BaseCoder, metaclass=abc.ABCMeta):
+    @abc.abstractmethod
     def decode(self, stream):  # pragma: no cover
         """
         Decodes the given stream of bytes into a Python value.
         """
-        raise NotImplementedError('Must implement `decode`')
+        pass
 
     def __call__(self, stream):
         return self.decode(stream)
