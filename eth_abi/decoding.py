@@ -24,6 +24,9 @@ from eth_abi.utils.numeric import (
 
 
 class BaseDecoder(BaseCoder):
+    def decode(self, stream):
+        raise NotImplementedError('Must implement `decode`')
+
     def __call__(self, stream):
         return self.decode(stream)
 
