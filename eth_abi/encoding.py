@@ -45,10 +45,6 @@ from eth_abi.utils.padding import (
 
 
 class BaseEncoder(BaseCoder):
-    @classmethod
-    def as_encoder(cls, **kwargs):
-        return cls(**kwargs)
-
     def __call__(self, value):
         return self.encode(value)
 
@@ -171,10 +167,10 @@ class BooleanEncoder(Fixed32ByteSizeEncoder):
 
     @parse_type_str('bool')
     def from_type_str(cls, abi_type, registry):
-        return cls.as_encoder()
+        return cls()
 
 
-encode_bool = BooleanEncoder.as_encoder()
+encode_bool = BooleanEncoder()
 
 
 class NumberEncoder(Fixed32ByteSizeEncoder):
@@ -229,10 +225,10 @@ class UnsignedIntegerEncoder(NumberEncoder):
 
     @parse_type_str('uint')
     def from_type_str(cls, abi_type, registry):
-        return cls.as_encoder(value_bit_size=abi_type.sub)
+        return cls(value_bit_size=abi_type.sub)
 
 
-encode_uint_256 = UnsignedIntegerEncoder.as_encoder(value_bit_size=256, data_byte_size=32)
+encode_uint_256 = UnsignedIntegerEncoder(value_bit_size=256, data_byte_size=32)
 
 
 class SignedIntegerEncoder(NumberEncoder):
@@ -254,7 +250,7 @@ class SignedIntegerEncoder(NumberEncoder):
 
     @parse_type_str('int')
     def from_type_str(cls, abi_type, registry):
-        return cls.as_encoder(value_bit_size=abi_type.sub)
+        return cls(value_bit_size=abi_type.sub)
 
 
 class BaseFixedEncoder(NumberEncoder):
@@ -310,7 +306,7 @@ class UnsignedFixedEncoder(BaseFixedEncoder):
     def from_type_str(cls, abi_type, registry):
         value_bit_size, frac_places = abi_type.sub
 
-        return cls.as_encoder(
+        return cls(
             value_bit_size=value_bit_size,
             frac_places=frac_places,
         )
@@ -344,7 +340,7 @@ class SignedFixedEncoder(BaseFixedEncoder):
     def from_type_str(cls, abi_type, registry):
         value_bit_size, frac_places = abi_type.sub
 
-        return cls.as_encoder(
+        return cls(
             value_bit_size=value_bit_size,
             frac_places=frac_places,
         )
@@ -378,7 +374,7 @@ class UnsignedRealEncoder(BaseRealEncoder):
     def from_type_str(cls, abi_type, registry):
         high_bit_size, low_bit_size = abi_type.sub
 
-        return cls.as_encoder(
+        return cls(
             value_bit_size=high_bit_size + low_bit_size,
             high_bit_size=high_bit_size,
             low_bit_size=low_bit_size,
@@ -409,7 +405,7 @@ class SignedRealEncoder(BaseRealEncoder):
     def from_type_str(cls, abi_type, registry):
         high_bit_size, low_bit_size = abi_type.sub
 
-        return cls.as_encoder(
+        return cls(
             value_bit_size=high_bit_size + low_bit_size,
             high_bit_size=high_bit_size,
             low_bit_size=low_bit_size,
@@ -438,10 +434,10 @@ class AddressEncoder(Fixed32ByteSizeEncoder):
 
     @parse_type_str('address')
     def from_type_str(cls, abi_type, registry):
-        return cls.as_encoder()
+        return cls()
 
 
-encode_address = AddressEncoder.as_encoder()
+encode_address = AddressEncoder()
 
 
 class BytesEncoder(Fixed32ByteSizeEncoder):
@@ -469,7 +465,7 @@ class BytesEncoder(Fixed32ByteSizeEncoder):
 
     @parse_type_str('bytes')
     def from_type_str(cls, abi_type, registry):
-        return cls.as_encoder(value_bit_size=abi_type.sub * 8)
+        return cls(value_bit_size=abi_type.sub * 8)
 
 
 class ByteStringEncoder(BaseEncoder):
@@ -494,10 +490,10 @@ class ByteStringEncoder(BaseEncoder):
 
     @parse_type_str('bytes')
     def from_type_str(cls, abi_type, registry):
-        return cls.as_encoder()
+        return cls()
 
 
-encode_bytes = ByteStringEncoder.as_encoder()
+encode_bytes = ByteStringEncoder()
 
 
 class TextStringEncoder(ByteStringEncoder):
@@ -515,10 +511,10 @@ class TextStringEncoder(ByteStringEncoder):
 
     @parse_type_str('string')
     def from_type_str(cls, abi_type, registry):
-        return cls.as_encoder()
+        return cls()
 
 
-encode_string = TextStringEncoder.as_encoder()
+encode_string = TextStringEncoder()
 
 
 class BaseArrayEncoder(BaseEncoder):
@@ -550,13 +546,13 @@ class BaseArrayEncoder(BaseEncoder):
         array_spec = abi_type.arrlist[-1]
         if len(array_spec) == 1:
             # If array dimension is fixed
-            return SizedArrayEncoder.as_encoder(
+            return SizedArrayEncoder(
                 array_size=array_spec[0],
                 item_encoder=item_encoder,
             )
         else:
             # If array dimension is dynamic
-            return DynamicArrayEncoder.as_encoder(item_encoder=item_encoder)
+            return DynamicArrayEncoder(item_encoder=item_encoder)
 
 
 class SizedArrayEncoder(BaseArrayEncoder):

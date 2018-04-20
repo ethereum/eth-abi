@@ -37,7 +37,7 @@ def encode_abi(types, args):
         for type_str in types
     ]
 
-    encoder = MultiEncoder.as_encoder(encoders=encoders)
+    encoder = MultiEncoder(encoders=encoders)
 
     return encoder(args)
 
