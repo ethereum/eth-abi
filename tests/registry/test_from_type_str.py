@@ -16,8 +16,8 @@ def test_parse_type_str_gives_correct_encoder():
     assert isinstance(function_encoder, encoding.BytesEncoder)
 
     # Type string was normalized
-    assert type(uint_encoder).value_bit_size == 256
-    assert type(function_encoder).value_bit_size == 192
+    assert uint_encoder.value_bit_size == 256
+    assert function_encoder.value_bit_size == 192
 
 
 @pytest.mark.parametrize(
