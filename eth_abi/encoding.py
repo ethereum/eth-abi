@@ -45,7 +45,10 @@ from eth_abi.utils.padding import (
 
 
 class BaseEncoder(BaseCoder):
-    def encode(self, value):
+    def encode(self, value):  # pragma: no cover
+        """
+        Encodes the given Python value as a sequence of bytes.
+        """
         raise NotImplementedError('Must implement `encode`')
 
     def __call__(self, value):

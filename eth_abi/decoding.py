@@ -24,7 +24,10 @@ from eth_abi.utils.numeric import (
 
 
 class BaseDecoder(BaseCoder):
-    def decode(self, stream):
+    def decode(self, stream):  # pragma: no cover
+        """
+        Decodes the given stream of bytes into a Python value.
+        """
         raise NotImplementedError('Must implement `decode`')
 
     def __call__(self, stream):
