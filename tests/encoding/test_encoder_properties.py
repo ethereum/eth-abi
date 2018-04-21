@@ -69,7 +69,7 @@ from eth_abi.utils.padding import (
     data_byte_size=st.integers(min_value=1, max_value=32),
 )
 def test_encode_boolean(bool_value, data_byte_size):
-    encoder = BooleanEncoder.as_encoder(
+    encoder = BooleanEncoder(
         data_byte_size=data_byte_size,
     )
 
@@ -96,13 +96,13 @@ def test_encode_boolean(bool_value, data_byte_size):
 def test_encode_unsigned_integer(integer_value, value_bit_size, data_byte_size):
     if value_bit_size > data_byte_size * 8:
         with pytest.raises(ValueError) as exception_info:
-            UnsignedIntegerEncoder.as_encoder(
+            UnsignedIntegerEncoder(
                 value_bit_size=value_bit_size,
                 data_byte_size=data_byte_size,
             )
         return
 
-    encoder = UnsignedIntegerEncoder.as_encoder(
+    encoder = UnsignedIntegerEncoder(
         value_bit_size=value_bit_size,
         data_byte_size=data_byte_size,
     )
@@ -137,13 +137,13 @@ def test_encode_unsigned_integer(integer_value, value_bit_size, data_byte_size):
 def test_encode_signed_integer(integer_value, value_bit_size, data_byte_size):
     if value_bit_size > data_byte_size * 8:
         with pytest.raises(ValueError):
-            SignedIntegerEncoder.as_encoder(
+            SignedIntegerEncoder(
                 value_bit_size=value_bit_size,
                 data_byte_size=data_byte_size,
             )
         return
 
-    encoder = SignedIntegerEncoder.as_encoder(
+    encoder = SignedIntegerEncoder(
         value_bit_size=value_bit_size,
         data_byte_size=data_byte_size,
     )
@@ -190,20 +190,20 @@ def test_encode_signed_integer(integer_value, value_bit_size, data_byte_size):
 def test_encode_address(address_value, value_bit_size, data_byte_size):
     if value_bit_size != 20 * 8:
         with pytest.raises(ValueError):
-            AddressEncoder.as_encoder(
+            AddressEncoder(
                 value_bit_size=value_bit_size,
                 data_byte_size=data_byte_size,
             )
         return
     elif value_bit_size > data_byte_size * 8:
         with pytest.raises(ValueError):
-            AddressEncoder.as_encoder(
+            AddressEncoder(
                 value_bit_size=value_bit_size,
                 data_byte_size=data_byte_size,
             )
         return
 
-    encoder = AddressEncoder.as_encoder(
+    encoder = AddressEncoder(
         value_bit_size=value_bit_size,
         data_byte_size=data_byte_size,
     )
@@ -232,13 +232,13 @@ def test_encode_address(address_value, value_bit_size, data_byte_size):
 def test_encode_bytes_xx(bytes_value, value_bit_size, data_byte_size):
     if value_bit_size > data_byte_size * 8:
         with pytest.raises(ValueError):
-            AddressEncoder.as_encoder(
+            AddressEncoder(
                 value_bit_size=value_bit_size,
                 data_byte_size=data_byte_size,
             )
         return
 
-    encoder = BytesEncoder.as_encoder(
+    encoder = BytesEncoder(
         value_bit_size=value_bit_size,
         data_byte_size=data_byte_size,
     )
@@ -268,7 +268,7 @@ def test_encode_bytes_xx(bytes_value, value_bit_size, data_byte_size):
     ),
 )
 def test_encode_byte_string(string_value):
-    encoder = ByteStringEncoder.as_encoder()
+    encoder = ByteStringEncoder()
 
     if not is_bytes(string_value):
         with pytest.raises(EncodingTypeError) as exception_info:
@@ -298,7 +298,7 @@ def test_encode_byte_string(string_value):
     ),
 )
 def test_encode_text_string(string_value):
-    encoder = TextStringEncoder.as_encoder()
+    encoder = TextStringEncoder()
 
     if not is_text(string_value):
         with pytest.raises(EncodingTypeError) as exception_info:
@@ -346,7 +346,7 @@ def test_encode_unsigned_real(base_integer_value,
                               data_byte_size):
     if value_bit_size > data_byte_size * 8:
         with pytest.raises(ValueError):
-            UnsignedRealEncoder.as_encoder(
+            UnsignedRealEncoder(
                 value_bit_size=value_bit_size,
                 high_bit_size=high_bit_size,
                 low_bit_size=low_bit_size,
@@ -355,7 +355,7 @@ def test_encode_unsigned_real(base_integer_value,
         return
     elif high_bit_size + low_bit_size != value_bit_size:
         with pytest.raises(ValueError):
-            UnsignedRealEncoder.as_encoder(
+            UnsignedRealEncoder(
                 value_bit_size=value_bit_size,
                 high_bit_size=high_bit_size,
                 low_bit_size=low_bit_size,
@@ -363,7 +363,7 @@ def test_encode_unsigned_real(base_integer_value,
             )
         return
 
-    encoder = UnsignedRealEncoder.as_encoder(
+    encoder = UnsignedRealEncoder(
         value_bit_size=value_bit_size,
         high_bit_size=high_bit_size,
         low_bit_size=low_bit_size,
@@ -410,7 +410,7 @@ def test_encode_signed_real(base_integer_value,
                               data_byte_size):
     if value_bit_size > data_byte_size * 8:
         with pytest.raises(ValueError):
-            SignedRealEncoder.as_encoder(
+            SignedRealEncoder(
                 value_bit_size=value_bit_size,
                 high_bit_size=high_bit_size,
                 low_bit_size=low_bit_size,
@@ -419,7 +419,7 @@ def test_encode_signed_real(base_integer_value,
         return
     elif high_bit_size + low_bit_size != value_bit_size:
         with pytest.raises(ValueError):
-            SignedRealEncoder.as_encoder(
+            SignedRealEncoder(
                 value_bit_size=value_bit_size,
                 high_bit_size=high_bit_size,
                 low_bit_size=low_bit_size,
@@ -427,7 +427,7 @@ def test_encode_signed_real(base_integer_value,
             )
         return
 
-    encoder = SignedRealEncoder.as_encoder(
+    encoder = SignedRealEncoder(
         value_bit_size=value_bit_size,
         high_bit_size=high_bit_size,
         low_bit_size=low_bit_size,
@@ -475,14 +475,14 @@ def test_encode_unsigned_fixed(value,
     if value_bit_size > data_byte_size * 8:
         pattern = r'Value byte size exceeds data size'
         with pytest.raises(ValueError, match=pattern):
-            UnsignedFixedEncoder.as_encoder(
+            UnsignedFixedEncoder(
                 value_bit_size=value_bit_size,
                 frac_places=frac_places,
                 data_byte_size=data_byte_size,
             )
         return
 
-    encoder = UnsignedFixedEncoder.as_encoder(
+    encoder = UnsignedFixedEncoder(
         value_bit_size=value_bit_size,
         frac_places=frac_places,
         data_byte_size=data_byte_size,
@@ -540,14 +540,14 @@ def test_encode_signed_fixed(value,
     if value_bit_size > data_byte_size * 8:
         pattern = r'Value byte size exceeds data size'
         with pytest.raises(ValueError, match=pattern):
-            SignedFixedEncoder.as_encoder(
+            SignedFixedEncoder(
                 value_bit_size=value_bit_size,
                 frac_places=frac_places,
                 data_byte_size=data_byte_size,
             )
         return
 
-    encoder = SignedFixedEncoder.as_encoder(
+    encoder = SignedFixedEncoder(
         value_bit_size=value_bit_size,
         frac_places=frac_places,
         data_byte_size=data_byte_size,
@@ -593,9 +593,9 @@ def test_encode_signed_fixed(value,
 
 # TODO: make this generic
 def test_multi_encoder():
-    encoder = MultiEncoder.as_encoder(encoders=(
-        UnsignedIntegerEncoder.as_encoder(value_bit_size=256),
-        ByteStringEncoder.as_encoder(),
+    encoder = MultiEncoder(encoders=(
+        UnsignedIntegerEncoder(value_bit_size=256),
+        ByteStringEncoder(),
     ))
     expected = decode_hex('0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000')
     actual = encoder((0, b''))

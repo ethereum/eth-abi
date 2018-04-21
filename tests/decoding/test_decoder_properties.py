@@ -93,20 +93,20 @@ def all_bytes_equal(test_bytes, target):
 def test_decode_unsigned_int(integer_bit_size, stream_bytes, data_byte_size):
     if integer_bit_size % 8 != 0:
         with pytest.raises(ValueError):
-            UnsignedIntegerDecoder.as_decoder(
+            UnsignedIntegerDecoder(
                 value_bit_size=integer_bit_size,
                 data_byte_size=data_byte_size,
             )
         return
     elif integer_bit_size > data_byte_size * 8:
         with pytest.raises(ValueError):
-            UnsignedIntegerDecoder.as_decoder(
+            UnsignedIntegerDecoder(
                 value_bit_size=integer_bit_size,
                 data_byte_size=data_byte_size,
             )
         return
     else:
-        decoder = UnsignedIntegerDecoder.as_decoder(
+        decoder = UnsignedIntegerDecoder(
             value_bit_size=integer_bit_size,
             data_byte_size=data_byte_size,
         )
@@ -140,20 +140,20 @@ def test_decode_unsigned_int(integer_bit_size, stream_bytes, data_byte_size):
 def test_decode_signed_int(integer_bit_size, stream_bytes, data_byte_size):
     if integer_bit_size % 8 != 0:
         with pytest.raises(ValueError):
-            SignedIntegerDecoder.as_decoder(
+            SignedIntegerDecoder(
                 value_bit_size=integer_bit_size,
                 data_byte_size=data_byte_size,
             )
         return
     elif integer_bit_size > data_byte_size * 8:
         with pytest.raises(ValueError):
-            SignedIntegerDecoder.as_decoder(
+            SignedIntegerDecoder(
                 value_bit_size=integer_bit_size,
                 data_byte_size=data_byte_size,
             )
         return
     else:
-        decoder = SignedIntegerDecoder.as_decoder(
+        decoder = SignedIntegerDecoder(
             value_bit_size=integer_bit_size,
             data_byte_size=data_byte_size,
         )
@@ -197,7 +197,7 @@ def test_decode_bytes_and_string(string_bytes, pad_size):
     stream_bytes = size_bytes + padded_string_bytes
     stream = BytesIO(stream_bytes)
 
-    decoder = StringDecoder.as_decoder()
+    decoder = StringDecoder()
 
     if len(padded_string_bytes) < ceil32(len(string_bytes)):
         with pytest.raises(InsufficientDataBytes):
@@ -216,7 +216,7 @@ def test_decode_bytes_and_string(string_bytes, pad_size):
 def test_decode_boolean(stream_bytes, data_byte_size):
     stream = BytesIO(stream_bytes)
 
-    decoder = BooleanDecoder.as_decoder(data_byte_size=data_byte_size)
+    decoder = BooleanDecoder(data_byte_size=data_byte_size)
 
     if len(stream_bytes) < data_byte_size:
         with pytest.raises(InsufficientDataBytes):
@@ -253,13 +253,13 @@ def test_decode_boolean(stream_bytes, data_byte_size):
 def test_decode_bytes_xx(value_byte_size, stream_bytes, data_byte_size):
     if value_byte_size > data_byte_size:
         with pytest.raises(ValueError):
-            BytesDecoder.as_decoder(
+            BytesDecoder(
                 value_bit_size=value_byte_size * 8,
                 data_byte_size=data_byte_size,
             )
         return
     else:
-        decoder = BytesDecoder.as_decoder(
+        decoder = BytesDecoder(
             value_bit_size=value_byte_size * 8,
             data_byte_size=data_byte_size,
         )
@@ -292,12 +292,12 @@ def test_decode_address(address_bytes, padding_size, data_byte_size):
     stream_bytes = b'\x00' * padding_size + address_bytes
     if data_byte_size < 20:
         with pytest.raises(ValueError):
-            AddressDecoder.as_decoder(
+            AddressDecoder(
                 data_byte_size=data_byte_size,
             )
         return
     else:
-        decoder = AddressDecoder.as_decoder(
+        decoder = AddressDecoder(
             data_byte_size=data_byte_size,
         )
 
@@ -332,8 +332,8 @@ def test_decode_array_of_unsigned_integers(array_size, array_values):
     ))
     stream_bytes = size_bytes + values_bytes
 
-    decoder = DynamicArrayDecoder.as_decoder(
-        item_decoder=UnsignedIntegerDecoder.as_decoder(value_bit_size=256),
+    decoder = DynamicArrayDecoder(
+        item_decoder=UnsignedIntegerDecoder(value_bit_size=256),
     )
     stream = BytesIO(stream_bytes)
 
@@ -373,7 +373,7 @@ def test_decode_array_of_unsigned_integers(array_size, array_values):
 )
 def test_multi_decoder(types, data, expected):
     decoders = [registry.get_decoder(t) for t in types]
-    decoder = MultiDecoder.as_decoder(decoders=decoders)
+    decoder = MultiDecoder(decoders=decoders)
     stream = BytesIO(decode_hex(data))
     actual = decoder(stream)
     assert actual == expected
@@ -394,7 +394,7 @@ def test_decode_unsigned_real(high_bit_size,
                               data_byte_size):
     if integer_bit_size > data_byte_size * 8:
         with pytest.raises(ValueError):
-            UnsignedRealDecoder.as_decoder(
+            UnsignedRealDecoder(
                 value_bit_size=integer_bit_size,
                 high_bit_size=high_bit_size,
                 low_bit_size=low_bit_size,
@@ -403,7 +403,7 @@ def test_decode_unsigned_real(high_bit_size,
         return
     elif high_bit_size + low_bit_size != integer_bit_size:
         with pytest.raises(ValueError):
-            UnsignedRealDecoder.as_decoder(
+            UnsignedRealDecoder(
                 value_bit_size=integer_bit_size,
                 high_bit_size=high_bit_size,
                 low_bit_size=low_bit_size,
@@ -411,7 +411,7 @@ def test_decode_unsigned_real(high_bit_size,
             )
         return
     else:
-        decoder = UnsignedRealDecoder.as_decoder(
+        decoder = UnsignedRealDecoder(
             value_bit_size=integer_bit_size,
             high_bit_size=high_bit_size,
             low_bit_size=low_bit_size,
@@ -464,7 +464,7 @@ def test_decode_signed_real(high_bit_size,
                             data_byte_size):
     if integer_bit_size > data_byte_size * 8:
         with pytest.raises(ValueError):
-            SignedRealDecoder.as_decoder(
+            SignedRealDecoder(
                 value_bit_size=integer_bit_size,
                 high_bit_size=high_bit_size,
                 low_bit_size=low_bit_size,
@@ -473,7 +473,7 @@ def test_decode_signed_real(high_bit_size,
         return
     elif high_bit_size + low_bit_size != integer_bit_size:
         with pytest.raises(ValueError):
-            SignedRealDecoder.as_decoder(
+            SignedRealDecoder(
                 value_bit_size=integer_bit_size,
                 high_bit_size=high_bit_size,
                 low_bit_size=low_bit_size,
@@ -481,7 +481,7 @@ def test_decode_signed_real(high_bit_size,
             )
         return
     else:
-        decoder = SignedRealDecoder.as_decoder(
+        decoder = SignedRealDecoder(
             value_bit_size=integer_bit_size,
             high_bit_size=high_bit_size,
             low_bit_size=low_bit_size,
@@ -542,14 +542,14 @@ def test_decode_unsigned_fixed(value_bit_size,
                               data_byte_size):
     if value_bit_size > data_byte_size * 8:
         with pytest.raises(ValueError):
-            UnsignedFixedDecoder.as_decoder(
+            UnsignedFixedDecoder(
                 value_bit_size=value_bit_size,
                 frac_places=frac_places,
                 data_byte_size=data_byte_size,
             )
         return
 
-    decoder = UnsignedFixedDecoder.as_decoder(
+    decoder = UnsignedFixedDecoder(
         value_bit_size=value_bit_size,
         frac_places=frac_places,
         data_byte_size=data_byte_size,
@@ -585,14 +585,14 @@ def test_decode_signed_fixed(value_bit_size,
                              data_byte_size):
     if value_bit_size > data_byte_size * 8:
         with pytest.raises(ValueError):
-            SignedFixedDecoder.as_decoder(
+            SignedFixedDecoder(
                 value_bit_size=value_bit_size,
                 frac_places=frac_places,
                 data_byte_size=data_byte_size,
             )
         return
 
-    decoder = SignedFixedDecoder.as_decoder(
+    decoder = SignedFixedDecoder(
         value_bit_size=value_bit_size,
         frac_places=frac_places,
         data_byte_size=data_byte_size,

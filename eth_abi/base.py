@@ -9,10 +9,10 @@ from .grammar import (
 
 def parse_type_str(expected_base=None, with_arrlist=False):
     """
-    Used by BaseEncoder and BaseDecoder subclasses as a convenience for
-    implementing the ``from_type_str`` method required by ``ABIRegistry`` if
-    normalizing then parsing a basic type string with an expected base is
-    required in that method.
+    Used by BaseCoder subclasses as a convenience for implementing the
+    ``from_type_str`` method required by ``ABIRegistry``.  Useful if normalizing
+    then parsing a basic type string with an expected base is required in that
+    method.
     """
     def decorator(old_from_type_str):
         @functools.wraps(old_from_type_str)
@@ -75,6 +75,35 @@ def parse_type_str(expected_base=None, with_arrlist=False):
 
 
 class BaseCoder:
+    def __init__(self, **kwargs):
+        """
+        Creates an encoder or decoder with the given settings kwargs.
+        """
+        cls = type(self)
+
+        # Ensure no unrecognized kwargs were given
+        for key, value in kwargs.items():
+            if not hasattr(cls, key):
+                raise AttributeError(
+                    'Property {key} not found on {cls_name} class. '
+                    '`{cls_name}.__init__` only accepts keyword arguments which are '
+                    'present on the {cls_name} class.'.format(
+                        key=key,
+                        cls_name=cls.__name__,
+                    )
+                )
+            setattr(self, key, value)
+
+        # Validate given combination of kwargs
+        self.validate()
+
+    def validate(self):
+        """
+        Validates that an encoder's or decoder's settings are valid in
+        combination.
+        """
+        pass
+
     @classmethod
     def from_type_str(cls, type_str, registry):  # pragma: no cover
         """

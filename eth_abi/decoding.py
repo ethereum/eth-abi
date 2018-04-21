@@ -1,3 +1,4 @@
+import abc
 import decimal
 
 from eth_utils import (
@@ -23,28 +24,12 @@ from eth_abi.utils.numeric import (
 )
 
 
-class BaseDecoder(BaseCoder):
-    @classmethod
-    def as_decoder(cls, name=None, **kwargs):
-        for key in kwargs:
-            if not hasattr(cls, key):
-                raise AttributeError(
-                    "Property `{key}` not found on {cls_name} class. "
-                    "`{cls_name}.as_decoder` only accepts keyword arguments which are "
-                    "present on the {cls_name} class.".format(
-                        key=key,
-                        cls_name=cls.__name__,
-                    )
-                )
-        if name is None:
-            name = cls.__name__
-        sub_cls = type(name, (cls,), kwargs)
-        sub_cls.validate()
-        instance = sub_cls()
-        return instance
-
-    @classmethod
-    def validate(cls):
+class BaseDecoder(BaseCoder, metaclass=abc.ABCMeta):
+    @abc.abstractmethod
+    def decode(self, stream):  # pragma: no cover
+        """
+        Decodes the given stream of bytes into a Python value.
+        """
         pass
 
     def __call__(self, stream):
@@ -54,18 +39,16 @@ class BaseDecoder(BaseCoder):
 class HeadTailDecoder(BaseDecoder):
     tail_decoder = None
 
-    @classmethod
-    def validate(cls):
+    def validate(self):
         super().validate()
-        if cls.tail_decoder is None:
+        if self.tail_decoder is None:
             raise ValueError("No `tail_decoder` set")
 
-    @classmethod
-    def decode(cls, stream):
+    def decode(self, stream):
         start_pos = decode_uint_256(stream)
         anchor_pos = stream.tell()
         stream.seek(start_pos)
-        value = cls.tail_decoder(stream)
+        value = self.tail_decoder(stream)
         stream.seek(anchor_pos)
         return value
 
@@ -73,18 +56,16 @@ class HeadTailDecoder(BaseDecoder):
 class MultiDecoder(BaseDecoder):
     decoders = None
 
-    @classmethod
-    def validate(cls):
+    def validate(self):
         super().validate()
-        if cls.decoders is None:
+        if self.decoders is None:
             raise ValueError("No `decoders` set")
 
-    @classmethod
     @to_tuple
-    def decode(cls, stream):
-        for decoder in cls.decoders:
+    def decode(self, stream):
+        for decoder in self.decoders:
             if isinstance(decoder, (DynamicArrayDecoder, StringDecoder)):
-                yield HeadTailDecoder.as_decoder(tail_decoder=decoder)(stream)
+                yield HeadTailDecoder(tail_decoder=decoder)(stream)
             else:
                 yield decoder(stream)
 
@@ -92,41 +73,35 @@ class MultiDecoder(BaseDecoder):
 class SingleDecoder(BaseDecoder):
     decoder_fn = None
 
-    @classmethod
-    def validate(cls):
+    def validate(self):
         super().validate()
-        if cls.decoder_fn is None:
+        if self.decoder_fn is None:
             raise ValueError("No `decoder_fn` set")
 
-    @classmethod
-    def validate_padding_bytes(cls, value, padding_bytes):
+    def validate_padding_bytes(self, value, padding_bytes):
         raise NotImplementedError("Must be implemented by subclasses")
 
-    @classmethod
-    def decode(cls, stream):
-        raw_data = cls.read_data_from_stream(stream)
-        data, padding_bytes = cls.split_data_and_padding(raw_data)
-        value = cls.decoder_fn(data)
-        cls.validate_padding_bytes(value, padding_bytes)
+    def decode(self, stream):
+        raw_data = self.read_data_from_stream(stream)
+        data, padding_bytes = self.split_data_and_padding(raw_data)
+        value = self.decoder_fn(data)
+        self.validate_padding_bytes(value, padding_bytes)
 
         return value
 
-    @classmethod
-    def read_data_from_stream(cls, stream):
+    def read_data_from_stream(self, stream):
         raise NotImplementedError("Must be implemented by subclasses")
 
-    @classmethod
-    def split_data_and_padding(cls, raw_data):
+    def split_data_and_padding(self, raw_data):
         return raw_data, b''
 
 
 class BaseArrayDecoder(BaseDecoder):
     item_decoder = None
 
-    @classmethod
-    def validate(cls):
+    def validate(self):
         super().validate()
-        if cls.item_decoder is None:
+        if self.item_decoder is None:
             raise ValueError("No `item_decoder` set")
 
     @parse_type_str(with_arrlist=True)
@@ -136,32 +111,30 @@ class BaseArrayDecoder(BaseDecoder):
         array_spec = abi_type.arrlist[-1]
         if len(array_spec) == 1:
             # If array dimension is fixed
-            return SizedArrayDecoder.as_decoder(
+            return SizedArrayDecoder(
                 array_size=array_spec[0],
                 item_decoder=item_decoder,
             )
         else:
             # If array dimension is dynamic
-            return DynamicArrayDecoder.as_decoder(item_decoder=item_decoder)
+            return DynamicArrayDecoder(item_decoder=item_decoder)
 
 
 class SizedArrayDecoder(BaseArrayDecoder):
     array_size = None
 
-    @classmethod
     @to_tuple
-    def decode(cls, stream):
-        for _ in range(cls.array_size):
-            yield cls.item_decoder(stream)
+    def decode(self, stream):
+        for _ in range(self.array_size):
+            yield self.item_decoder(stream)
 
 
 class DynamicArrayDecoder(BaseArrayDecoder):
-    @classmethod
     @to_tuple
-    def decode(cls, stream):
+    def decode(self, stream):
         array_size = decode_uint_256(stream)
         for _ in range(array_size):
-            yield cls.item_decoder(stream)
+            yield self.item_decoder(stream)
 
 
 class FixedByteSizeDecoder(SingleDecoder):
@@ -170,49 +143,46 @@ class FixedByteSizeDecoder(SingleDecoder):
     data_byte_size = None
     is_big_endian = None
 
-    @classmethod
-    def validate(cls):
+    def validate(self):
         super().validate()
 
-        if cls.value_bit_size is None:
+        if self.value_bit_size is None:
             raise ValueError("`value_bit_size` may not be None")
-        if cls.data_byte_size is None:
+        if self.data_byte_size is None:
             raise ValueError("`data_byte_size` may not be None")
-        if cls.decoder_fn is None:
+        if self.decoder_fn is None:
             raise ValueError("`decoder_fn` may not be None")
-        if cls.is_big_endian is None:
+        if self.is_big_endian is None:
             raise ValueError("`is_big_endian` may not be None")
 
-        if cls.value_bit_size % 8 != 0:
+        if self.value_bit_size % 8 != 0:
             raise ValueError(
                 "Invalid value bit size: {0}.  Must be a multiple of 8".format(
-                    cls.value_bit_size,
+                    self.value_bit_size,
                 )
             )
 
-        if cls.value_bit_size > cls.data_byte_size * 8:
+        if self.value_bit_size > self.data_byte_size * 8:
             raise ValueError("Value byte size exceeds data size")
 
-    @classmethod
-    def read_data_from_stream(cls, stream):
-        data = stream.read(cls.data_byte_size)
+    def read_data_from_stream(self, stream):
+        data = stream.read(self.data_byte_size)
 
-        if len(data) != cls.data_byte_size:
+        if len(data) != self.data_byte_size:
             raise InsufficientDataBytes(
                 "Tried to read {0} bytes.  Only got {1} bytes".format(
-                    cls.data_byte_size,
+                    self.data_byte_size,
                     len(data),
                 )
             )
 
         return data
 
-    @classmethod
-    def split_data_and_padding(cls, raw_data):
-        value_byte_size = cls._get_value_byte_size()
-        padding_size = cls.data_byte_size - value_byte_size
+    def split_data_and_padding(self, raw_data):
+        value_byte_size = self._get_value_byte_size()
+        padding_size = self.data_byte_size - value_byte_size
 
-        if cls.is_big_endian:
+        if self.is_big_endian:
             padding_bytes = raw_data[:padding_size]
             data = raw_data[padding_size:]
         else:
@@ -221,19 +191,17 @@ class FixedByteSizeDecoder(SingleDecoder):
 
         return data, padding_bytes
 
-    @classmethod
-    def validate_padding_bytes(cls, value, padding_bytes):
-        value_byte_size = cls._get_value_byte_size()
-        padding_size = cls.data_byte_size - value_byte_size
+    def validate_padding_bytes(self, value, padding_bytes):
+        value_byte_size = self._get_value_byte_size()
+        padding_size = self.data_byte_size - value_byte_size
 
         if padding_bytes != b'\x00' * padding_size:
             raise NonEmptyPaddingBytes(
                 "Padding bytes were not empty: {0}".format(repr(padding_bytes))
             )
 
-    @classmethod
-    def _get_value_byte_size(cls):
-        value_byte_size = cls.value_bit_size // 8
+    def _get_value_byte_size(self):
+        value_byte_size = self.value_bit_size // 8
         return value_byte_size
 
 
@@ -245,8 +213,8 @@ class BooleanDecoder(Fixed32ByteSizeDecoder):
     value_bit_size = 8
     is_big_endian = True
 
-    @classmethod
-    def decoder_fn(cls, data):
+    @staticmethod
+    def decoder_fn(data):
         if data == b'\x00':
             return False
         elif data == b'\x01':
@@ -258,10 +226,10 @@ class BooleanDecoder(Fixed32ByteSizeDecoder):
 
     @parse_type_str('bool')
     def from_type_str(cls, abi_type, registry):
-        return cls.as_decoder()
+        return cls()
 
 
-decode_bool = BooleanDecoder.as_decoder()
+decode_bool = BooleanDecoder()
 
 
 class AddressDecoder(Fixed32ByteSizeDecoder):
@@ -271,10 +239,10 @@ class AddressDecoder(Fixed32ByteSizeDecoder):
 
     @parse_type_str('address')
     def from_type_str(cls, abi_type, registry):
-        return cls.as_decoder()
+        return cls()
 
 
-decode_address = AddressDecoder.as_decoder()
+decode_address = AddressDecoder()
 
 
 #
@@ -286,10 +254,10 @@ class UnsignedIntegerDecoder(Fixed32ByteSizeDecoder):
 
     @parse_type_str('uint')
     def from_type_str(cls, abi_type, registry):
-        return cls.as_decoder(value_bit_size=abi_type.sub)
+        return cls(value_bit_size=abi_type.sub)
 
 
-decode_uint_256 = UnsignedIntegerDecoder.as_decoder(value_bit_size=256)
+decode_uint_256 = UnsignedIntegerDecoder(value_bit_size=256)
 
 
 #
@@ -298,18 +266,16 @@ decode_uint_256 = UnsignedIntegerDecoder.as_decoder(value_bit_size=256)
 class SignedIntegerDecoder(Fixed32ByteSizeDecoder):
     is_big_endian = True
 
-    @classmethod
-    def decoder_fn(cls, data):
+    def decoder_fn(self, data):
         value = big_endian_to_int(data)
-        if value >= 2 ** (cls.value_bit_size - 1):
-            return value - 2 ** cls.value_bit_size
+        if value >= 2 ** (self.value_bit_size - 1):
+            return value - 2 ** self.value_bit_size
         else:
             return value
 
-    @classmethod
-    def validate_padding_bytes(cls, value, padding_bytes):
-        value_byte_size = cls._get_value_byte_size()
-        padding_size = cls.data_byte_size - value_byte_size
+    def validate_padding_bytes(self, value, padding_bytes):
+        value_byte_size = self._get_value_byte_size()
+        padding_size = self.data_byte_size - value_byte_size
 
         if value >= 0:
             expected_padding_bytes = b'\x00' * padding_size
@@ -323,7 +289,7 @@ class SignedIntegerDecoder(Fixed32ByteSizeDecoder):
 
     @parse_type_str('int')
     def from_type_str(cls, abi_type, registry):
-        return cls.as_decoder(value_bit_size=abi_type.sub)
+        return cls(value_bit_size=abi_type.sub)
 
 
 #
@@ -332,37 +298,35 @@ class SignedIntegerDecoder(Fixed32ByteSizeDecoder):
 class BytesDecoder(Fixed32ByteSizeDecoder):
     is_big_endian = False
 
-    @classmethod
-    def decoder_fn(cls, data):
+    @staticmethod
+    def decoder_fn(data):
         return data
 
     @parse_type_str('bytes')
     def from_type_str(cls, abi_type, registry):
-        return cls.as_decoder(value_bit_size=abi_type.sub * 8)
+        return cls(value_bit_size=abi_type.sub * 8)
 
 
 class BaseFixedDecoder(Fixed32ByteSizeDecoder):
     frac_places = None
     is_big_endian = True
 
-    @classmethod
-    def validate(cls):
+    def validate(self):
         super().validate()
 
-        if cls.frac_places is None:
+        if self.frac_places is None:
             raise ValueError("must specify `frac_places`")
 
-        if cls.frac_places <= 0 or cls.frac_places > 80:
+        if self.frac_places <= 0 or self.frac_places > 80:
             raise ValueError("`frac_places` must be in range (0, 80]")
 
 
 class UnsignedFixedDecoder(BaseFixedDecoder):
-    @classmethod
-    def decoder_fn(cls, data):
+    def decoder_fn(self, data):
         value = big_endian_to_int(data)
 
         with decimal.localcontext(abi_decimal_context):
-            decimal_value = decimal.Decimal(value) / TEN ** cls.frac_places
+            decimal_value = decimal.Decimal(value) / TEN ** self.frac_places
 
         return decimal_value
 
@@ -370,27 +334,25 @@ class UnsignedFixedDecoder(BaseFixedDecoder):
     def from_type_str(cls, abi_type, registry):
         value_bit_size, frac_places = abi_type.sub
 
-        return cls.as_decoder(value_bit_size=value_bit_size, frac_places=frac_places)
+        return cls(value_bit_size=value_bit_size, frac_places=frac_places)
 
 
 class SignedFixedDecoder(BaseFixedDecoder):
-    @classmethod
-    def decoder_fn(cls, data):
+    def decoder_fn(self, data):
         value = big_endian_to_int(data)
-        if value >= 2 ** (cls.value_bit_size - 1):
-            signed_value = value - 2 ** cls.value_bit_size
+        if value >= 2 ** (self.value_bit_size - 1):
+            signed_value = value - 2 ** self.value_bit_size
         else:
             signed_value = value
 
         with decimal.localcontext(abi_decimal_context):
-            decimal_value = decimal.Decimal(signed_value) / TEN ** cls.frac_places
+            decimal_value = decimal.Decimal(signed_value) / TEN ** self.frac_places
 
         return decimal_value
 
-    @classmethod
-    def validate_padding_bytes(cls, value, padding_bytes):
-        value_byte_size = cls._get_value_byte_size()
-        padding_size = cls.data_byte_size - value_byte_size
+    def validate_padding_bytes(self, value, padding_bytes):
+        value_byte_size = self._get_value_byte_size()
+        padding_size = self.data_byte_size - value_byte_size
 
         if value >= 0:
             expected_padding_bytes = b'\x00' * padding_size
@@ -406,7 +368,7 @@ class SignedFixedDecoder(BaseFixedDecoder):
     def from_type_str(cls, abi_type, registry):
         value_bit_size, frac_places = abi_type.sub
 
-        return cls.as_decoder(value_bit_size=value_bit_size, frac_places=frac_places)
+        return cls(value_bit_size=value_bit_size, frac_places=frac_places)
 
 
 class BaseRealDecoder(Fixed32ByteSizeDecoder):
@@ -414,33 +376,31 @@ class BaseRealDecoder(Fixed32ByteSizeDecoder):
     low_bit_size = None
     is_big_endian = True
 
-    @classmethod
-    def validate(cls):
+    def validate(self):
         super().validate()
 
-        if cls.high_bit_size is None:
+        if self.high_bit_size is None:
             raise ValueError("`high_bit_size` cannot be null")
-        if cls.low_bit_size is None:
+        if self.low_bit_size is None:
             raise ValueError("`low_bit_size` cannot be null")
-        if cls.low_bit_size + cls.high_bit_size != cls.value_bit_size:
+        if self.low_bit_size + self.high_bit_size != self.value_bit_size:
             raise ValueError("high and low bitsizes must sum to the value_bit_size")
 
 
 class UnsignedRealDecoder(BaseRealDecoder):
-    @classmethod
-    def decoder_fn(cls, data):
+    def decoder_fn(self, data):
         value = big_endian_to_int(data)
         with decimal.localcontext(abi_decimal_context):
             decimal_value = decimal.Decimal(value)
-            raw_real_value = decimal_value / 2 ** cls.low_bit_size
-            real_value = quantize_value(raw_real_value, cls.low_bit_size)
+            raw_real_value = decimal_value / 2 ** self.low_bit_size
+            real_value = quantize_value(raw_real_value, self.low_bit_size)
         return real_value
 
     @parse_type_str('ureal')
     def from_type_str(cls, abi_type, registry):
         high_bit_size, low_bit_size = abi_type.sub
 
-        return cls.as_decoder(
+        return cls(
             value_bit_size=high_bit_size + low_bit_size,
             high_bit_size=high_bit_size,
             low_bit_size=low_bit_size,
@@ -448,23 +408,21 @@ class UnsignedRealDecoder(BaseRealDecoder):
 
 
 class SignedRealDecoder(BaseRealDecoder):
-    @classmethod
-    def decoder_fn(cls, data):
+    def decoder_fn(self, data):
         value = big_endian_to_int(data)
-        if value >= 2 ** (cls.high_bit_size + cls.low_bit_size - 1):
-            signed_value = value - 2 ** (cls.high_bit_size + cls.low_bit_size)
+        if value >= 2 ** (self.high_bit_size + self.low_bit_size - 1):
+            signed_value = value - 2 ** (self.high_bit_size + self.low_bit_size)
         else:
             signed_value = value
         with decimal.localcontext(abi_decimal_context):
             signed_decimal_value = decimal.Decimal(signed_value)
-            raw_real_value = signed_decimal_value / 2 ** cls.low_bit_size
-            real_value = quantize_value(raw_real_value, cls.low_bit_size)
+            raw_real_value = signed_decimal_value / 2 ** self.low_bit_size
+            real_value = quantize_value(raw_real_value, self.low_bit_size)
         return real_value
 
-    @classmethod
-    def validate_padding_bytes(cls, value, padding_bytes):
-        value_byte_size = cls._get_value_byte_size()
-        padding_size = cls.data_byte_size - value_byte_size
+    def validate_padding_bytes(self, value, padding_bytes):
+        value_byte_size = self._get_value_byte_size()
+        padding_size = self.data_byte_size - value_byte_size
 
         if value >= 0:
             expected_padding_bytes = b'\x00' * padding_size
@@ -480,7 +438,7 @@ class SignedRealDecoder(BaseRealDecoder):
     def from_type_str(cls, abi_type, registry):
         high_bit_size, low_bit_size = abi_type.sub
 
-        return cls.as_decoder(
+        return cls(
             value_bit_size=high_bit_size + low_bit_size,
             high_bit_size=high_bit_size,
             low_bit_size=low_bit_size,
@@ -491,12 +449,12 @@ class SignedRealDecoder(BaseRealDecoder):
 # String and Bytes
 #
 class StringDecoder(SingleDecoder):
-    @classmethod
-    def decoder_fn(cls, data):
+    @staticmethod
+    def decoder_fn(data):
         return data
 
-    @classmethod
-    def read_data_from_stream(cls, stream):
+    @staticmethod
+    def read_data_from_stream(stream):
         data_length = decode_uint_256(stream)
         padded_length = ceil32(data_length)
 
@@ -519,22 +477,21 @@ class StringDecoder(SingleDecoder):
 
         return data[:data_length]
 
-    @classmethod
-    def validate_padding_bytes(cls, value, padding_bytes):
+    def validate_padding_bytes(self, value, padding_bytes):
         pass
 
     @parse_type_str('string')
     def from_type_str(cls, abi_type, registry):
-        return cls.as_decoder()
+        return cls()
 
 
-decode_string = StringDecoder.as_decoder()
+decode_string = StringDecoder()
 
 
 class ByteStringDecoder(StringDecoder):
     @parse_type_str('bytes')
     def from_type_str(cls, abi_type, registry):
-        return cls.as_decoder()
+        return cls()
 
 
-decode_bytes = ByteStringDecoder.as_decoder()
+decode_bytes = ByteStringDecoder()

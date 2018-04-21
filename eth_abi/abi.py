@@ -37,7 +37,7 @@ def encode_abi(types, args):
         for type_str in types
     ]
 
-    encoder = MultiEncoder.as_encoder(encoders=encoders)
+    encoder = MultiEncoder(encoders=encoders)
 
     return encoder(args)
 
@@ -70,7 +70,7 @@ def decode_abi(types, data):
         for type_str in types
     ]
 
-    decoder = MultiDecoder.as_decoder(decoders=decoders)
+    decoder = MultiDecoder(decoders=decoders)
     stream = BytesIO(data)
 
     return decoder(stream)
