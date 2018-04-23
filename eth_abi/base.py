@@ -51,7 +51,6 @@ def parse_type_str(expected_base=None, with_arrlist=False):
                     'no array dimension list'.format(
                         cls.__name__,
                         type_str_repr,
-                        expected_base,
                     )
                 )
             if with_arrlist and abi_type.arrlist is None:
@@ -60,7 +59,6 @@ def parse_type_str(expected_base=None, with_arrlist=False):
                     'array dimension list'.format(
                         cls.__name__,
                         type_str_repr,
-                        expected_base,
                     )
                 )
 
