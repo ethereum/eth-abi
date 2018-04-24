@@ -178,9 +178,6 @@ class BooleanEncoder(Fixed32ByteSizeEncoder):
         return cls()
 
 
-encode_bool = BooleanEncoder()
-
-
 class NumberEncoder(Fixed32ByteSizeEncoder):
     is_big_endian = True
     bounds_fn = None
@@ -445,9 +442,6 @@ class AddressEncoder(Fixed32ByteSizeEncoder):
         return cls()
 
 
-encode_address = AddressEncoder()
-
-
 class BytesEncoder(Fixed32ByteSizeEncoder):
     is_big_endian = False
 
@@ -501,9 +495,6 @@ class ByteStringEncoder(BaseEncoder):
         return cls()
 
 
-encode_bytes = ByteStringEncoder()
-
-
 class TextStringEncoder(ByteStringEncoder):
     @classmethod
     def encode(cls, value):
@@ -520,9 +511,6 @@ class TextStringEncoder(ByteStringEncoder):
     @parse_type_str('string')
     def from_type_str(cls, abi_type, registry):
         return cls()
-
-
-encode_string = TextStringEncoder()
 
 
 class BaseArrayEncoder(BaseEncoder):

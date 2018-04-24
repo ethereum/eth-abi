@@ -229,9 +229,6 @@ class BooleanDecoder(Fixed32ByteSizeDecoder):
         return cls()
 
 
-decode_bool = BooleanDecoder()
-
-
 class AddressDecoder(Fixed32ByteSizeDecoder):
     value_bit_size = 20 * 8
     is_big_endian = True
@@ -240,9 +237,6 @@ class AddressDecoder(Fixed32ByteSizeDecoder):
     @parse_type_str('address')
     def from_type_str(cls, abi_type, registry):
         return cls()
-
-
-decode_address = AddressDecoder()
 
 
 #
@@ -485,13 +479,7 @@ class StringDecoder(SingleDecoder):
         return cls()
 
 
-decode_string = StringDecoder()
-
-
 class ByteStringDecoder(StringDecoder):
     @parse_type_str('bytes')
     def from_type_str(cls, abi_type, registry):
         return cls()
-
-
-decode_bytes = ByteStringDecoder()
