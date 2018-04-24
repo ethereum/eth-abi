@@ -41,15 +41,18 @@ class HeadTailDecoder(BaseDecoder):
 
     def validate(self):
         super().validate()
+
         if self.tail_decoder is None:
             raise ValueError("No `tail_decoder` set")
 
     def decode(self, stream):
         start_pos = decode_uint_256(stream)
         anchor_pos = stream.tell()
+
         stream.seek(start_pos)
         value = self.tail_decoder(stream)
         stream.seek(anchor_pos)
+
         return value
 
 
@@ -58,6 +61,7 @@ class MultiDecoder(BaseDecoder):
 
     def validate(self):
         super().validate()
+
         if self.decoders is None:
             raise ValueError("No `decoders` set")
 
@@ -75,6 +79,7 @@ class SingleDecoder(BaseDecoder):
 
     def validate(self):
         super().validate()
+
         if self.decoder_fn is None:
             raise ValueError("No `decoder_fn` set")
 
@@ -101,6 +106,7 @@ class BaseArrayDecoder(BaseDecoder):
 
     def validate(self):
         super().validate()
+
         if self.item_decoder is None:
             raise ValueError("No `item_decoder` set")
 
@@ -384,10 +390,12 @@ class BaseRealDecoder(Fixed32ByteSizeDecoder):
 class UnsignedRealDecoder(BaseRealDecoder):
     def decoder_fn(self, data):
         value = big_endian_to_int(data)
+
         with decimal.localcontext(abi_decimal_context):
             decimal_value = decimal.Decimal(value)
             raw_real_value = decimal_value / 2 ** self.low_bit_size
             real_value = quantize_value(raw_real_value, self.low_bit_size)
+
         return real_value
 
     @parse_type_str('ureal')
@@ -404,14 +412,17 @@ class UnsignedRealDecoder(BaseRealDecoder):
 class SignedRealDecoder(BaseRealDecoder):
     def decoder_fn(self, data):
         value = big_endian_to_int(data)
+
         if value >= 2 ** (self.high_bit_size + self.low_bit_size - 1):
             signed_value = value - 2 ** (self.high_bit_size + self.low_bit_size)
         else:
             signed_value = value
+
         with decimal.localcontext(abi_decimal_context):
             signed_decimal_value = decimal.Decimal(signed_value)
             raw_real_value = signed_decimal_value / 2 ** self.low_bit_size
             real_value = quantize_value(raw_real_value, self.low_bit_size)
+
         return real_value
 
     def validate_padding_bytes(self, value, padding_bytes):

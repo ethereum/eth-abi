@@ -62,6 +62,7 @@ class MultiEncoder(BaseEncoder):
 
     def validate(self):
         super().validate()
+
         if self.encoders is None:
             raise ValueError("`encoders` may not be none")
 
@@ -113,6 +114,7 @@ class FixedSizeEncoder(BaseEncoder):
 
     def validate(self):
         super().validate()
+
         if self.value_bit_size is None:
             raise ValueError("`value_bit_size` may not be none")
         if self.data_byte_size is None:
@@ -143,6 +145,7 @@ class FixedSizeEncoder(BaseEncoder):
             padded_encoded_value = zpad(base_encoded_value, self.data_byte_size)
         else:
             padded_encoded_value = zpad_right(base_encoded_value, self.data_byte_size)
+
         return padded_encoded_value
 
 
@@ -186,6 +189,7 @@ class NumberEncoder(Fixed32ByteSizeEncoder):
 
     def validate(self):
         super().validate()
+
         if self.bounds_fn is None:
             raise ValueError("`bounds_fn` cannot be null")
         if self.type_check_fn is None:
@@ -251,6 +255,7 @@ class SignedIntegerEncoder(NumberEncoder):
             padded_encoded_value = zpad(base_encoded_value, self.data_byte_size)
         else:
             padded_encoded_value = fpad(base_encoded_value, self.data_byte_size)
+
         return padded_encoded_value
 
     @parse_type_str('int')
@@ -358,6 +363,7 @@ class BaseRealEncoder(NumberEncoder):
 
     def validate(self):
         super().validate()
+
         if self.high_bit_size is None:
             raise ValueError("`high_bit_size` cannot be null")
         if self.low_bit_size is None:
@@ -394,6 +400,7 @@ class SignedRealEncoder(BaseRealEncoder):
         scaled_value = value * 2 ** self.low_bit_size
         integer_value = int(scaled_value)
         unsigned_integer_value = integer_value % (2 ** (self.high_bit_size + self.low_bit_size))
+
         return int_to_big_endian(unsigned_integer_value)
 
     def encode(self, value):
@@ -404,6 +411,7 @@ class SignedRealEncoder(BaseRealEncoder):
             padded_encoded_value = zpad(base_encoded_value, self.data_byte_size)
         else:
             padded_encoded_value = fpad(base_encoded_value, self.data_byte_size)
+
         return padded_encoded_value
 
     @parse_type_str('real')
@@ -434,6 +442,7 @@ class AddressEncoder(Fixed32ByteSizeEncoder):
 
     def validate(self):
         super().validate()
+
         if self.value_bit_size != 20 * 8:
             raise ValueError('Addresses must be 160 bits in length')
 
@@ -518,6 +527,7 @@ class BaseArrayEncoder(BaseEncoder):
 
     def validate(self):
         super().validate()
+
         if self.item_encoder is None:
             raise ValueError("`item_encoder` may not be none")
 
@@ -556,6 +566,7 @@ class SizedArrayEncoder(BaseArrayEncoder):
 
     def validate(self):
         super().validate()
+
         if self.array_size is None:
             raise ValueError("`array_size` may not be none")
 
@@ -574,4 +585,5 @@ class DynamicArrayEncoder(BaseArrayEncoder):
         encoded_size = encode_uint_256(len(value))
         encoded_elements = self.encode_elements(value)
         encoded_value = encoded_size + encoded_elements
+
         return encoded_value
