@@ -111,8 +111,8 @@ def test_end_to_end_parsing_and_collapsing(type_str):
 @pytest.mark.parametrize(
     'type_str, pattern',
     (
-        ('string1x1', 'no suffix or a numerical'),
-        ('string33', 'maximum 32 bytes'),
+        ('string1x1', 'string type cannot have suffix'),
+        ('string33', 'string type cannot have suffix'),
         ('bytes1x1', 'no suffix or a numerical'),
         ('bytes33', 'maximum 32 bytes'),
         ('int', 'must have numerical suffix'),
