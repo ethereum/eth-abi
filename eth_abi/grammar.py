@@ -263,12 +263,17 @@ class BasicType(ABIType):
         base, sub = self.base, self.sub
 
         # Check validity of string type
-        if base in ('string', 'bytes'):
+        if base == 'string':
+            if sub is not None:
+                self.invalidate('string type cannot have suffix')
+
+        # Check validity of bytes type
+        elif base == 'bytes':
             if not (sub is None or isinstance(sub, int)):
-                self.invalidate('string type must have either no suffix or a numerical suffix')
+                self.invalidate('bytes type must have either no suffix or a numerical suffix')
 
             if isinstance(sub, int) and sub > 32:
-                self.invalidate('maximum 32 bytes for fixed-length string or bytes')
+                self.invalidate('maximum 32 bytes for fixed-length bytes')
 
         # Check validity of integer type
         elif base in ('int', 'uint'):
