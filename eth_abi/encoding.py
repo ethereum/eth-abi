@@ -1,7 +1,4 @@
-from itertools import (
-    accumulate,
-    chain,
-)
+from itertools import accumulate
 import abc
 import codecs
 import decimal
@@ -97,7 +94,9 @@ class MultiEncoder(BaseEncoder):
             encode_uint_256(head_length + offset) if chunk is None else chunk
             for chunk, offset in zip(raw_head_chunks, tail_offsets)
         )
-        encoded_value = b''.join(tuple(chain(head_chunks, tail_chunks)))
+
+        encoded_value = b''.join(head_chunks + tuple(tail_chunks))
+
         return encoded_value
 
 
