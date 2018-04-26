@@ -94,12 +94,8 @@ class MultiEncoder(BaseEncoder):
         )
         tail_offsets = (0,) + tuple(accumulate(map(len, tail_chunks[:-1])))
         head_chunks = tuple(
-            (
-                encode_uint_256(head_length + tail_offsets[idx])
-                if head_chunk is None
-                else head_chunk
-            ) for idx, head_chunk
-            in enumerate(raw_head_chunks)
+            encode_uint_256(head_length + offset) if chunk is None else chunk
+            for chunk, offset in zip(raw_head_chunks, tail_offsets)
         )
         encoded_value = b''.join(tuple(chain(head_chunks, tail_chunks)))
         return encoded_value
