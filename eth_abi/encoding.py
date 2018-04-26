@@ -1,7 +1,10 @@
+from itertools import (
+    accumulate,
+    chain,
+)
 import abc
 import codecs
 import decimal
-import itertools
 
 from eth_utils import (
     int_to_big_endian,
@@ -89,10 +92,7 @@ class MultiEncoder(BaseEncoder):
             32 if item is None else len(item)
             for item in raw_head_chunks
         )
-        tail_offsets = tuple(
-            sum(len(chunk) for chunk in tail_chunks[:i])
-            for i in range(len(tail_chunks))
-        )
+        tail_offsets = (0,) + tuple(accumulate(map(len, tail_chunks[:-1])))
         head_chunks = tuple(
             (
                 encode_uint_256(head_length + tail_offsets[idx])
@@ -101,7 +101,7 @@ class MultiEncoder(BaseEncoder):
             ) for idx, head_chunk
             in enumerate(raw_head_chunks)
         )
-        encoded_value = b''.join(tuple(itertools.chain(head_chunks, tail_chunks)))
+        encoded_value = b''.join(tuple(chain(head_chunks, tail_chunks)))
         return encoded_value
 
 
