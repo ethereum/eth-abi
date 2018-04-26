@@ -85,22 +85,22 @@ class MultiEncoder(BaseEncoder):
                 raw_head_chunks.append(encoder(value))
                 tail_chunks.append(b'')
 
-        head_length = sum((
+        head_length = sum(
             32 if item is None else len(item)
             for item in raw_head_chunks
-        ))
-        tail_offsets = tuple((
-            sum((len(chunk) for chunk in tail_chunks[:i]))
+        )
+        tail_offsets = tuple(
+            sum(len(chunk) for chunk in tail_chunks[:i])
             for i in range(len(tail_chunks))
-        ))
-        head_chunks = tuple((
+        )
+        head_chunks = tuple(
             (
                 encode_uint_256(head_length + tail_offsets[idx])
                 if head_chunk is None
                 else head_chunk
             ) for idx, head_chunk
             in enumerate(raw_head_chunks)
-        ))
+        )
         encoded_value = b''.join(tuple(itertools.chain(head_chunks, tail_chunks)))
         return encoded_value
 
