@@ -74,9 +74,9 @@ class MultiEncoder(BaseEncoder):
                     len(self.encoders),
                 )
             )
+
         raw_head_chunks = []
         tail_chunks = []
-
         for value, encoder in zip(values, self.encoders):
             if isinstance(encoder, (DynamicArrayEncoder, ByteStringEncoder, TextStringEncoder)):
                 raw_head_chunks.append(None)
@@ -86,7 +86,7 @@ class MultiEncoder(BaseEncoder):
                 tail_chunks.append(b'')
 
         head_length = sum((
-            32 if is_null(item) else len(item)
+            32 if item is None else len(item)
             for item in raw_head_chunks
         ))
         tail_offsets = tuple((
@@ -96,7 +96,7 @@ class MultiEncoder(BaseEncoder):
         head_chunks = tuple((
             (
                 encode_uint_256(head_length + tail_offsets[idx])
-                if is_null(head_chunk)
+                if head_chunk is None
                 else head_chunk
             ) for idx, head_chunk
             in enumerate(raw_head_chunks)
