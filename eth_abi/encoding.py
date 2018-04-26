@@ -12,7 +12,6 @@ from eth_utils import (
     is_bytes,
     is_text,
     is_list_like,
-    is_null,
     to_canonical_address,
 )
 
