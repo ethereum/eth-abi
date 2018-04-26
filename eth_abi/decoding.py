@@ -59,6 +59,17 @@ class HeadTailDecoder(BaseDecoder):
 class MultiDecoder(BaseDecoder):
     decoders = None
 
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+        self.decoders = tuple(
+            (
+                HeadTailDecoder(tail_decoder=decoder)
+                if isinstance(decoder, (DynamicArrayDecoder, StringDecoder))
+                else decoder
+            ) for decoder in self.decoders
+        )
+
     def validate(self):
         super().validate()
 
@@ -68,10 +79,7 @@ class MultiDecoder(BaseDecoder):
     @to_tuple
     def decode(self, stream):
         for decoder in self.decoders:
-            if isinstance(decoder, (DynamicArrayDecoder, StringDecoder)):
-                yield HeadTailDecoder(tail_decoder=decoder)(stream)
-            else:
-                yield decoder(stream)
+            yield decoder(stream)
 
 
 class SingleDecoder(BaseDecoder):
