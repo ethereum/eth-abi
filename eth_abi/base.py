@@ -73,6 +73,8 @@ def parse_type_str(expected_base=None, with_arrlist=False):
 
 
 class BaseCoder:
+    is_dynamic = False
+
     def __init__(self, **kwargs):
         """
         Creates an encoder or decoder with the given settings kwargs.

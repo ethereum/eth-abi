@@ -37,6 +37,8 @@ class BaseDecoder(BaseCoder, metaclass=abc.ABCMeta):
 
 
 class HeadTailDecoder(BaseDecoder):
+    is_dynamic = True
+
     tail_decoder = None
 
     def validate(self):
@@ -63,12 +65,11 @@ class MultiDecoder(BaseDecoder):
         super().__init__(**kwargs)
 
         self.decoders = tuple(
-            (
-                HeadTailDecoder(tail_decoder=decoder)
-                if isinstance(decoder, (DynamicArrayDecoder, StringDecoder))
-                else decoder
-            ) for decoder in self.decoders
+            HeadTailDecoder(tail_decoder=d) if d.is_dynamic else d
+            for d in self.decoders
         )
+
+        self.is_dynamic = any(d.is_dynamic for d in self.decoders)
 
     def validate(self):
         super().validate()
@@ -144,6 +145,8 @@ class SizedArrayDecoder(BaseArrayDecoder):
 
 
 class DynamicArrayDecoder(BaseArrayDecoder):
+    is_dynamic = True
+
     @to_tuple
     def decode(self, stream):
         array_size = decode_uint_256(stream)
@@ -462,6 +465,8 @@ class SignedRealDecoder(BaseRealDecoder):
 # String and Bytes
 #
 class StringDecoder(SingleDecoder):
+    is_dynamic = True
+
     @staticmethod
     def decoder_fn(data):
         return data

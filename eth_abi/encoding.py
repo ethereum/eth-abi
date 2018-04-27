@@ -59,6 +59,11 @@ class BaseEncoder(BaseCoder, metaclass=abc.ABCMeta):
 class MultiEncoder(BaseEncoder):
     encoders = None
 
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+        self.is_dynamic = any(e.is_dynamic for e in self.encoders)
+
     def validate(self):
         super().validate()
 
@@ -77,7 +82,7 @@ class MultiEncoder(BaseEncoder):
         raw_head_chunks = []
         tail_chunks = []
         for value, encoder in zip(values, self.encoders):
-            if isinstance(encoder, (DynamicArrayEncoder, ByteStringEncoder, TextStringEncoder)):
+            if encoder.is_dynamic:
                 raw_head_chunks.append(None)
                 tail_chunks.append(encoder(value))
             else:
@@ -474,6 +479,8 @@ class BytesEncoder(Fixed32ByteSizeEncoder):
 
 
 class ByteStringEncoder(BaseEncoder):
+    is_dynamic = True
+
     @classmethod
     def encode(cls, value):
         if not is_bytes(value):
@@ -575,6 +582,8 @@ class SizedArrayEncoder(BaseArrayEncoder):
 
 
 class DynamicArrayEncoder(BaseArrayEncoder):
+    is_dynamic = True
+
     def encode(self, value):
         encoded_size = encode_uint_256(len(value))
         encoded_elements = self.encode_elements(value)
