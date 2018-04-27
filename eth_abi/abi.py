@@ -7,8 +7,8 @@ from eth_utils import (
     is_bytes,
 )
 
-from eth_abi.decoding import MultiDecoder
-from eth_abi.encoding import MultiEncoder
+from eth_abi.decoding import TupleDecoder
+from eth_abi.encoding import TupleEncoder
 
 from eth_abi.registry import registry
 
@@ -37,7 +37,7 @@ def encode_abi(types, args):
         for type_str in types
     ]
 
-    encoder = MultiEncoder(encoders=encoders)
+    encoder = TupleEncoder(encoders=encoders)
 
     return encoder(args)
 
@@ -70,7 +70,7 @@ def decode_abi(types, data):
         for type_str in types
     ]
 
-    decoder = MultiDecoder(decoders=decoders)
+    decoder = TupleDecoder(decoders=decoders)
     stream = BytesIO(data)
 
     return decoder(stream)

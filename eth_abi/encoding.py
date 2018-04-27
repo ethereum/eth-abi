@@ -56,7 +56,7 @@ class BaseEncoder(BaseCoder, metaclass=abc.ABCMeta):
         return self.encode(value)
 
 
-class MultiEncoder(BaseEncoder):
+class TupleEncoder(BaseEncoder):
     encoders = None
 
     def __init__(self, **kwargs):

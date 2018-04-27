@@ -43,7 +43,7 @@ from eth_abi.encoding import (
     SignedFixedEncoder,
     UnsignedRealEncoder,
     SignedRealEncoder,
-    MultiEncoder,
+    TupleEncoder,
 )
 
 from eth_abi.utils.numeric import (
@@ -592,8 +592,8 @@ def test_encode_signed_fixed(value,
 
 
 # TODO: make this generic
-def test_multi_encoder():
-    encoder = MultiEncoder(encoders=(
+def test_tuple_encoder():
+    encoder = TupleEncoder(encoders=(
         UnsignedIntegerEncoder(value_bit_size=256),
         ByteStringEncoder(),
     ))

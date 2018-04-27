@@ -34,7 +34,7 @@ from eth_abi.decoding import (
     SignedFixedDecoder,
     StringDecoder,
     BytesDecoder,
-    MultiDecoder,
+    TupleDecoder,
     BooleanDecoder,
     AddressDecoder,
     DynamicArrayDecoder,
@@ -371,9 +371,9 @@ def test_decode_array_of_unsigned_integers(array_size, array_values):
         ),
     ),
 )
-def test_multi_decoder(types, data, expected):
+def test_tuple_decoder(types, data, expected):
     decoders = [registry.get_decoder(t) for t in types]
-    decoder = MultiDecoder(decoders=decoders)
+    decoder = TupleDecoder(decoders=decoders)
     stream = BytesIO(decode_hex(data))
     actual = decoder(stream)
     assert actual == expected

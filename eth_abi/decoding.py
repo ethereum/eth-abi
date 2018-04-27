@@ -58,7 +58,7 @@ class HeadTailDecoder(BaseDecoder):
         return value
 
 
-class MultiDecoder(BaseDecoder):
+class TupleDecoder(BaseDecoder):
     decoders = None
 
     def __init__(self, **kwargs):
