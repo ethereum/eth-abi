@@ -221,6 +221,18 @@ def has_arrlist(type_str):
     )
 
 
+def is_tuple_type(type_str):
+    """
+    A predicate which matches a tuple type string.
+    """
+    try:
+        abi_type = grammar.parse(type_str)
+    except exceptions.ParseError:
+        return False
+
+    return isinstance(abi_type, grammar.TupleType)
+
+
 def _clear_encoder_cache(old_method):
     def new_method(self, *args, **kwargs):
         self.get_encoder.cache_clear()
@@ -389,4 +401,9 @@ registry.register(
     has_arrlist,
     encoding.BaseArrayEncoder, decoding.BaseArrayDecoder,
     label='has_arrlist',
+)
+registry.register(
+    is_tuple_type,
+    encoding.TupleEncoder, decoding.TupleDecoder,
+    label='is_tuple_type',
 )

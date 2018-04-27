@@ -18,6 +18,7 @@ from eth_utils import (
 from eth_abi.base import (
     BaseCoder,
     parse_type_str,
+    parse_tuple_type_str,
 )
 
 from eth_abi.exceptions import (
@@ -102,6 +103,12 @@ class TupleEncoder(BaseEncoder):
         encoded_value = b''.join(head_chunks + tuple(tail_chunks))
 
         return encoded_value
+
+    @parse_tuple_type_str
+    def from_type_str(cls, abi_type, registry):
+        encoders = tuple(registry.get_encoder(str(c)) for c in abi_type.components)
+
+        return cls(encoders=encoders)
 
 
 class FixedSizeEncoder(BaseEncoder):

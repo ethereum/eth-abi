@@ -10,12 +10,14 @@ from eth_utils import (
 from eth_abi.base import (
     BaseCoder,
     parse_type_str,
+    parse_tuple_type_str,
 )
 
 from eth_abi.exceptions import (
     InsufficientDataBytes,
     NonEmptyPaddingBytes,
 )
+
 from eth_abi.utils.numeric import (
     TEN,
     abi_decimal_context,
@@ -81,6 +83,12 @@ class TupleDecoder(BaseDecoder):
     def decode(self, stream):
         for decoder in self.decoders:
             yield decoder(stream)
+
+    @parse_tuple_type_str
+    def from_type_str(cls, abi_type, registry):
+        decoders = tuple(registry.get_decoder(str(c)) for c in abi_type.components)
+
+        return cls(decoders=decoders)
 
 
 class SingleDecoder(BaseDecoder):

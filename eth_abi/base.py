@@ -2,6 +2,7 @@ import functools
 
 from .grammar import (
     BasicType,
+    TupleType,
     normalize,
     parse,
 )
@@ -70,6 +71,39 @@ def parse_type_str(expected_base=None, with_arrlist=False):
         return classmethod(new_from_type_str)
 
     return decorator
+
+
+def parse_tuple_type_str(old_from_type_str):
+    """
+    Used by BaseCoder subclasses as a convenience for implementing the
+    ``from_type_str`` method required by ``ABIRegistry``.  Useful if normalizing
+    then parsing a tuple type string is required in that method.
+    """
+    @functools.wraps(old_from_type_str)
+    def new_from_type_str(cls, type_str, registry):
+        normalized_type_str = normalize(type_str)
+        abi_type = parse(normalized_type_str)
+
+        type_str_repr = repr(type_str)
+        if type_str != normalized_type_str:
+            type_str_repr = '{} (normalized to {})'.format(
+                type_str_repr,
+                repr(normalized_type_str),
+            )
+
+        if not isinstance(abi_type, TupleType):
+            raise ValueError(
+                'Cannot create {} for non-tuple type {}'.format(
+                    cls.__name__,
+                    type_str_repr,
+                )
+            )
+
+        abi_type.validate()
+
+        return old_from_type_str(cls, abi_type, registry)
+
+    return classmethod(new_from_type_str)
 
 
 class BaseCoder:
