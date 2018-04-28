@@ -1,5 +1,6 @@
 import abc
 import decimal
+import io
 
 from eth_utils import (
     big_endian_to_int,
@@ -24,6 +25,47 @@ from eth_abi.utils.numeric import (
     ceil32,
     quantize_value,
 )
+
+
+class ContextFramesBytesIO(io.BytesIO):
+    """
+    A byte stream which can track a series of contextual frames in a stack.
+    """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self._frames = [(0, 0)]
+        self._total_offset = 0
+
+    def seek_in_frame(self, pos, *args, **kwargs):
+        """
+        Seeks relative to the total offset of the current contextual frames.
+        """
+        super().seek(self._total_offset + pos, *args, **kwargs)
+
+    def push_frame(self, offset):
+        """
+        Pushes a new contextual frame onto the stack with the given offset and a
+        return position at the current cursor position then seeks to the new
+        total offset.
+        """
+        self._frames.append((offset, self.tell()))
+        self._total_offset += offset
+
+        self.seek_in_frame(0)
+
+    def pop_frame(self):
+        """
+        Pops the current contextual frame off of the stack and returns the
+        cursor to the frame's return position.
+        """
+        if len(self._frames) == 1:
+            raise IndexError('pop from empty stack')
+
+        offset, return_pos = self._frames.pop()
+        self._total_offset -= offset
+
+        self.seek(return_pos)
 
 
 class BaseDecoder(BaseCoder, metaclass=abc.ABCMeta):
