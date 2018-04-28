@@ -1,13 +1,15 @@
 """
 Vendored from `pyethereum.abi`
 """
-from io import BytesIO
-
 from eth_utils import (
     is_bytes,
 )
 
-from eth_abi.decoding import TupleDecoder
+from eth_abi.decoding import (
+    ContextFramesBytesIO,
+    TupleDecoder,
+)
+
 from eth_abi.encoding import TupleEncoder
 
 from eth_abi.registry import registry
@@ -55,7 +57,7 @@ def decode_single(typ, data):
         type_str = collapse_type(base, sub, arrlist)
 
     decoder = registry.get_decoder(type_str)
-    stream = BytesIO(data)
+    stream = ContextFramesBytesIO(data)
 
     return decoder(stream)
 
@@ -71,6 +73,6 @@ def decode_abi(types, data):
     ]
 
     decoder = TupleDecoder(decoders=decoders)
-    stream = BytesIO(data)
+    stream = ContextFramesBytesIO(data)
 
     return decoder(stream)

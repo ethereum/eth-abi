@@ -93,11 +93,10 @@ class HeadTailDecoder(BaseDecoder):
 
     def decode(self, stream):
         start_pos = decode_uint_256(stream)
-        anchor_pos = stream.tell()
 
-        stream.seek(start_pos)
+        stream.push_frame(start_pos)
         value = self.tail_decoder(stream)
-        stream.seek(anchor_pos)
+        stream.pop_frame()
 
         return value
 
