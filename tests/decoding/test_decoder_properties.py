@@ -20,10 +20,7 @@ from eth_utils import (
 from eth_abi.constants import (
     TT256M1,
 )
-from eth_abi.exceptions import (
-    InsufficientDataBytes,
-    NonEmptyPaddingBytes,
-)
+
 from eth_abi.decoding import (
     ContextFramesBytesIO,
     UnsignedIntegerDecoder,
@@ -40,10 +37,14 @@ from eth_abi.decoding import (
     DynamicArrayDecoder,
 )
 
+from eth_abi.exceptions import (
+    InsufficientDataBytes,
+    NonEmptyPaddingBytes,
+)
+
 from eth_abi.registry import registry
 
 from eth_abi.utils.padding import (
-    fpad32,
     zpad32,
 )
 from eth_abi.utils.numeric import (
