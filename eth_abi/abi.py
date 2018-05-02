@@ -21,12 +21,10 @@ from eth_abi.utils.parsing import (  # noqa: F401
 
 
 def encode_single(typ, arg):
-    try:
-        base, sub, arrlist = typ
-    except ValueError:
+    if isinstance(typ, str):
         type_str = typ
     else:
-        type_str = collapse_type(base, sub, arrlist)
+        type_str = collapse_type(*typ)
 
     encoder = registry.get_encoder(type_str)
 
@@ -49,12 +47,10 @@ def decode_single(typ, data):
     if not is_bytes(data):
         raise TypeError("The `data` value must be of bytes type.  Got {0}".format(type(data)))
 
-    try:
-        base, sub, arrlist = typ
-    except ValueError:
+    if isinstance(typ, str):
         type_str = typ
     else:
-        type_str = collapse_type(base, sub, arrlist)
+        type_str = collapse_type(*typ)
 
     decoder = registry.get_decoder(type_str)
     stream = ContextFramesBytesIO(data)
