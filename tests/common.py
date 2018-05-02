@@ -49,37 +49,8 @@ def words(*descriptions: str) -> bytes:
 
 CORRECT_TUPLE_ENCODINGS = [
     # (type string, python value, byte string)
-    (
-        '(bytes32,bytes32)',
-        (zpad32_right(b'a'), zpad32_right(b'b')),
-        words('61>0', '62>0'),
-    ),
-    (
-        '(bytes32[])',
-        ((zpad32_right(b'a'), zpad32_right(b'b')),),
-        words('20', '2', '61>0', '62>0'),
-    ),
-    (
-        '(uint32,uint32)',
-        (6, 1),
-        words('6', '1'),
-    ),
-    (
-        '(uint32,uint32)',
-        (2 ** 32 - 1, 2 ** 32 - 1),
-        words('ffffffff', 'ffffffff'),
-    ),
-    (
-        '(address,uint32,bytes32,int32)',
-        ('0x82a978b3f5962a5b0957d9ee9eef472ee55b42f1', 1, zpad32_right(b'stupid pink animal'), 0),
-        words('82a978b3f5962a5b0957d9ee9eef472ee55b42f1', '1', '7374757069642070696e6b20616e696d616c>0', '0'),
-    ),
-    (
-        '(uint256,bytes)',
-        (0, b''),
-        words('0', '40', '0', '0'),
-    ),
-    # empty tuples
+
+    # Empty tuples
     (
         '()', (), b'',
     ),
@@ -88,11 +59,49 @@ CORRECT_TUPLE_ENCODINGS = [
         ((), ((), ((), ()))),
         b'',
     ),
-    # nested tuples
+
+    # Static tuples
+    (
+        '(uint32)',
+        (6,),
+        words('6'),
+    ),
+    (
+        '(uint32,uint32)',
+        (2 ** 32 - 1, 2 ** 32 - 1),
+        words('ffffffff', 'ffffffff'),
+    ),
+    (
+        '(bytes32,bytes32)',
+        (zpad32_right(b'a'), zpad32_right(b'b')),
+        words('61>0', '62>0'),
+    ),
+    (
+        '(address,uint32,bytes32,int32)',
+        ('0x82a978b3f5962a5b0957d9ee9eef472ee55b42f1', 1, zpad32_right(b'stupid pink animal'), 0),
+        words('82a978b3f5962a5b0957d9ee9eef472ee55b42f1', '1', '7374757069642070696e6b20616e696d616c>0', '0'),
+    ),
+
+    # Dynamic tuples
+    (
+        '(bytes32[])',
+        ((zpad32_right(b'a'), zpad32_right(b'b')),),
+        words('20', '2', '61>0', '62>0'),
+    ),
+    (
+        '(uint256,bytes)',
+        (0, b''),
+        words('0', '40', '0', '0'),
+    ),
     (
         '(int,(int,int[]))',
         (1, (2, (3, 3))),
         words('1', '40', '2', '40', '2', '3', '3')
+    ),
+    (
+        '((int[],int),int)',
+        (((1, 1), 2), 3),
+        words('40', '3', '40', '2', '2', '1', '1')
     ),
     (
         '((bytes,bool),(bytes,bool))',
