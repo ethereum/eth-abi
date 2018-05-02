@@ -12,7 +12,7 @@ from eth_abi.registry import (
     BaseEquals,
 )
 
-from ..common.strategies import (
+from tests.common.strategies import (
     malformed_type_strs,
     type_strs,
 )

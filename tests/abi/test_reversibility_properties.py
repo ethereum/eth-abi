@@ -10,7 +10,7 @@ from eth_abi import (
     decode_single,
 )
 
-from ..common.strategies import (
+from tests.common.strategies import (
     multi_strs_values,
     single_strs_values,
 )
