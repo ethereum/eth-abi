@@ -79,6 +79,37 @@ CORRECT_TUPLE_ENCODINGS = [
         (0, b''),
         words('0', '40', '0', '0'),
     ),
+    # empty tuples
+    (
+        '()', (), b'',
+    ),
+    (
+        '((),((),((),())))',
+        ((), ((), ((), ()))),
+        b'',
+    ),
+    # nested tuples
+    (
+        '(int,(int,int[]))',
+        (1, (2, (3, 3))),
+        words('1', '40', '2', '40', '2', '3', '3')
+    ),
+    (
+        '((bytes,bool),(bytes,bool))',
+        ((b'david attenborough', False), (b'boaty mcboatface', True)),
+        words(
+            '40',  # offset of first (bytes,bool)
+            'c0',  # offset of second (bytes,bool)
+            '40',  # offset of bytes in first (bytes,bool)
+            '0',  # encoding for `False`
+            '12',  # length of b'david attenborough'
+            '646176696420617474656e626f726f756768>0',  # encoding of b'david attenborough'
+            '40',  # offset of bytes in second (bytes,bool)
+            '1',  # encoding for `True`
+            '10',  # length of b'boaty mcboatface'
+            '626f617479206d63626f617466616365>0',  # encoding of b'boaty mcboatface'
+        )
+    ),
 ]
 
 CORRECT_SINGLE_ENCODINGS = CORRECT_TUPLE_ENCODINGS + [
