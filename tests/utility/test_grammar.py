@@ -193,7 +193,7 @@ def test_valid_abi_types(type_str):
 @pytest.mark.parametrize(
     'type_str, normalized',
     tuple(TYPE_ALIASES.items()) + (
-        ('(int,uint,fixed,ufixed)', '(int256,uint256,fixed128x19,ufixed128x19)'),
+        ('(int,uint,fixed,ufixed)', '(int256,uint256,fixed128x18,ufixed128x18)'),
         ('(function,function,function)', '(bytes24,bytes24,bytes24)'),
     ),
 )

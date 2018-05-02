@@ -17,8 +17,8 @@ from eth_abi.utils.parsing import (
         ('uint[]', ('uint', '256', [[]])),
         ('int[2]', ('int', '256', [[2]])),
         ('function', ('bytes', '24', [])),
-        ('fixed', ('fixed', '128x19', [])),
-        ('ufixed', ('ufixed', '128x19', [])),
+        ('fixed', ('fixed', '128x18', [])),
+        ('ufixed', ('ufixed', '128x18', [])),
     )
 )
 def test_process_type(typestr, expected_parse):

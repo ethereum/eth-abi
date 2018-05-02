@@ -335,8 +335,8 @@ class BasicType(ABIType):
 TYPE_ALIASES = {
     'int': 'int256',
     'uint': 'uint256',
-    'fixed': 'fixed128x19',
-    'ufixed': 'ufixed128x19',
+    'fixed': 'fixed128x18',
+    'ufixed': 'ufixed128x18',
     'function': 'bytes24',
 }
 
