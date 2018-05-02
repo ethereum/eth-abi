@@ -4,7 +4,10 @@ import pytest
 from eth_abi.base import (
     BaseCoder,
     parse_type_str,
+    parse_tuple_type_str,
 )
+
+from eth_abi.grammar import BasicType
 
 
 class Coder(BaseCoder):
@@ -38,6 +41,14 @@ class IntArrayCoder(ArrayCoder):
     @parse_type_str('int', with_arrlist=True)
     def from_type_str(cls, abi_type, registry):
         return cls(base=abi_type.base, sub=abi_type.sub, arrlist=abi_type.arrlist)
+
+
+class TupleCoder(BaseCoder):
+    components = None
+
+    @parse_tuple_type_str
+    def from_type_str(cls, abi_type, registry):
+        return cls(components=abi_type.components)
 
 
 def test_base_coder_requires_that_settings_are_known():
@@ -104,3 +115,22 @@ def test_parse_type_str_distinguishes_non_array_and_array_types():
         IntCoder.from_type_str('int256[]', None)
     with pytest.raises(ValueError, match='expected type with array dimension list'):
         IntArrayCoder.from_type_str('int256', None)
+
+
+def test_parse_tuple_type_str_normalizes_and_parses_types():
+    tuple_coder = TupleCoder.from_type_str('(int,int)', None)
+
+    assert tuple_coder.components == (
+        BasicType('int', 256, None),
+        BasicType('int', 256, None),
+    )
+
+
+def test_parse_tuple_type_str_validates_standard_types():
+    with pytest.raises(ValueError, match='integer size must be multiple of 8'):
+        TupleCoder.from_type_str('(int255,int)', None)
+
+
+def test_parse_tuple_type_str_distinguishes_non_tuple_and_tuple_types():
+    with pytest.raises(ValueError, match='Cannot create TupleCoder for non-tuple type'):
+        TupleCoder.from_type_str('int256', None)

@@ -18,6 +18,11 @@ def test_decode_abi(type_str, expected, byte_str):
     assert actual == expected
 
 
-def test_empty_data_raises():
+def test_decode_abi_empty_data_raises():
     with pytest.raises(DecodingError):
         decode_abi(['uint32', 'uint32'], b'')
+
+
+def test_decode_abi_wrong_data_type_raises():
+    with pytest.raises(TypeError):
+        decode_abi(['uint32', 'uint32'], '')
