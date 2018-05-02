@@ -2,7 +2,7 @@ import pytest
 
 from eth_abi.abi import decode_single
 
-from ..common import CORRECT_SINGLE_ENCODINGS
+from ..common.unit import CORRECT_SINGLE_ENCODINGS
 
 
 @pytest.mark.parametrize('typ,expected,byte_str', CORRECT_SINGLE_ENCODINGS)
