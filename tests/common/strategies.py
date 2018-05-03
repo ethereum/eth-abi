@@ -220,6 +220,44 @@ single_strs_values = st.one_of(
 )
 
 
+def to_tuple(xs):
+    if not isinstance(xs, list):
+        return xs
+
+    return tuple(to_tuple(x) for x in xs)
+
+
+def destructure_tuple_example(xs):
+    def _recur(xs, type_strs, values):
+        if not isinstance(xs, list):
+            type_strs.append(xs[0])
+            values.append(xs[1])
+            return
+
+        _type_strs = []
+        _values = []
+        for ys in xs:
+            _recur(ys, _type_strs, _values)
+
+        type_strs.append(_type_strs)
+        values.append(_values)
+
+    type_strs = []
+    values = []
+    _recur(xs, type_strs, values)
+
+    return join_tuple(type_strs[0]), to_tuple(values[0])
+
+
+tuple_strs_values = st.recursive(
+    st.lists(single_strs_values, min_size=0, max_size=10),
+    lambda this_strategy: st.lists(
+        st.one_of(single_strs_values, this_strategy),
+        min_size=0, max_size=10,
+    ),
+).map(destructure_tuple_example)
+
+
 def unzip_strs_values(strs_values):
     type_strs, type_values = zip(*strs_values)
 
