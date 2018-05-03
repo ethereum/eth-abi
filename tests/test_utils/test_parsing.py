@@ -30,6 +30,11 @@ def test_process_type_requires_string_type():
         process_type(b'uint256')
 
 
+def test_process_type_requires_basic_type():
+    with pytest.raises(ValueError):
+        process_type('(int,int)')
+
+
 @pytest.mark.parametrize(
     'typestr',
     (
