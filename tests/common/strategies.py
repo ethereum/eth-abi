@@ -212,19 +212,19 @@ sized_array_strs_values = num_sized_elements.flatmap(
     ])
 )
 
-
-def unzip_strs_values(strs_values):
-    type_strs, type_values = zip(*strs_values)
-
-    return tuple(type_strs), tuple(type_values)
-
-
 single_strs_values = st.one_of(
     unsized_array_strs_values,
     sized_array_strs_values,
     non_array_strs_values,
     bytes_strs_and_values,
 )
+
+
+def unzip_strs_values(strs_values):
+    type_strs, type_values = zip(*strs_values)
+
+    return tuple(type_strs), tuple(type_values)
+
 
 multi_strs_values = st.lists(
     single_strs_values,
