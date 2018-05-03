@@ -18,7 +18,7 @@ from tests.common.strategies import (
 
 @settings(max_examples=1000)
 @given(multi_strs_values)
-def test_multi_abi_reversability(types_and_values):
+def test_multi_abi_reversibility(types_and_values):
     """
     Tests round trip encoding and decoding for basic types and lists of basic
     types.
@@ -31,7 +31,7 @@ def test_multi_abi_reversability(types_and_values):
 
 @settings(max_examples=1000)
 @given(single_strs_values)
-def test_single_abi_reversability(type_and_value):
+def test_single_abi_reversibility(type_and_value):
     """
     Tests round trip encoding and decoding for basic types and lists of basic
     types.
