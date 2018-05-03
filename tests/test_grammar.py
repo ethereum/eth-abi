@@ -19,7 +19,7 @@ from eth_abi.grammar import (
     parse,
 )
 
-from ..common.strategies import (
+from .common.strategies import (
     malformed_type_strs,
     type_strs,
 )
