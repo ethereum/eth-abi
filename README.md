@@ -57,19 +57,27 @@ Example:
 
 ### Encoding
 
-These functions are intended for encoding python values into representations
-that are suitable for interacting with the EVM.
+Encoding functions convert python values into abi-encoded binary data that can
+be sent to the EVM.
 
-* `eth_abi.encode_single(type, value)`
+#### `eth_abi.encode_single(typ, arg)`
 
-This function encodes `value` in the ABI encoding for the provided `type`.
+Attempts to encode the python value `arg` into an abi-encoded binary
+representation for the abi type `typ`.
+
+**Arguments:**
+* `typ` - A `str` value representing an abi type e.g. `'uint256'`, `'bytes[]'`,
+  `'(int,int)'`, etc.
+* `arg` - A python value that can be encoded into a binary representation for
+  the abi type `typ`.
+
+**Returns:** A `bytes` value that contains an abi-encoded binary representation
+of the python value `arg`.
 
 ```python
 >>> encode_single('uint256', 12345)
 b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0009'
 ```
-
-The **value** parameter is expected to be one of the recognized EVM types.
 
 * `eth_abi.encode_abi(types, values)`
 
