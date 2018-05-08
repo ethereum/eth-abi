@@ -7,19 +7,15 @@
 
 Python utilities for working with the Ethereum ABI
 
-
 ## Installation
 
 ```sh
 pip install eth-abi
 ```
 
-
-
 ## Documentation
 
 ### Decoding
-
 
 These functions are intended for decoding return values from the EVM.
 
@@ -61,7 +57,6 @@ of the recognized EVM types.
 
 ### Encoding
 
-
 These functions are intended for encoding python values into representations
 that are suitable for interacting with the EVM.
 
@@ -99,7 +94,6 @@ provided by the `types` argument.
 The **values** parameter is expected to be an iterable whose values are all one
 of the recognized EVM types.
 
-
 ## Development
 
 Clone the repository and then run:
@@ -107,7 +101,6 @@ Clone the repository and then run:
 ```sh
 pip install -e . -r requirements-dev.txt
 ```
-
 
 ### Running the tests
 
@@ -118,7 +111,6 @@ py.test tests
 ```
 
 Or you can install `tox` to run the full test suite.
-
 
 ### Releasing
 
