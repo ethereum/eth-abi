@@ -522,11 +522,12 @@ class ByteStringEncoder(BaseEncoder):
     def encode(cls, value):
         cls.validate_value(value)
 
-        encoded_size = encode_uint_256(len(value))
         if not value:
             padded_value = b'\x00' * 32
         else:
             padded_value = zpad_right(value, ceil32(len(value)))
+
+        encoded_size = encode_uint_256(len(value))
         encoded_value = encoded_size + padded_value
 
         return encoded_value
@@ -555,11 +556,12 @@ class TextStringEncoder(BaseEncoder):
 
         value_as_bytes = codecs.encode(value, 'utf8')
 
-        encoded_size = encode_uint_256(len(value_as_bytes))
         if not value_as_bytes:
             padded_value = b'\x00' * 32
         else:
             padded_value = zpad_right(value_as_bytes, ceil32(len(value_as_bytes)))
+
+        encoded_size = encode_uint_256(len(value_as_bytes))
         encoded_value = encoded_size + padded_value
 
         return encoded_value
