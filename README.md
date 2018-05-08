@@ -31,8 +31,6 @@ the provided `type`.  This function accepts data of type bytes.
 
 The **value** parameter is expected to be one of the recognized EVM types.
 
-**Note: This function cannot be used to decode dynamic or array types such as `bytes32[]`.**
-
 * `eth_abi.decode_abi(types, data)`
 
 This function decodes `data` into the python type corresponding to the provided
@@ -63,8 +61,6 @@ b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x
 ```
 
 The **value** parameter is expected to be one of the recognized EVM types.
-
-**Note: This function cannot be used to encode array types such as `bytes32[]`.**
 
 * `eth_abi.encode_abi(types, values)`
 
