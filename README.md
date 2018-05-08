@@ -21,16 +21,19 @@ python values.
 
 #### `eth_abi.decode_single(typ, data)`
 
-Attempts to decode the binary data in `data` into a python value for the abi
-type `typ`.
+Attempts to decode the abi-encoded bytes in `data` into an equivalent python
+value for the abi type `typ`.
 
-Arguments:
+**Arguments:**
 * `typ` - A `str` value representing an abi type e.g. `'uint256'`, `'bytes[]'`,
   `'(int,int)'`, etc.
 * `data` - A `bytes` or `bytearray` value that contains abi-encoded data for a
   value of the abi type `typ`.
 
-Example:
+**Returns:** A python value that is equivalent to the abi-encoded value in
+`data`.
+
+**Example:**
 ```python
 >>> decode_single('uint256', b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0009')
 12345
@@ -38,21 +41,24 @@ Example:
 
 #### `eth_abi.decode_abi(types, data)`
 
-Attempts to decode the binary data in `data` into a sequence of python values
-for the abi types given in `types`.
+Attempts to decode the abi-encoded binary data in `data` into a sequence of
+equivalent python values for the abi types given in `types`.
 
-Arguments:
+**Arguments:**
 * `types` - An iterable of `str` values representing a sequence of abi types
   e.g.  `('uint256', 'bytes[]', '(int,int)')`
 * `data` - A `bytes` or `bytearray` value that contains abi-encoded data for a
   sequence of values of the abi types in `types`.
 
-Example:
+**Returns:** A tuple of python values that are equivalent to the abi-encoded
+values in `data`.
+
+**Example:**
 ```python
 >>> decode_abi(['uint256'], b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0009')
-[12345]
->>> decode_abi(['bytes32', 'bytes32'], b'a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00b\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00')
-['a', 'b']
+(12345,)
+>>> decode_abi(['bytes1', 'bytes1'], b'a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00b\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00')
+(b'a', b'b')
 ```
 
 ### Encoding
