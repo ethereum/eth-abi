@@ -53,12 +53,11 @@ class BaseEncoder(BaseCoder, metaclass=abc.ABCMeta):
         """
         pass
 
+    @abc.abstractmethod
     def validate_value(self, value):
         """
         Determines whether or not the given value can be encoded by this
-        encoder.  Encoder classes can implement validation of values if desired.
-        By default, this method does nothing and an encoder will attempt to
-        encode any value it is given.
+        encoder.
         """
         pass
 
