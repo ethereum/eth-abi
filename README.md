@@ -24,10 +24,10 @@ pip install eth-abi
 These functions are intended for decoding return values from the EVM.
 
 
-* ``eth_abi.decode_single(type, data)``
+* `eth_abi.decode_single(type, data)`
 
-This function tries to decode ``data`` into the python type that corresponds
-to the provided ``type``.  This function accepts data of type bytes.
+This function tries to decode `data` into the python type that corresponds
+to the provided `type`.  This function accepts data of type bytes.
 
 
 .. code-block:: python
@@ -39,13 +39,13 @@ to the provided ``type``.  This function accepts data of type bytes.
 The **value** parameter is expected to be one of the recognized EVM types.
 
 
-.. note:: This function cannot be used to decode dynamic or array types such as ``bytes32[]``.
+.. note:: This function cannot be used to decode dynamic or array types such as `bytes32[]`.
 
 
-* ``eth_abi.decode_abi(types, data)``
+* `eth_abi.decode_abi(types, data)`
 
-This function decodes ``data`` into the python type corresponding to the
-provided ``types``.  This function accepts arrays of type byte.
+This function decodes `data` into the python type corresponding to the
+provided `types`.  This function accepts arrays of type byte.
 
 
 .. code-block:: python
@@ -66,9 +66,9 @@ These functions are intended for encoding python values into representations
 that are suitable for interacting with the EVM.
 
 
-* ``eth_abi.encode_single(type, value)``
+* `eth_abi.encode_single(type, value)`
 
-This function encodes ``value`` in the ABI encoding for the provided ``type``.
+This function encodes `value` in the ABI encoding for the provided `type`.
 
 
 .. code-block:: python
@@ -79,13 +79,13 @@ This function encodes ``value`` in the ABI encoding for the provided ``type``.
 
 The **value** parameter is expected to be one of the recognized EVM types.
 
-.. note:: This function cannot be used to encode array types such as ``bytes32[]``.
+.. note:: This function cannot be used to encode array types such as `bytes32[]`.
 
 
-* ``eth_abi.encode_abi(types, values)``
+* `eth_abi.encode_abi(types, values)`
 
-This function encodes ``values`` in the ABI encoding for the corresponding type
-provided by the ``types`` argument.
+This function encodes `values` in the ABI encoding for the corresponding type
+provided by the `types` argument.
 
 
 .. code-block:: python
