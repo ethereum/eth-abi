@@ -4,7 +4,7 @@
 [![Documentation Status](https://readthedocs.org/projects/eth-abi/badge/?version=latest)](https://readthedocs.org/projects/eth-abi/?badge=latest)
 [![PyPi version](https://img.shields.io/pypi/v/eth-abi.svg)](https://pypi.python.org/pypi/eth-abi)
 
-Python utilities for working with the Ethereum ABI
+Python utilities for working with the Ethereum ABI.
 
 ## Installation
 
