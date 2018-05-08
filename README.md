@@ -85,10 +85,19 @@ of the python value `arg`.
 b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0009'
 ```
 
-* `eth_abi.encode_abi(types, values)`
+#### `eth_abi.encode_abi(types, args)`
 
-This function encodes `values` in the ABI encoding for the corresponding type
-provided by the `types` argument.
+Attempts to encode the sequence of python values in `args` into an abi-encoded
+binary representation for the abi types in `types`.
+
+**Arguments:**
+* `types` - An iterable of `str` values representing a sequence of abi types
+  e.g.  `('uint256', 'bytes[]', '(int,int)')`
+* `args` - An iterable of python values that can be encoded into a binary
+  representation for the abi types in `types`.
+
+**Returns:** A `bytes` value that contains an abi-encoded binary representation
+of the python values in `args`.
 
 ```python
 >>> encode_abi(['uint256'], [12345])
@@ -96,9 +105,6 @@ b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x
 >>> encode_abi(['bytes32', 'bytes32'], ['a', 'b'])
 b'a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00b\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
 ```
-
-The **values** parameter is expected to be an iterable whose values are all one
-of the recognized EVM types.
 
 ## Development
 
