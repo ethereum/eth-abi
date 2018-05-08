@@ -10,9 +10,11 @@ from hypothesis import (
 from eth_abi.registry import (
     Equals,
     BaseEquals,
+    has_arrlist,
+    is_tuple_type,
 )
 
-from .abi_type_strategies import (
+from tests.common.strategies import (
     malformed_type_strs,
     type_strs,
 )
@@ -87,18 +89,6 @@ def test_base_equals_has_expected_behavior_for_parsable_types(type_str):
         event('No match for other base')
 
 
-@given(malformed_type_strs)
-def test_base_equals_has_expected_behavior_for_malformed_types(malformed_type_str):
-    is_int = BaseEquals('int')
-    is_int_with_sub = BaseEquals('int', with_sub=True)
-    is_int_with_no_sub = BaseEquals('int', with_sub=False)
-
-    # Should not match unparsable types
-    assert not is_int(malformed_type_str)
-    assert not is_int_with_sub(malformed_type_str)
-    assert not is_int_with_no_sub(malformed_type_str)
-
-
 def test_base_equals_can_be_dict_key():
     pred = BaseEquals('foo')
     assert {pred: 'bar'}[pred] == 'bar'
@@ -114,3 +104,49 @@ def test_base_equals_has_expected_repr():
         repr(BaseEquals('foo', with_sub=False))
         == "<BaseEquals (base == 'foo' and sub is None)>"
     )
+
+
+@given(type_strs)
+def test_has_arrlist_has_expected_behavior_for_parsable_types(type_str):
+    # Should not match tuple types
+    if type_str.startswith('('):
+        assert not has_arrlist(type_str)
+        event('No match for tuple type')
+
+    # Should match array types
+    elif ARRAY_RE.search(type_str):
+        assert has_arrlist(type_str)
+        event('Match for array type')
+
+    # Should not match any other types
+    else:
+        assert not has_arrlist(type_str)
+        event('No match for non-array type')
+
+
+@given(type_strs)
+def test_is_tuple_type_has_expected_behavior_for_parsable_types(type_str):
+    # Should match tuple types
+    if type_str.startswith('('):
+        assert is_tuple_type(type_str)
+        event('Match for tuple type')
+
+    # Should not match any other types
+    else:
+        assert not is_tuple_type(type_str)
+        event('No match for non-tuple type')
+
+
+@given(malformed_type_strs)
+def test_predicates_have_expected_behavior_for_malformed_types(malformed_type_str):
+    is_int = BaseEquals('int')
+    is_int_with_sub = BaseEquals('int', with_sub=True)
+    is_int_with_no_sub = BaseEquals('int', with_sub=False)
+
+    # Should not match unparsable types
+    assert not is_int(malformed_type_str)
+    assert not is_int_with_sub(malformed_type_str)
+    assert not is_int_with_no_sub(malformed_type_str)
+
+    assert not has_arrlist(malformed_type_str)
+    assert not is_tuple_type(malformed_type_str)

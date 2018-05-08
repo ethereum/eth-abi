@@ -1,7 +1,6 @@
 import pytest
 
 import decimal
-from io import BytesIO
 import sys
 
 from hypothesis import (
@@ -21,11 +20,9 @@ from eth_utils import (
 from eth_abi.constants import (
     TT256M1,
 )
-from eth_abi.exceptions import (
-    InsufficientDataBytes,
-    NonEmptyPaddingBytes,
-)
+
 from eth_abi.decoding import (
+    ContextFramesBytesIO,
     UnsignedIntegerDecoder,
     SignedIntegerDecoder,
     UnsignedRealDecoder,
@@ -34,16 +31,20 @@ from eth_abi.decoding import (
     SignedFixedDecoder,
     StringDecoder,
     BytesDecoder,
-    MultiDecoder,
+    TupleDecoder,
     BooleanDecoder,
     AddressDecoder,
     DynamicArrayDecoder,
 )
 
+from eth_abi.exceptions import (
+    InsufficientDataBytes,
+    NonEmptyPaddingBytes,
+)
+
 from eth_abi.registry import registry
 
 from eth_abi.utils.padding import (
-    fpad32,
     zpad32,
 )
 from eth_abi.utils.numeric import (
@@ -112,7 +113,7 @@ def test_decode_unsigned_int(integer_bit_size, stream_bytes, data_byte_size):
         )
 
 
-    stream = BytesIO(stream_bytes)
+    stream = ContextFramesBytesIO(stream_bytes)
     actual_value = big_endian_to_int(stream_bytes[:data_byte_size])
 
     if len(stream_bytes) < data_byte_size:
@@ -159,7 +160,7 @@ def test_decode_signed_int(integer_bit_size, stream_bytes, data_byte_size):
         )
 
 
-    stream = BytesIO(stream_bytes)
+    stream = ContextFramesBytesIO(stream_bytes)
 
     padding_bytes = data_byte_size - integer_bit_size // 8
 
@@ -195,7 +196,7 @@ def test_decode_bytes_and_string(string_bytes, pad_size):
     size_bytes = zpad32(int_to_big_endian(len(string_bytes)))
     padded_string_bytes = string_bytes + b'\x00' * pad_size
     stream_bytes = size_bytes + padded_string_bytes
-    stream = BytesIO(stream_bytes)
+    stream = ContextFramesBytesIO(stream_bytes)
 
     decoder = StringDecoder()
 
@@ -214,7 +215,7 @@ def test_decode_bytes_and_string(string_bytes, pad_size):
     data_byte_size=st.integers(min_value=1, max_value=32),
 )
 def test_decode_boolean(stream_bytes, data_byte_size):
-    stream = BytesIO(stream_bytes)
+    stream = ContextFramesBytesIO(stream_bytes)
 
     decoder = BooleanDecoder(data_byte_size=data_byte_size)
 
@@ -264,7 +265,7 @@ def test_decode_bytes_xx(value_byte_size, stream_bytes, data_byte_size):
             data_byte_size=data_byte_size,
         )
 
-    stream = BytesIO(stream_bytes)
+    stream = ContextFramesBytesIO(stream_bytes)
     actual_value = stream_bytes[:value_byte_size]
     padding_bytes = stream_bytes[value_byte_size:data_byte_size]
 
@@ -301,7 +302,7 @@ def test_decode_address(address_bytes, padding_size, data_byte_size):
             data_byte_size=data_byte_size,
         )
 
-    stream = BytesIO(stream_bytes)
+    stream = ContextFramesBytesIO(stream_bytes)
     padding_bytes = stream_bytes[:data_byte_size][:-20]
 
     if len(stream_bytes) < data_byte_size:
@@ -335,7 +336,7 @@ def test_decode_array_of_unsigned_integers(array_size, array_values):
     decoder = DynamicArrayDecoder(
         item_decoder=UnsignedIntegerDecoder(value_bit_size=256),
     )
-    stream = BytesIO(stream_bytes)
+    stream = ContextFramesBytesIO(stream_bytes)
 
     if len(array_values) < array_size:
         with pytest.raises(InsufficientDataBytes):
@@ -371,10 +372,10 @@ def test_decode_array_of_unsigned_integers(array_size, array_values):
         ),
     ),
 )
-def test_multi_decoder(types, data, expected):
+def test_tuple_decoder(types, data, expected):
     decoders = [registry.get_decoder(t) for t in types]
-    decoder = MultiDecoder(decoders=decoders)
-    stream = BytesIO(decode_hex(data))
+    decoder = TupleDecoder(decoders=decoders)
+    stream = ContextFramesBytesIO(decode_hex(data))
     actual = decoder(stream)
     assert actual == expected
 
@@ -418,7 +419,7 @@ def test_decode_unsigned_real(high_bit_size,
             data_byte_size=data_byte_size,
         )
 
-    stream = BytesIO(stream_bytes)
+    stream = ContextFramesBytesIO(stream_bytes)
     padding_bytes = stream_bytes[:data_byte_size][:data_byte_size - integer_bit_size // 8]
 
     if len(stream_bytes) < data_byte_size:
@@ -488,7 +489,7 @@ def test_decode_signed_real(high_bit_size,
             data_byte_size=data_byte_size,
         )
 
-    stream = BytesIO(stream_bytes)
+    stream = ContextFramesBytesIO(stream_bytes)
 
     padding_offset = data_byte_size - integer_bit_size // 8
     data_offset = padding_offset + integer_bit_size // 8
@@ -555,7 +556,7 @@ def test_decode_unsigned_fixed(value_bit_size,
         data_byte_size=data_byte_size,
     )
 
-    stream = BytesIO(stream_bytes)
+    stream = ContextFramesBytesIO(stream_bytes)
     padding_bytes = stream_bytes[:data_byte_size][:data_byte_size - value_bit_size // 8]
 
     if len(stream_bytes) < data_byte_size:
@@ -598,7 +599,7 @@ def test_decode_signed_fixed(value_bit_size,
         data_byte_size=data_byte_size,
     )
 
-    stream = BytesIO(stream_bytes)
+    stream = ContextFramesBytesIO(stream_bytes)
 
     padding_offset = data_byte_size - value_bit_size // 8
     data_offset = padding_offset + value_bit_size // 8

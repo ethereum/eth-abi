@@ -10,15 +10,16 @@ from eth_abi import (
     decode_single,
 )
 
-from .abi_type_strategies import (
+from tests.common.strategies import (
     multi_strs_values,
     single_strs_values,
+    tuple_strs_values,
 )
 
 
 @settings(max_examples=1000)
 @given(multi_strs_values)
-def test_multi_abi_reversability(types_and_values):
+def test_multi_abi_reversibility(types_and_values):
     """
     Tests round trip encoding and decoding for basic types and lists of basic
     types.
@@ -31,10 +32,21 @@ def test_multi_abi_reversability(types_and_values):
 
 @settings(max_examples=1000)
 @given(single_strs_values)
-def test_single_abi_reversability(type_and_value):
+def test_single_abi_reversibility(type_and_value):
     """
     Tests round trip encoding and decoding for basic types and lists of basic
     types.
+    """
+    _type, value = type_and_value
+    encoded_value = encode_single(_type, value)
+    decoded_value = decode_single(_type, encoded_value)
+    assert value == decoded_value
+
+
+@given(tuple_strs_values)
+def test_single_abi_tuple_reversibility(type_and_value):
+    """
+    Tests round trip encoding and decoding for tuple types.
     """
     _type, value = type_and_value
     encoded_value = encode_single(_type, value)

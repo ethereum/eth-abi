@@ -221,6 +221,18 @@ def has_arrlist(type_str):
     )
 
 
+def is_tuple_type(type_str):
+    """
+    A predicate which matches a tuple type string.
+    """
+    try:
+        abi_type = grammar.parse(type_str)
+    except exceptions.ParseError:
+        return False
+
+    return isinstance(abi_type, grammar.TupleType)
+
+
 def _clear_encoder_cache(old_method):
     def new_method(self, *args, **kwargs):
         self.get_encoder.cache_clear()
@@ -326,9 +338,14 @@ class ABIRegistry:
 registry = ABIRegistry()
 
 registry.register(
-    has_arrlist,
-    encoding.BaseArrayEncoder, decoding.BaseArrayDecoder,
-    label='has_arrlist',
+    BaseEquals('uint'),
+    encoding.UnsignedIntegerEncoder, decoding.UnsignedIntegerDecoder,
+    label='uint',
+)
+registry.register(
+    BaseEquals('int'),
+    encoding.SignedIntegerEncoder, decoding.SignedIntegerDecoder,
+    label='int',
 )
 registry.register(
     BaseEquals('address'),
@@ -341,34 +358,14 @@ registry.register(
     label='bool',
 )
 registry.register(
-    BaseEquals('bytes', with_sub=True),
-    encoding.BytesEncoder, decoding.BytesDecoder,
-    label='bytes<M>',
+    BaseEquals('ufixed'),
+    encoding.UnsignedFixedEncoder, decoding.UnsignedFixedDecoder,
+    label='ufixed',
 )
 registry.register(
-    BaseEquals('function'),
-    encoding.BytesEncoder, decoding.BytesDecoder,
-    label='function',
-)
-registry.register(
-    BaseEquals('bytes', with_sub=False),
-    encoding.ByteStringEncoder, decoding.ByteStringDecoder,
-    label='bytes',
-)
-registry.register(
-    BaseEquals('int'),
-    encoding.SignedIntegerEncoder, decoding.SignedIntegerDecoder,
-    label='int',
-)
-registry.register(
-    BaseEquals('string'),
-    encoding.TextStringEncoder, decoding.StringDecoder,
-    label='string',
-)
-registry.register(
-    BaseEquals('uint'),
-    encoding.UnsignedIntegerEncoder, decoding.UnsignedIntegerDecoder,
-    label='uint',
+    BaseEquals('fixed'),
+    encoding.SignedFixedEncoder, decoding.SignedFixedDecoder,
+    label='fixed',
 )
 registry.register(
     BaseEquals('ureal'),
@@ -381,12 +378,32 @@ registry.register(
     label='real',
 )
 registry.register(
-    BaseEquals('ufixed'),
-    encoding.UnsignedFixedEncoder, decoding.UnsignedFixedDecoder,
-    label='ufixed',
+    BaseEquals('bytes', with_sub=True),
+    encoding.BytesEncoder, decoding.BytesDecoder,
+    label='bytes<M>',
 )
 registry.register(
-    BaseEquals('fixed'),
-    encoding.SignedFixedEncoder, decoding.SignedFixedDecoder,
-    label='fixed',
+    BaseEquals('bytes', with_sub=False),
+    encoding.ByteStringEncoder, decoding.ByteStringDecoder,
+    label='bytes',
+)
+registry.register(
+    BaseEquals('function'),
+    encoding.BytesEncoder, decoding.BytesDecoder,
+    label='function',
+)
+registry.register(
+    BaseEquals('string'),
+    encoding.TextStringEncoder, decoding.StringDecoder,
+    label='string',
+)
+registry.register(
+    has_arrlist,
+    encoding.BaseArrayEncoder, decoding.BaseArrayDecoder,
+    label='has_arrlist',
+)
+registry.register(
+    is_tuple_type,
+    encoding.TupleEncoder, decoding.TupleDecoder,
+    label='is_tuple_type',
 )

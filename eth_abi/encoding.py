@@ -1,7 +1,7 @@
+from itertools import accumulate
 import abc
 import codecs
 import decimal
-import itertools
 
 from eth_utils import (
     int_to_big_endian,
@@ -12,13 +12,13 @@ from eth_utils import (
     is_bytes,
     is_text,
     is_list_like,
-    is_null,
     to_canonical_address,
 )
 
 from eth_abi.base import (
     BaseCoder,
     parse_type_str,
+    parse_tuple_type_str,
 )
 
 from eth_abi.exceptions import (
@@ -57,11 +57,17 @@ class BaseEncoder(BaseCoder, metaclass=abc.ABCMeta):
         return self.encode(value)
 
 
-class MultiEncoder(BaseEncoder):
+class TupleEncoder(BaseEncoder):
     encoders = None
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+        self.is_dynamic = any(e.is_dynamic for e in self.encoders)
 
     def validate(self):
         super().validate()
+
         if self.encoders is None:
             raise ValueError("`encoders` may not be none")
 
@@ -73,35 +79,36 @@ class MultiEncoder(BaseEncoder):
                     len(self.encoders),
                 )
             )
+
         raw_head_chunks = []
         tail_chunks = []
-
         for value, encoder in zip(values, self.encoders):
-            if isinstance(encoder, (DynamicArrayEncoder, ByteStringEncoder, TextStringEncoder)):
+            if encoder.is_dynamic:
                 raw_head_chunks.append(None)
                 tail_chunks.append(encoder(value))
             else:
                 raw_head_chunks.append(encoder(value))
                 tail_chunks.append(b'')
 
-        head_length = sum((
-            32 if is_null(item) else len(item)
+        head_length = sum(
+            32 if item is None else len(item)
             for item in raw_head_chunks
-        ))
-        tail_offsets = tuple((
-            sum((len(chunk) for chunk in tail_chunks[:i]))
-            for i in range(len(tail_chunks))
-        ))
-        head_chunks = tuple((
-            (
-                encode_uint_256(head_length + tail_offsets[idx])
-                if is_null(head_chunk)
-                else head_chunk
-            ) for idx, head_chunk
-            in enumerate(raw_head_chunks)
-        ))
-        encoded_value = b''.join(tuple(itertools.chain(head_chunks, tail_chunks)))
+        )
+        tail_offsets = (0,) + tuple(accumulate(map(len, tail_chunks[:-1])))
+        head_chunks = tuple(
+            encode_uint_256(head_length + offset) if chunk is None else chunk
+            for chunk, offset in zip(raw_head_chunks, tail_offsets)
+        )
+
+        encoded_value = b''.join(head_chunks + tuple(tail_chunks))
+
         return encoded_value
+
+    @parse_tuple_type_str
+    def from_type_str(cls, abi_type, registry):
+        encoders = tuple(registry.get_encoder(str(c)) for c in abi_type.components)
+
+        return cls(encoders=encoders)
 
 
 class FixedSizeEncoder(BaseEncoder):
@@ -113,6 +120,7 @@ class FixedSizeEncoder(BaseEncoder):
 
     def validate(self):
         super().validate()
+
         if self.value_bit_size is None:
             raise ValueError("`value_bit_size` may not be none")
         if self.data_byte_size is None:
@@ -143,6 +151,7 @@ class FixedSizeEncoder(BaseEncoder):
             padded_encoded_value = zpad(base_encoded_value, self.data_byte_size)
         else:
             padded_encoded_value = zpad_right(base_encoded_value, self.data_byte_size)
+
         return padded_encoded_value
 
 
@@ -186,6 +195,7 @@ class NumberEncoder(Fixed32ByteSizeEncoder):
 
     def validate(self):
         super().validate()
+
         if self.bounds_fn is None:
             raise ValueError("`bounds_fn` cannot be null")
         if self.type_check_fn is None:
@@ -251,6 +261,7 @@ class SignedIntegerEncoder(NumberEncoder):
             padded_encoded_value = zpad(base_encoded_value, self.data_byte_size)
         else:
             padded_encoded_value = fpad(base_encoded_value, self.data_byte_size)
+
         return padded_encoded_value
 
     @parse_type_str('int')
@@ -358,6 +369,7 @@ class BaseRealEncoder(NumberEncoder):
 
     def validate(self):
         super().validate()
+
         if self.high_bit_size is None:
             raise ValueError("`high_bit_size` cannot be null")
         if self.low_bit_size is None:
@@ -394,6 +406,7 @@ class SignedRealEncoder(BaseRealEncoder):
         scaled_value = value * 2 ** self.low_bit_size
         integer_value = int(scaled_value)
         unsigned_integer_value = integer_value % (2 ** (self.high_bit_size + self.low_bit_size))
+
         return int_to_big_endian(unsigned_integer_value)
 
     def encode(self, value):
@@ -404,6 +417,7 @@ class SignedRealEncoder(BaseRealEncoder):
             padded_encoded_value = zpad(base_encoded_value, self.data_byte_size)
         else:
             padded_encoded_value = fpad(base_encoded_value, self.data_byte_size)
+
         return padded_encoded_value
 
     @parse_type_str('real')
@@ -434,6 +448,7 @@ class AddressEncoder(Fixed32ByteSizeEncoder):
 
     def validate(self):
         super().validate()
+
         if self.value_bit_size != 20 * 8:
             raise ValueError('Addresses must be 160 bits in length')
 
@@ -471,6 +486,8 @@ class BytesEncoder(Fixed32ByteSizeEncoder):
 
 
 class ByteStringEncoder(BaseEncoder):
+    is_dynamic = True
+
     @classmethod
     def encode(cls, value):
         if not is_bytes(value):
@@ -518,6 +535,7 @@ class BaseArrayEncoder(BaseEncoder):
 
     def validate(self):
         super().validate()
+
         if self.item_encoder is None:
             raise ValueError("`item_encoder` may not be none")
 
@@ -556,6 +574,7 @@ class SizedArrayEncoder(BaseArrayEncoder):
 
     def validate(self):
         super().validate()
+
         if self.array_size is None:
             raise ValueError("`array_size` may not be none")
 
@@ -570,8 +589,11 @@ class SizedArrayEncoder(BaseArrayEncoder):
 
 
 class DynamicArrayEncoder(BaseArrayEncoder):
+    is_dynamic = True
+
     def encode(self, value):
         encoded_size = encode_uint_256(len(value))
         encoded_elements = self.encode_elements(value)
         encoded_value = encoded_size + encoded_elements
+
         return encoded_value

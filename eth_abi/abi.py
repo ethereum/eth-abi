@@ -1,14 +1,16 @@
 """
 Vendored from `pyethereum.abi`
 """
-from io import BytesIO
-
 from eth_utils import (
     is_bytes,
 )
 
-from eth_abi.decoding import MultiDecoder
-from eth_abi.encoding import MultiEncoder
+from eth_abi.decoding import (
+    ContextFramesBytesIO,
+    TupleDecoder,
+)
+
+from eth_abi.encoding import TupleEncoder
 
 from eth_abi.registry import registry
 
@@ -19,12 +21,10 @@ from eth_abi.utils.parsing import (  # noqa: F401
 
 
 def encode_single(typ, arg):
-    try:
-        base, sub, arrlist = typ
-    except ValueError:
+    if isinstance(typ, str):
         type_str = typ
     else:
-        type_str = collapse_type(base, sub, arrlist)
+        type_str = collapse_type(*typ)
 
     encoder = registry.get_encoder(type_str)
 
@@ -37,7 +37,7 @@ def encode_abi(types, args):
         for type_str in types
     ]
 
-    encoder = MultiEncoder(encoders=encoders)
+    encoder = TupleEncoder(encoders=encoders)
 
     return encoder(args)
 
@@ -47,15 +47,13 @@ def decode_single(typ, data):
     if not is_bytes(data):
         raise TypeError("The `data` value must be of bytes type.  Got {0}".format(type(data)))
 
-    try:
-        base, sub, arrlist = typ
-    except ValueError:
+    if isinstance(typ, str):
         type_str = typ
     else:
-        type_str = collapse_type(base, sub, arrlist)
+        type_str = collapse_type(*typ)
 
     decoder = registry.get_decoder(type_str)
-    stream = BytesIO(data)
+    stream = ContextFramesBytesIO(data)
 
     return decoder(stream)
 
@@ -70,7 +68,7 @@ def decode_abi(types, data):
         for type_str in types
     ]
 
-    decoder = MultiDecoder(decoders=decoders)
-    stream = BytesIO(data)
+    decoder = TupleDecoder(decoders=decoders)
+    stream = ContextFramesBytesIO(data)
 
     return decoder(stream)

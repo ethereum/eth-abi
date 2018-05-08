@@ -1,15 +1,6 @@
 import math
 import decimal
 
-from eth_utils import (
-    int_to_big_endian,
-    is_number,
-)
-
-from eth_abi.constants import (
-    TT256,
-)
-
 
 abi_decimal_context = decimal.Context(prec=999)
 
@@ -19,13 +10,6 @@ TEN = decimal.Decimal(10)
 
 def ceil32(x):
     return x if x % 32 == 0 else x + 32 - (x % 32)
-
-
-def encode_int(value):
-    '''encodes an integer into serialization'''
-    if not is_number(value) or value < 0 or value >= TT256:
-        raise Exception("Integer invalid or out of range: %r" % value)
-    return int_to_big_endian(value)
 
 
 def compute_unsigned_integer_bounds(num_bits):

@@ -7,7 +7,7 @@ from eth_abi import (
     decode_single,
 )
 
-from .abi_type_strategies import (
+from tests.common.strategies import (
     uint_strs,
     uint_values,
 )
