@@ -6,6 +6,13 @@
 
 Python utilities for working with the Ethereum ABI.
 
+## Overview
+
+The `eth-abi` library seeks to provide a set of low-level, extensible tools for
+interacting with the Ethereum ABI.  The most commonly used features of this
+library are briefly described below.  For complete documentation, visit
+[eth-abi.readthedocs.io](https://eth-abi.readthedocs.io/en/latest/).
+
 ## Installation
 
 ```sh
