@@ -38,18 +38,22 @@ Example:
 
 #### `eth_abi.decode_abi(types, data)`
 
-This function decodes `data` into the python type corresponding to the provided
-`types`.  This function accepts arrays of type byte.
+Attempts to decode the binary data in `data` into a sequence of python values
+for the abi types given in `types`.
 
+Arguments:
+* `types` - An iterable of `str` values representing a sequence of abi types
+  e.g.  `('uint256', 'bytes[]', '(int,int)')`
+* `data` - A `bytes` or `bytearray` value that contains abi-encoded data for a
+  sequence of values of the abi types in `types`.
+
+Example:
 ```python
 >>> decode_abi(['uint256'], b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0009')
 [12345]
 >>> decode_abi(['bytes32', 'bytes32'], b'a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00b\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00')
 ['a', 'b']
 ```
-
-The **values** parameter is expected to be an iterable whose values are all one
-of the recognized EVM types.
 
 ### Encoding
 
