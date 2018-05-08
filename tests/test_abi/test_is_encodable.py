@@ -65,14 +65,14 @@ def test_is_encodable_returns_false(type_str, python_value):
     assert not is_encodable(type_str, python_value)
 
 
-@settings(deadline=300)
+@settings(deadline=None)
 @given(single_strs_values)
 def test_is_encodable_returns_true_for_random_valid_values(type_and_value):
     _type, value = type_and_value
     assert is_encodable(_type, value)
 
 
-@settings(deadline=300)
+@settings(deadline=None)
 @given(tuple_strs_values)
 def test_is_encodable_returns_true_for_random_valid_tuple_values(type_and_value):
     _type, value = type_and_value
