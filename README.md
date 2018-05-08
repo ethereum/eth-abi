@@ -21,8 +21,8 @@ These functions are intended for decoding return values from the EVM.
 
 * `eth_abi.decode_single(type, data)`
 
-This function tries to decode `data` into the python type that corresponds
-to the provided `type`.  This function accepts data of type bytes.
+This function tries to decode `data` into the python type that corresponds to
+the provided `type`.  This function accepts data of type bytes.
 
 ```python
 >>> decode_single('uint256', b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0009')
@@ -35,8 +35,8 @@ The **value** parameter is expected to be one of the recognized EVM types.
 
 * `eth_abi.decode_abi(types, data)`
 
-This function decodes `data` into the python type corresponding to the
-provided `types`.  This function accepts arrays of type byte.
+This function decodes `data` into the python type corresponding to the provided
+`types`.  This function accepts arrays of type byte.
 
 ```python
 >>> decode_abi(['uint256'], b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0009')
@@ -106,7 +106,7 @@ render correctly on pypi.
 
 For Debian-like systems:
 
-```
+```sh
 apt install pandoc
 ```
 
@@ -125,12 +125,15 @@ make release bump=$$VERSION_PART_TO_BUMP$$
 #### How to bumpversion
 
 The version format for this repo is `{major}.{minor}.{patch}` for stable, and
-`{major}.{minor}.{patch}-{stage}.{devnum}` for unstable (`stage` can be alpha or beta).
+`{major}.{minor}.{patch}-{stage}.{devnum}` for unstable (`stage` can be alpha
+or beta).
 
-To issue the next version in line, specify which part to bump,
-like `make release bump=minor` or `make release bump=devnum`.
+To issue the next version in line, specify which part to bump, like `make
+release bump=minor` or `make release bump=devnum`.
 
-If you are in a beta version, `make release bump=stage` will switch to a stable.
+If you are in a beta version, `make release bump=stage` will switch to a
+stable.
 
 To issue an unstable version when the current version is stable, specify the
-new version explicitly, like `make release bump="--new-version 4.0.0-alpha.1 devnum"`
+new version explicitly, like `make release bump="--new-version 4.0.0-alpha.1
+devnum"`
