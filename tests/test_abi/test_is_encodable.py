@@ -25,22 +25,18 @@ def test_is_encodable_returns_true(type_str, python_value, _):
 @pytest.mark.parametrize(
     'type_str,python_value',
     (
-        # Expected bool but got int
-        ('((bytes,bool),(bytes,bool))', ((b'david attenborough', 0), (b'boaty mcboatface', True))),
-
-        # List size mismatch
-        ('int[3]', (6, 2)),
-
         # Wrong value type
+        ('((bytes,bool),(bytes,bool))', ((b'david attenborough', 0), (b'boaty mcboatface', True))),
         ('(uint32)', ('6',)),
         ('int[]', 6),
         ('bool[2]', (True, 2)),
         ('bool', 1),
         ('uint', True),
         ('int', True),
-
-        # Expected bytes but got int
         ('bytes', 129),
+
+        # List size mismatch
+        ('int[3]', (6, 2)),
 
         # Bytes string is wrong size
         ('bytes5', b'asdfgt'),
@@ -59,6 +55,7 @@ def test_is_encodable_returns_true(type_str, python_value, _):
         ('fixed8x1', Decimal('-129e-1')),
         ('ufixed8x1', Decimal('256e-1')),
         ('ufixed8x1', Decimal('-1e-1')),
+
     )
 )
 def test_is_encodable_returns_false(type_str, python_value):
