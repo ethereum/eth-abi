@@ -5,6 +5,7 @@ from eth_abi.abi import (  # NOQA
     decode_abi,
     encode_single,
     encode_abi,
+    is_encodable,
 )
 
 

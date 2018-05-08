@@ -53,6 +53,15 @@ class BaseEncoder(BaseCoder, metaclass=abc.ABCMeta):
         """
         pass
 
+    def validate_value(self, value):
+        """
+        Determines whether or not the given value can be encoded by this
+        encoder.  Encoder classes can implement validation of values if desired.
+        By default, this method does nothing and an encoder will attempt to
+        encode any value it is given.
+        """
+        pass
+
     def __call__(self, value):
         return self.encode(value)
 
@@ -71,14 +80,26 @@ class TupleEncoder(BaseEncoder):
         if self.encoders is None:
             raise ValueError("`encoders` may not be none")
 
-    def encode(self, values):
-        if len(values) != len(self.encoders):
-            raise ValueOutOfBounds(
-                "Recieved {0} values to encode.  Expected {1}".format(
-                    len(values),
-                    len(self.encoders),
+    def validate_value(self, value):
+        if not is_list_like(value):
+            raise EncodingTypeError(
+                "Cannot encode value of type {0} using tuple encoder.  Must be "
+                "a list-like object such as an array or tuple".format(
+                    type(value),
                 )
             )
+
+        if len(value) != len(self.encoders):
+            raise ValueOutOfBounds(
+                "Expected value with length {0}.  Provided value has {1} "
+                "elements".format(len(self.encoders), len(value))
+            )
+
+        for item, encoder in zip(value, self.encoders):
+            encoder.validate_value(item)
+
+    def encode(self, values):
+        self.validate_value(values)
 
         raw_head_chunks = []
         tail_chunks = []
@@ -489,7 +510,7 @@ class ByteStringEncoder(BaseEncoder):
     is_dynamic = True
 
     @classmethod
-    def encode(cls, value):
+    def validate_value(cls, value):
         if not is_bytes(value):
             raise EncodingTypeError(
                 "Value of type {} cannot be encoded by {}".format(
@@ -497,6 +518,10 @@ class ByteStringEncoder(BaseEncoder):
                     cls.__name__,
                 )
             )
+
+    @classmethod
+    def encode(cls, value):
+        cls.validate_value(value)
 
         encoded_size = encode_uint_256(len(value))
         if not value:
@@ -512,9 +537,11 @@ class ByteStringEncoder(BaseEncoder):
         return cls()
 
 
-class TextStringEncoder(ByteStringEncoder):
+class TextStringEncoder(BaseEncoder):
+    is_dynamic = True
+
     @classmethod
-    def encode(cls, value):
+    def validate_value(cls, value):
         if not is_text(value):
             raise EncodingTypeError(
                 "Value of type {} cannot be encoded by {}".format(
@@ -522,8 +549,21 @@ class TextStringEncoder(ByteStringEncoder):
                     cls.__name__,
                 )
             )
+
+    @classmethod
+    def encode(cls, value):
+        cls.validate_value(value)
+
         value_as_bytes = codecs.encode(value, 'utf8')
-        return super().encode(value_as_bytes)
+
+        encoded_size = encode_uint_256(len(value_as_bytes))
+        if not value_as_bytes:
+            padded_value = b'\x00' * 32
+        else:
+            padded_value = zpad_right(value_as_bytes, ceil32(len(value_as_bytes)))
+        encoded_value = encoded_size + padded_value
+
+        return encoded_value
 
     @parse_type_str('string')
     def from_type_str(cls, abi_type, registry):
@@ -539,7 +579,7 @@ class BaseArrayEncoder(BaseEncoder):
         if self.item_encoder is None:
             raise ValueError("`item_encoder` may not be none")
 
-    def encode_elements(self, value):
+    def validate_value(self, value):
         if not is_list_like(value):
             raise EncodingTypeError(
                 "Cannot encode value of type {0} using array encoder.  Must be "
@@ -547,10 +587,18 @@ class BaseArrayEncoder(BaseEncoder):
                     type(value),
                 )
             )
+
+        for item in value:
+            self.item_encoder.validate_value(item)
+
+    def encode_elements(self, value):
+        self.validate_value(value)
+
         encoded_elements = b''.join((
             self.item_encoder(item)
             for item in value
         ))
+
         return encoded_elements
 
     @parse_type_str(with_arrlist=True)
@@ -578,13 +626,18 @@ class SizedArrayEncoder(BaseArrayEncoder):
         if self.array_size is None:
             raise ValueError("`array_size` may not be none")
 
-    def encode(self, value):
+    def validate_value(self, value):
+        super().validate_value(value)
+
         if len(value) != self.array_size:
             raise ValueOutOfBounds(
                 "Expected value with length {0}.  Provided value has {1} "
                 "elements".format(self.array_size, len(value))
             )
+
+    def encode(self, value):
         encoded_elements = self.encode_elements(value)
+
         return encoded_elements
 
 
