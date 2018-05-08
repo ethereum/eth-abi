@@ -25,23 +25,36 @@ def test_is_encodable_returns_true(type_str, python_value, _):
 @pytest.mark.parametrize(
     'type_str,python_value',
     (
-        ('(uint32)', ('6',)),
+        # Expected bool but got int
         ('((bytes,bool),(bytes,bool))', ((b'david attenborough', 0), (b'boaty mcboatface', True))),
-        ('int[]', 6),
+
+        # List size mismatch
         ('int[3]', (6, 2)),
+
+        # Wrong value type
+        ('(uint32)', ('6',)),
+        ('int[]', 6),
         ('bool[2]', (True, 2)),
         ('bool', 1),
         ('uint', True),
         ('int', True),
+
+        # Expected bytes but got int
+        ('bytes', 129),
+
+        # Bytes string is wrong size
+        ('bytes5', b'asdfgt'),
+
+        # Addresses aren't 20 bytes long
+        ('address', '0x8deebe59332ebc3f81935e311f0fb8556cf573'),
+        ('address', decode_hex('0x8deebe59332ebc3f81935e311f0fb8556cf573')),
+
+        # Values out of bounds
         ('uint8', 256),
         ('uint8', -1),
         ('int8', 128),
         ('int8', -129),
         ('string', -129),
-        ('bytes', 129),
-        ('bytes5', b'asdfgt'),
-        ('address', '0x8deebe59332ebc3f81935e311f0fb8556cf573'),
-        ('address', decode_hex('0x8deebe59332ebc3f81935e311f0fb8556cf573')),
         ('fixed8x1', Decimal('128e-1')),
         ('fixed8x1', Decimal('-129e-1')),
         ('ufixed8x1', Decimal('256e-1')),
