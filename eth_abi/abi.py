@@ -10,6 +10,8 @@ from eth_abi.decoding import (
     TupleDecoder,
 )
 
+from eth_abi.exceptions import EncodingError
+
 from eth_abi.encoding import TupleEncoder
 
 from eth_abi.registry import registry
@@ -40,6 +42,26 @@ def encode_abi(types, args):
     encoder = TupleEncoder(encoders=encoders)
 
     return encoder(args)
+
+
+def is_encodable(typ, arg):
+    """
+    Determines if the given python value ``arg`` can be encoded as a value of
+    abi type ``typ``.
+    """
+    if isinstance(typ, str):
+        type_str = typ
+    else:
+        type_str = collapse_type(*typ)
+
+    encoder = registry.get_encoder(type_str)
+
+    try:
+        encoder.validate_value(arg)
+    except EncodingError:
+        return False
+    else:
+        return True
 
 
 # Decodes a single base datum

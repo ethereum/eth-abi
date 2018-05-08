@@ -17,7 +17,7 @@ from tests.common.strategies import (
 )
 
 
-@settings(max_examples=1000)
+@settings(deadline=None)
 @given(multi_strs_values)
 def test_multi_abi_reversibility(types_and_values):
     """
@@ -30,7 +30,7 @@ def test_multi_abi_reversibility(types_and_values):
     assert values == decoded_values
 
 
-@settings(max_examples=1000)
+@settings(deadline=None)
 @given(single_strs_values)
 def test_single_abi_reversibility(type_and_value):
     """
@@ -43,6 +43,7 @@ def test_single_abi_reversibility(type_and_value):
     assert value == decoded_value
 
 
+@settings(deadline=None)
 @given(tuple_strs_values)
 def test_single_abi_tuple_reversibility(type_and_value):
     """

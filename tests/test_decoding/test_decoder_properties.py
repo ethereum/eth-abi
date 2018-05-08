@@ -85,7 +85,7 @@ def all_bytes_equal(test_bytes, target):
         return all(byte == target for byte in test_bytes)
 
 
-@settings(max_examples=1000)
+@settings(max_examples=250)
 @given(
     integer_bit_size=st.integers(min_value=1, max_value=32).map(lambda v: v * 8),
     stream_bytes=st.binary(min_size=0, max_size=32),
@@ -130,7 +130,7 @@ def test_decode_unsigned_int(integer_bit_size, stream_bytes, data_byte_size):
     assert decoded_value == actual_value
 
 
-@settings(max_examples=1000)
+@settings(max_examples=250)
 @given(
     integer_bit_size=st.integers(min_value=1, max_value=32).map(lambda v: v * 8),
     stream_bytes=st.binary(min_size=0, max_size=32),
@@ -187,7 +187,7 @@ def test_decode_signed_int(integer_bit_size, stream_bytes, data_byte_size):
     assert decoded_value == actual_value
 
 
-@settings(max_examples=1000)
+@settings(max_examples=250)
 @given(
     string_bytes=st.binary(min_size=0, max_size=256),
     pad_size=st.integers(min_value=0, max_value=32),
@@ -209,7 +209,7 @@ def test_decode_bytes_and_string(string_bytes, pad_size):
     assert decoded_value == string_bytes
 
 
-@settings(max_examples=1000)
+@settings(max_examples=250)
 @given(
     stream_bytes=st.binary(min_size=1, max_size=32),
     data_byte_size=st.integers(min_value=1, max_value=32),
@@ -245,7 +245,7 @@ def test_decode_boolean(stream_bytes, data_byte_size):
     assert decoded_value is actual_value
 
 
-@settings(max_examples=1000)
+@settings(max_examples=250)
 @given(
     value_byte_size=st.integers(min_value=1, max_value=32),
     stream_bytes=st.binary(min_size=0, max_size=32),
@@ -283,7 +283,7 @@ def test_decode_bytes_xx(value_byte_size, stream_bytes, data_byte_size):
     assert decoded_value == actual_value
 
 
-@settings(max_examples=1000)
+@settings(max_examples=250)
 @given(
     address_bytes=st.binary(min_size=0, max_size=32),
     padding_size=st.integers(min_value=10, max_value=14),
@@ -321,7 +321,7 @@ def test_decode_address(address_bytes, padding_size, data_byte_size):
     assert decoded_value == actual_value
 
 
-@settings(max_examples=1000)
+@settings(max_examples=250)
 @given(
     array_size=st.integers(min_value=0, max_value=32),
     array_values=st.lists(st.integers(min_value=0, max_value=TT256M1), min_size=0, max_size=64).map(tuple),
@@ -380,7 +380,7 @@ def test_tuple_decoder(types, data, expected):
     assert actual == expected
 
 
-@settings(max_examples=1000)
+@settings(max_examples=250)
 @given(
     high_bit_size=st.integers(min_value=1, max_value=32).map(lambda v: v * 8),
     low_bit_size=st.integers(min_value=1, max_value=32).map(lambda v: v * 8),
@@ -443,7 +443,7 @@ def test_decode_unsigned_real(high_bit_size,
     assert decoded_value == actual_value
 
 
-@settings(max_examples=1000)
+@settings(max_examples=250)
 @given(
     high_bit_size=st.integers(min_value=1, max_value=32).map(lambda v: v * 8),
     low_bit_size=st.integers(min_value=1, max_value=32).map(lambda v: v * 8),
@@ -530,7 +530,7 @@ def test_decode_signed_real(high_bit_size,
     assert decoded_value == actual_value
 
 
-@settings(max_examples=1000)
+@settings(max_examples=250)
 @given(
     value_bit_size=st.integers(min_value=1, max_value=32).map(lambda v: v * 8),
     frac_places=st.integers(min_value=1, max_value=80),
@@ -573,7 +573,7 @@ def test_decode_unsigned_fixed(value_bit_size,
     actual_value = decoder(stream)
 
 
-@settings(max_examples=1000)
+@settings(max_examples=250)
 @given(
     value_bit_size=st.integers(min_value=1, max_value=32).map(lambda v: v * 8),
     frac_places=st.integers(min_value=1, max_value=80),

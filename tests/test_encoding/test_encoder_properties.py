@@ -86,7 +86,7 @@ def test_encode_boolean(bool_value, data_byte_size):
     assert encoded_value == expected_value
 
 
-@settings(max_examples=1000)
+@settings(max_examples=250)
 @example(integer_value=-1, value_bit_size=8, data_byte_size=1)
 @given(
     integer_value=st.one_of(st.integers(), st.none()),
@@ -128,7 +128,7 @@ def test_encode_unsigned_integer(integer_value, value_bit_size, data_byte_size):
     assert encoded_value == expected_value
 
 
-@settings(max_examples=1000)
+@settings(max_examples=250)
 @given(
     integer_value=st.one_of(st.integers(), st.none()),
     value_bit_size=st.integers(min_value=1, max_value=32).map(lambda v: v * 8),
@@ -176,7 +176,7 @@ def test_encode_signed_integer(integer_value, value_bit_size, data_byte_size):
     assert encoded_value == expected_value
 
 
-@settings(max_examples=1000)
+@settings(max_examples=250)
 @given(
     address_value=st.one_of(
         st.none(),
@@ -220,7 +220,7 @@ def test_encode_address(address_value, value_bit_size, data_byte_size):
     assert encoded_value == expected_value
 
 
-@settings(max_examples=1000)
+@settings(max_examples=250)
 @given(
     bytes_value=st.one_of(
         st.none(),
@@ -259,7 +259,7 @@ def test_encode_bytes_xx(bytes_value, value_bit_size, data_byte_size):
     assert encoded_value == expected_value
 
 
-@settings(max_examples=1000)
+@settings(max_examples=250)
 @given(
     string_value=st.one_of(
         st.none(),
@@ -289,7 +289,7 @@ def test_encode_byte_string(string_value):
     assert encoded_value == expected_value
 
 
-@settings(max_examples=1000)
+@settings(max_examples=250)
 @given(
     string_value=st.one_of(
         st.none(),
@@ -324,7 +324,7 @@ def test_encode_text_string(string_value):
     assert encoded_value == expected_value
 
 
-@settings(max_examples=1000)
+@settings(max_examples=250)
 @given(
     base_integer_value=st.one_of(st.integers(), st.none()),
     high_bit_size=st.integers(min_value=1, max_value=32).map(lambda v: v * 8),
@@ -395,7 +395,7 @@ def test_encode_unsigned_real(base_integer_value,
     assert encoded_value == expected_value
 
 
-@settings(max_examples=1000)
+@settings(max_examples=250)
 @given(
     base_integer_value=st.one_of(st.integers(), st.none()),
     high_bit_size=st.integers(min_value=1, max_value=32).map(lambda v: v * 8),
@@ -461,7 +461,7 @@ def test_encode_signed_real(base_integer_value,
     assert encoded_value == expected_value
 
 
-@settings(max_examples=1000)
+@settings(max_examples=250)
 @given(
     value=st.one_of(st.integers(), st.decimals(), st.none()),
     value_bit_size=st.integers(min_value=1, max_value=32).map(lambda v: v * 8),
@@ -526,7 +526,7 @@ def test_encode_unsigned_fixed(value,
     encoder(value)
 
 
-@settings(max_examples=1000)
+@settings(max_examples=250)
 @given(
     value=st.one_of(st.integers(), st.decimals(), st.none()),
     value_bit_size=st.integers(min_value=1, max_value=32).map(lambda v: v * 8),
