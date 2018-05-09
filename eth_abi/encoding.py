@@ -291,7 +291,10 @@ class SignedIntegerEncoder(NumberEncoder):
 
 class BaseFixedEncoder(NumberEncoder):
     frac_places = None
-    type_check_fn = staticmethod(is_number)
+
+    @staticmethod
+    def type_check_fn(value):
+        return is_number(value) and not isinstance(value, float)
 
     @staticmethod
     def illegal_value_fn(value):
