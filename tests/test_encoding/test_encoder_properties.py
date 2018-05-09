@@ -583,7 +583,7 @@ def test_encode_signed_fixed(value,
                 frac_places,
             )
         )
-        with pytest.raises(ValueError, match=pattern):
+        with pytest.raises(IllegalValue, match=pattern):
             encoder(value)
         return
 
