@@ -468,6 +468,7 @@ def test_encode_signed_real(base_integer_value,
     frac_places=st.integers(min_value=1, max_value=80),
     data_byte_size=st.integers(min_value=0, max_value=32),
 )
+@example(value=decimal.Decimal('5.33'), value_bit_size=8, frac_places=1, data_byte_size=1)
 def test_encode_unsigned_fixed(value,
                                value_bit_size,
                                frac_places,
@@ -518,7 +519,7 @@ def test_encode_unsigned_fixed(value,
                 frac_places,
             )
         )
-        with pytest.raises(ValueError, match=pattern):
+        with pytest.raises(IllegalValue, match=pattern):
             encoder(value)
         return
 
