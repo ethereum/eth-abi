@@ -37,6 +37,7 @@ def test_is_encodable_returns_true(type_str, python_value, _):
         ('uint', True),
         ('int', True),
         ('bytes', 129),
+        ('fixed8x1', 0.1),  # only Decimal and int are allowed
 
         # List size mismatch
         ('int[3]', (6, 2)),
