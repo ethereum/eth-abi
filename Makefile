@@ -31,7 +31,7 @@ test-all:
 	tox
 
 build-docs:
-	sphinx-apidoc -o docs/ . setup.py "eth_abi/utils/*" "*conftest*"
+	sphinx-apidoc -o docs/ . setup.py "eth_abi/utils/*" "*conftest*" "tests/*"
 	$(MAKE) -C docs clean
 	$(MAKE) -C docs html
 

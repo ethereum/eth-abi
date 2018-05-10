@@ -1,6 +1,19 @@
 Release Notes
 =============
 
+v1.1.1
+-------------
+
+Released May 10, 2018
+
+- Bugfixes
+
+  - :meth:`~eth_abi.abi.is_encodable()` now returns ``False`` if a :class:`~decimal.Decimal` has
+    too many digits to be encoded in the given ``fixed<M>x<N>`` type.
+    (It was previously raising a :class:`ValueError`)
+  - Raise an :class:`~eth_abi.exceptions.EncodingTypeError` instead of a
+    :class:`TypeError` when trying to encode a :class:`float` into a ``fixed<M>x<N>`` type.
+
 v1.1.0
 -------------
 
