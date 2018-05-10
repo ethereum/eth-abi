@@ -59,6 +59,7 @@ def test_is_encodable_returns_true(type_str, python_value, _):
         ('fixed8x1', Decimal('-129e-1')),
         ('ufixed8x1', Decimal('256e-1')),
         ('ufixed8x1', Decimal('-1e-1')),
+        ('fixed8x1', Decimal('1e-2')),
 
     )
 )

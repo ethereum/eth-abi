@@ -310,7 +310,7 @@ class BaseFixedEncoder(NumberEncoder):
             residue = value % (TEN ** -self.frac_places)
 
         if residue > 0:
-            raise ValueError(
+            raise IllegalValue(
                 '{} cannot encode value {}: '
                 'residue {} outside allowed fractional precision of {}'.format(
                     type(self).__name__,
