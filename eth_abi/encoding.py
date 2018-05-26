@@ -71,7 +71,7 @@ class TupleEncoder(BaseEncoder):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-        self.is_dynamic = any(e.is_dynamic for e in self.encoders)
+        self.is_dynamic = any(getattr(e, 'is_dynamic', False) for e in self.encoders)
 
     def validate(self):
         super().validate()
@@ -95,7 +95,10 @@ class TupleEncoder(BaseEncoder):
             )
 
         for item, encoder in zip(value, self.encoders):
-            encoder.validate_value(item)
+            try:
+                encoder.validate_value(item)
+            except AttributeError:
+                encoder(item)
 
     def encode(self, values):
         self.validate_value(values)
@@ -103,7 +106,7 @@ class TupleEncoder(BaseEncoder):
         raw_head_chunks = []
         tail_chunks = []
         for value, encoder in zip(values, self.encoders):
-            if encoder.is_dynamic:
+            if getattr(encoder, 'is_dynamic', False):
                 raw_head_chunks.append(None)
                 tail_chunks.append(encoder(value))
             else:

@@ -145,11 +145,11 @@ class TupleDecoder(BaseDecoder):
         super().__init__(**kwargs)
 
         self.decoders = tuple(
-            HeadTailDecoder(tail_decoder=d) if d.is_dynamic else d
+            HeadTailDecoder(tail_decoder=d) if getattr(d, 'is_dynamic', False) else d
             for d in self.decoders
         )
 
-        self.is_dynamic = any(d.is_dynamic for d in self.decoders)
+        self.is_dynamic = any(getattr(d, 'is_dynamic', False) for d in self.decoders)
 
     def validate(self):
         super().validate()
