@@ -5,6 +5,36 @@ from setuptools import (
     find_packages,
 )
 
+extras_require={
+    'test': [
+        "pytest==3.3.2",
+        "pytest-pythonpath>=0.7.1",
+        "hypothesis>=3.6.1",
+        "tox>=2.9.1,<3",
+    ],
+    'lint': [
+        "flake8==3.4.1",
+        "isort>=4.2.15,<5",
+    ],
+    'doc': [
+        "Sphinx>=1.6.5,<2",
+        "sphinx_rtd_theme>=0.1.9",
+    ],
+    'dev': [
+        "bumpversion>=0.5.3,<1",
+        "pytest-xdist",
+        "pytest-watch>=4.1.0,<5",
+        "wheel",
+        "ipython",
+    ],
+}
+
+extras_require['dev'] = (
+    extras_require['dev']
+    + extras_require['test']
+    + extras_require['lint']
+    + extras_require['doc']
+)
 
 setup(
     name='eth-abi',
@@ -20,14 +50,10 @@ setup(
         'eth-utils>=1.0.1,<2.0.0',
         'parsimonious==0.8.0',
     ],
-    extras_require={
-        'doc': [
-            "Sphinx>=1.6.5,<2",
-            "sphinx_rtd_theme>=0.1.9",
-        ],
-    },
     setup_requires=['setuptools-markdown'],
-    py_modules=['eth_abi'],
+    python_requires='>=3.5, <4',
+    extras_require=extras_require,
+    py_modules=['eth_abi', 'eth_typing'],
     license="MIT",
     zip_safe=False,
     keywords='ethereum',
@@ -35,7 +61,7 @@ setup(
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
-        'License :: OSI Approved :: BSD License',
+        'License :: OSI Approved :: MIT License',
         'Natural Language :: English',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.5',
