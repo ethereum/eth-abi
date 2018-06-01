@@ -11,6 +11,7 @@ extras_require={
         "pytest-pythonpath>=0.7.1",
         "hypothesis>=3.6.1",
         "tox>=2.9.1,<3",
+        "eth-hash[pycryptodome]",
     ],
     'lint': [
         "flake8==3.4.1",
