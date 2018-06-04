@@ -33,7 +33,7 @@ common: &common
           - ~/.cache/pip
           - ~/.local
           - ./eggs
-        key: v2-cache-{{ .Environment.CIRCLE_JOB }}-{{ checksum "setup.py" }}-{{ checksum "tox.ini" }}
+        key: v3-cache-{{ .Environment.CIRCLE_JOB }}-{{ checksum "setup.py" }}-{{ checksum "tox.ini" }}
 
 jobs:
   doctest:
