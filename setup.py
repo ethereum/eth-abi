@@ -5,7 +5,7 @@ from setuptools import (
     find_packages,
 )
 
-extras_require={
+extras_require = {
     'test': [
         "pytest==3.3.2",
         "pytest-pythonpath>=0.7.1",
@@ -31,10 +31,10 @@ extras_require={
 }
 
 extras_require['dev'] = (
-    extras_require['dev']
-    + extras_require['test']
-    + extras_require['lint']
-    + extras_require['doc']
+    extras_require['dev'] +
+    extras_require['test'] +
+    extras_require['lint'] +
+    extras_require['doc']
 )
 
 setup(
