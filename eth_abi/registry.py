@@ -6,8 +6,9 @@ from . import (
     exceptions,
     grammar,
 )
-
-from .base import BaseCoder
+from .base import (
+    BaseCoder,
+)
 
 
 class PredicateMapping:
@@ -216,8 +217,8 @@ def has_arrlist(type_str):
         return False
 
     return (
-        isinstance(abi_type, grammar.BasicType)
-        and abi_type.arrlist is not None
+        isinstance(abi_type, grammar.BasicType) and
+        abi_type.arrlist is not None
     )
 
 

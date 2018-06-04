@@ -1,11 +1,13 @@
-from decimal import Decimal
+from decimal import (
+    Decimal,
+)
 
-from eth_utils import decode_hex
+from eth_utils import (
+    decode_hex,
+)
 
 from eth_abi.utils.padding import (
-    zpad32,
     zpad32_right,
-    fpad32,
 )
 
 
@@ -78,8 +80,18 @@ CORRECT_TUPLE_ENCODINGS = [
     ),
     (
         '(address,uint32,bytes32,int32)',
-        ('0x82a978b3f5962a5b0957d9ee9eef472ee55b42f1', 1, zpad32_right(b'stupid pink animal'), 0),
-        words('82a978b3f5962a5b0957d9ee9eef472ee55b42f1', '1', '7374757069642070696e6b20616e696d616c>0', '0'),
+        (
+            '0x82a978b3f5962a5b0957d9ee9eef472ee55b42f1',
+            1,
+            zpad32_right(b'stupid pink animal'),
+            0,
+        ),
+        words(
+            '82a978b3f5962a5b0957d9ee9eef472ee55b42f1',
+            '1',
+            '7374757069642070696e6b20616e696d616c>0',
+            '0',
+        ),
     ),
 
     # Dynamic tuples
@@ -150,9 +162,21 @@ CORRECT_SINGLE_ENCODINGS = CORRECT_TUPLE_ENCODINGS + [
 
     # address
     ('address', '0x0000000000000000000000000000000000000000', words('0')),
-    ('address', '0xd3cda913deb6f67967b99d67acdfa1712c293601', words('d3cda913deb6f67967b99d67acdfa1712c293601')),
-    ('address', '0x0005c901078781c232a2a521c2af7980f8385ee9', words('0005c901078781c232a2a521c2af7980f8385ee9')),
-    ('address', '0x5c901078781c232a2a521c2af7980f8385ee9000', words('5c901078781c232a2a521c2af7980f8385ee9000')),
+    (
+        'address',
+        '0xd3cda913deb6f67967b99d67acdfa1712c293601',
+        words('d3cda913deb6f67967b99d67acdfa1712c293601'),
+    ),
+    (
+        'address',
+        '0x0005c901078781c232a2a521c2af7980f8385ee9',
+        words('0005c901078781c232a2a521c2af7980f8385ee9'),
+    ),
+    (
+        'address',
+        '0x5c901078781c232a2a521c2af7980f8385ee9000',
+        words('5c901078781c232a2a521c2af7980f8385ee9000'),
+    ),
 
     # uint, int
     ('uint', 2 ** 256 - 1, words('f<f')),
@@ -216,8 +240,16 @@ CORRECT_SINGLE_ENCODINGS = CORRECT_TUPLE_ENCODINGS + [
 
     # bytes<M>
     ('bytes32', zpad32_right(b'test'), words('74657374>0')),
-    ('bytes32', zpad32_right(b'abcdefghijklmnopqrstuvwxyz'), words('6162636465666768696a6b6c6d6e6f707172737475767778797a>0')),
-    ('bytes32', zpad32_right(b'0123456789!@#$%^&*()'), words('3031323334353637383921402324255e262a2829>0')),
+    (
+        'bytes32',
+        zpad32_right(b'abcdefghijklmnopqrstuvwxyz'),
+        words('6162636465666768696a6b6c6d6e6f707172737475767778797a>0'),
+    ),
+    (
+        'bytes32',
+        zpad32_right(b'0123456789!@#$%^&*()'),
+        words('3031323334353637383921402324255e262a2829>0'),
+    ),
     ('bytes32', zpad32_right(b'abc' + 5 * b'\x00' + b'abc'), words('6162630000000000616263>0')),
     ('bytes1', b'a', words('61>0')),
 

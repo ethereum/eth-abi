@@ -1,6 +1,8 @@
 import pytest
 
-from eth_abi.utils.numeric import ceil32
+from eth_abi.utils.numeric import (
+    ceil32,
+)
 
 
 @pytest.mark.parametrize(

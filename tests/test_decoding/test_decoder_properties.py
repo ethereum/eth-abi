@@ -1,14 +1,5 @@
-import pytest
-
 import decimal
 import sys
-
-from hypothesis import (
-    given,
-    settings,
-    example,
-    strategies as st,
-)
 
 from eth_utils import (
     big_endian_to_int,
@@ -16,42 +7,47 @@ from eth_utils import (
     int_to_big_endian,
     to_normalized_address,
 )
+from hypothesis import (
+    example,
+    given,
+    settings,
+    strategies as st,
+)
+import pytest
 
 from eth_abi.constants import (
     TT256M1,
 )
-
 from eth_abi.decoding import (
-    ContextFramesBytesIO,
-    UnsignedIntegerDecoder,
-    SignedIntegerDecoder,
-    UnsignedRealDecoder,
-    SignedRealDecoder,
-    UnsignedFixedDecoder,
-    SignedFixedDecoder,
-    StringDecoder,
-    BytesDecoder,
-    TupleDecoder,
-    BooleanDecoder,
     AddressDecoder,
+    BooleanDecoder,
+    BytesDecoder,
+    ContextFramesBytesIO,
     DynamicArrayDecoder,
+    SignedFixedDecoder,
+    SignedIntegerDecoder,
+    SignedRealDecoder,
+    StringDecoder,
+    TupleDecoder,
+    UnsignedFixedDecoder,
+    UnsignedIntegerDecoder,
+    UnsignedRealDecoder,
 )
-
 from eth_abi.exceptions import (
     InsufficientDataBytes,
     NonEmptyPaddingBytes,
 )
-
-from eth_abi.registry import registry
-
-from eth_abi.utils.padding import (
-    zpad32,
+from eth_abi.registry import (
+    registry,
 )
 from eth_abi.utils.numeric import (
     abi_decimal_context,
+    ceil32,
     compute_signed_integer_bounds,
     quantize_value,
-    ceil32,
+)
+from eth_abi.utils.padding import (
+    zpad32,
 )
 
 
@@ -112,7 +108,6 @@ def test_decode_unsigned_int(integer_bit_size, stream_bytes, data_byte_size):
             data_byte_size=data_byte_size,
         )
 
-
     stream = ContextFramesBytesIO(stream_bytes)
     actual_value = big_endian_to_int(stream_bytes[:data_byte_size])
 
@@ -158,7 +153,6 @@ def test_decode_signed_int(integer_bit_size, stream_bytes, data_byte_size):
             value_bit_size=integer_bit_size,
             data_byte_size=data_byte_size,
         )
-
 
     stream = ContextFramesBytesIO(stream_bytes)
 
@@ -324,7 +318,10 @@ def test_decode_address(address_bytes, padding_size, data_byte_size):
 @settings(max_examples=250)
 @given(
     array_size=st.integers(min_value=0, max_value=32),
-    array_values=st.lists(st.integers(min_value=0, max_value=TT256M1), min_size=0, max_size=64).map(tuple),
+    array_values=st.lists(
+        st.integers(min_value=0, max_value=TT256M1),
+        min_size=0, max_size=64,
+    ).map(tuple),
 )
 def test_decode_array_of_unsigned_integers(array_size, array_values):
     size_bytes = zpad32(int_to_big_endian(array_size))
@@ -538,9 +535,9 @@ def test_decode_signed_real(high_bit_size,
     data_byte_size=st.integers(min_value=0, max_value=32),
 )
 def test_decode_unsigned_fixed(value_bit_size,
-                              frac_places,
-                              stream_bytes,
-                              data_byte_size):
+                               frac_places,
+                               stream_bytes,
+                               data_byte_size):
     if value_bit_size > data_byte_size * 8:
         with pytest.raises(ValueError):
             UnsignedFixedDecoder(
@@ -570,7 +567,7 @@ def test_decode_unsigned_fixed(value_bit_size,
         return
 
     # Ensure no exceptions
-    actual_value = decoder(stream)
+    decoder(stream)
 
 
 @settings(max_examples=250)

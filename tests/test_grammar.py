@@ -1,19 +1,17 @@
-import pytest
-
 from hypothesis import (
     example,
     given,
     strategies as st,
 )
+import pytest
 
 from eth_abi.exceptions import (
     ABITypeError,
     ParseError,
 )
-
 from eth_abi.grammar import (
-    BasicType,
     TYPE_ALIASES,
+    BasicType,
     TupleType,
     normalize,
     parse,

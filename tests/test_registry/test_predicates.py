@@ -8,12 +8,11 @@ from hypothesis import (
 )
 
 from eth_abi.registry import (
-    Equals,
     BaseEquals,
+    Equals,
     has_arrlist,
     is_tuple_type,
 )
-
 from tests.common.strategies import (
     malformed_type_strs,
     type_strs,
@@ -97,12 +96,12 @@ def test_base_equals_can_be_dict_key():
 def test_base_equals_has_expected_repr():
     assert repr(BaseEquals('foo')) == "<BaseEquals (base == 'foo')>"
     assert (
-        repr(BaseEquals('foo', with_sub=True))
-        == "<BaseEquals (base == 'foo' and sub is not None)>"
+        repr(BaseEquals('foo', with_sub=True)) ==
+        "<BaseEquals (base == 'foo' and sub is not None)>"
     )
     assert (
-        repr(BaseEquals('foo', with_sub=False))
-        == "<BaseEquals (base == 'foo' and sub is None)>"
+        repr(BaseEquals('foo', with_sub=False)) ==
+        "<BaseEquals (base == 'foo' and sub is None)>"
     )
 
 

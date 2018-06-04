@@ -2,60 +2,57 @@ import codecs
 import decimal
 import re
 
-import pytest
-
-from hypothesis import (
-    given,
-    settings,
-    example,
-    strategies as st,
-)
-
 from eth_utils import (
+    decode_hex,
     int_to_big_endian,
+    is_address,
     is_boolean,
+    is_bytes,
     is_integer,
     is_number,
-    is_address,
-    is_bytes,
     is_text,
-    to_normalized_address,
     to_canonical_address,
     to_checksum_address,
-    decode_hex,
+    to_normalized_address,
 )
+from hypothesis import (
+    example,
+    given,
+    settings,
+    strategies as st,
+)
+import pytest
 
+from eth_abi.encoding import (
+    AddressEncoder,
+    BooleanEncoder,
+    BytesEncoder,
+    ByteStringEncoder,
+    SignedFixedEncoder,
+    SignedIntegerEncoder,
+    SignedRealEncoder,
+    TextStringEncoder,
+    TupleEncoder,
+    UnsignedFixedEncoder,
+    UnsignedIntegerEncoder,
+    UnsignedRealEncoder,
+    encode_uint_256,
+)
 from eth_abi.exceptions import (
     EncodingTypeError,
     IllegalValue,
     ValueOutOfBounds,
 )
-from eth_abi.encoding import (
-    BooleanEncoder,
-    UnsignedIntegerEncoder,
-    SignedIntegerEncoder,
-    AddressEncoder,
-    BytesEncoder,
-    ByteStringEncoder,
-    TextStringEncoder,
-    encode_uint_256,
-    UnsignedFixedEncoder,
-    SignedFixedEncoder,
-    UnsignedRealEncoder,
-    SignedRealEncoder,
-    TupleEncoder,
-)
-
 from eth_abi.utils.numeric import (
     TEN,
     abi_decimal_context,
-    compute_unsigned_integer_bounds,
-    compute_signed_integer_bounds,
-    compute_unsigned_fixed_bounds,
-    compute_signed_fixed_bounds,
-    compute_unsigned_real_bounds,
-    compute_signed_real_bounds,
     ceil32,
+    compute_signed_fixed_bounds,
+    compute_signed_integer_bounds,
+    compute_signed_real_bounds,
+    compute_unsigned_fixed_bounds,
+    compute_unsigned_integer_bounds,
+    compute_unsigned_real_bounds,
 )
 from eth_abi.utils.padding import (
     fpad,
@@ -72,7 +69,6 @@ def test_encode_boolean(bool_value, data_byte_size):
     encoder = BooleanEncoder(
         data_byte_size=data_byte_size,
     )
-
 
     if not is_boolean(bool_value):
         with pytest.raises(EncodingTypeError) as exception_info:
@@ -404,10 +400,10 @@ def test_encode_unsigned_real(base_integer_value,
     data_byte_size=st.integers(min_value=1, max_value=32),
 )
 def test_encode_signed_real(base_integer_value,
-                              value_bit_size,
-                              high_bit_size,
-                              low_bit_size,
-                              data_byte_size):
+                            value_bit_size,
+                            high_bit_size,
+                            low_bit_size,
+                            data_byte_size):
     if value_bit_size > data_byte_size * 8:
         with pytest.raises(ValueError):
             SignedRealEncoder(
@@ -598,6 +594,6 @@ def test_tuple_encoder():
         UnsignedIntegerEncoder(value_bit_size=256),
         ByteStringEncoder(),
     ))
-    expected = decode_hex('0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000')
+    expected = decode_hex('0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000')  # noqa: E501
     actual = encoder((0, b''))
     assert actual == expected

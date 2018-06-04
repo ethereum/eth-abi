@@ -1,20 +1,26 @@
-from decimal import Decimal
+from decimal import (
+    Decimal,
+)
 
+from eth_utils import (
+    decode_hex,
+)
 from hypothesis import (
     given,
     settings,
 )
 import pytest
 
-from eth_utils import decode_hex
-
-from eth_abi import is_encodable
-
+from eth_abi import (
+    is_encodable,
+)
 from tests.common.strategies import (
     single_strs_values,
     tuple_strs_values,
 )
-from tests.common.unit import CORRECT_SINGLE_ENCODINGS
+from tests.common.unit import (
+    CORRECT_SINGLE_ENCODINGS,
+)
 
 
 @pytest.mark.parametrize(

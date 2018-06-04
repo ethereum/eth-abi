@@ -1,6 +1,5 @@
-import math
 import decimal
-
+import math
 
 abi_decimal_context = decimal.Context(prec=999)
 
