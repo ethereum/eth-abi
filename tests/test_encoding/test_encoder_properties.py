@@ -73,7 +73,6 @@ def test_encode_boolean(bool_value, data_byte_size):
         data_byte_size=data_byte_size,
     )
 
-
     if not is_boolean(bool_value):
         with pytest.raises(EncodingTypeError) as exception_info:
             encoder(bool_value)
@@ -404,10 +403,10 @@ def test_encode_unsigned_real(base_integer_value,
     data_byte_size=st.integers(min_value=1, max_value=32),
 )
 def test_encode_signed_real(base_integer_value,
-                              value_bit_size,
-                              high_bit_size,
-                              low_bit_size,
-                              data_byte_size):
+                            value_bit_size,
+                            high_bit_size,
+                            low_bit_size,
+                            data_byte_size):
     if value_bit_size > data_byte_size * 8:
         with pytest.raises(ValueError):
             SignedRealEncoder(
@@ -598,6 +597,6 @@ def test_tuple_encoder():
         UnsignedIntegerEncoder(value_bit_size=256),
         ByteStringEncoder(),
     ))
-    expected = decode_hex('0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000')
+    expected = decode_hex('0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000')  # noqa
     actual = encoder((0, b''))
     assert actual == expected

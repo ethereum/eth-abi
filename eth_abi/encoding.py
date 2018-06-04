@@ -232,8 +232,8 @@ class NumberEncoder(Fixed32ByteSizeEncoder):
             )
 
         illegal_value = (
-            self.illegal_value_fn is not None
-            and self.illegal_value_fn(value)
+            self.illegal_value_fn is not None and
+            self.illegal_value_fn(value)
         )
         if illegal_value:
             raise IllegalValue(

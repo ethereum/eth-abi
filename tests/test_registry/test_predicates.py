@@ -97,12 +97,12 @@ def test_base_equals_can_be_dict_key():
 def test_base_equals_has_expected_repr():
     assert repr(BaseEquals('foo')) == "<BaseEquals (base == 'foo')>"
     assert (
-        repr(BaseEquals('foo', with_sub=True))
-        == "<BaseEquals (base == 'foo' and sub is not None)>"
+        repr(BaseEquals('foo', with_sub=True)) ==
+        "<BaseEquals (base == 'foo' and sub is not None)>"
     )
     assert (
-        repr(BaseEquals('foo', with_sub=False))
-        == "<BaseEquals (base == 'foo' and sub is None)>"
+        repr(BaseEquals('foo', with_sub=False)) ==
+        "<BaseEquals (base == 'foo' and sub is None)>"
     )
 
 

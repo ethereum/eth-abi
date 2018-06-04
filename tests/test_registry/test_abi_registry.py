@@ -130,8 +130,9 @@ def test_can_unregister_by_equality(registry: ABIRegistry):
 
 
 def test_can_register_simple_callables(registry: ABIRegistry):
-    encode_bool = lambda x: x
-    decode_bool = lambda x: x
+    def encode_bool(x):
+        return x
+    decode_bool = encode_bool
 
     registry.register('bool', encode_bool, decode_bool)
 

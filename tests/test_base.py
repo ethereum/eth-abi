@@ -54,12 +54,12 @@ class TupleCoder(BaseCoder):
 def test_base_coder_requires_that_settings_are_known():
     pattern = 'only accepts keyword arguments which are present'
     with pytest.raises(AttributeError, match=pattern):
-        coder = Coder(foo='bar')
+        Coder(foo='bar')
 
 
 def test_base_coder_validates_settings():
     with pytest.raises(ValueError, match='Setting missing'):
-        coder = Coder(sub='foo')
+        Coder(sub='foo')
 
 
 def test_base_coder_assigns_all_kwargs_to_instance():
