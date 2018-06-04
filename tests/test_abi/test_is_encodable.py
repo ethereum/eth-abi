@@ -2,8 +2,6 @@ from decimal import (
     Decimal,
 )
 
-import pytest
-
 from eth_utils import (
     decode_hex,
 )
@@ -11,6 +9,7 @@ from hypothesis import (
     given,
     settings,
 )
+import pytest
 
 from eth_abi import (
     is_encodable,

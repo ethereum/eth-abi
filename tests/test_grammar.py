@@ -1,10 +1,9 @@
-import pytest
-
 from hypothesis import (
     example,
     given,
     strategies as st,
 )
+import pytest
 
 from eth_abi.exceptions import (
     ABITypeError,

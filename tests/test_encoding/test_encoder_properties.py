@@ -1,6 +1,5 @@
 import codecs
 import decimal
-import pytest
 import re
 
 from eth_utils import (
@@ -22,6 +21,7 @@ from hypothesis import (
     settings,
     strategies as st,
 )
+import pytest
 
 from eth_abi.encoding import (
     AddressEncoder,

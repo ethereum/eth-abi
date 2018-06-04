@@ -1,5 +1,6 @@
 import functools
 import operator
+
 import pytest
 
 from eth_abi.registry import (

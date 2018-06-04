@@ -1,5 +1,4 @@
 import decimal
-import pytest
 import sys
 
 from eth_utils import (
@@ -14,6 +13,7 @@ from hypothesis import (
     settings,
     strategies as st,
 )
+import pytest
 
 from eth_abi.constants import (
     TT256M1,
