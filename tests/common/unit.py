@@ -1,8 +1,14 @@
-from decimal import Decimal
+from decimal import (
+    Decimal,
+)
 
-from eth_utils import decode_hex
+from eth_utils import (
+    decode_hex,
+)
 
-from eth_abi.utils.padding import zpad32_right
+from eth_abi.utils.padding import (
+    zpad32_right,
+)
 
 
 def make_word(description: str) -> bytes:

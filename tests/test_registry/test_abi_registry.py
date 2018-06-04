@@ -5,7 +5,6 @@ from eth_abi import (
     encoding,
     exceptions,
 )
-
 from eth_abi.registry import (
     ABIRegistry,
     BaseEquals,

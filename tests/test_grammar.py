@@ -10,10 +10,9 @@ from eth_abi.exceptions import (
     ABITypeError,
     ParseError,
 )
-
 from eth_abi.grammar import (
-    BasicType,
     TYPE_ALIASES,
+    BasicType,
     TupleType,
     normalize,
     parse,

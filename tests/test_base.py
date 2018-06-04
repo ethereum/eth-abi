@@ -1,13 +1,13 @@
 import pytest
 
-
 from eth_abi.base import (
     BaseCoder,
-    parse_type_str,
     parse_tuple_type_str,
+    parse_type_str,
 )
-
-from eth_abi.grammar import BasicType
+from eth_abi.grammar import (
+    BasicType,
+)
 
 
 class Coder(BaseCoder):

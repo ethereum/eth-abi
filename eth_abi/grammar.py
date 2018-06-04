@@ -1,14 +1,15 @@
 import functools
 import re
 
-from parsimonious import expressions
 import parsimonious
+from parsimonious import (
+    expressions,
+)
 
 from eth_abi.exceptions import (
     ABITypeError,
     ParseError,
 )
-
 
 grammar = parsimonious.Grammar(r"""
 type = tuple_type / basic_type

@@ -1,10 +1,15 @@
 import pytest
 
-from eth_abi import encode_abi
+from eth_abi import (
+    encode_abi,
+)
+from eth_abi.grammar import (
+    parse,
+)
 
-from eth_abi.grammar import parse
-
-from ..common.unit import CORRECT_TUPLE_ENCODINGS
+from ..common.unit import (
+    CORRECT_TUPLE_ENCODINGS,
+)
 
 
 @pytest.mark.parametrize('type_str,python_value,expected', CORRECT_TUPLE_ENCODINGS)

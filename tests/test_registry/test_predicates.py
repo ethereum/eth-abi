@@ -8,12 +8,11 @@ from hypothesis import (
 )
 
 from eth_abi.registry import (
-    Equals,
     BaseEquals,
+    Equals,
     has_arrlist,
     is_tuple_type,
 )
-
 from tests.common.strategies import (
     malformed_type_strs,
     type_strs,

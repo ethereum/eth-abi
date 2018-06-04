@@ -1,14 +1,6 @@
-import pytest
-
 import decimal
+import pytest
 import sys
-
-from hypothesis import (
-    given,
-    settings,
-    example,
-    strategies as st,
-)
 
 from eth_utils import (
     big_endian_to_int,
@@ -16,42 +8,46 @@ from eth_utils import (
     int_to_big_endian,
     to_normalized_address,
 )
+from hypothesis import (
+    example,
+    given,
+    settings,
+    strategies as st,
+)
 
 from eth_abi.constants import (
     TT256M1,
 )
-
 from eth_abi.decoding import (
-    ContextFramesBytesIO,
-    UnsignedIntegerDecoder,
-    SignedIntegerDecoder,
-    UnsignedRealDecoder,
-    SignedRealDecoder,
-    UnsignedFixedDecoder,
-    SignedFixedDecoder,
-    StringDecoder,
-    BytesDecoder,
-    TupleDecoder,
-    BooleanDecoder,
     AddressDecoder,
+    BooleanDecoder,
+    BytesDecoder,
+    ContextFramesBytesIO,
     DynamicArrayDecoder,
+    SignedFixedDecoder,
+    SignedIntegerDecoder,
+    SignedRealDecoder,
+    StringDecoder,
+    TupleDecoder,
+    UnsignedFixedDecoder,
+    UnsignedIntegerDecoder,
+    UnsignedRealDecoder,
 )
-
 from eth_abi.exceptions import (
     InsufficientDataBytes,
     NonEmptyPaddingBytes,
 )
-
-from eth_abi.registry import registry
-
-from eth_abi.utils.padding import (
-    zpad32,
+from eth_abi.registry import (
+    registry,
 )
 from eth_abi.utils.numeric import (
     abi_decimal_context,
+    ceil32,
     compute_signed_integer_bounds,
     quantize_value,
-    ceil32,
+)
+from eth_abi.utils.padding import (
+    zpad32,
 )
 
 

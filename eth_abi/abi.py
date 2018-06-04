@@ -1,6 +1,3 @@
-"""
-Vendored from `pyethereum.abi`
-"""
 from eth_utils import (
     is_bytes,
 )
@@ -9,16 +6,18 @@ from eth_abi.decoding import (
     ContextFramesBytesIO,
     TupleDecoder,
 )
-
-from eth_abi.exceptions import EncodingError
-
-from eth_abi.encoding import TupleEncoder
-
-from eth_abi.registry import registry
-
+from eth_abi.encoding import (
+    TupleEncoder,
+)
+from eth_abi.exceptions import (
+    EncodingError,
+)
+from eth_abi.registry import (
+    registry,
+)
 from eth_abi.utils.parsing import (  # noqa: F401
-    process_type,
     collapse_type,
+    process_type,
 )
 
 

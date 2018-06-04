@@ -1,12 +1,14 @@
 import decimal
 import random
 
-from eth_abi.utils.numeric import abi_decimal_context
-
-from eth_utils import encode_hex
-
+from eth_utils import (
+    encode_hex,
+)
 import hypothesis.strategies as st
 
+from eth_abi.utils.numeric import (
+    abi_decimal_context,
+)
 
 total_bits = st.integers(min_value=1, max_value=32).map(lambda n: n * 8)
 frac_places = st.integers(min_value=1, max_value=80)

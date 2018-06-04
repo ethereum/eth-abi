@@ -1,42 +1,42 @@
-from itertools import accumulate
 import abc
 import codecs
 import decimal
+from itertools import (
+    accumulate,
+)
 
 from eth_utils import (
     int_to_big_endian,
-    is_boolean,
-    is_integer,
-    is_number,
     is_address,
+    is_boolean,
     is_bytes,
-    is_text,
+    is_integer,
     is_list_like,
+    is_number,
+    is_text,
     to_canonical_address,
 )
 
 from eth_abi.base import (
     BaseCoder,
-    parse_type_str,
     parse_tuple_type_str,
+    parse_type_str,
 )
-
 from eth_abi.exceptions import (
     EncodingTypeError,
     IllegalValue,
     ValueOutOfBounds,
 )
-
 from eth_abi.utils.numeric import (
     TEN,
     abi_decimal_context,
-    compute_signed_integer_bounds,
-    compute_unsigned_integer_bounds,
-    compute_signed_fixed_bounds,
-    compute_unsigned_fixed_bounds,
-    compute_signed_real_bounds,
-    compute_unsigned_real_bounds,
     ceil32,
+    compute_signed_fixed_bounds,
+    compute_signed_integer_bounds,
+    compute_signed_real_bounds,
+    compute_unsigned_fixed_bounds,
+    compute_unsigned_integer_bounds,
+    compute_unsigned_real_bounds,
 )
 from eth_abi.utils.padding import (
     fpad,

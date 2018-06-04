@@ -1,12 +1,13 @@
-from hypothesis import given
-
-from eth_abi import (
-    encode_abi,
-    decode_abi,
-    encode_single,
-    decode_single,
+from hypothesis import (
+    given,
 )
 
+from eth_abi import (
+    decode_abi,
+    decode_single,
+    encode_abi,
+    encode_single,
+)
 from tests.common.strategies import (
     uint_strs,
     uint_values,

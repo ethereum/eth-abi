@@ -4,12 +4,11 @@ from hypothesis import (
 )
 
 from eth_abi import (
-    encode_abi,
     decode_abi,
-    encode_single,
     decode_single,
+    encode_abi,
+    encode_single,
 )
-
 from tests.common.strategies import (
     multi_strs_values,
     single_strs_values,

@@ -6,8 +6,9 @@ from . import (
     exceptions,
     grammar,
 )
-
-from .base import BaseCoder
+from .base import (
+    BaseCoder,
+)
 
 
 class PredicateMapping:
