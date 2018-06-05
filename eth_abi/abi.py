@@ -59,8 +59,13 @@ def is_encodable(typ, arg):
         encoder.validate_value(arg)
     except EncodingError:
         return False
-    else:
-        return True
+    except AttributeError:
+        try:
+            encoder(arg)
+        except EncodingError:
+            return False
+
+    return True
 
 
 # Decodes a single base datum

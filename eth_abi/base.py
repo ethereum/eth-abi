@@ -144,4 +144,4 @@ class BaseCoder:
         Used by ``ABIRegistry`` to get an appropriate encoder or decoder
         instance for the given type string and type registry.
         """
-        raise NotImplementedError('Must implement `from_type_str`')
+        raise cls()
