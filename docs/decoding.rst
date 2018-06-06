@@ -1,47 +1,36 @@
 Decoding
 ========
 
+Decoding ABI Values
+-------------------
 
-These functions are intended for decoding return values from the EVM.
+Binary values for a given ABI type can be decoded into python values as
+follows:
 
+.. doctest::
 
-* ``eth_abi.decode_single(type, data)``
+    >>> from eth_abi import decode_single, decode_abi
 
-This function tries to decode ``data`` into the python type that corresponds
-to the provided ``type``.  This function accepts both byte strings as well as
-their hexidecimal representation with or without the ``0x`` prefix.
-
-
-.. code-block:: python
-
-    >>> decode_single('uint256', '\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0009')
-    12345
-    >>> decode_single('uint256', '0000000000000000000000000000000000000000000000000000000000003039')
-    12345
-    >>> decode_single('uint256', '0x0000000000000000000000000000000000000000000000000000000000003039')
+    >>> decode_single('uint256', b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0009')
     12345
 
+    >>> decode_single('(bytes1,bytes1)', b'a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00b\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00')
+    (b'a', b'b')
 
-The **value** parameter is expected to be one of the recognized EVM types.
+    >>> decode_abi(['bytes1', 'bytes1'], b'a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00b\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00')
+    (b'a', b'b')
 
+The :any:`decode_single` function can be used to perform any decoding operation
+from a binary ABI value for an ABI type to a python value.  As is seen in the
+example above, :any:`decode_single` supports decoding of tuple ABI values which
+can be used to decode a single binary payload into a sequence of python values.
 
-.. note:: This function cannot be used to decode dynamic or array types such as ``bytes32[]``.
+The :any:`decode_abi` function provides an alternate API for decoding tuple
+values.  It accepts a list of type strings instead of a single tuple type
+string.  Internally, it uses the :any:`decode_single` function to do this.
+Because of this redundancy, it will eventually be removed in favor of
+:any:`decode_single`.
 
-
-* ``eth_abi.decode_abi(types, data)``
-
-This function decodes ``data`` into the python type corresponding to the
-provided ``types``.  This function accepts both byte arrays as well as their
-hexidecimal representation with or without the ``0x`` prefix.
-
-
-.. code-block:: python
-
-    >>> decode_abi(['uint256'], '\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0009')
-    [12345]
-    >>> decode_abi(['bytes32', 'bytes32'], 'a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00b\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00')
-    ['a', 'b']
-
-
-The **values** parameter is expected to be an iterable whose values are all one
-of the recognized EVM types.
+Both the :any:`decode_single` and :any:`decode_abi` functions accept either a
+python ``bytes`` or ``bytearray`` value to indicate the binary data to be
+decoded.
