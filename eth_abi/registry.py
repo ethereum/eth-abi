@@ -403,13 +403,13 @@ class ABIRegistry:
         self.register_encoder(lookup, encoder, label=label)
         self.register_decoder(lookup, decoder, label=label)
 
-    def unregister(self, lookup_or_label: str) -> None:
+    def unregister(self, label: str) -> None:
         """
         Unregisters the entries in the encoder and decoder registries which
         have the label ``label``.
         """
-        self.unregister_encoder(lookup_or_label)
-        self.unregister_decoder(lookup_or_label)
+        self.unregister_encoder(label)
+        self.unregister_decoder(label)
 
     @functools.lru_cache(maxsize=None)
     def get_encoder(self, type_str):
