@@ -325,25 +325,89 @@ class ABIRegistry:
 
     @_clear_encoder_cache
     def register_encoder(self, lookup: Lookup, encoder: Encoder, label: str=None) -> None:
+        """
+        Registers the given ``encoder`` under the given ``lookup``.  A unique
+        string label may be  optionally provided which can be used to refer to
+        the registration by name.  For more information about arguments, refer
+        to :any:`register`.
+        """
         self._register_coder(self._encoders, lookup, encoder, label=label)
 
     @_clear_encoder_cache
     def unregister_encoder(self, lookup_or_label: Lookup) -> None:
+        """
+        Unregisters an encoder in the registry with the given lookup or label.
+        If ``lookup_or_label`` is a string, the encoder with the label
+        ``lookup_or_label`` will be unregistered.  If it is an function, the
+        encoder with the lookup function ``lookup_or_label`` will be
+        unregistered.
+        """
         self._unregister_coder(self._encoders, lookup_or_label)
 
     @_clear_decoder_cache
     def register_decoder(self, lookup: Lookup, decoder: Decoder, label: str=None) -> None:
+        """
+        Registers the given ``decoder`` under the given ``lookup``.  A unique
+        string label may be  optionally provided which can be used to refer to
+        the registration by name.  For more information about arguments, refer
+        to :any:`register`.
+        """
         self._register_coder(self._decoders, lookup, decoder, label=label)
 
     @_clear_decoder_cache
     def unregister_decoder(self, lookup_or_label: Lookup) -> None:
+        """
+        Unregisters a decoder in the registry with the given lookup or label.
+        If ``lookup_or_label`` is a string, the decoder with the label
+        ``lookup_or_label`` will be unregistered.  If it is an function, the
+        decoder with the lookup function ``lookup_or_label`` will be
+        unregistered.
+        """
         self._unregister_coder(self._decoders, lookup_or_label)
 
     def register(self, lookup: Lookup, encoder: Encoder, decoder: Decoder, label: str=None) -> None:
+        """
+        Registers the given ``encoder`` and ``decoder`` under the given
+        ``lookup``.  A unique string label may be  optionally provided which
+        can be used to refer to the registration by name.
+
+        :param lookup: A type string or type string matcher function
+            (predicate).  When the registry is queried with a type string
+            ``query`` to determine which encoder or decoder to use, ``query``
+            will be checked against every registration in the registry.  If a
+            registration was created with a type string for ``lookup``, it will
+            be considered a match if ``lookup == query``.  If a registration
+            was created with a matcher function for ``lookup``, it will be
+            considered a match if ``lookup(query) is True``.  If more than one
+            registration is found to be a match, then an exception is raised.
+
+        :param encoder: An encoder callable or class to use if ``lookup``
+            matches a query.  If ``encoder`` is a callable, it must accept a
+            python value and return a ``bytes`` value.  If ``encoder`` is a
+            class, it must be a valid subclass of :any:`encoding.BaseEncoder`
+            and must also implement the :any:`from_type_str` method on
+            :any:`base.BaseCoder`.
+
+        :param decoder: A decoder callable or class to use if ``lookup``
+            matches a query.  If ``decoder`` is a callable, it must accept a
+            stream-like object of bytes and return a python value.  If
+            ``decoder`` is a class, it must be a valid subclass of
+            :any:`decoding.BaseDecoder` and must also implement the
+            :any:`from_type_str` method on :any:`base.BaseCoder`.
+
+        :param label: An optional label that can be used to refer to this
+            registration by name.  This label can be used to unregister an
+            entry in the registry via the :any:`unregister` method and its
+            variants.
+        """
         self.register_encoder(lookup, encoder, label=label)
         self.register_decoder(lookup, decoder, label=label)
 
     def unregister(self, lookup_or_label: str) -> None:
+        """
+        Unregisters the entries in the encoder and decoder registries which
+        have the label ``label``.
+        """
         self.unregister_encoder(lookup_or_label)
         self.unregister_decoder(lookup_or_label)
 

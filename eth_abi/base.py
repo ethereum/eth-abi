@@ -111,12 +111,12 @@ def parse_tuple_type_str(old_from_type_str):
 
 
 class BaseCoder:
+    """
+    Base class for all encoder and decoder classes.
+    """
     is_dynamic = False
 
     def __init__(self, **kwargs):
-        """
-        Creates an encoder or decoder with the given settings kwargs.
-        """
         cls = type(self)
 
         # Ensure no unrecognized kwargs were given
@@ -136,16 +136,12 @@ class BaseCoder:
         self.validate()
 
     def validate(self):
-        """
-        Validates that an encoder's or decoder's settings are valid in
-        combination.
-        """
         pass
 
     @classmethod
     def from_type_str(cls, type_str: TypeStr, registry) -> 'BaseCoder':  # pragma: no cover
         """
-        Used by ``ABIRegistry`` to get an appropriate encoder or decoder
+        Used by :any:`ABIRegistry` to get an appropriate encoder or decoder
         instance for the given type string and type registry.
         """
         raise NotImplementedError('Must implement `from_type_str`')

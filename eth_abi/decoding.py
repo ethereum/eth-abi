@@ -109,10 +109,17 @@ class ContextFramesBytesIO(io.BytesIO):
 
 
 class BaseDecoder(BaseCoder, metaclass=abc.ABCMeta):
+    """
+    Base class for all decoder classes.  Subclass this if you want to define a
+    custom decoder class.  Subclasses must also implement
+    :any:`BaseCoder.from_type_str`.
+    """
     @abc.abstractmethod
     def decode(self, stream: ContextFramesBytesIO) -> Any:  # pragma: no cover
         """
-        Decodes the given stream of bytes into a Python value.
+        Decodes the given stream of bytes into a python value.  Should raise
+        :any:`exceptions.DecodingError` if a python value cannot be decoded
+        from the given byte stream.
         """
         pass
 

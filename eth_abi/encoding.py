@@ -49,18 +49,25 @@ from eth_abi.utils.padding import (
 
 
 class BaseEncoder(BaseCoder, metaclass=abc.ABCMeta):
+    """
+    Base class for all encoder classes.  Subclass this if you want to define a
+    custom encoder class.  Subclasses must also implement
+    :any:`BaseCoder.from_type_str`.
+    """
     @abc.abstractmethod
     def encode(self, value: Any) -> bytes:  # pragma: no cover
         """
-        Encodes the given Python value as a sequence of bytes.
+        Encodes the given value as a sequence of bytes.  Should raise
+        :any:`exceptions.EncodingError` if ``value`` cannot be encoded.
         """
         pass
 
     @abc.abstractmethod
     def validate_value(self, value: Any) -> None:  # pragma: no cover
         """
-        Determines whether or not the given value can be encoded by this
-        encoder.
+        Checks whether or not the given value can be encoded by this encoder.
+        If the given value cannot be encoded, must raise
+        :any:`exceptions.EncodingError`.
         """
         pass
 
