@@ -28,6 +28,7 @@ Table of Contents
 
     encoding
     decoding
+    registry
     eth_abi
     releases
 
