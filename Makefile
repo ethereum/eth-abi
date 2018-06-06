@@ -31,7 +31,7 @@ test-all:
 	tox
 
 build-docs:
-	sphinx-apidoc -o docs/ . setup.py 'eth_typing/*' 'eth_abi/encoding.py' 'eth_abi/decoding.py' 'eth_abi/utils/*' 'tests/*'
+	sphinx-apidoc -o docs/ . setup.py 'eth_typing/*' 'eth_abi/utils/*' 'tests/*'
 	$(MAKE) -C docs clean
 	$(MAKE) -C docs html
 
