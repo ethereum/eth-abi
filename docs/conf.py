@@ -53,7 +53,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = 'Ethereum ABI Utils'
+project = 'eth-abi'
 copyright = '2018, Piper Merriam <pipermerriam@gmail.com>'
 author = 'Piper Merriam <pipermerriam@gmail.com>'
 
