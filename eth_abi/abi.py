@@ -1,3 +1,9 @@
+from typing import (
+    Any,
+    Iterable,
+    Tuple,
+)
+
 from eth_utils import (
     is_bytes,
 )
@@ -19,9 +25,13 @@ from eth_abi.utils.parsing import (  # noqa: F401
     collapse_type,
     process_type,
 )
+from eth_typing.abi import (
+    Decodable,
+    TypeStr,
+)
 
 
-def encode_single(typ, arg):
+def encode_single(typ: TypeStr, arg: Any) -> bytes:
     if isinstance(typ, str):
         type_str = typ
     else:
@@ -32,7 +42,7 @@ def encode_single(typ, arg):
     return encoder(arg)
 
 
-def encode_abi(types, args):
+def encode_abi(types: Iterable[TypeStr], args: Iterable[Any]) -> bytes:
     encoders = [
         registry.get_encoder(type_str)
         for type_str in types
@@ -43,7 +53,7 @@ def encode_abi(types, args):
     return encoder(args)
 
 
-def is_encodable(typ, arg):
+def is_encodable(typ: TypeStr, arg: Any) -> bool:
     """
     Determines if the given python value ``arg`` can be encoded as a value of
     abi type ``typ``.
@@ -69,7 +79,7 @@ def is_encodable(typ, arg):
 
 
 # Decodes a single base datum
-def decode_single(typ, data):
+def decode_single(typ: TypeStr, data: Decodable) -> Any:
     if not is_bytes(data):
         raise TypeError("The `data` value must be of bytes type.  Got {0}".format(type(data)))
 
@@ -85,7 +95,7 @@ def decode_single(typ, data):
 
 
 # Decodes multiple arguments using the head/tail mechanism
-def decode_abi(types, data):
+def decode_abi(types: Iterable[TypeStr], data: Decodable) -> Tuple[Any, ...]:
     if not is_bytes(data):
         raise TypeError("The `data` value must be of bytes type.  Got {0}".format(type(data)))
 

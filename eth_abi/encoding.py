@@ -4,6 +4,9 @@ import decimal
 from itertools import (
     accumulate,
 )
+from typing import (
+    Any,
+)
 
 from eth_utils import (
     int_to_big_endian,
@@ -47,21 +50,21 @@ from eth_abi.utils.padding import (
 
 class BaseEncoder(BaseCoder, metaclass=abc.ABCMeta):
     @abc.abstractmethod
-    def encode(self, value):  # pragma: no cover
+    def encode(self, value: Any) -> bytes:  # pragma: no cover
         """
         Encodes the given Python value as a sequence of bytes.
         """
         pass
 
     @abc.abstractmethod
-    def validate_value(self, value):
+    def validate_value(self, value: Any) -> None:  # pragma: no cover
         """
         Determines whether or not the given value can be encoded by this
         encoder.
         """
         pass
 
-    def __call__(self, value):
+    def __call__(self, value: Any) -> bytes:
         return self.encode(value)
 
 

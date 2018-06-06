@@ -1,4 +1,14 @@
 import functools
+from typing import (
+    Any,
+    Callable,
+    Type,
+    Union,
+)
+
+from eth_typing import (
+    abi,
+)
 
 from . import (
     decoding,
@@ -9,6 +19,14 @@ from . import (
 from .base import (
     BaseCoder,
 )
+
+Lookup = Union[abi.TypeStr, Callable[[abi.TypeStr], bool]]
+
+EncoderCallable = Callable[[Any], bytes]
+DecoderCallable = Callable[[decoding.ContextFramesBytesIO], Any]
+
+Encoder = Union[EncoderCallable, Type[encoding.BaseEncoder]]
+Decoder = Union[DecoderCallable, Type[decoding.BaseDecoder]]
 
 
 class PredicateMapping:
@@ -235,6 +253,7 @@ def is_tuple_type(type_str):
 
 
 def _clear_encoder_cache(old_method):
+    @functools.wraps(old_method)
     def new_method(self, *args, **kwargs):
         self.get_encoder.cache_clear()
         return old_method(self, *args, **kwargs)
@@ -243,6 +262,7 @@ def _clear_encoder_cache(old_method):
 
 
 def _clear_decoder_cache(old_method):
+    @functools.wraps(old_method)
     def new_method(self, *args, **kwargs):
         self.get_decoder.cache_clear()
         return old_method(self, *args, **kwargs)
@@ -304,26 +324,26 @@ class ABIRegistry:
         return coder
 
     @_clear_encoder_cache
-    def register_encoder(self, lookup, encoder, label=None):
+    def register_encoder(self, lookup: Lookup, encoder: Encoder, label: str=None) -> None:
         self._register_coder(self._encoders, lookup, encoder, label=label)
 
     @_clear_encoder_cache
-    def unregister_encoder(self, lookup_or_label):
+    def unregister_encoder(self, lookup_or_label: Lookup) -> None:
         self._unregister_coder(self._encoders, lookup_or_label)
 
     @_clear_decoder_cache
-    def register_decoder(self, lookup, decoder, label=None):
+    def register_decoder(self, lookup: Lookup, decoder: Decoder, label: str=None) -> None:
         self._register_coder(self._decoders, lookup, decoder, label=label)
 
     @_clear_decoder_cache
-    def unregister_decoder(self, lookup_or_label):
+    def unregister_decoder(self, lookup_or_label: Lookup) -> None:
         self._unregister_coder(self._decoders, lookup_or_label)
 
-    def register(self, lookup, encoder, decoder, label=None):
+    def register(self, lookup: Lookup, encoder: Encoder, decoder: Decoder, label: str=None) -> None:
         self.register_encoder(lookup, encoder, label=label)
         self.register_decoder(lookup, decoder, label=label)
 
-    def unregister(self, lookup_or_label):
+    def unregister(self, lookup_or_label: str) -> None:
         self.unregister_encoder(lookup_or_label)
         self.unregister_decoder(lookup_or_label)
 

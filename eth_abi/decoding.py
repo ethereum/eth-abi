@@ -1,6 +1,9 @@
 import abc
 import decimal
 import io
+from typing import (
+    Any,
+)
 
 from eth_utils import (
     big_endian_to_int,
@@ -107,13 +110,13 @@ class ContextFramesBytesIO(io.BytesIO):
 
 class BaseDecoder(BaseCoder, metaclass=abc.ABCMeta):
     @abc.abstractmethod
-    def decode(self, stream):  # pragma: no cover
+    def decode(self, stream: ContextFramesBytesIO) -> Any:  # pragma: no cover
         """
         Decodes the given stream of bytes into a Python value.
         """
         pass
 
-    def __call__(self, stream):
+    def __call__(self, stream: ContextFramesBytesIO) -> Any:
         return self.decode(stream)
 
 
