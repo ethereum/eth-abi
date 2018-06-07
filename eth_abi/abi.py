@@ -4,6 +4,10 @@ from typing import (
     Tuple,
 )
 
+from eth_typing.abi import (
+    Decodable,
+    TypeStr,
+)
 from eth_utils import (
     is_bytes,
 )
@@ -24,10 +28,6 @@ from eth_abi.registry import (
 from eth_abi.utils.parsing import (  # noqa: F401
     collapse_type,
     process_type,
-)
-from eth_typing.abi import (
-    Decodable,
-    TypeStr,
 )
 
 
