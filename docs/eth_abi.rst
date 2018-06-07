@@ -1,7 +1,7 @@
 API
-================
+===
 
-eth\_abi\.abi module
+eth\_abi.abi module
 --------------------
 
 .. automodule:: eth_abi.abi
@@ -9,31 +9,28 @@ eth\_abi\.abi module
     :undoc-members:
     :show-inheritance:
 
-eth\_abi\.constants module
---------------------------
+eth\_abi.base module
+------------------------
 
-.. automodule:: eth_abi.constants
-    :members:
-    :undoc-members:
+.. automodule:: eth_abi.base
+    :members: BaseCoder
     :show-inheritance:
 
-eth\_abi\.decoding module
--------------------------
+eth\_abi.decoding module
+------------------------
 
 .. automodule:: eth_abi.decoding
-    :members:
-    :undoc-members:
+    :members: BaseDecoder
     :show-inheritance:
 
-eth\_abi\.encoding module
--------------------------
+eth\_abi.encoding module
+------------------------
 
 .. automodule:: eth_abi.encoding
-    :members:
-    :undoc-members:
+    :members: BaseEncoder
     :show-inheritance:
 
-eth\_abi\.exceptions module
+eth\_abi.exceptions module
 ---------------------------
 
 .. automodule:: eth_abi.exceptions
@@ -41,11 +38,10 @@ eth\_abi\.exceptions module
     :undoc-members:
     :show-inheritance:
 
+eth\_abi.registry module
+-------------------------
 
-Module contents
----------------
+.. automodule:: eth_abi.registry
 
-.. automodule:: eth_abi
-    :members:
-    :undoc-members:
-    :show-inheritance:
+    .. autoclass:: ABIRegistry
+        :members:

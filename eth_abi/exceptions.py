@@ -2,50 +2,75 @@ import parsimonious
 
 
 class EncodingError(Exception):
+    """
+    Base exception for any error that occurs during encoding.
+    """
     pass
 
 
 class EncodingTypeError(EncodingError):
     """
-    Raised when trying to encode a value which is of the wrong type for the
-    desired encoding type.
+    Raised when trying to encode a python value whose type is not supported for
+    the output ABI type.
     """
     pass
 
 
 class IllegalValue(EncodingError):
     """
-    Raised when trying to encode a value which is not considered legal for a
-    data type.
+    Raised when trying to encode a python value with the correct type but with
+    a value that is not considered legal for the output ABI type.
 
-    Examples:
-    fixed128x19_encoder(Decimal('NaN'))  # cannot encode NaN
-    ufixed8x1_encoder(Decimal('25.6'))  # out of bounds
+    Example:
+
+    .. code-block:: python
+
+        fixed128x19_encoder(Decimal('NaN'))  # cannot encode NaN
     """
     pass
 
 
 class ValueOutOfBounds(IllegalValue):
     """
-    Raised when trying to encode a value which is out bounds for the desired
+    Raised when trying to encode a python value with the correct type but with
+    a value that appears outside the range of valid values for the output ABI
     type.
+
+    Example:
+
+    .. code-block:: python
+
+        ufixed8x1_encoder(Decimal('25.6'))  # out of bounds
     """
     pass
 
 
 class DecodingError(Exception):
+    """
+    Base exception for any error that occurs during decoding.
+    """
     pass
 
 
 class InsufficientDataBytes(DecodingError):
+    """
+    Raised when there are insufficient data to decode a value for a given ABI
+    type.
+    """
     pass
 
 
 class NonEmptyPaddingBytes(DecodingError):
+    """
+    Raised when the padding bytes of an ABI value are malformed.
+    """
     pass
 
 
 class ParseError(parsimonious.ParseError):
+    """
+    Raised when an ABI type string cannot be parsed.
+    """
     def __str__(self):
         return "Parse error at '{}' (column {}) in type string '{}'".format(
             self.text[self.pos:self.pos + 5],
@@ -55,4 +80,9 @@ class ParseError(parsimonious.ParseError):
 
 
 class ABITypeError(ValueError):
+    """
+    Raised when a parsed ABI type has inconsistent properties; for example,
+    when trying to parse the type string ``'uint7'`` (which has a bit-width
+    that is not congruent with zero modulo eight).
+    """
     pass
