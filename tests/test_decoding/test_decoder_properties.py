@@ -35,6 +35,7 @@ from eth_abi.decoding import (
     UnsignedRealDecoder,
 )
 from eth_abi.exceptions import (
+    DecodingError,
     InsufficientDataBytes,
     NonEmptyPaddingBytes,
 )
@@ -245,25 +246,25 @@ def is_utf8_encodable(value):
 
 @settings(max_examples=250)
 @given(
-    _strings=st.binary(min_size=0, max_size=256),
+    _bytes=st.binary(min_size=0, max_size=256),
     pad_size=st.integers(min_value=0, max_value=32),
 )
-def test_decode_strings_raises(_strings, pad_size):
-    size_bytes = zpad32(int_to_big_endian(len(_strings)))
-    padded_bytes = _strings + b'\x00' * pad_size
+def test_decode_strings_raises(_bytes, pad_size):
+    size_bytes = zpad32(int_to_big_endian(len(_bytes)))
+    padded_bytes = _bytes + b'\x00' * pad_size
     stream_bytes = size_bytes + padded_bytes
     stream = ContextFramesBytesIO(stream_bytes)
 
     decoder = StringDecoder()
 
-    st.assume(not is_utf8_decodable(_strings))
+    st.assume(not is_utf8_decodable(_bytes))
 
-    if len(padded_bytes) < ceil32(len(_strings)):
+    if len(padded_bytes) < ceil32(len(_bytes)):
         with pytest.raises(InsufficientDataBytes):
             decoder(stream)
         return
 
-    with pytest.raises(UnicodeDecodeError):
+    with pytest.raises(DecodingError):
         decoder(stream)
 
 

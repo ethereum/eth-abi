@@ -17,6 +17,7 @@ from eth_abi.base import (
     parse_type_str,
 )
 from eth_abi.exceptions import (
+    DecodingError,
     InsufficientDataBytes,
     NonEmptyPaddingBytes,
 )
@@ -609,7 +610,7 @@ class StringDecoder(ByteStringDecoder):
         try:
             value = data.decode("utf-8")
         except UnicodeDecodeError as e:
-            raise UnicodeDecodeError(
+            raise DecodingError(
                 e.encoding,
                 e.object,
                 e.start,
@@ -618,5 +619,5 @@ class StringDecoder(ByteStringDecoder):
                 "expected to be a UTF8 encoded string of text. The returned "
                 "value could not be decoded as valid UTF8. This is indicative "
                 "of a broken application which is using incorrect return types for "
-                "binary data.")
+                "binary data.") from e
         return value
