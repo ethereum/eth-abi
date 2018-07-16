@@ -608,11 +608,15 @@ class StringDecoder(ByteStringDecoder):
     def decoder_fn(data):
         try:
             value = data.decode("utf-8")
-        except UnicodeDecodeError:
+        except UnicodeDecodeError as e:
             raise UnicodeDecodeError(
+                e.encoding,
+                e.object,
+                e.start,
+                e.end,
                 "The returned type for this function is string which is "
                 "expected to be a UTF8 encoded string of text. The returned "
-                "value {0} could not be decoded as valid UTF8. This is indicative "
+                "value could not be decoded as valid UTF8. This is indicative "
                 "of a broken application which is using incorrect return types for "
-                "binary data.".format(data))
+                "binary data.")
         return value
