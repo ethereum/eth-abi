@@ -560,7 +560,7 @@ class SignedRealDecoder(BaseRealDecoder):
 #
 # String and Bytes
 #
-class StringDecoder(SingleDecoder):
+class ByteStringDecoder(SingleDecoder):
     is_dynamic = True
 
     @staticmethod
@@ -594,12 +594,25 @@ class StringDecoder(SingleDecoder):
     def validate_padding_bytes(self, value, padding_bytes):
         pass
 
+    @parse_type_str('bytes')
+    def from_type_str(cls, abi_type, registry):
+        return cls()
+
+
+class StringDecoder(ByteStringDecoder):
     @parse_type_str('string')
     def from_type_str(cls, abi_type, registry):
         return cls()
 
-
-class ByteStringDecoder(StringDecoder):
-    @parse_type_str('bytes')
-    def from_type_str(cls, abi_type, registry):
-        return cls()
+    @staticmethod
+    def decoder_fn(data):
+        try:
+            value = data.decode("utf-8")
+        except UnicodeDecodeError:
+            raise UnicodeDecodeError(
+                "The returned type for this function is string which is "
+                "expected to be a UTF8 encoded string of text. The returned "
+                "value {0} could not be decoded as valid UTF8. This is indicative "
+                "of a broken application which is using incorrect return types for "
+                "binary data.".format(data))
+        return value
