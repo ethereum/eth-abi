@@ -1,6 +1,22 @@
 Release Notes
 =============
 
+v2.0.0-alpha.1
+-------------
+
+Released July 19, 2018
+
+- Backwards Incompatible Changes
+
+  - :meth:`~eth_abi.abi.decode_single` called with ABI type 'string' will now return a python
+    :class:`str` instead of :class:`bytes`.
+- Bugfixes
+
+  - Simple callable encoders work again
+- Misc
+
+  - Various documentation updates and type annotations
+
 v1.1.1
 -------------
 
