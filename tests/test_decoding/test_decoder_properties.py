@@ -1,6 +1,9 @@
 import decimal
 import sys
 
+from cytoolz import (
+    complement,
+)
 from eth_utils import (
     big_endian_to_int,
     decode_hex,
@@ -22,6 +25,7 @@ from eth_abi.decoding import (
     AddressDecoder,
     BooleanDecoder,
     BytesDecoder,
+    ByteStringDecoder,
     ContextFramesBytesIO,
     DynamicArrayDecoder,
     SignedFixedDecoder,
@@ -34,6 +38,7 @@ from eth_abi.decoding import (
     UnsignedRealDecoder,
 )
 from eth_abi.exceptions import (
+    DecodingError,
     InsufficientDataBytes,
     NonEmptyPaddingBytes,
 )
@@ -49,6 +54,22 @@ from eth_abi.utils.numeric import (
 from eth_abi.utils.padding import (
     zpad32,
 )
+
+
+def is_utf8_decodable(value):
+    try:
+        value.decode("utf-8")
+    except UnicodeDecodeError:
+        return False
+    return True
+
+
+def is_utf8_encodable(value):
+    try:
+        value.encode("utf-8")
+    except UnicodeEncodeError:
+        return False
+    return True
 
 
 def is_non_empty_non_null_byte_string(value):
@@ -183,24 +204,68 @@ def test_decode_signed_int(integer_bit_size, stream_bytes, data_byte_size):
 
 @settings(max_examples=250)
 @given(
-    string_bytes=st.binary(min_size=0, max_size=256),
+    _bytes=st.binary(min_size=0, max_size=256),
     pad_size=st.integers(min_value=0, max_value=32),
 )
-def test_decode_bytes_and_string(string_bytes, pad_size):
-    size_bytes = zpad32(int_to_big_endian(len(string_bytes)))
-    padded_string_bytes = string_bytes + b'\x00' * pad_size
-    stream_bytes = size_bytes + padded_string_bytes
+def test_decode_bytes(_bytes, pad_size):
+    size_bytes = zpad32(int_to_big_endian(len(_bytes)))
+    padded_bytes = _bytes + b'\x00' * pad_size
+    stream_bytes = size_bytes + padded_bytes
     stream = ContextFramesBytesIO(stream_bytes)
 
-    decoder = StringDecoder()
+    decoder = ByteStringDecoder()
 
-    if len(padded_string_bytes) < ceil32(len(string_bytes)):
+    if len(padded_bytes) < ceil32(len(_bytes)):
         with pytest.raises(InsufficientDataBytes):
             decoder(stream)
         return
 
     decoded_value = decoder(stream)
-    assert decoded_value == string_bytes
+    assert decoded_value == _bytes
+
+
+@settings(max_examples=250)
+@given(
+    _strings=st.text(min_size=0, max_size=256).filter(is_utf8_encodable),
+    pad_size=st.integers(min_value=0, max_value=32),
+)
+def test_decode_strings(_strings, pad_size):
+    size_bytes = zpad32(int_to_big_endian(len(_strings.encode("utf-8"))))
+    padded_bytes = _strings.encode("utf-8") + b'\x00' * pad_size
+    stream_bytes = size_bytes + padded_bytes
+    stream = ContextFramesBytesIO(stream_bytes)
+
+    decoder = StringDecoder()
+
+    if len(padded_bytes) < ceil32(len(_strings.encode("utf-8"))):
+        with pytest.raises(InsufficientDataBytes):
+            decoder(stream)
+        return
+
+    decoded_value = decoder(stream)
+    assert decoded_value == _strings
+
+
+@settings(max_examples=250)
+@given(
+    _bytes=st.binary(min_size=0, max_size=256).filter(complement(is_utf8_decodable)),
+    pad_size=st.integers(min_value=0, max_value=32),
+)
+def test_decode_strings_raises(_bytes, pad_size):
+    size_bytes = zpad32(int_to_big_endian(len(_bytes)))
+    padded_bytes = _bytes + b'\x00' * pad_size
+    stream_bytes = size_bytes + padded_bytes
+    stream = ContextFramesBytesIO(stream_bytes)
+
+    decoder = StringDecoder()
+
+    if len(padded_bytes) < ceil32(len(_bytes)):
+        with pytest.raises(InsufficientDataBytes):
+            decoder(stream)
+        return
+
+    with pytest.raises(DecodingError):
+        decoder(stream)
 
 
 @settings(max_examples=250)
