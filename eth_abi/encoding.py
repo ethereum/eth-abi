@@ -36,10 +36,8 @@ from eth_abi.utils.numeric import (
     ceil32,
     compute_signed_fixed_bounds,
     compute_signed_integer_bounds,
-    compute_signed_real_bounds,
     compute_unsigned_fixed_bounds,
     compute_unsigned_integer_bounds,
-    compute_unsigned_real_bounds,
 )
 from eth_abi.utils.padding import (
     fpad,
@@ -395,75 +393,6 @@ class SignedFixedEncoder(BaseFixedEncoder):
         return cls(
             value_bit_size=value_bit_size,
             frac_places=frac_places,
-        )
-
-
-class BaseRealEncoder(NumberEncoder):
-    low_bit_size = None
-    high_bit_size = None
-    type_check_fn = staticmethod(is_number)
-
-    def validate(self):
-        super().validate()
-
-        if self.high_bit_size is None:
-            raise ValueError("`high_bit_size` cannot be null")
-        if self.low_bit_size is None:
-            raise ValueError("`low_bit_size` cannot be null")
-        if self.low_bit_size + self.high_bit_size != self.value_bit_size:
-            raise ValueError("high and low bitsizes must sum to the value_bit_size")
-
-
-class UnsignedRealEncoder(BaseRealEncoder):
-    def bounds_fn(self, value_bit_size):
-        return compute_unsigned_real_bounds(self.high_bit_size, self.low_bit_size)
-
-    def encode_fn(self, value):
-        scaled_value = value * 2 ** self.low_bit_size
-        integer_value = int(scaled_value)
-        return int_to_big_endian(integer_value)
-
-    @parse_type_str('ureal')
-    def from_type_str(cls, abi_type, registry):
-        high_bit_size, low_bit_size = abi_type.sub
-
-        return cls(
-            value_bit_size=high_bit_size + low_bit_size,
-            high_bit_size=high_bit_size,
-            low_bit_size=low_bit_size,
-        )
-
-
-class SignedRealEncoder(BaseRealEncoder):
-    def bounds_fn(self, value_bit_size):
-        return compute_signed_real_bounds(self.high_bit_size, self.low_bit_size)
-
-    def encode_fn(self, value):
-        scaled_value = value * 2 ** self.low_bit_size
-        integer_value = int(scaled_value)
-        unsigned_integer_value = integer_value % (2 ** (self.high_bit_size + self.low_bit_size))
-
-        return int_to_big_endian(unsigned_integer_value)
-
-    def encode(self, value):
-        self.validate_value(value)
-        base_encoded_value = self.encode_fn(value)
-
-        if value >= 0:
-            padded_encoded_value = zpad(base_encoded_value, self.data_byte_size)
-        else:
-            padded_encoded_value = fpad(base_encoded_value, self.data_byte_size)
-
-        return padded_encoded_value
-
-    @parse_type_str('real')
-    def from_type_str(cls, abi_type, registry):
-        high_bit_size, low_bit_size = abi_type.sub
-
-        return cls(
-            value_bit_size=high_bit_size + low_bit_size,
-            high_bit_size=high_bit_size,
-            low_bit_size=low_bit_size,
         )
 
 

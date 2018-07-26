@@ -453,16 +453,6 @@ registry.register(
     label='fixed',
 )
 registry.register(
-    BaseEquals('ureal'),
-    encoding.UnsignedRealEncoder, decoding.UnsignedRealDecoder,
-    label='ureal',
-)
-registry.register(
-    BaseEquals('real'),
-    encoding.SignedRealEncoder, decoding.SignedRealDecoder,
-    label='real',
-)
-registry.register(
     BaseEquals('bytes', with_sub=True),
     encoding.BytesEncoder, decoding.BytesDecoder,
     label='bytes<M>',

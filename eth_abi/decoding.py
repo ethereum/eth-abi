@@ -25,7 +25,6 @@ from eth_abi.utils.numeric import (
     TEN,
     abi_decimal_context,
     ceil32,
-    quantize_value,
 )
 
 
@@ -477,85 +476,6 @@ class SignedFixedDecoder(BaseFixedDecoder):
         value_bit_size, frac_places = abi_type.sub
 
         return cls(value_bit_size=value_bit_size, frac_places=frac_places)
-
-
-class BaseRealDecoder(Fixed32ByteSizeDecoder):
-    high_bit_size = None
-    low_bit_size = None
-    is_big_endian = True
-
-    def validate(self):
-        super().validate()
-
-        if self.high_bit_size is None:
-            raise ValueError("`high_bit_size` cannot be null")
-        if self.low_bit_size is None:
-            raise ValueError("`low_bit_size` cannot be null")
-        if self.low_bit_size + self.high_bit_size != self.value_bit_size:
-            raise ValueError("high and low bitsizes must sum to the value_bit_size")
-
-
-class UnsignedRealDecoder(BaseRealDecoder):
-    def decoder_fn(self, data):
-        value = big_endian_to_int(data)
-
-        with decimal.localcontext(abi_decimal_context):
-            decimal_value = decimal.Decimal(value)
-            raw_real_value = decimal_value / 2 ** self.low_bit_size
-            real_value = quantize_value(raw_real_value, self.low_bit_size)
-
-        return real_value
-
-    @parse_type_str('ureal')
-    def from_type_str(cls, abi_type, registry):
-        high_bit_size, low_bit_size = abi_type.sub
-
-        return cls(
-            value_bit_size=high_bit_size + low_bit_size,
-            high_bit_size=high_bit_size,
-            low_bit_size=low_bit_size,
-        )
-
-
-class SignedRealDecoder(BaseRealDecoder):
-    def decoder_fn(self, data):
-        value = big_endian_to_int(data)
-
-        if value >= 2 ** (self.high_bit_size + self.low_bit_size - 1):
-            signed_value = value - 2 ** (self.high_bit_size + self.low_bit_size)
-        else:
-            signed_value = value
-
-        with decimal.localcontext(abi_decimal_context):
-            signed_decimal_value = decimal.Decimal(signed_value)
-            raw_real_value = signed_decimal_value / 2 ** self.low_bit_size
-            real_value = quantize_value(raw_real_value, self.low_bit_size)
-
-        return real_value
-
-    def validate_padding_bytes(self, value, padding_bytes):
-        value_byte_size = self._get_value_byte_size()
-        padding_size = self.data_byte_size - value_byte_size
-
-        if value >= 0:
-            expected_padding_bytes = b'\x00' * padding_size
-        else:
-            expected_padding_bytes = b'\xff' * padding_size
-
-        if padding_bytes != expected_padding_bytes:
-            raise NonEmptyPaddingBytes(
-                "Padding bytes were not empty: {0}".format(repr(padding_bytes))
-            )
-
-    @parse_type_str('real')
-    def from_type_str(cls, abi_type, registry):
-        high_bit_size, low_bit_size = abi_type.sub
-
-        return cls(
-            value_bit_size=high_bit_size + low_bit_size,
-            high_bit_size=high_bit_size,
-            low_bit_size=low_bit_size,
-        )
 
 
 #

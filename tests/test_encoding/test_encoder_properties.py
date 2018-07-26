@@ -30,12 +30,10 @@ from eth_abi.encoding import (
     ByteStringEncoder,
     SignedFixedEncoder,
     SignedIntegerEncoder,
-    SignedRealEncoder,
     TextStringEncoder,
     TupleEncoder,
     UnsignedFixedEncoder,
     UnsignedIntegerEncoder,
-    UnsignedRealEncoder,
     encode_uint_256,
 )
 from eth_abi.exceptions import (
@@ -49,10 +47,8 @@ from eth_abi.utils.numeric import (
     ceil32,
     compute_signed_fixed_bounds,
     compute_signed_integer_bounds,
-    compute_signed_real_bounds,
     compute_unsigned_fixed_bounds,
     compute_unsigned_integer_bounds,
-    compute_unsigned_real_bounds,
 )
 from eth_abi.utils.padding import (
     fpad,
@@ -316,143 +312,6 @@ def test_encode_text_string(string_value):
         )
     )
     encoded_value = encoder(string_value)
-
-    assert encoded_value == expected_value
-
-
-@settings(max_examples=250)
-@given(
-    base_integer_value=st.one_of(st.integers(), st.none()),
-    high_bit_size=st.integers(min_value=1, max_value=32).map(lambda v: v * 8),
-    low_bit_size=st.integers(min_value=1, max_value=32).map(lambda v: v * 8),
-    value_bit_size=st.integers(min_value=1, max_value=32).map(lambda v: v * 8),
-    data_byte_size=st.integers(min_value=1, max_value=32),
-)
-@example(
-    base_integer_value=384,
-    value_bit_size=232,
-    high_bit_size=64,
-    low_bit_size=168,
-    data_byte_size=29,
-)
-def test_encode_unsigned_real(base_integer_value,
-                              value_bit_size,
-                              high_bit_size,
-                              low_bit_size,
-                              data_byte_size):
-    if value_bit_size > data_byte_size * 8:
-        with pytest.raises(ValueError):
-            UnsignedRealEncoder(
-                value_bit_size=value_bit_size,
-                high_bit_size=high_bit_size,
-                low_bit_size=low_bit_size,
-                data_byte_size=data_byte_size,
-            )
-        return
-    elif high_bit_size + low_bit_size != value_bit_size:
-        with pytest.raises(ValueError):
-            UnsignedRealEncoder(
-                value_bit_size=value_bit_size,
-                high_bit_size=high_bit_size,
-                low_bit_size=low_bit_size,
-                data_byte_size=data_byte_size,
-            )
-        return
-
-    encoder = UnsignedRealEncoder(
-        value_bit_size=value_bit_size,
-        high_bit_size=high_bit_size,
-        low_bit_size=low_bit_size,
-        data_byte_size=data_byte_size,
-    )
-
-    if not is_number(base_integer_value):
-        with pytest.raises(EncodingTypeError) as exception_info:
-            encoder(base_integer_value)
-        assert 'UnsignedReal' in str(exception_info.value)
-        return
-
-    with decimal.localcontext(abi_decimal_context):
-        real_value = decimal.Decimal(base_integer_value) / 2 ** low_bit_size
-
-    lower_bound, upper_bound = compute_unsigned_real_bounds(
-        high_bit_size,
-        low_bit_size,
-    )
-
-    if real_value < lower_bound or real_value > upper_bound:
-        with pytest.raises(ValueOutOfBounds):
-            encoder(base_integer_value)
-        return
-
-    expected_value = zpad(int_to_big_endian(base_integer_value), data_byte_size)
-    encoded_value = encoder(real_value)
-
-    assert encoded_value == expected_value
-
-
-@settings(max_examples=250)
-@given(
-    base_integer_value=st.one_of(st.integers(), st.none()),
-    high_bit_size=st.integers(min_value=1, max_value=32).map(lambda v: v * 8),
-    low_bit_size=st.integers(min_value=1, max_value=32).map(lambda v: v * 8),
-    value_bit_size=st.integers(min_value=1, max_value=32).map(lambda v: v * 8),
-    data_byte_size=st.integers(min_value=1, max_value=32),
-)
-def test_encode_signed_real(base_integer_value,
-                            value_bit_size,
-                            high_bit_size,
-                            low_bit_size,
-                            data_byte_size):
-    if value_bit_size > data_byte_size * 8:
-        with pytest.raises(ValueError):
-            SignedRealEncoder(
-                value_bit_size=value_bit_size,
-                high_bit_size=high_bit_size,
-                low_bit_size=low_bit_size,
-                data_byte_size=data_byte_size,
-            )
-        return
-    elif high_bit_size + low_bit_size != value_bit_size:
-        with pytest.raises(ValueError):
-            SignedRealEncoder(
-                value_bit_size=value_bit_size,
-                high_bit_size=high_bit_size,
-                low_bit_size=low_bit_size,
-                data_byte_size=data_byte_size,
-            )
-        return
-
-    encoder = SignedRealEncoder(
-        value_bit_size=value_bit_size,
-        high_bit_size=high_bit_size,
-        low_bit_size=low_bit_size,
-        data_byte_size=data_byte_size,
-    )
-
-    if not is_number(base_integer_value):
-        with pytest.raises(EncodingTypeError) as exception_info:
-            encoder(base_integer_value)
-        assert 'SignedReal' in str(exception_info.value)
-        return
-
-    unsigned_integer_value = base_integer_value % 2**(high_bit_size + low_bit_size)
-
-    with decimal.localcontext(abi_decimal_context):
-        real_value = decimal.Decimal(unsigned_integer_value) / 2 ** low_bit_size
-
-    lower_bound, upper_bound = compute_signed_real_bounds(
-        high_bit_size,
-        low_bit_size,
-    )
-
-    if real_value < lower_bound or real_value > upper_bound:
-        with pytest.raises(ValueOutOfBounds):
-            encoder(real_value)
-        return
-
-    expected_value = zpad(int_to_big_endian(unsigned_integer_value), data_byte_size)
-    encoded_value = encoder(real_value)
 
     assert encoded_value == expected_value
 
