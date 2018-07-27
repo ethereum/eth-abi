@@ -44,8 +44,6 @@ def registry():
         ('string', encoding.TextStringEncoder, decoding.StringDecoder),
         ('uint', encoding.UnsignedIntegerEncoder, decoding.UnsignedIntegerDecoder),
         ('uint8', encoding.UnsignedIntegerEncoder, decoding.UnsignedIntegerDecoder),
-        ('ureal128x128', encoding.UnsignedRealEncoder, decoding.UnsignedRealDecoder),
-        ('real128x128', encoding.SignedRealEncoder, decoding.SignedRealDecoder),
         ('int[]', encoding.DynamicArrayEncoder, decoding.DynamicArrayDecoder),
         ('int[2]', encoding.SizedArrayEncoder, decoding.SizedArrayDecoder),
         ('int[2][]', encoding.DynamicArrayEncoder, decoding.DynamicArrayDecoder),

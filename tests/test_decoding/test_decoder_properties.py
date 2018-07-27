@@ -1,4 +1,3 @@
-import decimal
 import sys
 
 from cytoolz import (
@@ -30,12 +29,10 @@ from eth_abi.decoding import (
     DynamicArrayDecoder,
     SignedFixedDecoder,
     SignedIntegerDecoder,
-    SignedRealDecoder,
     StringDecoder,
     TupleDecoder,
     UnsignedFixedDecoder,
     UnsignedIntegerDecoder,
-    UnsignedRealDecoder,
 )
 from eth_abi.exceptions import (
     DecodingError,
@@ -46,10 +43,7 @@ from eth_abi.registry import (
     registry,
 )
 from eth_abi.utils.numeric import (
-    abi_decimal_context,
     ceil32,
-    compute_signed_integer_bounds,
-    quantize_value,
 )
 from eth_abi.utils.padding import (
     zpad32,
@@ -440,156 +434,6 @@ def test_tuple_decoder(types, data, expected):
     stream = ContextFramesBytesIO(decode_hex(data))
     actual = decoder(stream)
     assert actual == expected
-
-
-@settings(max_examples=250)
-@given(
-    high_bit_size=st.integers(min_value=1, max_value=32).map(lambda v: v * 8),
-    low_bit_size=st.integers(min_value=1, max_value=32).map(lambda v: v * 8),
-    integer_bit_size=st.integers(min_value=1, max_value=32).map(lambda v: v * 8),
-    stream_bytes=st.binary(min_size=0, max_size=32),
-    data_byte_size=st.integers(min_value=0, max_value=32),
-)
-def test_decode_unsigned_real(high_bit_size,
-                              low_bit_size,
-                              integer_bit_size,
-                              stream_bytes,
-                              data_byte_size):
-    if integer_bit_size > data_byte_size * 8:
-        with pytest.raises(ValueError):
-            UnsignedRealDecoder(
-                value_bit_size=integer_bit_size,
-                high_bit_size=high_bit_size,
-                low_bit_size=low_bit_size,
-                data_byte_size=data_byte_size,
-            )
-        return
-    elif high_bit_size + low_bit_size != integer_bit_size:
-        with pytest.raises(ValueError):
-            UnsignedRealDecoder(
-                value_bit_size=integer_bit_size,
-                high_bit_size=high_bit_size,
-                low_bit_size=low_bit_size,
-                data_byte_size=data_byte_size,
-            )
-        return
-    else:
-        decoder = UnsignedRealDecoder(
-            value_bit_size=integer_bit_size,
-            high_bit_size=high_bit_size,
-            low_bit_size=low_bit_size,
-            data_byte_size=data_byte_size,
-        )
-
-    stream = ContextFramesBytesIO(stream_bytes)
-    padding_bytes = stream_bytes[:data_byte_size][:data_byte_size - integer_bit_size // 8]
-
-    if len(stream_bytes) < data_byte_size:
-        with pytest.raises(InsufficientDataBytes):
-            decoder(stream)
-        return
-    elif is_non_empty_non_null_byte_string(padding_bytes):
-        with pytest.raises(NonEmptyPaddingBytes):
-            decoder(stream)
-        return
-    else:
-        decoded_value = decoder(stream)
-
-    unsigned_integer_value = big_endian_to_int(stream_bytes[:data_byte_size])
-
-    with decimal.localcontext(abi_decimal_context):
-        raw_real_value = decimal.Decimal(unsigned_integer_value) / 2 ** low_bit_size
-
-    actual_value = quantize_value(raw_real_value, low_bit_size)
-
-    assert decoded_value == actual_value
-
-
-@settings(max_examples=250)
-@given(
-    high_bit_size=st.integers(min_value=1, max_value=32).map(lambda v: v * 8),
-    low_bit_size=st.integers(min_value=1, max_value=32).map(lambda v: v * 8),
-    integer_bit_size=st.integers(min_value=1, max_value=32).map(lambda v: v * 8),
-    stream_bytes=st.binary(min_size=0, max_size=32),
-    data_byte_size=st.integers(min_value=0, max_value=32),
-)
-@example(
-    high_bit_size=8,
-    low_bit_size=8,
-    integer_bit_size=16,
-    stream_bytes=b'\xff\xff\xff\xa9\xf5\xb3',
-    data_byte_size=3,
-)
-def test_decode_signed_real(high_bit_size,
-                            low_bit_size,
-                            integer_bit_size,
-                            stream_bytes,
-                            data_byte_size):
-    if integer_bit_size > data_byte_size * 8:
-        with pytest.raises(ValueError):
-            SignedRealDecoder(
-                value_bit_size=integer_bit_size,
-                high_bit_size=high_bit_size,
-                low_bit_size=low_bit_size,
-                data_byte_size=data_byte_size,
-            )
-        return
-    elif high_bit_size + low_bit_size != integer_bit_size:
-        with pytest.raises(ValueError):
-            SignedRealDecoder(
-                value_bit_size=integer_bit_size,
-                high_bit_size=high_bit_size,
-                low_bit_size=low_bit_size,
-                data_byte_size=data_byte_size,
-            )
-        return
-    else:
-        decoder = SignedRealDecoder(
-            value_bit_size=integer_bit_size,
-            high_bit_size=high_bit_size,
-            low_bit_size=low_bit_size,
-            data_byte_size=data_byte_size,
-        )
-
-    stream = ContextFramesBytesIO(stream_bytes)
-
-    padding_offset = data_byte_size - integer_bit_size // 8
-    data_offset = padding_offset + integer_bit_size // 8
-
-    padding_bytes = stream_bytes[:data_byte_size][:padding_offset]
-    data_bytes = stream_bytes[:data_byte_size][padding_offset:data_offset]
-
-    if len(stream_bytes) < data_byte_size:
-        with pytest.raises(InsufficientDataBytes):
-            decoder(stream)
-        return
-    elif not is_valid_padding_bytes(padding_bytes, data_bytes):
-        with pytest.raises(NonEmptyPaddingBytes):
-            decoder(stream)
-        return
-    else:
-        decoded_value = decoder(stream)
-
-    if padding_bytes:
-        if decoded_value >= 0:
-            assert bytes(set(padding_bytes)) == b'\x00'
-        else:
-            assert bytes(set(padding_bytes)) == b'\xff'
-
-    _, upper_bound = compute_signed_integer_bounds(high_bit_size + low_bit_size)
-
-    unsigned_integer_value = big_endian_to_int(data_bytes)
-    if unsigned_integer_value >= upper_bound:
-        signed_integer_value = unsigned_integer_value - 2 ** (high_bit_size + low_bit_size)
-    else:
-        signed_integer_value = unsigned_integer_value
-
-    with decimal.localcontext(abi_decimal_context):
-        raw_actual_value = decimal.Decimal(signed_integer_value) / 2 ** low_bit_size
-
-    actual_value = quantize_value(raw_actual_value, low_bit_size)
-
-    assert decoded_value == actual_value
 
 
 @settings(max_examples=250)

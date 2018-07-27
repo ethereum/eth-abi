@@ -10,6 +10,7 @@ Released July 19, 2018
 
   - :meth:`~eth_abi.abi.decode_single` called with ABI type 'string' will now return a python
     :class:`str` instead of :class:`bytes`.
+  - Support for the legacy ``real`` and ``ureal`` types has been removed
 - Bugfixes
 
   - Simple callable encoders work again

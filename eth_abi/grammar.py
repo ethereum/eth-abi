@@ -309,19 +309,6 @@ class BasicType(ABIType):
                     ),
                 )
 
-        # Check validity of real type
-        elif base in ('real', 'ureal'):
-            if not isinstance(sub, tuple):
-                self.invalidate('real type must have suffix of form <high>x<low>, e.g. 128x128')
-
-            high, low = sub
-
-            if (high + low) < 8 or 256 < (high + low):
-                self.invalidate('real size out of bounds (max 256 bits)')
-
-            if high % 8 != 0 or low % 8 != 0:
-                self.invalidate('real high/low sizes must be multiples of 8')
-
         # Check validity of hash type
         elif base == 'hash':
             if not isinstance(sub, int):
