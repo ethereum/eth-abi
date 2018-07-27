@@ -25,9 +25,6 @@ from eth_abi.exceptions import (
 from eth_abi.registry import (
     registry,
 )
-from eth_abi.utils.parsing import (  # noqa: F401
-    process_type,
-)
 
 
 def encode_single(typ: TypeStr, arg: Any) -> bytes:
