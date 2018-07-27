@@ -264,9 +264,6 @@ CORRECT_TUPLE_ENCODINGS = [
 ]
 
 CORRECT_SINGLE_ENCODINGS = CORRECT_TUPLE_ENCODINGS + [
-    # encode_single/decode_single accept tuple of type components
-    (('uint', '256', []), 2 ** 256 - 1, words('f<f'), words('f<f')),
-
     #####
     # (type string, python value, abi encoding, packed encoding)
     #####
