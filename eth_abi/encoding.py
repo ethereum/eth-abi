@@ -218,6 +218,10 @@ class BooleanEncoder(Fixed32ByteSizeEncoder):
         return cls()
 
 
+class PackedBooleanEncoder(BooleanEncoder):
+    data_byte_size = 1
+
+
 class NumberEncoder(Fixed32ByteSizeEncoder):
     is_big_endian = True
     bounds_fn = None
@@ -277,6 +281,15 @@ class UnsignedIntegerEncoder(NumberEncoder):
 encode_uint_256 = UnsignedIntegerEncoder(value_bit_size=256, data_byte_size=32)
 
 
+class PackedUnsignedIntegerEncoder(UnsignedIntegerEncoder):
+    @parse_type_str('uint')
+    def from_type_str(cls, abi_type, registry):
+        return cls(
+            value_bit_size=abi_type.sub,
+            data_byte_size=abi_type.sub // 8,
+        )
+
+
 class SignedIntegerEncoder(NumberEncoder):
     bounds_fn = staticmethod(compute_signed_integer_bounds)
     type_check_fn = staticmethod(is_integer)
@@ -298,6 +311,15 @@ class SignedIntegerEncoder(NumberEncoder):
     @parse_type_str('int')
     def from_type_str(cls, abi_type, registry):
         return cls(value_bit_size=abi_type.sub)
+
+
+class PackedSignedIntegerEncoder(SignedIntegerEncoder):
+    @parse_type_str('int')
+    def from_type_str(cls, abi_type, registry):
+        return cls(
+            value_bit_size=abi_type.sub,
+            data_byte_size=abi_type.sub // 8,
+        )
 
 
 class BaseFixedEncoder(NumberEncoder):
@@ -362,6 +384,18 @@ class UnsignedFixedEncoder(BaseFixedEncoder):
         )
 
 
+class PackedUnsignedFixedEncoder(UnsignedFixedEncoder):
+    @parse_type_str('ufixed')
+    def from_type_str(cls, abi_type, registry):
+        value_bit_size, frac_places = abi_type.sub
+
+        return cls(
+            value_bit_size=value_bit_size,
+            data_byte_size=value_bit_size // 8,
+            frac_places=frac_places,
+        )
+
+
 class SignedFixedEncoder(BaseFixedEncoder):
     def bounds_fn(self, value_bit_size):
         return compute_signed_fixed_bounds(self.value_bit_size, self.frac_places)
@@ -396,6 +430,18 @@ class SignedFixedEncoder(BaseFixedEncoder):
         )
 
 
+class PackedSignedFixedEncoder(SignedFixedEncoder):
+    @parse_type_str('fixed')
+    def from_type_str(cls, abi_type, registry):
+        value_bit_size, frac_places = abi_type.sub
+
+        return cls(
+            value_bit_size=value_bit_size,
+            data_byte_size=value_bit_size // 8,
+            frac_places=frac_places,
+        )
+
+
 class AddressEncoder(Fixed32ByteSizeEncoder):
     value_bit_size = 20 * 8
     encode_fn = staticmethod(to_canonical_address)
@@ -420,6 +466,10 @@ class AddressEncoder(Fixed32ByteSizeEncoder):
     @parse_type_str('address')
     def from_type_str(cls, abi_type, registry):
         return cls()
+
+
+class PackedAddressEncoder(AddressEncoder):
+    data_byte_size = 20
 
 
 class BytesEncoder(Fixed32ByteSizeEncoder):
@@ -448,6 +498,27 @@ class BytesEncoder(Fixed32ByteSizeEncoder):
     @parse_type_str('bytes')
     def from_type_str(cls, abi_type, registry):
         return cls(value_bit_size=abi_type.sub * 8)
+
+
+class PackedBytesEncoder(BytesEncoder):
+    @parse_type_str('bytes')
+    def from_type_str(cls, abi_type, registry):
+        return cls(
+            value_bit_size=abi_type.sub * 8,
+            data_byte_size=abi_type.sub,
+        )
+
+
+class PackedFunctionEncoder(BytesEncoder):
+    data_byte_size = 20
+    value_bit_size = data_byte_size * 8
+
+    @parse_type_str('bytes')
+    def from_type_str(cls, abi_type, registry):
+        return cls()
+
+    def encode(self, value):
+        return value[:-4]
 
 
 class ByteStringEncoder(BaseEncoder):
@@ -482,6 +553,15 @@ class ByteStringEncoder(BaseEncoder):
         return cls()
 
 
+class PackedByteStringEncoder(ByteStringEncoder):
+    is_dynamic = False
+
+    @classmethod
+    def encode(cls, value):
+        cls.validate_value(value)
+        return value
+
+
 class TextStringEncoder(BaseEncoder):
     is_dynamic = True
 
@@ -514,6 +594,15 @@ class TextStringEncoder(BaseEncoder):
     @parse_type_str('string')
     def from_type_str(cls, abi_type, registry):
         return cls()
+
+
+class PackedTextStringEncoder(TextStringEncoder):
+    is_dynamic = False
+
+    @classmethod
+    def encode(cls, value):
+        cls.validate_value(value)
+        return codecs.encode(value, 'utf8')
 
 
 class BaseArrayEncoder(BaseEncoder):
@@ -561,6 +650,37 @@ class BaseArrayEncoder(BaseEncoder):
         else:
             # If array dimension is dynamic
             return DynamicArrayEncoder(item_encoder=item_encoder)
+
+
+class PackedArrayEncoder(BaseArrayEncoder):
+    array_size = None
+
+    def validate_value(self, value):
+        super().validate_value(value)
+
+        if self.array_size is not None and len(value) != self.array_size:
+            raise ValueOutOfBounds(
+                "Expected value with length {0}.  Provided value has {1} "
+                "elements".format(self.array_size, len(value))
+            )
+
+    def encode(self, value):
+        encoded_elements = self.encode_elements(value)
+
+        return encoded_elements
+
+    @parse_type_str(with_arrlist=True)
+    def from_type_str(cls, abi_type, registry):
+        item_encoder = registry.get_encoder(str(abi_type.item_type))
+
+        array_spec = abi_type.arrlist[-1]
+        if len(array_spec) == 1:
+            return cls(
+                array_size=array_spec[0],
+                item_encoder=item_encoder,
+            )
+        else:
+            return cls(item_encoder=item_encoder)
 
 
 class SizedArrayEncoder(BaseArrayEncoder):

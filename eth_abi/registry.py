@@ -479,3 +479,66 @@ registry.register(
     encoding.TupleEncoder, decoding.TupleDecoder,
     label='is_base_tuple',
 )
+
+registry_packed = ABIRegistry()
+
+registry_packed.register_encoder(
+    BaseEquals('uint'),
+    encoding.PackedUnsignedIntegerEncoder,
+    label='uint',
+)
+registry_packed.register_encoder(
+    BaseEquals('int'),
+    encoding.PackedSignedIntegerEncoder,
+    label='int',
+)
+registry_packed.register_encoder(
+    BaseEquals('address'),
+    encoding.PackedAddressEncoder,
+    label='address',
+)
+registry_packed.register_encoder(
+    BaseEquals('bool'),
+    encoding.PackedBooleanEncoder,
+    label='bool',
+)
+registry_packed.register_encoder(
+    BaseEquals('ufixed'),
+    encoding.PackedUnsignedFixedEncoder,
+    label='ufixed',
+)
+registry_packed.register_encoder(
+    BaseEquals('fixed'),
+    encoding.PackedSignedFixedEncoder,
+    label='fixed',
+)
+registry_packed.register_encoder(
+    BaseEquals('bytes', with_sub=True),
+    encoding.PackedBytesEncoder,
+    label='bytes<M>',
+)
+registry_packed.register_encoder(
+    BaseEquals('bytes', with_sub=False),
+    encoding.PackedByteStringEncoder,
+    label='bytes',
+)
+registry_packed.register_encoder(
+    BaseEquals('function'),
+    encoding.PackedFunctionEncoder,
+    label='function',
+)
+registry_packed.register_encoder(
+    BaseEquals('string'),
+    encoding.PackedTextStringEncoder,
+    label='string',
+)
+registry_packed.register_encoder(
+    has_arrlist,
+    encoding.PackedArrayEncoder,
+    label='has_arrlist',
+)
+registry_packed.register_encoder(
+    is_tuple_type,
+    encoding.TupleEncoder,
+    label='is_tuple_type',
+)
