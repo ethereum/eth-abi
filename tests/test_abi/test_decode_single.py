@@ -9,9 +9,12 @@ from ..common.unit import (
 )
 
 
-@pytest.mark.parametrize('typ,expected,byte_str', CORRECT_SINGLE_ENCODINGS)
-def test_decode_single(typ, expected, byte_str):
-    actual = decode_single(typ, byte_str)
+@pytest.mark.parametrize(
+    'typ,expected,abi_encoding,_',
+    CORRECT_SINGLE_ENCODINGS,
+)
+def test_decode_single(typ, expected, abi_encoding, _):
+    actual = decode_single(typ, abi_encoding)
     assert actual == expected
 
 
