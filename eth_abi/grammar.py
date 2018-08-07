@@ -14,7 +14,8 @@ from eth_abi.exceptions import (
 grammar = parsimonious.Grammar(r"""
 type = tuple_type / basic_type
 
-tuple_type = non_zero_tuple / zero_tuple
+tuple_type = base_tuple_type arrlist?
+base_tuple_type = non_zero_tuple / zero_tuple
 
 non_zero_tuple = "(" type next_type* ")"
 next_type = "," type
@@ -48,7 +49,11 @@ class NodeVisitor(parsimonious.NodeVisitor):
         # Ignore left and right parens
         _, first, rest, _ = visited_children
 
-        return TupleType((first,) + rest, node=node)
+        return (first,) + rest
+
+    def visit_tuple_type(self, node, visited_children):
+        base_tuple_type, arrlist = visited_children
+        return TupleType(base_tuple_type, arrlist=arrlist, node=node)
 
     def visit_next_type(self, node, visited_children):
         # Ignore comma
@@ -57,7 +62,7 @@ class NodeVisitor(parsimonious.NodeVisitor):
         return abi_type
 
     def visit_zero_tuple(self, node, visited_children):
-        return TupleType(tuple(), node=node)
+        return tuple()
 
     def visit_basic_type(self, node, visited_children):
         base, sub, arrlist = visited_children
@@ -184,15 +189,21 @@ class TupleType(ABIType):
 
     e.g. "(int,bool)"
     """
-    __slots__ = ('components',)
+    __slots__ = ('components', 'arrlist')
 
-    def __init__(self, components, *, node=None):
+    def __init__(self, components, arrlist=None, *, node=None):
         super().__init__(node=node)
 
         self.components = components
+        self.arrlist = arrlist
 
     def __str__(self):
-        return '({})'.format(','.join(str(c) for c in self.components))
+        arrlist = self.arrlist
+        if isinstance(arrlist, tuple):
+            arrlist = ''.join(repr(list(a)) for a in arrlist)
+        else:
+            arrlist = ''
+        return '({}){}'.format(','.join(str(c) for c in self.components), arrlist)
 
     def validate(self):
         # A tuple type is valid if all of its components are valid i.e. if none

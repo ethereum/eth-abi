@@ -138,8 +138,19 @@ class TupleEncoder(BaseEncoder):
     @parse_tuple_type_str
     def from_type_str(cls, abi_type, registry):
         encoders = tuple(registry.get_encoder(str(c)) for c in abi_type.components)
-
-        return cls(encoders=encoders)
+        encoder = cls(encoders=encoders)
+        if abi_type.arrlist:
+            array_spec = abi_type.arrlist[-1]
+            if len(array_spec) == 1:
+                # If array dimension is fixed
+                return SizedArrayEncoder(
+                    array_size=array_spec[0],
+                    item_encoder=encoder,
+                )
+            else:
+                # If array dimension is dynamic
+                return DynamicArrayEncoder(item_encoder=encoder)
+        return encoder
 
 
 class FixedSizeEncoder(BaseEncoder):

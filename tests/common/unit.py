@@ -116,6 +116,16 @@ CORRECT_TUPLE_ENCODINGS = [
         words('40', '3', '40', '2', '2', '1', '1')
     ),
     (
+        '((int,int)[])',
+        (((1, 2), (3, 4)),),
+        words('20', '2', '1', '2', '3', '4')
+    ),
+    (
+        '((int,int[],(int,int)[]),(int,int),int)',
+        ((1, (2, 3), ((4, 5), (6, 7))), (8, 9), 10),
+        words('80', '8', '9', 'a', '1', '60', 'c0', '2', '2', '3', '2', '4', '5', '6', '7')
+    ),
+    (
         '((bytes,bool),(bytes,bool))',
         ((b'david attenborough', False), (b'boaty mcboatface', True)),
         words(
