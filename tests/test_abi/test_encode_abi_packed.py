@@ -1,10 +1,10 @@
 import pytest
 
-from eth_abi import (
-    encode_abi_packed,
-)
 from eth_abi.grammar import (
     parse,
+)
+from eth_abi.packed import (
+    encode_abi_packed,
 )
 
 from ..common.unit import (

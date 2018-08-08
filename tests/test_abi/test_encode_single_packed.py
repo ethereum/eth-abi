@@ -1,6 +1,6 @@
 import pytest
 
-from eth_abi.abi import (
+from eth_abi.packed import (
     encode_single_packed,
 )
 
