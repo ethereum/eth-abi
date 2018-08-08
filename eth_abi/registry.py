@@ -524,7 +524,7 @@ registry_packed.register_encoder(
 )
 registry_packed.register_encoder(
     BaseEquals('function'),
-    encoding.PackedFunctionEncoder,
+    encoding.PackedBytesEncoder,
     label='function',
 )
 registry_packed.register_encoder(

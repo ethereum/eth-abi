@@ -509,18 +509,6 @@ class PackedBytesEncoder(BytesEncoder):
         )
 
 
-class PackedFunctionEncoder(BytesEncoder):
-    data_byte_size = 20
-    value_bit_size = data_byte_size * 8
-
-    @parse_type_str('bytes')
-    def from_type_str(cls, abi_type, registry):
-        return cls()
-
-    def encode(self, value):
-        return value[:-4]
-
-
 class ByteStringEncoder(BaseEncoder):
     is_dynamic = True
 
