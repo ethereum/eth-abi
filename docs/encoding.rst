@@ -52,3 +52,31 @@ for a given ABI type using :any:`encode_single`:
 
     >>> is_encodable('(int,bool)', (0, 0))
     False
+
+Non-Standard Packed Mode Encoding
+---------------------------------
+
+.. warning::
+
+    Non-standard packed mode encoding is an experimental feature in the eth-abi
+    library.  Use at your own risk and please report any problems at
+    https://github.com/ethereum/eth-abi/issues.
+
+In certain cases, the Solidity programming language uses a non-standard packed
+encoding.  You can encode values in this format like so:
+
+.. doctest::
+
+    >>> from eth_abi.packed import encode_single_packed, encode_abi_packed
+
+    >>> encode_single_packed('uint32', 12345)
+    b'\x00\x0009'
+
+    >>> encode_single_packed('(int8[],uint32)', ([1, 2, 3, 4], 12345))
+    b'\x01\x02\x03\x04\x00\x0009'
+
+    >>> encode_abi_packed(['int8[]', 'uint32'], ([1, 2, 3, 4], 12345))
+    b'\x01\x02\x03\x04\x00\x0009'
+
+More information about this encoding format is available at
+https://solidity.readthedocs.io/en/develop/abi-spec.html#non-standard-packed-mode.
