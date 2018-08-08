@@ -11,7 +11,6 @@ from eth_abi.utils.padding import (
     zpad32_right,
 )
 
-
 WORD_DESC_RE = re.compile(r'^(([0f])<)?([0-9a-f]+)(>([0f]))?( \(([0-9]+) wide\))?$')
 
 

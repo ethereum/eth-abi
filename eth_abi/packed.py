@@ -1,9 +1,8 @@
-import warnings
-
 from typing import (
     Any,
     Iterable,
 )
+import warnings
 
 from eth_typing.abi import (
     TypeStr,
@@ -18,7 +17,6 @@ from eth_abi.registry import (
 from eth_abi.utils.parsing import (
     collapse_type,
 )
-
 
 warnings.warn(
     "Packed mode encoding is an experimental feature.  Please report any "
