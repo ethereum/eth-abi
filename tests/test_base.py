@@ -81,11 +81,6 @@ def test_parse_type_str_validates_standard_types():
         Coder.from_type_str('int255', None)
 
 
-def test_parse_type_str_distinguishes_non_tuple_and_tuple_types():
-    with pytest.raises(ValueError, match='Cannot create Coder for non-basic type'):
-        Coder.from_type_str('(int256,bool)', None)
-
-
 def test_parse_type_str_requires_certain_base_type_if_given():
     with pytest.raises(ValueError, match='expected type with base \'int\''):
         IntCoder.from_type_str('uint256', None)

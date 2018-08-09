@@ -11,7 +11,7 @@ from eth_abi.registry import (
     BaseEquals,
     Equals,
     has_arrlist,
-    is_tuple_type,
+    is_base_tuple,
 )
 from tests.common.strategies import (
     malformed_type_strs,
@@ -124,15 +124,15 @@ def test_has_arrlist_has_expected_behavior_for_parsable_types(type_str):
 
 
 @given(type_strs)
-def test_is_tuple_type_has_expected_behavior_for_parsable_types(type_str):
+def test_is_base_tuple_has_expected_behavior_for_parsable_types(type_str):
     # Should match tuple types
-    if type_str.startswith('('):
-        assert is_tuple_type(type_str)
+    if type_str.endswith(')'):
+        assert is_base_tuple(type_str)
         event('Match for tuple type')
 
     # Should not match any other types
     else:
-        assert not is_tuple_type(type_str)
+        assert not is_base_tuple(type_str)
         event('No match for non-tuple type')
 
 
@@ -148,4 +148,4 @@ def test_predicates_have_expected_behavior_for_malformed_types(malformed_type_st
     assert not is_int_with_no_sub(malformed_type_str)
 
     assert not has_arrlist(malformed_type_str)
-    assert not is_tuple_type(malformed_type_str)
+    assert not is_base_tuple(malformed_type_str)

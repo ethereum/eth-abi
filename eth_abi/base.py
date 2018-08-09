@@ -16,8 +16,8 @@ def parse_type_str(expected_base=None, with_arrlist=False):
     """
     Used by BaseCoder subclasses as a convenience for implementing the
     ``from_type_str`` method required by ``ABIRegistry``.  Useful if normalizing
-    then parsing a basic type string with an expected base is required in that
-    method.
+    then parsing a type string with an (optional) expected base is required in
+    that method.
     """
     def decorator(old_from_type_str):
         @functools.wraps(old_from_type_str)
@@ -32,23 +32,23 @@ def parse_type_str(expected_base=None, with_arrlist=False):
                     repr(normalized_type_str),
                 )
 
-            if not isinstance(abi_type, BasicType):
-                raise ValueError(
-                    'Cannot create {} for non-basic type {}'.format(
-                        cls.__name__,
-                        type_str_repr,
+            if expected_base is not None:
+                if not isinstance(abi_type, BasicType):
+                    raise ValueError(
+                        'Cannot create {} for non-basic type {}'.format(
+                            cls.__name__,
+                            type_str_repr,
+                        )
                     )
-                )
-
-            if expected_base is not None and abi_type.base != expected_base:
-                raise ValueError(
-                    'Cannot create {} for type {}: expected type with '
-                    "base '{}'".format(
-                        cls.__name__,
-                        type_str_repr,
-                        expected_base,
+                if abi_type.base != expected_base:
+                    raise ValueError(
+                        'Cannot create {} for type {}: expected type with '
+                        "base '{}'".format(
+                            cls.__name__,
+                            type_str_repr,
+                            expected_base,
+                        )
                     )
-                )
 
             if not with_arrlist and abi_type.arrlist is not None:
                 raise ValueError(

@@ -14,7 +14,8 @@ from eth_abi.exceptions import (
 grammar = parsimonious.Grammar(r"""
 type = tuple_type / basic_type
 
-tuple_type = non_zero_tuple / zero_tuple
+tuple_type = components arrlist?
+components = non_zero_tuple / zero_tuple
 
 non_zero_tuple = "(" type next_type* ")"
 next_type = "," type
@@ -48,7 +49,12 @@ class NodeVisitor(parsimonious.NodeVisitor):
         # Ignore left and right parens
         _, first, rest, _ = visited_children
 
-        return TupleType((first,) + rest, node=node)
+        return (first,) + rest
+
+    def visit_tuple_type(self, node, visited_children):
+        components, arrlist = visited_children
+
+        return TupleType(components, arrlist, node=node)
 
     def visit_next_type(self, node, visited_children):
         # Ignore comma
@@ -57,7 +63,7 @@ class NodeVisitor(parsimonious.NodeVisitor):
         return abi_type
 
     def visit_zero_tuple(self, node, visited_children):
-        return TupleType(tuple(), node=node)
+        return tuple()
 
     def visit_basic_type(self, node, visited_children):
         base, sub, arrlist = visited_children
@@ -122,9 +128,12 @@ class ABIType:
     Base class for classes which represent the results of parsing operations on
     abi type strings after post-processing.
     """
-    __slots__ = ('node',)
+    __slots__ = ('arrlist', 'node')
 
-    def __init__(self, *, node=None):
+    def __init__(self, arrlist=None, node=None):
+        # Any type might have a list of array dimensions
+        self.arrlist = arrlist
+
         # The parsimonious `Node` instance associated with this parsed type may
         # be optionally included.  If a type must be validated during a parsing
         # operation, the `Node` instance is required since the `invalidate`
@@ -186,13 +195,34 @@ class TupleType(ABIType):
     """
     __slots__ = ('components',)
 
-    def __init__(self, components, *, node=None):
-        super().__init__(node=node)
+    def __init__(self, components, arrlist=None, *, node=None):
+        super().__init__(arrlist, node)
 
         self.components = components
 
     def __str__(self):
-        return '({})'.format(','.join(str(c) for c in self.components))
+        arrlist = self.arrlist
+        if isinstance(arrlist, tuple):
+            arrlist = ''.join(repr(list(a)) for a in arrlist)
+        else:
+            arrlist = ''
+        return '({}){}'.format(','.join(str(c) for c in self.components), arrlist)
+
+    @property
+    def item_type(self):
+        """
+        If this type is an array type, returns the type of the array's items.
+        """
+        if self.arrlist is None:
+            raise ValueError(
+                "Cannot determine item type for non-array type '{}'".format(self)
+            )
+
+        return type(self)(
+            self.components,
+            self.arrlist[:-1] or None,
+            node=self.node,
+        )
 
     def validate(self):
         # A tuple type is valid if all of its components are valid i.e. if none
@@ -208,14 +238,13 @@ class BasicType(ABIType):
 
     e.g. "uint", "address", "ufixed128x19[][2]"
     """
-    __slots__ = ('base', 'sub', 'arrlist')
+    __slots__ = ('base', 'sub')
 
     def __init__(self, base, sub=None, arrlist=None, *, node=None):
-        super().__init__(node=node)
+        super().__init__(arrlist, node)
 
         self.base = base
         self.sub = sub
-        self.arrlist = arrlist
 
     def __str__(self):
         sub, arrlist = self.sub, self.arrlist

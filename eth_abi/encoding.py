@@ -566,6 +566,11 @@ class BaseArrayEncoder(BaseEncoder):
 class SizedArrayEncoder(BaseArrayEncoder):
     array_size = None
 
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+        self.is_dynamic = self.item_encoder.is_dynamic
+
     def validate(self):
         super().validate()
 
