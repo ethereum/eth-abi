@@ -234,6 +234,11 @@ class BaseArrayDecoder(BaseDecoder):
 class SizedArrayDecoder(BaseArrayDecoder):
     array_size = None
 
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+        self.is_dynamic = self.item_decoder.is_dynamic
+
     @to_tuple
     def decode(self, stream):
         for _ in range(self.array_size):
