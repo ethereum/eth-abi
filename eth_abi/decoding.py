@@ -175,19 +175,8 @@ class TupleDecoder(BaseDecoder):
     @parse_tuple_type_str
     def from_type_str(cls, abi_type, registry):
         decoders = tuple(registry.get_decoder(str(c)) for c in abi_type.components)
-        decoder = cls(decoders=decoders)
-        if abi_type.arrlist:
-            array_spec = abi_type.arrlist[-1]
-            if len(array_spec) == 1:
-                # If array dimension is fixed
-                return SizedArrayDecoder(
-                    array_size=array_spec[0],
-                    item_decoder=decoder,
-                )
-            else:
-                # If array dimension is dynamic
-                return DynamicArrayDecoder(item_decoder=decoder)
-        return decoder
+
+        return cls(decoders=decoders)
 
 
 class SingleDecoder(BaseDecoder):
