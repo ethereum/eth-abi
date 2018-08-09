@@ -227,29 +227,26 @@ class BaseEquals(Predicate):
 
 def has_arrlist(type_str):
     """
-    A predicate which matches a basic type string with an array dimension list.
+    A predicate which matches a type string with an array dimension list.
     """
     try:
         abi_type = grammar.parse(type_str)
     except exceptions.ParseError:
         return False
 
-    return (
-        isinstance(abi_type, grammar.BasicType) and
-        abi_type.arrlist is not None
-    )
+    return abi_type.arrlist is not None
 
 
-def is_tuple_type(type_str):
+def is_base_tuple(type_str):
     """
-    A predicate which matches a tuple type string.
+    A predicate which matches a tuple type with no array dimension list.
     """
     try:
         abi_type = grammar.parse(type_str)
     except exceptions.ParseError:
         return False
 
-    return isinstance(abi_type, grammar.TupleType)
+    return isinstance(abi_type, grammar.TupleType) and abi_type.arrlist is None
 
 
 def _clear_encoder_cache(old_method):
@@ -478,7 +475,7 @@ registry.register(
     label='has_arrlist',
 )
 registry.register(
-    is_tuple_type,
+    is_base_tuple,
     encoding.TupleEncoder, decoding.TupleDecoder,
-    label='is_tuple_type',
+    label='is_base_tuple',
 )
