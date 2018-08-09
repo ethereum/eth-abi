@@ -14,8 +14,8 @@ from eth_abi.exceptions import (
 grammar = parsimonious.Grammar(r"""
 type = tuple_type / basic_type
 
-tuple_type = base_tuple_type arrlist?
-base_tuple_type = non_zero_tuple / zero_tuple
+tuple_type = components arrlist?
+components = non_zero_tuple / zero_tuple
 
 non_zero_tuple = "(" type next_type* ")"
 next_type = "," type
@@ -52,8 +52,9 @@ class NodeVisitor(parsimonious.NodeVisitor):
         return (first,) + rest
 
     def visit_tuple_type(self, node, visited_children):
-        base_tuple_type, arrlist = visited_children
-        return TupleType(base_tuple_type, arrlist=arrlist, node=node)
+        components, arrlist = visited_children
+
+        return TupleType(components, arrlist, node=node)
 
     def visit_next_type(self, node, visited_children):
         # Ignore comma
