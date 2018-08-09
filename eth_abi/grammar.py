@@ -128,9 +128,12 @@ class ABIType:
     Base class for classes which represent the results of parsing operations on
     abi type strings after post-processing.
     """
-    __slots__ = ('node',)
+    __slots__ = ('arrlist', 'node')
 
-    def __init__(self, *, node=None):
+    def __init__(self, arrlist=None, node=None):
+        # Any type might have a list of array dimensions
+        self.arrlist = arrlist
+
         # The parsimonious `Node` instance associated with this parsed type may
         # be optionally included.  If a type must be validated during a parsing
         # operation, the `Node` instance is required since the `invalidate`
@@ -190,13 +193,12 @@ class TupleType(ABIType):
 
     e.g. "(int,bool)"
     """
-    __slots__ = ('components', 'arrlist')
+    __slots__ = ('components',)
 
     def __init__(self, components, arrlist=None, *, node=None):
-        super().__init__(node=node)
+        super().__init__(arrlist, node)
 
         self.components = components
-        self.arrlist = arrlist
 
     def __str__(self):
         arrlist = self.arrlist
@@ -205,6 +207,22 @@ class TupleType(ABIType):
         else:
             arrlist = ''
         return '({}){}'.format(','.join(str(c) for c in self.components), arrlist)
+
+    @property
+    def item_type(self):
+        """
+        If this type is an array type, returns the type of the array's items.
+        """
+        if self.arrlist is None:
+            raise ValueError(
+                "Cannot determine item type for non-array type '{}'".format(self)
+            )
+
+        return type(self)(
+            self.components,
+            self.arrlist[:-1] or None,
+            node=self.node,
+        )
 
     def validate(self):
         # A tuple type is valid if all of its components are valid i.e. if none
@@ -220,14 +238,13 @@ class BasicType(ABIType):
 
     e.g. "uint", "address", "ufixed128x19[][2]"
     """
-    __slots__ = ('base', 'sub', 'arrlist')
+    __slots__ = ('base', 'sub')
 
     def __init__(self, base, sub=None, arrlist=None, *, node=None):
-        super().__init__(node=node)
+        super().__init__(arrlist, node)
 
         self.base = base
         self.sub = sub
-        self.arrlist = arrlist
 
     def __str__(self):
         sub, arrlist = self.sub, self.arrlist
