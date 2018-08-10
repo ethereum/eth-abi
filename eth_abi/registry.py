@@ -538,7 +538,7 @@ registry_packed.register_encoder(
     label='has_arrlist',
 )
 registry_packed.register_encoder(
-    is_tuple_type,
+    is_base_tuple,
     encoding.TupleEncoder,
-    label='is_tuple_type',
+    label='is_base_tuple',
 )
