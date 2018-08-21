@@ -18,6 +18,7 @@ Table of Contents
     overview
     encoding
     decoding
+    nested_dynamic_arrays
     eth_abi
     releases
 
