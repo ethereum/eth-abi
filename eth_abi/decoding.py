@@ -209,6 +209,15 @@ class SingleDecoder(BaseDecoder):
 class BaseArrayDecoder(BaseDecoder):
     item_decoder = None
 
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+        # Use a head-tail decoder to decode dynamic elements
+        if self.item_decoder.is_dynamic:
+            self.item_decoder = HeadTailDecoder(
+                tail_decoder=self.item_decoder,
+            )
+
     def validate(self):
         super().validate()
 
@@ -246,13 +255,16 @@ class SizedArrayDecoder(BaseArrayDecoder):
 
 
 class DynamicArrayDecoder(BaseArrayDecoder):
+    # Dynamic arrays are always dynamic, regardless of their elements
     is_dynamic = True
 
     @to_tuple
     def decode(self, stream):
         array_size = decode_uint_256(stream)
+        stream.push_frame(32)
         for _ in range(array_size):
             yield self.item_decoder(stream)
+        stream.pop_frame()
 
 
 class FixedByteSizeDecoder(SingleDecoder):

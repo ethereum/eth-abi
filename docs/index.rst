@@ -29,6 +29,7 @@ Table of Contents
     encoding
     decoding
     registry
+    nested_dynamic_arrays
     eth_abi
     releases
 
