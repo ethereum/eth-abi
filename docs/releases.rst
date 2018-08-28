@@ -6,6 +6,11 @@ v2.0.0-alpha.1
 
 Released July 19, 2018
 
+- New Features
+
+  - Added support for nested dynamic arrays from the Solidity version 2 ABI
+  - Added support for non-standard packed mode encoding
+  - Added support for tuple array types e.g. ``(int,int)[]``
 - Backwards Incompatible Changes
 
   - :meth:`~eth_abi.abi.decode_single` called with ABI type 'string' will now return a python
@@ -17,6 +22,16 @@ Released July 19, 2018
 - Misc
 
   - Various documentation updates and type annotations
+
+v1.2.0
+-------------
+
+Released August 28, 2018
+
+- New Features
+
+  - Backported and added support for nested dynamic arrays from the Solidity
+    version 2 ABI
 
 v1.1.1
 -------------
