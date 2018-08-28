@@ -9,6 +9,11 @@ Development
   - Added support for nested dynamic arrays from the Solidity version 2 ABI
   - Added support for non-standard packed mode encoding
   - Added support for tuple array types e.g. ``(int,int)[]``
+- Backwards Incompatible Changes
+
+  - The :meth:`~eth_abi.abi.encode_single` and
+    :meth:`~eth_abi.abi.decode_single` functions no longer accept type tuples
+    to identify ABI types.  Only type strings are accepted.
 
 v2.0.0-alpha.1
 -------------
@@ -20,9 +25,6 @@ Released July 19, 2018
   - :meth:`~eth_abi.abi.decode_single` called with ABI type 'string' will now return a python
     :class:`str` instead of :class:`bytes`.
   - Support for the legacy ``real`` and ``ureal`` types has been removed
-  - The :meth:`~eth_abi.abi.encode_single` and
-    :meth:`~eth_abi.abi.decode_single` functions no longer accept type tuples
-    to identify ABI types.  Only type strings are accepted.
 - Bugfixes
 
   - Simple callable encoders work again
