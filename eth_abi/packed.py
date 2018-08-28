@@ -14,9 +14,6 @@ from eth_abi.encoding import (
 from eth_abi.registry import (
     registry_packed,
 )
-from eth_abi.utils.parsing import (
-    collapse_type,
-)
 
 warnings.warn(
     "Packed mode encoding is an experimental feature.  Please report any "
@@ -36,12 +33,7 @@ def encode_single_packed(typ: TypeStr, arg: Any) -> bytes:
     :returns: The non-standard packed mode binary representation of the python
         value ``arg`` as a value of the ABI type ``typ``.
     """
-    if isinstance(typ, str):
-        type_str = typ
-    else:
-        type_str = collapse_type(*typ)
-
-    encoder = registry_packed.get_encoder(type_str)
+    encoder = registry_packed.get_encoder(typ)
 
     return encoder(arg)
 
