@@ -104,6 +104,7 @@ malformed_tuple_type_strs = st.recursive(
         st.one_of(malformed_non_tuple_type_strs, this_strategy),
         min_size=1, max_size=10,
     ),
+    max_leaves=5,
 ).map(join_tuple)
 
 malformed_type_strs = st.one_of(
