@@ -1,6 +1,16 @@
 Release Notes
 =============
 
+v1.2.0
+-------------
+
+Released August 28, 2018
+
+- New Features
+
+  - Backported and added support for nested dynamic arrays in the Solidity
+    version 2 ABI
+
 v1.1.1
 -------------
 
