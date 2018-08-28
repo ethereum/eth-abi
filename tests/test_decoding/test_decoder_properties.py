@@ -1,14 +1,5 @@
-import pytest
-
 import decimal
 import sys
-
-from hypothesis import (
-    given,
-    settings,
-    example,
-    strategies as st,
-)
 
 from eth_utils import (
     big_endian_to_int,
@@ -16,6 +7,16 @@ from eth_utils import (
     int_to_big_endian,
     to_normalized_address,
 )
+from eth_utils.toolz import (
+    complement,
+)
+from hypothesis import (
+    example,
+    given,
+    settings,
+    strategies as st,
+)
+import pytest
 
 from eth_abi.constants import (
     TT256M1,

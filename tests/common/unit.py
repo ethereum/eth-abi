@@ -119,6 +119,97 @@ CORRECT_TUPLE_ENCODINGS = [
             '626f617479206d63626f617466616365>0',  # encoding of b'boaty mcboatface'
         )
     ),
+
+    # Tuple arrays
+    (
+        '((int,int)[])',
+        (((1, 2), (3, 4)),),
+        words('20', '2', '1', '2', '3', '4'),
+    ),
+    (
+        '((int,int[],(int,int)[]),(int,int),int)',
+        (
+            (
+                1,
+                (2, 3),
+                ((4, 5), (6, 7)),
+            ),
+            (8, 9),
+            10,
+        ),
+        words(
+            '80',  # offset of dynamic tuple
+            '8',  # outer tuple static tuple
+            '9',
+            'a',  # outer tuple int
+            '1',  # beginning of dynamic tuple (int)
+            '60',  # offset of dynamic tuple list of ints
+            'c0',  # offset of dynamic tuple list of tuples
+            '2',  # size of list of ints
+            '2',
+            '3',
+            '2',  # size of list of tuples
+            '4',  # beginning of first tuple
+            '5',
+            '6',  # beginning of second tuple
+            '7',
+        ),
+    ),
+    (
+        '(int,int)[][]',
+        (
+            ((1, 2),),
+            ((3, 4), (5, 6)),
+            ((7, 8), (9, 10), (11, 12)),
+        ),
+        words(
+            '3',  # size of outer dynamic list
+            '60',  # offset of first dynamic list
+            'c0',  # offset of second dynamic list
+            '160',  # offset of third dynamic list
+            '1',  # size of first list
+            '1',  # start of first tuple
+            '2',
+            '2',  # size of second list
+            '3',  # start of second tuple
+            '4',
+            '5',  # start of third tuple
+            '6',
+            '3',  # size of third list
+            '7',  # start of fourth tuple
+            '8',
+            '9',  # start of fifth tuple
+            'a',
+            'b',  # start of sixth tuple
+            'c',
+        ),
+    ),
+    (
+        '((int,int)[][2])',
+        (
+            (
+                ((1, 2), (3, 4)),
+                ((5, 6), (7, 8), (9, 10)),
+            ),
+        ),
+        words(
+            '20',  # offset of constant size array
+            '40',  # offset of first dynamic list of tuples
+            'e0',  # offset of second dynamic list of tuples
+            '2',  # size of first list
+            '1',  # start of first tuple
+            '2',
+            '3',  # start of second tuple
+            '4',
+            '3',  # size of second list
+            '5',  # start of third tuple
+            '6',
+            '7',  # start of fourth tuple
+            '8',
+            '9',  # start of fifth tuple
+            'a',
+        ),
+    ),
 ]
 
 CORRECT_SINGLE_ENCODINGS = CORRECT_TUPLE_ENCODINGS + [

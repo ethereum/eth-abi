@@ -598,12 +598,20 @@ class BaseArrayEncoder(BaseEncoder):
     def encode_elements(self, value):
         self.validate_value(value)
 
-        encoded_elements = b''.join((
-            self.item_encoder(item)
-            for item in value
-        ))
+        item_encoder = self.item_encoder
+        tail_chunks = tuple(item_encoder(i) for i in value)
 
-        return encoded_elements
+        items_are_dynamic = getattr(item_encoder, 'is_dynamic', False)
+        if not items_are_dynamic:
+            return b''.join(tail_chunks)
+
+        head_length = 32 * len(value)
+        tail_offsets = (0,) + tuple(accumulate(map(len, tail_chunks[:-1])))
+        head_chunks = tuple(
+            encode_uint_256(head_length + offset)
+            for offset in tail_offsets
+        )
+        return b''.join(head_chunks + tail_chunks)
 
     @parse_type_str(with_arrlist=True)
     def from_type_str(cls, abi_type, registry):
@@ -623,6 +631,11 @@ class BaseArrayEncoder(BaseEncoder):
 
 class SizedArrayEncoder(BaseArrayEncoder):
     array_size = None
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+        self.is_dynamic = self.item_encoder.is_dynamic
 
     def validate(self):
         super().validate()
