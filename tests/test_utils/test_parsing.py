@@ -4,7 +4,6 @@ from eth_abi.exceptions import (
     ParseError,
 )
 from eth_abi.utils.parsing import (
-    collapse_type,
     process_type,
 )
 
@@ -64,20 +63,3 @@ def test_process_validation_errors(typestr):
 def test_process_parsing_errors(typestr):
     with pytest.raises(ParseError):
         process_type(typestr)
-
-
-@pytest.mark.parametrize(
-    'original, expected',
-    [
-        ('address', 'address'),
-        ('uint[2][]', 'uint256[2][]'),
-        ('uint256[2][]', 'uint256[2][]'),
-        ('function', 'bytes24'),
-        ('bool', 'bool'),
-        ('bytes32', 'bytes32'),
-        ('bytes', 'bytes'),
-        ('string', 'string'),
-    ],
-)
-def test_collapse_type(original, expected):
-    assert collapse_type(*process_type(original)) == expected

@@ -43,7 +43,3 @@ def process_type(type_str):
         arrlist = []
 
     return abi_type.base, sub, arrlist
-
-
-def collapse_type(base, sub, arrlist):
-    return base + sub + ''.join(map(repr, arrlist))

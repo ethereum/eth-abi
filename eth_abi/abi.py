@@ -26,7 +26,6 @@ from eth_abi.registry import (
     registry,
 )
 from eth_abi.utils.parsing import (  # noqa: F401
-    collapse_type,
     process_type,
 )
 
@@ -42,12 +41,7 @@ def encode_single(typ: TypeStr, arg: Any) -> bytes:
     :returns: The binary representation of the python value ``arg`` as a value
         of the ABI type ``typ``.
     """
-    if isinstance(typ, str):
-        type_str = typ
-    else:
-        type_str = collapse_type(*typ)
-
-    encoder = registry.get_encoder(type_str)
+    encoder = registry.get_encoder(typ)
 
     return encoder(arg)
 
@@ -87,12 +81,7 @@ def is_encodable(typ: TypeStr, arg: Any) -> bool:
     :returns: ``True`` if ``arg`` is encodable as a value of the ABI type
         ``typ``.  Otherwise, ``False``.
     """
-    if isinstance(typ, str):
-        type_str = typ
-    else:
-        type_str = collapse_type(*typ)
-
-    encoder = registry.get_encoder(type_str)
+    encoder = registry.get_encoder(typ)
 
     try:
         encoder.validate_value(arg)
@@ -122,12 +111,7 @@ def decode_single(typ: TypeStr, data: Decodable) -> Any:
     if not is_bytes(data):
         raise TypeError("The `data` value must be of bytes type.  Got {0}".format(type(data)))
 
-    if isinstance(typ, str):
-        type_str = typ
-    else:
-        type_str = collapse_type(*typ)
-
-    decoder = registry.get_decoder(type_str)
+    decoder = registry.get_decoder(typ)
     stream = ContextFramesBytesIO(data)
 
     return decoder(stream)
