@@ -78,6 +78,20 @@ def test_parsing_with_parsimonious_grammar_and_node_visitor_works(type_str, expe
     assert parse(type_str) == expected_type
 
 
+@pytest.mark.parametrize(
+    'type_str, expected_type',
+    (
+        ('uint', BasicType('uint', 256)),
+        ('uint256[]', BasicType('uint', 256, ((),))),
+        ('function', BasicType('bytes', 24)),
+        ('fixed', BasicType('fixed', (128, 18))),
+        ('ufixed', BasicType('ufixed', (128, 18))),
+    )
+)
+def test_normalizing_and_parsing_works(type_str, expected_type):
+    assert parse(normalize(type_str)) == expected_type
+
+
 @given(malformed_type_strs, st.none())
 @example('int0', 4)
 @example('fixed128x0', 9)
