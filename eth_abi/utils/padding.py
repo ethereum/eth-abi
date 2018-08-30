@@ -4,7 +4,7 @@ from eth_utils.toolz import (
 
 
 @curry
-def zpad(value, length):
+def zpad(value: bytes, length: int) -> bytes:
     return value.rjust(length, b'\x00')
 
 
@@ -12,7 +12,7 @@ zpad32 = zpad(length=32)
 
 
 @curry
-def zpad_right(value, length):
+def zpad_right(value: bytes, length: int) -> bytes:
     return value.ljust(length, b'\x00')
 
 
@@ -20,7 +20,7 @@ zpad32_right = zpad_right(length=32)
 
 
 @curry
-def fpad(value, length):
+def fpad(value: bytes, length: int) -> bytes:
     return value.rjust(length, b'\xff')
 
 
