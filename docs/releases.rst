@@ -1,7 +1,7 @@
 Release Notes
 =============
 
-Development
+v2.0.0-beta.1
 -------------
 
 - New Features
@@ -14,6 +14,12 @@ Development
   - The :meth:`~eth_abi.abi.encode_single` and
     :meth:`~eth_abi.abi.decode_single` functions no longer accept type tuples
     to identify ABI types.  Only type strings are accepted.
+  - The :meth:`~eth_abi.utils.parsing.collapse_type` function has been removed.
+    People who still wish to use this function should replicate its logic
+    locally and where needed.
+  - The :meth:`~eth_abi.utils.parsing.process_type` function has been removed
+    in favor of the :meth:`~eth_abi.grammar.parse` function.  This should make
+    the parsing API more consistent with the new parsimonious parser.
 
 v2.0.0-alpha.1
 -------------
