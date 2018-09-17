@@ -105,4 +105,61 @@ Released Feb 5, 2018
 v0.5.0
 --------
 
-Latest stable version
+- Rename to ``eth-abi`` for consistency across github/pypi/python-module
+
+v0.4.4
+-----
+
+- Better error messages for decoder errors.
+
+v0.4.3
+-----
+
+- Bugfix for ``process_type`` to support byte string type arrguments
+
+v0.4.2
+-----
+
+- ``process_type`` now auto-expands all types which have omittied their sizes.
+
+v0.4.1
+-----
+
+- Support for ``function`` types.
+
+v0.3.1
+-----
+
+- Bugfix for small signed integer and real encoding/decoding
+
+v0.3.1
+-----
+
+- Bugfix for faulty release.
+
+v0.3.0
+-----
+
+- Depart from the original pyethereum encoding/decoding logic.
+- Fully rewritten encoder and decoder functionality.
+
+v0.2.2
+-----
+
+- Fix a handful of bytes encoding issues.
+
+v0.2.1
+-----
+
+- Use pyrlp utility functions for big_endian int operations
+
+v0.2.0
+-----
+
+- Bugfixes from upstream pyethereum repository for encoding/decoding
+- Python 3 Support
+
+v0.1.0
+-----
+
+- Initial release
