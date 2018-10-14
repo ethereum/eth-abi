@@ -451,7 +451,8 @@ class AddressEncoder(Fixed32ByteSizeEncoder):
     def validate_value(cls, value):
         if not is_address(value):
             raise EncodingTypeError(
-                "Value of type {0} cannot be encoded by {1}".format(
+                "Cannot encode value {0} of type {1} as an address using {2}".format(
+                    value,
                     type(value),
                     cls.__name__,
                 )
