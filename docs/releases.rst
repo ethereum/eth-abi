@@ -1,6 +1,16 @@
 Release Notes
 =============
 
+
+v2.0.0-beta.2
+-------------
+
+Released October 16, 2018
+
+- Bugfixes
+
+  - Was accidentally allowing eth-typing v2. Now it requires eth-typing v1 only.
+
 v2.0.0-beta.1
 -------------
 
@@ -37,6 +47,16 @@ Released July 19, 2018
 - Misc
 
   - Various documentation updates and type annotations
+
+v1.2.1
+-------------
+
+Released October 16, 2018
+
+- Bugfixes
+
+  - Was accidentally allowing eth-typing v2. Now it requires eth-typing v1 only.
+    (backport from v2)
 
 v1.2.0
 -------------
