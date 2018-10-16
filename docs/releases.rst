@@ -1,6 +1,15 @@
 Release Notes
 =============
 
+v1.2.1
+-------------
+
+Released October 16, 2018
+
+- Bugfixes
+
+  - Was accidentally allowing eth-typing v2. Now it requires eth-typing v1 only.
+
 v1.2.0
 -------------
 
