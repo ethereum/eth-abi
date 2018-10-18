@@ -1,6 +1,15 @@
 Release Notes
 =============
 
+v1.2.2
+-------------
+
+Released October 18, 2018
+
+- Bugfixes
+
+  - Expand parsimonious dependency from v0.8.0 to v0.8.*
+
 v1.2.1
 -------------
 
