@@ -9,7 +9,7 @@ from setuptools import (
 setup(
     name='eth-abi',
     # *IMPORTANT*: Don't manually change the version here. Use the 'bumpversion' utility.
-    version='1.2.1',
+    version='1.2.2',
     description="""Ethereum ABI Utils""",
     long_description_markdown_filename='README.md',
     author='Piper Merriam',
