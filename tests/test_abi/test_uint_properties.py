@@ -2,11 +2,8 @@ from hypothesis import (
     given,
 )
 
-from eth_abi import (
-    decode_abi,
-    decode_single,
-    encode_abi,
-    encode_single,
+from eth_abi.abi import (
+    encoder as default_encoder,
 )
 from tests.common.strategies import (
     uint_strs,
@@ -22,8 +19,8 @@ def test_always_positive_multi(_type, value):
     """
     assert value >= 0
 
-    encoded_value = encode_abi([_type], [value])
-    decoded_value = decode_abi([_type], encoded_value)
+    encoded_value = default_encoder.encode_abi([_type], [value])
+    decoded_value = default_encoder.decode_abi([_type], encoded_value)
 
     assert decoded_value[0] >= 0
 
@@ -36,7 +33,7 @@ def test_always_positive_single(_type, value):
     """
     assert value >= 0
 
-    encoded_value = encode_single(_type, value)
-    decoded_value = decode_single(_type, encoded_value)
+    encoded_value = default_encoder.encode_single(_type, value)
+    decoded_value = default_encoder.decode_single(_type, encoded_value)
 
     assert decoded_value >= 0

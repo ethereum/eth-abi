@@ -1,7 +1,7 @@
 import pytest
 
 from eth_abi.abi import (
-    decode_abi,
+    encoder as default_encoder,
 )
 from eth_abi.exceptions import (
     DecodingError,
@@ -26,15 +26,15 @@ def test_decode_abi(type_str, expected, abi_encoding, _):
 
     types = [str(t) for t in abi_type.components]
 
-    actual = decode_abi(types, abi_encoding)
+    actual = default_encoder.decode_abi(types, abi_encoding)
     assert actual == expected
 
 
 def test_decode_abi_empty_data_raises():
     with pytest.raises(DecodingError):
-        decode_abi(['uint32', 'uint32'], b'')
+        default_encoder.decode_abi(['uint32', 'uint32'], b'')
 
 
 def test_decode_abi_wrong_data_type_raises():
     with pytest.raises(TypeError):
-        decode_abi(['uint32', 'uint32'], '')
+        default_encoder.decode_abi(['uint32', 'uint32'], '')
