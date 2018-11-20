@@ -29,7 +29,6 @@ from eth_abi.registry import (
 
 
 class ABICodec():
-
     def __init__(self, registry: ABIRegistry = None):
         if registry is None:
             self._registry = default_registry
