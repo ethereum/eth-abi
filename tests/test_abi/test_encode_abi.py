@@ -1,7 +1,7 @@
 import pytest
 
-from eth_abi.abi import (
-    encoder as default_encoder,
+from eth_abi import (
+    encode_abi,
 )
 from eth_abi.grammar import (
     parse,
@@ -23,5 +23,5 @@ def test_encode_abi(type_str, python_value, abi_encoding, _):
 
     types = [str(t) for t in abi_type.components]
 
-    actual = default_encoder.encode_abi(types, python_value)
+    actual = encode_abi(types, python_value)
     assert actual == abi_encoding
