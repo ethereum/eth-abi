@@ -36,7 +36,6 @@ class ABICodec():
         else:
             self._registry = registry
 
-
     def encode_single(self, typ: TypeStr, arg: Any) -> bytes:
         """
         Encodes the python value ``arg`` as a binary value of the ABI type ``typ``.
@@ -51,7 +50,6 @@ class ABICodec():
         encoder = self._registry.get_encoder(typ)
 
         return encoder(arg)
-
 
     def encode_abi(self, types: Iterable[TypeStr], args: Iterable[Any]) -> bytes:
         """
@@ -73,7 +71,6 @@ class ABICodec():
         encoder = TupleEncoder(encoders=encoders)
 
         return encoder(args)
-
 
     def is_encodable(self, typ: TypeStr, arg: Any) -> bool:
         """
@@ -102,7 +99,6 @@ class ABICodec():
 
         return True
 
-
     def decode_single(self, typ: TypeStr, data: Decodable) -> Any:
         """
         Decodes the binary value ``data`` of the ABI type ``typ`` into its
@@ -122,7 +118,6 @@ class ABICodec():
         stream = ContextFramesBytesIO(data)
 
         return decoder(stream)
-
 
     def decode_abi(self, types: Iterable[TypeStr], data: Decodable) -> Tuple[Any, ...]:
         """
