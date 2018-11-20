@@ -25,7 +25,7 @@ warnings.warn(
 
 
 class ABICodecPacked(ABICodec):
-    def __init__(self, registry: ABIRegistry = None):
+    def __init__(self, registry: ABIRegistry=None):
         if registry is None:
             ABICodec.__init__(self, default_packed_registry)
         else:
