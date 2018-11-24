@@ -28,12 +28,9 @@ from eth_abi.registry import (
 )
 
 
-class ABICodec():
-    def __init__(self, registry: ABIRegistry=None):
-        if registry is None:
-            self._registry = default_registry
-        else:
-            self._registry = registry
+class BaseABICodecEncoder():
+    def __init__(self, registry):
+        self._registry = registry
 
     def encode_single(self, typ: TypeStr, arg: Any) -> bytes:
         """
@@ -97,6 +94,14 @@ class ABICodec():
                 return False
 
         return True
+
+
+class ABICodec(BaseABICodecEncoder):
+    def __init__(self, registry: ABIRegistry=None):
+        if registry is None:
+            BaseABICodecEncoder.__init__(self, default_registry)
+        else:
+            BaseABICodecEncoder.__init__(self, registry)
 
     def decode_single(self, typ: TypeStr, data: Decodable) -> Any:
         """

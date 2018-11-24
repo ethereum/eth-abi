@@ -1,17 +1,7 @@
-from typing import (
-    Any,
-    Iterable,
-    Tuple,
-)
 import warnings
 
-from eth_typing.abi import (
-    Decodable,
-    TypeStr,
-)
-
 from eth_abi.codec import (
-    ABICodec,
+    BaseABICodecEncoder,
 )
 from eth_abi.registry import (
     ABIRegistry,
@@ -24,18 +14,9 @@ warnings.warn(
 )
 
 
-class ABICodecPacked(ABICodec):
+class ABICodecPacked(BaseABICodecEncoder):
     def __init__(self, registry: ABIRegistry=None):
         if registry is None:
-            ABICodec.__init__(self, default_packed_registry)
+            BaseABICodecEncoder.__init__(self, default_packed_registry)
         else:
-            ABICodec.__init__(self, registry)
-
-    def is_encodable(self, typ: TypeStr, arg: Any) -> bool:
-        raise NotImplementedError("'is_encodable' is not  supported in packed mode")
-
-    def decode_single(self, typ: TypeStr, data: Decodable) -> Any:
-        raise NotImplementedError("'decode_single' is not supported in packed mode")
-
-    def decode_abi(self, types: Iterable[TypeStr], data: Decodable) -> Tuple[Any, ...]:
-        raise NotImplementedError("'decode_abi' is not supported in packed mode")
+            BaseABICodecEncoder.__init__(self, registry)
