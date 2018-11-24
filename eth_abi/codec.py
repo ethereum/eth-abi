@@ -29,7 +29,19 @@ from eth_abi.registry import (
 
 
 class BaseABICodecEncoder():
+    """
+    Base codec used to encode values.
+    """
+
     def __init__(self, registry):
+        """
+        Constructor.
+
+        :param registry: The registry providing the encoders to be used when encoding
+            values. May not be ``None``.
+
+        :returns: An instance of `~BaseABICodecEncoder`.
+        """
         if registry is None:
             raise ValueError("`registry` may not be None")
 
@@ -100,7 +112,20 @@ class BaseABICodecEncoder():
 
 
 class ABICodec(BaseABICodecEncoder):
+    """
+    Codec used to encode and decode values.
+    """
+
     def __init__(self, registry: ABIRegistry=None):
+        """
+        Constructor.
+
+        :param registry: The registry providing the encoders and decoders
+            to be used when encoding and decoding values. If no ``registry``
+            is provided, `~eth_abi.registry.default_registry` will be used.
+
+        :returns: An instance of `~eth_abi.codec.ABICodec`.
+        """
         if registry is None:
             BaseABICodecEncoder.__init__(self, default_registry)
         else:
