@@ -30,6 +30,9 @@ from eth_abi.registry import (
 
 class BaseABICodecEncoder():
     def __init__(self, registry):
+        if registry is None:
+            raise ValueError("`registry` may not be None")
+        
         self._registry = registry
 
     def encode_single(self, typ: TypeStr, arg: Any) -> bytes:
