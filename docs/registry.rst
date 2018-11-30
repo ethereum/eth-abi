@@ -1,3 +1,5 @@
+.. _registry:
+
 Registry
 ========
 
@@ -5,6 +7,8 @@ The ``eth-abi`` library uses a central registry to route encoding/decoding
 operations for different ABI types to an appropriate encoder/decoder callable
 or class.  Using the registry, the coding behavior of any ABI type can be
 customized and additional coding behavior for new ABI types can be added.
+
+.. _registry-adding-simple-types:
 
 Adding Simple Types
 -------------------

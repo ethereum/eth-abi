@@ -1,6 +1,10 @@
 Release Notes
 =============
 
+v2.0.0-beta.3
+-------------
+
+- Added codec API to facilitate use of custom registries.  See :ref:`codecs`.
 
 v2.0.0-beta.2
 -------------
@@ -32,7 +36,7 @@ v2.0.0-beta.1
     the parsing API more consistent with the new parsimonious parser.
 
 v2.0.0-alpha.1
--------------
+--------------
 
 Released July 19, 2018
 
@@ -49,7 +53,7 @@ Released July 19, 2018
   - Various documentation updates and type annotations
 
 v1.2.1
--------------
+------
 
 Released October 16, 2018
 
@@ -59,7 +63,7 @@ Released October 16, 2018
     (backport from v2)
 
 v1.2.0
--------------
+------
 
 Released August 28, 2018
 
@@ -69,7 +73,7 @@ Released August 28, 2018
     version 2 ABI
 
 v1.1.1
--------------
+------
 
 Released May 10, 2018
 
@@ -82,7 +86,7 @@ Released May 10, 2018
     :class:`TypeError` when trying to encode a :class:`float` into a ``fixed<M>x<N>`` type.
 
 v1.1.0
--------------
+------
 
 Released May 8, 2018
 
@@ -106,7 +110,7 @@ Released May 8, 2018
   - Drop Python 2 support cruft
 
 v1.0.0
--------------
+------
 
 Released Feb 28, 2018
 
@@ -123,63 +127,63 @@ Released Feb 5, 2018
 - Add support for eth-utils v1-beta1
 
 v0.5.0
---------
+------
 
 - Rename to ``eth-abi`` for consistency across github/pypi/python-module
 
 v0.4.4
------
+------
 
 - Better error messages for decoder errors.
 
 v0.4.3
------
+------
 
 - Bugfix for ``process_type`` to support byte string type arrguments
 
 v0.4.2
------
+------
 
 - ``process_type`` now auto-expands all types which have omittied their sizes.
 
 v0.4.1
------
+------
 
 - Support for ``function`` types.
 
 v0.3.1
------
+------
 
 - Bugfix for small signed integer and real encoding/decoding
 
 v0.3.1
------
+------
 
 - Bugfix for faulty release.
 
 v0.3.0
------
+------
 
 - Depart from the original pyethereum encoding/decoding logic.
 - Fully rewritten encoder and decoder functionality.
 
 v0.2.2
------
+------
 
 - Fix a handful of bytes encoding issues.
 
 v0.2.1
------
+------
 
 - Use pyrlp utility functions for big_endian int operations
 
 v0.2.0
------
+------
 
 - Bugfixes from upstream pyethereum repository for encoding/decoding
 - Python 3 Support
 
 v0.1.0
------
+------
 
 - Initial release

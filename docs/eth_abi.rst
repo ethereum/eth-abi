@@ -16,6 +16,14 @@ eth\_abi.base module
     :members: BaseCoder
     :show-inheritance:
 
+eth\_abi.codec module
+---------------------
+
+.. automodule:: eth_abi.codec
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 eth\_abi.decoding module
 ------------------------
 

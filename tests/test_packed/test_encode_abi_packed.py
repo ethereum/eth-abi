@@ -6,8 +6,7 @@ from eth_abi.grammar import (
 from eth_abi.packed import (
     encode_abi_packed,
 )
-
-from ..common.unit import (
+from tests.common.unit import (
     CORRECT_TUPLE_ENCODINGS,
 )
 
