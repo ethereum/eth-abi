@@ -24,14 +24,6 @@ eth\_abi.codec module
     :undoc-members:
     :show-inheritance:
 
-eth\_abi.codec_packed module
-----------------------------
-
-.. automodule:: eth_abi.codec_packed
-    :members:
-    :undoc-members:
-    :show-inheritance:   
-
 eth\_abi.decoding module
 ------------------------
 

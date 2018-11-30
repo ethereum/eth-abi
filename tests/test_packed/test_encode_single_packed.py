@@ -3,8 +3,7 @@ import pytest
 from eth_abi.packed import (
     encode_single_packed,
 )
-
-from ..common.unit import (
+from tests.common.unit import (
     CORRECT_SINGLE_ENCODINGS,
 )
 

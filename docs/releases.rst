@@ -1,6 +1,10 @@
 Release Notes
 =============
 
+v2.0.0-beta.3
+-------------
+
+- Added codec API to facilitate use of custom registries.  See :ref:`codecs`.
 
 v2.0.0-beta.2
 -------------

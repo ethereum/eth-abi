@@ -1,8 +1,11 @@
 from eth_abi.codec import (
     ABICodec,
 )
+from eth_abi.registry import (
+    registry,
+)
 
-default_codec = ABICodec()
+default_codec = ABICodec(registry)
 
 encode_abi = default_codec.encode_abi
 encode_single = default_codec.encode_single

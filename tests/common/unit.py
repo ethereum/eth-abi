@@ -399,3 +399,38 @@ CORRECT_SINGLE_ENCODINGS = CORRECT_TUPLE_ENCODINGS + [
     ('bytes', b'', words('0', '0'), b''),
     ('bytes', b'\xde', words('1', 'de>0'), b'\xde'),
 ]
+
+NOT_ENCODABLE = [
+    # Wrong value type
+    ('((bytes,bool),(bytes,bool))', ((b'david attenborough', 0), (b'boaty mcboatface', True))),
+    ('(uint32)', ('6',)),
+    ('int[]', 6),
+    ('bool[2]', (True, 2)),
+    ('bool', 1),
+    ('uint', True),
+    ('int', True),
+    ('bytes', 129),
+    ('fixed8x1', 0.1),  # only Decimal and int are allowed
+
+    # List size mismatch
+    ('int[3]', (6, 2)),
+
+    # Bytes string is wrong size
+    ('bytes5', b'asdfgt'),
+
+    # Addresses aren't 20 bytes long
+    ('address', '0x8deebe59332ebc3f81935e311f0fb8556cf573'),
+    ('address', decode_hex('0x8deebe59332ebc3f81935e311f0fb8556cf573')),
+
+    # Values out of bounds
+    ('uint8', 256),
+    ('uint8', -1),
+    ('int8', 128),
+    ('int8', -129),
+    ('string', -129),
+    ('fixed8x1', Decimal('128e-1')),
+    ('fixed8x1', Decimal('-129e-1')),
+    ('ufixed8x1', Decimal('256e-1')),
+    ('ufixed8x1', Decimal('-1e-1')),
+    ('fixed8x1', Decimal('1e-2')),
+]
