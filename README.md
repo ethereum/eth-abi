@@ -21,8 +21,10 @@ For documentation, visit [https://eth-abi.readthedocs.io/en/latest/](https://eth
 Clone the repository and then run:
 
 ```sh
-pip install -e . -r requirements-dev.txt
+pip install -e .[dev]
 ```
+
+You might want to do this inside a virtualenv.
 
 ### Running the tests
 
