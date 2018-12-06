@@ -1,6 +1,19 @@
 Release Notes
 =============
 
+v1.3.0
+------
+
+Released December 6, 2018
+
+- Bugfixes
+
+  - Resolved an issue that was preventing discovery of type hints.
+
+- Misc
+
+  - Updated eth-typing dependency version to ``>=2.0.0,<3.0.0``.
+
 v1.2.2
 -------------
 
