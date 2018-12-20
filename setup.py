@@ -51,7 +51,7 @@ setup(
     include_package_data=True,
     install_requires=[
         'eth-utils>=1.2.0,<2.0.0',
-        'eth-typing<2',
+        'eth-typing>=1,<3',
         'parsimonious>=0.8.0,<0.9.0',
     ],
     setup_requires=['setuptools-markdown'],
