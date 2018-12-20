@@ -1,8 +1,8 @@
 Release Notes
 =============
 
-Development
------------
+v2.0.0-beta.4
+-------------
 
 - Update eth-typing requirement to ``>=2.0.0,<3.0.0``.
 
