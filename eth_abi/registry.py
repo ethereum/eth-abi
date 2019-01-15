@@ -439,6 +439,14 @@ class ABIRegistry(Copyable):
         return self._get_coder(self._decoders, type_str)
 
     def copy(self):
+        """
+        Copies a registry such that new registrations can be made or existing
+        registrations can be unregistered without affecting any instance from
+        which a copy was obtained.  This is useful if an existing registry
+        fulfills most of a user's needs but requires one or two modifications.
+        In that case, a copy of that registry can be obtained and the necessary
+        changes made without affecting the original registry.
+        """
         cpy = type(self)()
 
         cpy._encoders = copy.copy(self._encoders)
