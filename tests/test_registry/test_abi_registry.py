@@ -1,3 +1,6 @@
+import copy
+import itertools
+
 import pytest
 
 from eth_abi import (
@@ -147,3 +150,23 @@ def test_unregister_unknown_lookups(registry: ABIRegistry):
 def test_looking_up_unparsable_type_causes_error(registry: ABIRegistry):
     with pytest.raises(exceptions.ParseError, match='Parse error at'):
         registry.get_encoder('uint[]256')
+
+
+def test_copying_copies_internal_mappings(registry: ABIRegistry):
+    c1 = registry.copy()
+    c2 = copy.copy(registry)
+    c3 = copy.deepcopy(registry)
+
+    for x, y in itertools.combinations((registry, c1, c2, c3), 2):
+        # Objects are different
+        assert id(x) != id(y)
+
+        # Internal mapping objects are different
+        assert id(x._encoders) != id(y._encoders)
+        assert id(x._decoders) != id(y._decoders)
+
+        # Coders can be found for existing registrations
+        assert isinstance(x.get_encoder('address'), encoding.AddressEncoder)
+        assert isinstance(x.get_decoder('address'), decoding.AddressDecoder)
+        assert isinstance(y.get_encoder('address'), encoding.AddressEncoder)
+        assert isinstance(y.get_decoder('address'), decoding.AddressDecoder)

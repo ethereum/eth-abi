@@ -1,3 +1,5 @@
+import abc
+import copy
 import functools
 from typing import (
     Any,
@@ -29,7 +31,19 @@ Encoder = Union[EncoderCallable, Type[encoding.BaseEncoder]]
 Decoder = Union[DecoderCallable, Type[decoding.BaseDecoder]]
 
 
-class PredicateMapping:
+class Copyable(abc.ABC):
+    @abc.abstractmethod
+    def copy(self):
+        pass
+
+    def __copy__(self):
+        return self.copy()
+
+    def __deepcopy__(self, *args):
+        return self.copy()
+
+
+class PredicateMapping(Copyable):
     """
     Acts as a mapping from predicate functions to values.  Values are retrieved
     when their corresponding predicate matches a given input.  Predicates can
@@ -132,6 +146,14 @@ class PredicateMapping:
             raise TypeError('Key to be removed must be callable or string: got {}'.format(
                 type(predicate_or_label),
             ))
+
+    def copy(self):
+        cpy = type(self)(self._name)
+
+        cpy._values = copy.copy(self._values)
+        cpy._labeled_predicates = copy.copy(self._labeled_predicates)
+
+        return cpy
 
 
 class Predicate:
@@ -267,7 +289,7 @@ def _clear_decoder_cache(old_method):
     return new_method
 
 
-class ABIRegistry:
+class ABIRegistry(Copyable):
     def __init__(self):
         self._encoders = PredicateMapping('encoder registry')
         self._decoders = PredicateMapping('decoder registry')
@@ -415,6 +437,14 @@ class ABIRegistry:
     @functools.lru_cache(maxsize=None)
     def get_decoder(self, type_str):
         return self._get_coder(self._decoders, type_str)
+
+    def copy(self):
+        cpy = type(self)()
+
+        cpy._encoders = copy.copy(self._encoders)
+        cpy._decoders = copy.copy(self._decoders)
+
+        return cpy
 
 
 registry = ABIRegistry()

@@ -1,4 +1,6 @@
+import copy
 import functools
+import itertools
 import operator
 
 import pytest
@@ -102,3 +104,26 @@ def test_removing_non_existent_label_raises_error(mapping):
 def test_removing_unsupported_type_raises_error(mapping):
     with pytest.raises(TypeError, match=r'must be callable or string.*got <class \'bool\'>'):
         mapping.remove(True)
+
+
+def test_copying_copies_internal_mappings_but_not_predicates_or_values(mapping: PredicateMapping):
+    mapping.add(equals_foo, 'foo value', 'foo label')
+
+    c1 = mapping.copy()
+    c2 = copy.copy(mapping)
+    c3 = copy.deepcopy(mapping)
+
+    for x, y in itertools.combinations((mapping, c1, c2, c3), 2):
+        # Objects are different
+        assert id(x) != id(y)
+
+        # Names are the same
+        assert x._name == y._name
+
+        # Internal mapping objects are different
+        assert id(x._values) != id(y._values)
+        assert id(x._labeled_predicates) != id(y._labeled_predicates)
+
+        # Values for 'foo' can be found in both mappings
+        assert x.find('foo') == 'foo value'
+        assert y.find('foo') == 'foo value'
