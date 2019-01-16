@@ -56,3 +56,38 @@ We then create a custom codec object with our custom registry and use this to
 encode and decode byte sequences.  This allows us to continue using the
 porcelain API (described in the :ref:`encoding` and :ref:`decoding` sections)
 with our custom registry.
+
+.. _copying_an_existing_registry:
+
+Copying an Existing Registry
+----------------------------
+
+Sometimes, it's more convenient to use an existing registry but with only one or
+two small modifications.  This can be done via a registry's copying or cloning
+capability coupled with the use of a custom codec:
+
+.. testcode:: custom-registry-copied
+
+    from eth_abi.codec import ABICodec
+    from eth_abi.registry import registry as default_registry
+
+    registry = default_registry.copy()
+    registry.unregister('address')
+
+    codec = ABICodec(registry)
+
+    try:
+        codec.encode_single('address', None)
+    except ValueError:
+        pass
+    else:
+        # We shouldn't reach this since the above code will cause an exception
+        raise Exception('unreachable')
+
+    default_codec = ABICodec(default_registry)
+
+    # The default registry is unaffected since a copy was made
+    assert (
+        default_codec.encode_single('address', '0x' + 'ff' * 20) ==
+        b'\x00' * 12 + b'\xff' * 20
+    )
