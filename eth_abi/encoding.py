@@ -6,6 +6,8 @@ from itertools import (
 )
 from typing import (
     Any,
+    Optional,
+    Type,
 )
 
 from eth_utils import (
@@ -44,6 +46,9 @@ from eth_abi.utils.padding import (
     zpad,
     zpad_right,
 )
+from eth_abi.utils.string import (
+    abbr,
+)
 
 
 class BaseEncoder(BaseCoder, metaclass=abc.ABCMeta):
@@ -69,6 +74,26 @@ class BaseEncoder(BaseCoder, metaclass=abc.ABCMeta):
         """
         pass
 
+    @classmethod
+    def invalidate_value(
+        cls,
+        value: Any,
+        exc: Type[Exception]=EncodingTypeError,
+        msg: Optional[str]=None,
+    ) -> None:
+        """
+        Throws a standard exception for when a value is not encodable by an
+        encoder.
+        """
+        raise exc(
+            "Value `{rep}` of type {typ} cannot be encoded by {cls}{msg}".format(
+                rep=abbr(value),
+                typ=type(value),
+                cls=cls.__name__,
+                msg="" if msg is None else (": " + msg),
+            )
+        )
+
     def __call__(self, value: Any) -> bytes:
         return self.encode(value)
 
@@ -89,17 +114,19 @@ class TupleEncoder(BaseEncoder):
 
     def validate_value(self, value):
         if not is_list_like(value):
-            raise EncodingTypeError(
-                "Cannot encode value of type {0} using tuple encoder.  Must be "
-                "a list-like object such as an array or tuple".format(
-                    type(value),
-                )
+            self.invalidate_value(
+                value,
+                msg="must be list-like object such as array or tuple",
             )
 
         if len(value) != len(self.encoders):
-            raise ValueOutOfBounds(
-                "Expected value with length {0}.  Provided value has {1} "
-                "elements".format(len(self.encoders), len(value))
+            self.invalidate_value(
+                value,
+                exc=ValueOutOfBounds,
+                msg="value has {} items when {} were expected".format(
+                    len(value),
+                    len(self.encoders),
+                ),
             )
 
         for item, encoder in zip(value, self.encoders):
@@ -197,12 +224,7 @@ class BooleanEncoder(Fixed32ByteSizeEncoder):
     @classmethod
     def validate_value(cls, value):
         if not is_boolean(value):
-            raise EncodingTypeError(
-                "Value of type {0} cannot be encoded by {1}".format(
-                    type(value),
-                    cls.__name__,
-                )
-            )
+            cls.invalidate_value(value)
 
     @classmethod
     def encode_fn(cls, value):
@@ -237,33 +259,28 @@ class NumberEncoder(Fixed32ByteSizeEncoder):
             raise ValueError("`type_check_fn` cannot be null")
 
     def validate_value(self, value):
-        cls = type(self)
         if not self.type_check_fn(value):
-            raise EncodingTypeError(
-                "Value of type {0} cannot be encoded by {1}".format(
-                    type(value),
-                    cls.__name__,
-                )
-            )
+            self.invalidate_value(value)
 
         illegal_value = (
             self.illegal_value_fn is not None and
             self.illegal_value_fn(value)
         )
         if illegal_value:
-            raise IllegalValue(
-                'Value {} cannot be encoded by {}'.format(repr(value), cls.__name__)
-            )
+            self.invalidate_value(value, exc=IllegalValue)
 
         lower_bound, upper_bound = self.bounds_fn(self.value_bit_size)
         if value < lower_bound or value > upper_bound:
-            raise ValueOutOfBounds(
-                "Value {0} cannot be encoded in {1} bits.  Must be bounded "
-                "between [{2}, {3}]".format(
-                    repr(value),
-                    self.value_bit_size,
-                    lower_bound,
-                    upper_bound,
+            self.invalidate_value(
+                value,
+                exc=ValueOutOfBounds,
+                msg=(
+                    "Cannot be encoded in {} bits.  Must be bounded "
+                    "between [{}, {}].".format(
+                        self.value_bit_size,
+                        lower_bound,
+                        upper_bound,
+                    )
                 )
             )
 
@@ -343,14 +360,13 @@ class BaseFixedEncoder(NumberEncoder):
             residue = value % (TEN ** -self.frac_places)
 
         if residue > 0:
-            raise IllegalValue(
-                '{} cannot encode value {}: '
-                'residue {} outside allowed fractional precision of {}'.format(
-                    type(self).__name__,
-                    repr(value),
+            self.invalidate_value(
+                value,
+                exc=IllegalValue,
+                msg='residue {} outside allowed fractional precision of {}'.format(
                     repr(residue),
                     self.frac_places,
-                )
+                ),
             )
 
     def validate(self):
@@ -450,13 +466,7 @@ class AddressEncoder(Fixed32ByteSizeEncoder):
     @classmethod
     def validate_value(cls, value):
         if not is_address(value):
-            raise EncodingTypeError(
-                "Cannot encode value {0} of type {1} using {2}".format(
-                    repr(value),
-                    type(value),
-                    cls.__name__,
-                )
-            )
+            cls.invalidate_value(value)
 
     def validate(self):
         super().validate()
@@ -478,18 +488,14 @@ class BytesEncoder(Fixed32ByteSizeEncoder):
 
     def validate_value(self, value):
         if not is_bytes(value):
-            raise EncodingTypeError(
-                "Value of type {0} cannot be encoded by {1}".format(
-                    type(value),
-                    type(self).__name__,
-                )
-            )
-        if len(value) > self.value_bit_size // 8:
-            raise ValueOutOfBounds(
-                "String {0} exceeds total byte size for bytes{1} encoding".format(
-                    value,
-                    self.value_bit_size // 8,
-                )
+            self.invalidate_value(value)
+
+        byte_size = self.value_bit_size // 8
+        if len(value) > byte_size:
+            self.invalidate_value(
+                value,
+                exc=ValueOutOfBounds,
+                msg="exceeds total byte size for bytes{} encoding".format(byte_size),
             )
 
     @staticmethod
@@ -516,12 +522,7 @@ class ByteStringEncoder(BaseEncoder):
     @classmethod
     def validate_value(cls, value):
         if not is_bytes(value):
-            raise EncodingTypeError(
-                "Value of type {} cannot be encoded by {}".format(
-                    type(value),
-                    cls.__name__,
-                )
-            )
+            cls.invalidate_value(value)
 
     @classmethod
     def encode(cls, value):
@@ -557,12 +558,7 @@ class TextStringEncoder(BaseEncoder):
     @classmethod
     def validate_value(cls, value):
         if not is_text(value):
-            raise EncodingTypeError(
-                "Value of type {} cannot be encoded by {}".format(
-                    type(value),
-                    cls.__name__,
-                )
-            )
+            cls.invalidate_value(value)
 
     @classmethod
     def encode(cls, value):
@@ -605,11 +601,9 @@ class BaseArrayEncoder(BaseEncoder):
 
     def validate_value(self, value):
         if not is_list_like(value):
-            raise EncodingTypeError(
-                "Cannot encode value of type {0} using array encoder.  Must be "
-                "a list-like object such as an array or tuple".format(
-                    type(value),
-                )
+            self.invalidate_value(
+                value,
+                msg="must be list-like such as array or tuple",
             )
 
         for item in value:
@@ -656,9 +650,13 @@ class PackedArrayEncoder(BaseArrayEncoder):
         super().validate_value(value)
 
         if self.array_size is not None and len(value) != self.array_size:
-            raise ValueOutOfBounds(
-                "Expected value with length {0}.  Provided value has {1} "
-                "elements".format(self.array_size, len(value))
+            self.invalidate_value(
+                value,
+                exc=ValueOutOfBounds,
+                msg="value has {} items when {} were expected".format(
+                    len(value),
+                    self.array_size,
+                ),
             )
 
     def encode(self, value):
@@ -698,9 +696,13 @@ class SizedArrayEncoder(BaseArrayEncoder):
         super().validate_value(value)
 
         if len(value) != self.array_size:
-            raise ValueOutOfBounds(
-                "Expected value with length {0}.  Provided value has {1} "
-                "elements".format(self.array_size, len(value))
+            self.invalidate_value(
+                value,
+                exc=ValueOutOfBounds,
+                msg="value has {} items when {} were expected".format(
+                    len(value),
+                    self.array_size,
+                ),
             )
 
     def encode(self, value):
