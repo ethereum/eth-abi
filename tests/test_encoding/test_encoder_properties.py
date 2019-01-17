@@ -1,6 +1,5 @@
 import codecs
 import decimal
-import re
 
 from eth_utils import (
     decode_hex,
@@ -345,7 +344,7 @@ def test_encode_unsigned_fixed(value,
     )
 
     if not is_number(value):
-        pattern = r'Value of type .*NoneType.* cannot be encoded by UnsignedFixedEncoder'
+        pattern = r'Value `None` of type .*NoneType.* cannot be encoded by UnsignedFixedEncoder'
         with pytest.raises(EncodingTypeError, match=pattern):
             encoder(value)
         return
@@ -358,7 +357,10 @@ def test_encode_unsigned_fixed(value,
 
     lower, upper = compute_unsigned_fixed_bounds(value_bit_size, frac_places)
     if value < lower or value > upper:
-        pattern = r'Value .* cannot be encoded in .* bits'
+        pattern = (
+            r'Value .* cannot be encoded by UnsignedFixedEncoder: '
+            r'Cannot be encoded in .* bits'
+        )
         with pytest.raises(ValueOutOfBounds, match=pattern):
             encoder(value)
         return
@@ -366,14 +368,7 @@ def test_encode_unsigned_fixed(value,
     with decimal.localcontext(abi_decimal_context):
         residue = value % (TEN ** -frac_places)
     if residue > 0:
-        pattern = re.escape(
-            'UnsignedFixedEncoder cannot encode value {}: '
-            'residue {} outside allowed fractional precision of {}'.format(
-                repr(value),
-                repr(residue),
-                frac_places,
-            )
-        )
+        pattern = r'Value .* cannot be encoded by UnsignedFixedEncoder: residue .* outside allowed'
         with pytest.raises(IllegalValue, match=pattern):
             encoder(value)
         return
@@ -410,7 +405,7 @@ def test_encode_signed_fixed(value,
     )
 
     if not is_number(value):
-        pattern = r'Value of type .*NoneType.* cannot be encoded by SignedFixedEncoder'
+        pattern = r'Value `None` of type .*NoneType.* cannot be encoded by SignedFixedEncoder'
         with pytest.raises(EncodingTypeError, match=pattern):
             encoder(value)
         return
@@ -423,7 +418,7 @@ def test_encode_signed_fixed(value,
 
     lower, upper = compute_signed_fixed_bounds(value_bit_size, frac_places)
     if value < lower or value > upper:
-        pattern = r'Value .* cannot be encoded in .* bits'
+        pattern = r'Value .* cannot be encoded by SignedFixedEncoder: Cannot be encoded in .* bits'
         with pytest.raises(ValueOutOfBounds, match=pattern):
             encoder(value)
         return
@@ -431,14 +426,7 @@ def test_encode_signed_fixed(value,
     with decimal.localcontext(abi_decimal_context):
         residue = value % (TEN ** -frac_places)
     if residue > 0:
-        pattern = re.escape(
-            'SignedFixedEncoder cannot encode value {}: '
-            'residue {} outside allowed fractional precision of {}'.format(
-                repr(value),
-                repr(residue),
-                frac_places,
-            )
-        )
+        pattern = r'Value .* cannot be encoded by SignedFixedEncoder: residue .* outside allowed'
         with pytest.raises(IllegalValue, match=pattern):
             encoder(value)
         return
