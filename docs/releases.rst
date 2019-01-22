@@ -1,8 +1,8 @@
 Release Notes
 =============
 
-Development
------------
+v2.0.0-beta.5
+-------------
 
 - Added registry copying functionality to facilitate modification of the
   default registry.  See :ref:`copying_an_existing_registry`.
