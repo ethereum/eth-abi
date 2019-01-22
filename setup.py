@@ -42,7 +42,7 @@ extras_require['dev'] = (
 setup(
     name='eth-abi',
     # *IMPORTANT*: Don't manually change the version here. Use the 'bumpversion' utility.
-    version='2.0.0-beta.4',
+    version='2.0.0-beta.5',
     description="""Ethereum ABI Utils""",
     long_description_markdown_filename='README.md',
     author='Piper Merriam',
