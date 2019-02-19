@@ -185,6 +185,18 @@ class ABIType:
             ),
         )
 
+    @property
+    def is_array(self):
+        return self.arrlist is not None
+
+    @property
+    def is_dynamic(self):
+        raise NotImplementedError('Must implement `is_dynamic`')
+
+    @property
+    def _has_dynamic_arrlist(self):
+        return self.is_array and any(len(dim) == 0 for dim in self.arrlist)
+
 
 class TupleType(ABIType):
     """
@@ -229,6 +241,13 @@ class TupleType(ABIType):
         # of its components contain an invalid type such as "uint7"
         for c in self.components:
             c.validate()
+
+    @property
+    def is_dynamic(self):
+        if self._has_dynamic_arrlist:
+            return True
+
+        return any(c.is_dynamic for c in self.components)
 
 
 class BasicType(ABIType):
@@ -279,6 +298,19 @@ class BasicType(ABIType):
             self.arrlist[:-1] or None,
             node=self.node,
         )
+
+    @property
+    def is_dynamic(self):
+        if self._has_dynamic_arrlist:
+            return True
+
+        if self.base == 'string':
+            return True
+
+        if self.base == 'bytes' and self.sub is None:
+            return True
+
+        return False
 
     def validate(self):
         """
