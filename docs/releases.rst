@@ -5,6 +5,11 @@ v2.0.0-beta.6
 -------------
 
 - Added the grammar module to the public API.  See :ref:`grammar`.
+- Updated string API for the :class:`~eth_abi.grammar.ABIType`.  Type strings
+  for :class:`~eth_abi.grammar.ABIType` instances are now obtained via the
+  :meth:`~eth_abi.grammar.ABIType.to_type_str` method instead of by invoking
+  the builtin Python ``str`` function with an instance of
+  :class:`~eth_abi.grammar.ABIType`.
 
 v2.0.0-beta.5
 -------------
