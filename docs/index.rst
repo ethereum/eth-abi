@@ -31,6 +31,7 @@ Table of Contents
     registry
     codecs
     nested_dynamic_arrays
+    grammar
     eth_abi
     releases
 
