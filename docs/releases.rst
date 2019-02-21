@@ -1,6 +1,11 @@
 Release Notes
 =============
 
+v2.0.0-beta.6
+-------------
+
+- Added the grammar module to the public API.  See :ref:`grammar`.
+
 v2.0.0-beta.5
 -------------
 
