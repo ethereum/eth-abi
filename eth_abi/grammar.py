@@ -108,8 +108,13 @@ class NodeVisitor(parsimonious.NodeVisitor):
     @functools.lru_cache(maxsize=None)
     def parse(self, type_str):
         """
-        Caches and returns results of parsing operations.  Wraps any raised
-        parsing errors in a custom error class.
+        Parses a type string into an appropriate instance of
+        :class:`~eth_abi.grammar.ABIType`.  If a type string cannot be parsed,
+        throws :class:`~eth_abi.exceptions.ParseError`.
+
+        :param type_str: The type string to be parsed.
+        :returns: An instance of :class:`~eth_abi.grammar.ABIType` containing
+            information about the parsed type string.
         """
         if not isinstance(type_str, str):
             raise TypeError('Can only parse string values: got {}'.format(type(type_str)))
@@ -125,20 +130,22 @@ visitor = NodeVisitor()
 
 class ABIType:
     """
-    Base class for classes which represent the results of parsing operations on
-    abi type strings after post-processing.
+    Base class for results of type string parsing operations.
     """
     __slots__ = ('arrlist', 'node')
 
     def __init__(self, arrlist=None, node=None):
-        # Any type might have a list of array dimensions
         self.arrlist = arrlist
+        """
+        The list of array dimensions for a parsed type.  Equal to ``None`` if
+        type string has no array dimensions.
+        """
 
-        # The parsimonious `Node` instance associated with this parsed type may
-        # be optionally included.  If a type must be validated during a parsing
-        # operation, the `Node` instance is required since the `invalidate`
-        # method expects it.
         self.node = node
+        """
+        The parsimonious ``Node`` instance associated with this parsed type.
+        Used to generate error messages for invalid types.
+        """
 
     def __repr__(self):  # pragma: no cover
         return '<{} {}>'.format(
@@ -147,9 +154,7 @@ class ABIType:
         )
 
     def __eq__(self, other):
-        """
-        Two ABI types are equal if their string representations are equal.
-        """
+        # Two ABI types are equal if their string representations are equal
         return (
             type(self) is type(other) and
             self.to_type_str() == other.to_type_str()
@@ -157,24 +162,33 @@ class ABIType:
 
     def to_type_str(self):  # pragma: no cover
         """
-        An ABI type must be convertible to a string representation.
+        Returns the string representation of an ABI type.  This will be equal to
+        the type string from which it was created.
         """
         raise NotImplementedError('Must implement `to_type_str`')
 
+    @property
+    def item_type(self):
+        """
+        If this type is an array type, equal to an appropriate
+        :class:`~eth_abi.grammar.ABIType` instance for the array's items.
+        """
+        raise NotImplementedError('Must implement `item_type`')
+
     def validate(self):  # pragma: no cover
         """
-        An ABI type must be able to validate itself against the solidity ABI
-        spec:
+        Validates the properties of an ABI type against the solidity ABI spec:
+
         https://solidity.readthedocs.io/en/develop/abi-spec.html
+
+        Raises :class:`~eth_abi.exceptions.ABITypeError` if validation fails.
         """
         raise NotImplementedError('Must implement `validate`')
 
     def invalidate(self, error_msg):
-        """
-        Invalidates an ABI type with the given error message.  Expects that a
-        parsimonious node was provided from the original parsing operation that
-        yielded this type.
-        """
+        # Invalidates an ABI type with the given error message.  Expects that a
+        # parsimonious node was provided from the original parsing operation
+        # that yielded this type.
         node = self.node
 
         raise ABITypeError(
@@ -189,10 +203,18 @@ class ABIType:
 
     @property
     def is_array(self):
+        """
+        Equal to ``True`` if a type is an array type (i.e. if it has an array
+        dimension list).  Otherwise, equal to ``False``.
+        """
         return self.arrlist is not None
 
     @property
     def is_dynamic(self):
+        """
+        Equal to ``True`` if a type has a dynamically sized encoding.
+        Otherwise, equal to ``False``.
+        """
         raise NotImplementedError('Must implement `is_dynamic`')
 
     @property
@@ -202,10 +224,7 @@ class ABIType:
 
 class TupleType(ABIType):
     """
-    Represents the result of parsing a type string which contains a tuple abi
-    type.
-
-    e.g. "(int,bool)"
+    Represents the result of parsing a tuple type string e.g. "(int,bool)".
     """
     __slots__ = ('components',)
 
@@ -213,6 +232,10 @@ class TupleType(ABIType):
         super().__init__(arrlist, node)
 
         self.components = components
+        """
+        A tuple of :class:`~eth_abi.grammar.ABIType` instances for each of the
+        tuple type's components.
+        """
 
     def to_type_str(self):
         arrlist = self.arrlist
@@ -229,10 +252,7 @@ class TupleType(ABIType):
 
     @property
     def item_type(self):
-        """
-        If this type is an array type, returns the type of the array's items.
-        """
-        if self.arrlist is None:
+        if not self.is_array:
             raise ValueError("Cannot determine item type for non-array type '{}'".format(
                 self.to_type_str(),
             ))
@@ -244,8 +264,6 @@ class TupleType(ABIType):
         )
 
     def validate(self):
-        # A tuple type is valid if all of its components are valid i.e. if none
-        # of its components contain an invalid type such as "uint7"
         for c in self.components:
             c.validate()
 
@@ -259,10 +277,8 @@ class TupleType(ABIType):
 
 class BasicType(ABIType):
     """
-    Represents the result of parsing a type string which contains a basic abi
-    type.
-
-    e.g. "uint", "address", "ufixed128x19[][2]"
+    Represents the result of parsing a basic type string e.g. "uint", "address",
+    "ufixed128x19[][2]".
     """
     __slots__ = ('base', 'sub')
 
@@ -270,7 +286,14 @@ class BasicType(ABIType):
         super().__init__(arrlist, node)
 
         self.base = base
+        """The base of a basic type e.g. "uint" for "uint256" etc."""
+
         self.sub = sub
+        """
+        The sub type of a basic type e.g. ``256`` for "uint256" or ``(128, 18)``
+        for "ufixed128x18" etc.  Equal to ``None`` if type string has no sub
+        type.
+        """
 
     def to_type_str(self):
         sub, arrlist = self.sub, self.arrlist
@@ -291,10 +314,7 @@ class BasicType(ABIType):
 
     @property
     def item_type(self):
-        """
-        If this type is an array type, returns the type of the array's items.
-        """
-        if self.arrlist is None:
+        if not self.is_array:
             raise ValueError("Cannot determine item type for non-array type '{}'".format(
                 self.to_type_str(),
             ))
@@ -320,15 +340,6 @@ class BasicType(ABIType):
         return False
 
     def validate(self):
-        """
-        A basic type is valid if it appears to be one of the default types
-        described in the solidity ABI spec and its components don't violate any
-        of the assumptions set forth in that spec -or- if it does not appear to
-        be a default type.
-
-        Details found here:
-        https://solidity.readthedocs.io/en/develop/abi-spec.html
-        """
         base, sub = self.base, self.sub
 
         # Check validity of string type
@@ -402,7 +413,13 @@ TYPE_ALIAS_RE = re.compile(r'\b({})\b'.format(
 
 
 def normalize(type_str):
-    # Replace aliases with substitutions
+    """
+    Normalizes a type string into its canonical version e.g. the type string
+    'int' becomes 'int256', etc.
+
+    :param type_str: The type string to be normalized.
+    :returns: The canonical version of the input type string.
+    """
     return TYPE_ALIAS_RE.sub(
         lambda match: TYPE_ALIASES[match.group(0)],
         type_str,

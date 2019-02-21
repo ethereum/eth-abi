@@ -53,3 +53,17 @@ eth\_abi.registry module
 
     .. autoclass:: ABIRegistry
         :members:
+
+eth\_abi.grammar module
+-----------------------
+
+.. automodule:: eth_abi.grammar
+
+    .. autoclass:: ABIType
+        :members:
+    .. autoclass:: TupleType
+        :members:
+    .. autoclass:: BasicType
+        :members:
+    .. autofunction:: normalize
+    .. autofunction:: parse(type_str)
