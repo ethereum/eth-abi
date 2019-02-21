@@ -117,7 +117,7 @@ def test_parse_raises_type_error_for_wrong_data_type():
 
 @given(type_strs)
 def test_end_to_end_parsing_and_collapsing(type_str):
-    assert str(parse(type_str)) == type_str
+    assert parse(type_str).to_type_str() == type_str
 
 
 @pytest.mark.parametrize(

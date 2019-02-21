@@ -141,23 +141,25 @@ class ABIType:
         self.node = node
 
     def __repr__(self):  # pragma: no cover
-        return '<{} {}>'.format(type(self).__qualname__, repr(str(self)))
+        return '<{} {}>'.format(
+            type(self).__qualname__,
+            repr(self.to_type_str()),
+        )
 
     def __eq__(self, other):
         """
-        Two ABI types are equal if their canonical string representations are
-        equal.
+        Two ABI types are equal if their string representations are equal.
         """
         return (
             type(self) is type(other) and
-            str(self) == str(other)
+            self.to_type_str() == other.to_type_str()
         )
 
-    def __str__(self):  # pragma: no cover
+    def to_type_str(self):  # pragma: no cover
         """
-        An ABI type must have a canonical string representation.
+        An ABI type must be convertible to a string representation.
         """
-        raise NotImplementedError('Must implement `__str__`')
+        raise NotImplementedError('Must implement `to_type_str`')
 
     def validate(self):  # pragma: no cover
         """
@@ -212,13 +214,18 @@ class TupleType(ABIType):
 
         self.components = components
 
-    def __str__(self):
+    def to_type_str(self):
         arrlist = self.arrlist
+
         if isinstance(arrlist, tuple):
             arrlist = ''.join(repr(list(a)) for a in arrlist)
         else:
             arrlist = ''
-        return '({}){}'.format(','.join(str(c) for c in self.components), arrlist)
+
+        return '({}){}'.format(
+            ','.join(c.to_type_str() for c in self.components),
+            arrlist,
+        )
 
     @property
     def item_type(self):
@@ -226,9 +233,9 @@ class TupleType(ABIType):
         If this type is an array type, returns the type of the array's items.
         """
         if self.arrlist is None:
-            raise ValueError(
-                "Cannot determine item type for non-array type '{}'".format(self)
-            )
+            raise ValueError("Cannot determine item type for non-array type '{}'".format(
+                self.to_type_str(),
+            ))
 
         return type(self)(
             self.components,
@@ -265,7 +272,7 @@ class BasicType(ABIType):
         self.base = base
         self.sub = sub
 
-    def __str__(self):
+    def to_type_str(self):
         sub, arrlist = self.sub, self.arrlist
 
         if isinstance(sub, int):
@@ -288,9 +295,9 @@ class BasicType(ABIType):
         If this type is an array type, returns the type of the array's items.
         """
         if self.arrlist is None:
-            raise ValueError(
-                "Cannot determine item type for non-array type '{}'".format(self)
-            )
+            raise ValueError("Cannot determine item type for non-array type '{}'".format(
+                self.to_type_str(),
+            ))
 
         return type(self)(
             self.base,
