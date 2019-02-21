@@ -21,7 +21,7 @@ def test_encode_abi(type_str, python_value, abi_encoding, _):
     if abi_type.arrlist is not None:
         pytest.skip('ABI coding functions do not support array types')
 
-    types = [str(t) for t in abi_type.components]
+    types = [t.to_type_str() for t in abi_type.components]
 
     actual = encode_abi(types, python_value)
     assert actual == abi_encoding

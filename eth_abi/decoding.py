@@ -174,7 +174,10 @@ class TupleDecoder(BaseDecoder):
 
     @parse_tuple_type_str
     def from_type_str(cls, abi_type, registry):
-        decoders = tuple(registry.get_decoder(str(c)) for c in abi_type.components)
+        decoders = tuple(
+            registry.get_decoder(c.to_type_str())
+            for c in abi_type.components
+        )
 
         return cls(decoders=decoders)
 
@@ -226,7 +229,7 @@ class BaseArrayDecoder(BaseDecoder):
 
     @parse_type_str(with_arrlist=True)
     def from_type_str(cls, abi_type, registry):
-        item_decoder = registry.get_decoder(str(abi_type.item_type))
+        item_decoder = registry.get_decoder(abi_type.item_type.to_type_str())
 
         array_spec = abi_type.arrlist[-1]
         if len(array_spec) == 1:

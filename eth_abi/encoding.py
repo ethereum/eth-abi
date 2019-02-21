@@ -164,7 +164,10 @@ class TupleEncoder(BaseEncoder):
 
     @parse_tuple_type_str
     def from_type_str(cls, abi_type, registry):
-        encoders = tuple(registry.get_encoder(str(c)) for c in abi_type.components)
+        encoders = tuple(
+            registry.get_encoder(c.to_type_str())
+            for c in abi_type.components
+        )
 
         return cls(encoders=encoders)
 
@@ -629,7 +632,7 @@ class BaseArrayEncoder(BaseEncoder):
 
     @parse_type_str(with_arrlist=True)
     def from_type_str(cls, abi_type, registry):
-        item_encoder = registry.get_encoder(str(abi_type.item_type))
+        item_encoder = registry.get_encoder(abi_type.item_type.to_type_str())
 
         array_spec = abi_type.arrlist[-1]
         if len(array_spec) == 1:
@@ -666,7 +669,7 @@ class PackedArrayEncoder(BaseArrayEncoder):
 
     @parse_type_str(with_arrlist=True)
     def from_type_str(cls, abi_type, registry):
-        item_encoder = registry.get_encoder(str(abi_type.item_type))
+        item_encoder = registry.get_encoder(abi_type.item_type.to_type_str())
 
         array_spec = abi_type.arrlist[-1]
         if len(array_spec) == 1:
