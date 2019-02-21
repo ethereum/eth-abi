@@ -205,3 +205,89 @@ def test_basic_type_item_type_throws_errors():
     pattern = "Cannot determine item type for non-array type 'int256'"
     with pytest.raises(ValueError, match=pattern):
         bt.item_type
+
+
+@pytest.mark.parametrize(
+    'type_str',
+    (
+        'string',
+        'bytes',
+        'int[]',
+        'int[][2]',
+        '((int[][2],bool),int)',
+        '(bool,bool)[][2]',
+    ),
+)
+def test_abi_type_dynamic_types(type_str):
+    abi_type = parse(type_str)
+    assert abi_type.is_dynamic
+
+
+@pytest.mark.parametrize(
+    'type_str',
+    (
+        'bytes2',
+        'int[2]',
+        'int[2][2]',
+        '((int[2][2],bool),int)',
+        '(bool,bool)[1][2]',
+    ),
+)
+def test_abi_type_static_types(type_str):
+    abi_type = parse(type_str)
+    assert not abi_type.is_dynamic
+
+
+@pytest.mark.parametrize(
+    'type_str',
+    (
+        'bytes[][2]',
+        'bytes[]',
+        '(bool,bool)[][2]',
+        '(bool,bool)[]',
+    ),
+)
+def test_abi_type_has_dynamic_arrlist(type_str):
+    abi_type = parse(type_str)
+    assert abi_type._has_dynamic_arrlist
+
+
+@pytest.mark.parametrize(
+    'type_str',
+    (
+        'bytes[2][2]',
+        'bytes',
+        'string',
+        '(int[],bool)',
+    ),
+)
+def test_abi_type_lacks_dynamic_arrlist(type_str):
+    abi_type = parse(type_str)
+    assert not abi_type._has_dynamic_arrlist
+
+
+@pytest.mark.parametrize(
+    'type_str',
+    (
+        'bytes[2]',
+        'bytes[][]',
+        '(int[],bool)[]',
+        '(int[],bool)[][2]',
+    ),
+)
+def test_abi_type_is_array(type_str):
+    abi_type = parse(type_str)
+    assert abi_type.is_array
+
+
+@pytest.mark.parametrize(
+    'type_str',
+    (
+        'bytes',
+        'bytes2',
+        '(int[],bool)',
+    ),
+)
+def test_abi_type_is_not_array(type_str):
+    abi_type = parse(type_str)
+    assert not abi_type.is_array
