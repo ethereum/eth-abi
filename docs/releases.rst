@@ -1,6 +1,12 @@
 Release Notes
 =============
 
+Development
+-----------
+
+- Removed PyPy support.
+- Added Python 3.7 support.
+
 v2.0.0-beta.6
 -------------
 
