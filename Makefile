@@ -26,6 +26,10 @@ clean-pyc:
 lint:
 	tox -e lint
 
+lint-roll:
+	isort --recursive eth_abi tests
+	$(MAKE) lint
+
 test:
 	py.test tests
 
