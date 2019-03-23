@@ -33,7 +33,7 @@ arrlist = (const_arr / dynam_arr)+
 const_arr = "[" digits "]"
 dynam_arr = "[]"
 
-alphas = ~"[a-z]+"
+alphas = ~"[A-Za-z]+"
 digits = ~"[1-9][0-9]*"
 """)
 
