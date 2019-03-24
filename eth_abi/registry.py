@@ -158,8 +158,8 @@ class PredicateMapping(Copyable):
 
 class Predicate:
     """
-    A class which represents a predicate function to be used for type matching
-    in ABIRegistry.
+    Represents a predicate function to be used for type matching in
+    ``ABIRegistry``.
     """
     __slots__ = tuple()
 
@@ -188,7 +188,7 @@ class Predicate:
 
 class Equals(Predicate):
     """
-    A predicate which matches any input equal to `value`.
+    A predicate that matches any input equal to `value`.
     """
     __slots__ = ('value',)
 
@@ -204,11 +204,11 @@ class Equals(Predicate):
 
 class BaseEquals(Predicate):
     """
-    A predicate which matches a basic type string with a base component equal to
+    A predicate that matches a basic type string with a base component equal to
     `value` and no array component.  If `with_sub` is `True`, the type string
     must have a sub component to match.  If `with_sub` is `False`, the type
-    string must *not* have a sub component to match.  If `with_sub` is None, the
-    type string's sub component is ignored.
+    string must *not* have a sub component to match.  If `with_sub` is None,
+    the type string's sub component is ignored.
     """
     __slots__ = ('base', 'with_sub')
 
@@ -249,7 +249,7 @@ class BaseEquals(Predicate):
 
 def has_arrlist(type_str):
     """
-    A predicate which matches a type string with an array dimension list.
+    A predicate that matches a type string with an array dimension list.
     """
     try:
         abi_type = grammar.parse(type_str)
@@ -261,7 +261,7 @@ def has_arrlist(type_str):
 
 def is_base_tuple(type_str):
     """
-    A predicate which matches a tuple type with no array dimension list.
+    A predicate that matches a tuple type with no array dimension list.
     """
     try:
         abi_type = grammar.parse(type_str)
@@ -346,7 +346,7 @@ class ABIRegistry(Copyable):
     def register_encoder(self, lookup: Lookup, encoder: Encoder, label: str=None) -> None:
         """
         Registers the given ``encoder`` under the given ``lookup``.  A unique
-        string label may be  optionally provided which can be used to refer to
+        string label may be optionally provided that can be used to refer to
         the registration by name.  For more information about arguments, refer
         to :any:`register`.
         """
@@ -367,7 +367,7 @@ class ABIRegistry(Copyable):
     def register_decoder(self, lookup: Lookup, decoder: Decoder, label: str=None) -> None:
         """
         Registers the given ``decoder`` under the given ``lookup``.  A unique
-        string label may be  optionally provided which can be used to refer to
+        string label may be optionally provided that can be used to refer to
         the registration by name.  For more information about arguments, refer
         to :any:`register`.
         """
@@ -387,8 +387,8 @@ class ABIRegistry(Copyable):
     def register(self, lookup: Lookup, encoder: Encoder, decoder: Decoder, label: str=None) -> None:
         """
         Registers the given ``encoder`` and ``decoder`` under the given
-        ``lookup``.  A unique string label may be  optionally provided which
-        can be used to refer to the registration by name.
+        ``lookup``.  A unique string label may be optionally provided that can
+        be used to refer to the registration by name.
 
         :param lookup: A type string or type string matcher function
             (predicate).  When the registry is queried with a type string
