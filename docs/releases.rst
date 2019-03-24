@@ -1,9 +1,13 @@
 Release Notes
 =============
 
-Development
------------
+v2.0.0-beta.7
+-------------
 
+Released March 24, 2019
+
+- Fixed an issue that caused custom types containing capital letters to be
+  unparseable.
 - Removed PyPy support.
 - Added Python 3.7 support.
 
