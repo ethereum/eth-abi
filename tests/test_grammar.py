@@ -26,6 +26,10 @@ from .common.strategies import (
 @pytest.mark.parametrize(
     'type_str, expected_type',
     (
+        ('custom', BasicType('custom')),
+        ('Custom', BasicType('Custom')),
+        ('CUSTOM', BasicType('CUSTOM')),
+        ('Custom[2]', BasicType('Custom', None, ((2,),))),
         ('uint', BasicType('uint')),
         ('uint256', BasicType('uint', 256)),
         ('uint256[]', BasicType('uint', 256, ((),))),
@@ -212,6 +216,8 @@ def test_basic_type_item_type_throws_errors():
     (
         'string',
         'bytes',
+        'Custom[]',
+        '(bool,Custom[])[2]',
         'int[]',
         'int[][2]',
         '((int[][2],bool),int)',
@@ -227,6 +233,7 @@ def test_abi_type_dynamic_types(type_str):
     'type_str',
     (
         'bytes2',
+        'Custom',
         'int[2]',
         'int[2][2]',
         '((int[2][2],bool),int)',
@@ -270,6 +277,7 @@ def test_abi_type_lacks_dynamic_arrlist(type_str):
     'type_str',
     (
         'bytes[2]',
+        'Custom[2]',
         'bytes[][]',
         '(int[],bool)[]',
         '(int[],bool)[][2]',
@@ -283,6 +291,7 @@ def test_abi_type_is_array(type_str):
 @pytest.mark.parametrize(
     'type_str',
     (
+        'Custom',
         'bytes',
         'bytes2',
         '(int[],bool)',
