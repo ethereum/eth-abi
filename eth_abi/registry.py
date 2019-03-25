@@ -21,6 +21,10 @@ from . import (
 from .base import (
     BaseCoder,
 )
+from .exceptions import (
+    MultipleEntriesFound,
+    NoEntriesFound,
+)
 
 Lookup = Union[abi.TypeStr, Callable[[abi.TypeStr], bool]]
 
@@ -82,7 +86,7 @@ class PredicateMapping(Copyable):
         )
 
         if len(results) == 0:
-            raise ValueError("No matching entries for '{}' in {}".format(
+            raise NoEntriesFound("No matching entries for '{}' in {}".format(
                 type_str,
                 self._name,
             ))
@@ -90,7 +94,7 @@ class PredicateMapping(Copyable):
         predicates, values = tuple(zip(*results))
 
         if len(results) > 1:
-            raise ValueError("Multiple matching entries for '{}' in {}: {}".format(
+            raise MultipleEntriesFound("Multiple matching entries for '{}' in {}: {}".format(
                 type_str,
                 self._name,
                 ', '.join(map(repr, predicates)),

@@ -86,3 +86,26 @@ class ABITypeError(ValueError):
     that is not congruent with zero modulo eight).
     """
     pass
+
+
+class PredicateMappingError(Exception):
+    """
+    Raised when an error occurs with the registry's internal mapping.
+    """
+    pass
+
+
+class NoEntriesFound(ValueError, PredicateMappingError):
+    """
+    Raised when no registration is found for a type string in the registry's
+    internal mapping.
+    """
+    pass
+
+
+class MultipleEntriesFound(ValueError, PredicateMappingError):
+    """
+    Raised when multiple registrations are found for a type string in the
+    registry's internal mapping.
+    """
+    pass
