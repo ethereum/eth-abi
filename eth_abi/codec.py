@@ -113,6 +113,20 @@ class ABIEncoder(BaseABICoder):
 
         return True
 
+    def is_encodable_type(self, typ: TypeStr) -> bool:
+        """
+        Returns ``True`` if values for the ABI type ``typ`` can be encoded by
+        this codec.
+
+        :param typ: A string representation for the ABI type that will be
+            checked for encodability e.g. ``'uint256'``, ``'bytes[]'``,
+            ``'(int,int)'``, etc.
+
+        :returns: ``True`` if values for ``typ`` can be encoded by this codec.
+            Otherwise, ``False``.
+        """
+        return self._registry.has_encoder(typ)
+
 
 class ABIDecoder(BaseABICoder):
     """
