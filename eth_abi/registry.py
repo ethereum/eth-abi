@@ -438,6 +438,18 @@ class ABIRegistry(Copyable):
     def get_encoder(self, type_str):
         return self._get_coder(self._encoders, type_str)
 
+    def has_encoder(self, type_str: abi.TypeStr) -> bool:
+        """
+        Returns ``True`` if at least one encoder is found for the given type
+        string ``type_str``.  Otherwise, returns ``False``.
+        """
+        try:
+            self.get_encoder(type_str)
+        except NoEntriesFound:
+            return False
+        else:
+            return True
+
     @functools.lru_cache(maxsize=None)
     def get_decoder(self, type_str):
         return self._get_coder(self._decoders, type_str)
