@@ -90,14 +90,14 @@ class ABITypeError(ValueError):
 
 class PredicateMappingError(Exception):
     """
-    Raised when an error occurs with the registry's internal mapping.
+    Raised when an error occurs in a registry's internal mapping.
     """
     pass
 
 
 class NoEntriesFound(ValueError, PredicateMappingError):
     """
-    Raised when no registration is found for a type string in the registry's
+    Raised when no registration is found for a type string in a registry's
     internal mapping.
     """
     pass
@@ -105,7 +105,7 @@ class NoEntriesFound(ValueError, PredicateMappingError):
 
 class MultipleEntriesFound(ValueError, PredicateMappingError):
     """
-    Raised when multiple registrations are found for a type string in the
+    Raised when multiple registrations are found for a type string in a
     registry's internal mapping.
     """
     pass

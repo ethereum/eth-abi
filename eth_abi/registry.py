@@ -440,8 +440,10 @@ class ABIRegistry(Copyable):
 
     def has_encoder(self, type_str: abi.TypeStr) -> bool:
         """
-        Returns ``True`` if at least one encoder is found for the given type
-        string ``type_str``.  Otherwise, returns ``False``.
+        Returns ``True`` if an encoder is found for the given type string
+        ``type_str``.  Otherwise, returns ``False``.  Raises
+        :class:`~eth_abi.exceptions.MultipleEntriesFound` if multiple encoders
+        are found.
         """
         try:
             self.get_encoder(type_str)
