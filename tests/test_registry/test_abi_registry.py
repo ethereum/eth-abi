@@ -172,15 +172,6 @@ def test_copying_copies_internal_mappings(registry: ABIRegistry):
 def test_has_encoder_returns_true(registry: ABIRegistry):
     assert registry.has_encoder('address')
 
-    registry.register(
-        BaseEquals('address', with_sub=False),
-        encoding.AddressEncoder, decoding.AddressDecoder,
-        label='other_address',
-    )
-
-    with pytest.raises(exceptions.MultipleEntriesFound):
-        assert registry.has_encoder('address')
-
 
 def test_has_encoder_raises(registry: ABIRegistry):
     registry.register(
