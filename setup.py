@@ -55,7 +55,7 @@ setup(
         'parsimonious>=0.8.0,<0.9.0',
     ],
     setup_requires=['setuptools-markdown'],
-    python_requires='>=3.5, <4',
+    python_requires='>=3.6, <4',
     extras_require=extras_require,
     py_modules=['eth_abi'],
     license="MIT",
