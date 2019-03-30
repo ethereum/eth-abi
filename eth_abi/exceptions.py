@@ -86,3 +86,38 @@ class ABITypeError(ValueError):
     that is not congruent with zero modulo eight).
     """
     pass
+
+
+class PredicateMappingError(Exception):
+    """
+    Raised when an error occurs in a registry's internal mapping.
+    """
+    pass
+
+
+class NoEntriesFound(ValueError, PredicateMappingError):
+    """
+    Raised when no registration is found for a type string in a registry's
+    internal mapping.
+
+    ..warning::
+
+        In a future version of ``eth-abi``, this error class will no longer
+        inherit from ``ValueError``.
+    """
+    pass
+
+
+class MultipleEntriesFound(ValueError, PredicateMappingError):
+    """
+    Raised when multiple registrations are found for a type string in a
+    registry's internal mapping.  This error is non-recoverable and indicates
+    that a registry was configured incorrectly.  Registrations are expected to
+    cover completely distinct ranges of type strings.
+
+    ..warning::
+
+        In a future version of ``eth-abi``, this error class will no longer
+        inherit from ``ValueError``.
+    """
+    pass

@@ -1,6 +1,13 @@
 Release Notes
 =============
 
+Development
+-----------
+
+- Added  :meth:`~eth_abi.registry.ABIRegistry.has_encoder` and
+  :meth:`~eth_abi.codec.ABIEncoder.is_encodable_type` to facilitate checking
+  for type validity against coder registrations.
+
 v2.0.0-beta.7
 -------------
 

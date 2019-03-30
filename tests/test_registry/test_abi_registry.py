@@ -71,12 +71,9 @@ def test_cache_resets_after_register_and_register_works(registry: ABIRegistry):
     )
 
     # Confirm cache reset
-    pattern = r'Multiple matching entries .* encoder registry'
-    with pytest.raises(ValueError, match=pattern):
+    with pytest.raises(exceptions.MultipleEntriesFound):
         registry.get_encoder('address')
-
-    pattern = r'Multiple matching entries .* decoder registry'
-    with pytest.raises(ValueError, match=pattern):
+    with pytest.raises(exceptions.MultipleEntriesFound):
         registry.get_decoder('address')
 
 
@@ -89,9 +86,9 @@ def test_cache_resets_after_unregister_and_unregister_works(registry: ABIRegistr
     registry.unregister('address')
 
     # Confirm cache reset
-    with pytest.raises(ValueError, match=r'No matching entries .* encoder registry'):
+    with pytest.raises(exceptions.NoEntriesFound):
         registry.get_encoder('address')
-    with pytest.raises(ValueError, match=r'No matching entries .* decoder registry'):
+    with pytest.raises(exceptions.NoEntriesFound):
         registry.get_decoder('address')
 
 
@@ -107,9 +104,9 @@ def test_can_register_and_unregister_string_lookups(registry: ABIRegistry):
 
     registry.unregister('bool')
 
-    with pytest.raises(ValueError, match=r'No matching entries .* encoder registry'):
+    with pytest.raises(exceptions.NoEntriesFound):
         registry.get_encoder('bool')
-    with pytest.raises(ValueError, match=r'No matching entries .* decoder registry'):
+    with pytest.raises(exceptions.NoEntriesFound):
         registry.get_decoder('bool')
 
 
@@ -123,9 +120,9 @@ def test_registry_should_reject_unknown_types(registry: ABIRegistry):
 def test_can_unregister_by_equality(registry: ABIRegistry):
     registry.unregister(BaseEquals('address'))
 
-    with pytest.raises(ValueError, match=r'No matching entries .* encoder registry'):
+    with pytest.raises(exceptions.NoEntriesFound):
         registry.get_encoder('address')
-    with pytest.raises(ValueError, match=r'No matching entries .* decoder registry'):
+    with pytest.raises(exceptions.NoEntriesFound):
         registry.get_decoder('address')
 
 
@@ -170,3 +167,22 @@ def test_copying_copies_internal_mappings(registry: ABIRegistry):
         assert isinstance(x.get_decoder('address'), decoding.AddressDecoder)
         assert isinstance(y.get_encoder('address'), encoding.AddressEncoder)
         assert isinstance(y.get_decoder('address'), decoding.AddressDecoder)
+
+
+def test_has_encoder_returns_true(registry: ABIRegistry):
+    assert registry.has_encoder('address')
+
+
+def test_has_encoder_raises(registry: ABIRegistry):
+    registry.register(
+        BaseEquals('address', with_sub=False),
+        encoding.AddressEncoder, decoding.AddressDecoder,
+        label='other_address',
+    )
+
+    with pytest.raises(exceptions.MultipleEntriesFound):
+        assert registry.has_encoder('address')
+
+
+def test_has_encoder_returns_false(registry: ABIRegistry):
+    assert not registry.has_encoder('foo')

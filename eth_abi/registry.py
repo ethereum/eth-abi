@@ -21,6 +21,10 @@ from . import (
 from .base import (
     BaseCoder,
 )
+from .exceptions import (
+    MultipleEntriesFound,
+    NoEntriesFound,
+)
 
 Lookup = Union[abi.TypeStr, Callable[[abi.TypeStr], bool]]
 
@@ -82,7 +86,7 @@ class PredicateMapping(Copyable):
         )
 
         if len(results) == 0:
-            raise ValueError("No matching entries for '{}' in {}".format(
+            raise NoEntriesFound("No matching entries for '{}' in {}".format(
                 type_str,
                 self._name,
             ))
@@ -90,11 +94,15 @@ class PredicateMapping(Copyable):
         predicates, values = tuple(zip(*results))
 
         if len(results) > 1:
-            raise ValueError("Multiple matching entries for '{}' in {}: {}".format(
-                type_str,
-                self._name,
-                ', '.join(map(repr, predicates)),
-            ))
+            predicate_reprs = ', '.join(map(repr, predicates))
+            raise MultipleEntriesFound(
+                f"Multiple matching entries for '{type_str}' in {self._name}: "
+                f"{predicate_reprs}. This occurs when two registrations match the "
+                "same type string. You may need to delete one of the "
+                "registrations or modify its matching behavior to ensure it "
+                "doesn't collide with other registrations. See the \"Registry\" "
+                "documentation for more information."
+            )
 
         return values[0]
 
@@ -433,6 +441,20 @@ class ABIRegistry(Copyable):
     @functools.lru_cache(maxsize=None)
     def get_encoder(self, type_str):
         return self._get_coder(self._encoders, type_str)
+
+    def has_encoder(self, type_str: abi.TypeStr) -> bool:
+        """
+        Returns ``True`` if an encoder is found for the given type string
+        ``type_str``.  Otherwise, returns ``False``.  Raises
+        :class:`~eth_abi.exceptions.MultipleEntriesFound` if multiple encoders
+        are found.
+        """
+        try:
+            self.get_encoder(type_str)
+        except NoEntriesFound:
+            return False
+        else:
+            return True
 
     @functools.lru_cache(maxsize=None)
     def get_decoder(self, type_str):
