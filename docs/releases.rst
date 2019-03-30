@@ -1,8 +1,8 @@
 Release Notes
 =============
 
-Development
------------
+v2.0.0-beta.8
+-------------
 
 - Added  :meth:`~eth_abi.registry.ABIRegistry.has_encoder` and
   :meth:`~eth_abi.codec.ABIEncoder.is_encodable_type` to facilitate checking
