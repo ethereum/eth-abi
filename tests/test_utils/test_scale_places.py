@@ -1,5 +1,5 @@
-import itertools
 import decimal
+import itertools
 
 from hypothesis import (
     given,

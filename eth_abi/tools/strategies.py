@@ -3,14 +3,14 @@ from typing import (
     Union,
 )
 
-from hypothesis import (
-    strategies as st,
-)
 from eth_typing.abi import (
     TypeStr,
 )
 from eth_utils import (
     encode_hex,
+)
+from hypothesis import (
+    strategies as st,
 )
 
 from eth_abi.grammar import (
@@ -19,17 +19,16 @@ from eth_abi.grammar import (
     parse,
 )
 from eth_abi.registry import (
-    has_arrlist,
-    is_base_tuple,
     BaseEquals,
     BaseRegistry,
     Lookup,
     PredicateMapping,
+    has_arrlist,
+    is_base_tuple,
 )
 from eth_abi.utils.numeric import (
     scale_places,
 )
-
 
 StrategyFactory = Callable[[ABIType, 'StrategyRegistry'], st.SearchStrategy]
 StrategyRegistration = Union[st.SearchStrategy, StrategyFactory]
@@ -145,17 +144,65 @@ def get_tuple_strategy(abi_type: ABIType, registry: StrategyRegistry) -> st.Sear
 
 strategy_registry = StrategyRegistry()
 
-strategy_registry.register_strategy(BaseEquals('uint'), get_uint_strategy, label='uint')
-strategy_registry.register_strategy(BaseEquals('int'), get_int_strategy, label='int')
-strategy_registry.register_strategy(BaseEquals('address', with_sub=False), address_strategy, label='address')
-strategy_registry.register_strategy(BaseEquals('bool', with_sub=False), bool_strategy, label='bool')
-strategy_registry.register_strategy(BaseEquals('ufixed'), get_ufixed_strategy, label='ufixed')
-strategy_registry.register_strategy(BaseEquals('fixed'), get_fixed_strategy, label='fixed')
-strategy_registry.register_strategy(BaseEquals('bytes', with_sub=True), get_bytes_strategy, label='bytes<M>')
-strategy_registry.register_strategy(BaseEquals('bytes', with_sub=False), bytes_strategy, label='bytes')
-strategy_registry.register_strategy(BaseEquals('function', with_sub=False), get_bytes_strategy, label='function')
-strategy_registry.register_strategy(BaseEquals('string', with_sub=False), string_strategy, label='string')
-strategy_registry.register_strategy(has_arrlist, get_array_strategy, label='has_arrlist')
-strategy_registry.register_strategy(is_base_tuple, get_tuple_strategy, label='is_base_tuple')
+strategy_registry.register_strategy(
+    BaseEquals('uint'),
+    get_uint_strategy,
+    label='uint',
+)
+strategy_registry.register_strategy(
+    BaseEquals('int'),
+    get_int_strategy,
+    label='int',
+)
+strategy_registry.register_strategy(
+    BaseEquals('address', with_sub=False),
+    address_strategy,
+    label='address',
+)
+strategy_registry.register_strategy(
+    BaseEquals('bool', with_sub=False),
+    bool_strategy,
+    label='bool',
+)
+strategy_registry.register_strategy(
+    BaseEquals('ufixed'),
+    get_ufixed_strategy,
+    label='ufixed',
+)
+strategy_registry.register_strategy(
+    BaseEquals('fixed'),
+    get_fixed_strategy,
+    label='fixed',
+)
+strategy_registry.register_strategy(
+    BaseEquals('bytes', with_sub=True),
+    get_bytes_strategy,
+    label='bytes<M>',
+)
+strategy_registry.register_strategy(
+    BaseEquals('bytes', with_sub=False),
+    bytes_strategy,
+    label='bytes',
+)
+strategy_registry.register_strategy(
+    BaseEquals('function', with_sub=False),
+    get_bytes_strategy,
+    label='function',
+)
+strategy_registry.register_strategy(
+    BaseEquals('string', with_sub=False),
+    string_strategy,
+    label='string',
+)
+strategy_registry.register_strategy(
+    has_arrlist,
+    get_array_strategy,
+    label='has_arrlist',
+)
+strategy_registry.register_strategy(
+    is_base_tuple,
+    get_tuple_strategy,
+    label='is_base_tuple',
+)
 
 get_abi_strategy = strategy_registry.get_strategy
