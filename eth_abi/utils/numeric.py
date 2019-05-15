@@ -1,9 +1,12 @@
 import decimal
 from typing import (
+    Callable,
     Tuple,
 )
 
-abi_decimal_context = decimal.Context(prec=999)
+ABI_DECIMAL_PREC = 999
+
+abi_decimal_context = decimal.Context(prec=ABI_DECIMAL_PREC)
 
 ZERO = decimal.Decimal(0)
 TEN = decimal.Decimal(10)
@@ -51,3 +54,18 @@ def compute_signed_fixed_bounds(
         upper = decimal.Decimal(int_upper) * exp
 
     return lower, upper
+
+
+def scale_places(places: int) -> Callable[[decimal.Decimal], decimal.Decimal]:
+    """
+    Returns a function that shifts the decimal point of decimal values to the
+    right by ``places`` places.
+    """
+    with decimal.localcontext(abi_decimal_context):
+        scaling_factor = TEN ** int(-places)
+
+    def f(x: decimal.Decimal) -> decimal.Decimal:
+        with decimal.localcontext(abi_decimal_context):
+            return x * scaling_factor
+
+    return f
