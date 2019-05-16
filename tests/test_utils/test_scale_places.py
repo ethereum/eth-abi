@@ -16,7 +16,6 @@ from eth_abi.utils.numeric import (
     scale_places,
 )
 
-
 T = TypeVar('T')
 
 
