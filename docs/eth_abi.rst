@@ -67,3 +67,10 @@ eth\_abi.grammar module
         :members:
     .. autofunction:: normalize
     .. autofunction:: parse(type_str)
+
+eth\_abi.tools module
+---------------------
+
+.. automodule:: eth_abi.tools
+
+    .. autofunction:: get_abi_strategy

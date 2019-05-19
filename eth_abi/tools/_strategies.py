@@ -47,7 +47,16 @@ class StrategyRegistry(BaseRegistry):
     def unregister_strategy(self, lookup_or_label: Lookup) -> None:
         self._unregister(self._strategies, lookup_or_label)
 
-    def get_strategy(self, type_str: TypeStr):
+    def get_strategy(self, type_str: TypeStr) -> st.SearchStrategy:
+        """
+        Returns a hypothesis strategy for the given ABI type.
+
+        :param type_str: The canonical string representation of the ABI type
+            for which a hypothesis strategy should be returned.
+
+        :returns: A hypothesis strategy for generating Python values that are
+            encodable as values of the given ABI type.
+        """
         registration = self._get_registration(self._strategies, type_str)
 
         if isinstance(registration, st.SearchStrategy):
