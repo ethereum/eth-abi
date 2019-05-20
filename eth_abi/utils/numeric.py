@@ -61,8 +61,13 @@ def scale_places(places: int) -> Callable[[decimal.Decimal], decimal.Decimal]:
     Returns a function that shifts the decimal point of decimal values to the
     right by ``places`` places.
     """
+    if not isinstance(places, int):
+        raise ValueError(
+            f'Argument `places` must be int.  Got value {places} of type {type(places)}.',
+        )
+
     with decimal.localcontext(abi_decimal_context):
-        scaling_factor = TEN ** int(-places)
+        scaling_factor = TEN ** -places
 
     def f(x: decimal.Decimal) -> decimal.Decimal:
         with decimal.localcontext(abi_decimal_context):

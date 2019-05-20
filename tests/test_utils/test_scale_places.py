@@ -10,6 +10,7 @@ from hypothesis import (
     given,
     strategies as st,
 )
+import pytest
 
 from eth_abi.utils.numeric import (
     ABI_DECIMAL_PREC,
@@ -65,3 +66,8 @@ def test_scale_places_neg(size):
     scaled_by_math = scale_places(-size)(dec_value)
 
     assert scaled_by_string == scaled_by_math
+
+
+def test_scale_places_raises_value_error_if_places_not_int():
+    with pytest.raises(ValueError):
+        scale_places(1.0)
