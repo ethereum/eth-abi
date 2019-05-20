@@ -46,7 +46,7 @@ def test_get_abi_strategy_returns_no_strategy_for_invalid_type_strs(malformed_ty
         ('int16', 'integers(min_value=-32768, max_value=32767)'),
         ('int', 'integers(min_value=-57896044618658097711785492504343953926634992332820282019728792003956564819968, max_value=57896044618658097711785492504343953926634992332820282019728792003956564819967)'),  # noqa: E501
         ('int256', 'integers(min_value=-57896044618658097711785492504343953926634992332820282019728792003956564819968, max_value=57896044618658097711785492504343953926634992332820282019728792003956564819967)'),  # noqa: E501
-        ('address', 'binary(min_size=20, max_size=20).map(encode_hex)'),
+        ('address', 'binary(min_size=20, max_size=20).map(to_checksum_address)'),
         ('bool', 'booleans()'),
         ('ufixed8x10', 'decimals(min_value=0, max_value=255, places=0).map(scale_by_Eneg10)'),
         ('ufixed16x11', 'decimals(min_value=0, max_value=65535, places=0).map(scale_by_Eneg11)'),

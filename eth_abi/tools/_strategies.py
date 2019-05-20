@@ -7,7 +7,7 @@ from eth_typing.abi import (
     TypeStr,
 )
 from eth_utils import (
-    encode_hex,
+    to_checksum_address,
 )
 from hypothesis import (
     strategies as st,
@@ -90,7 +90,7 @@ def get_int_strategy(abi_type: ABIType, registry: StrategyRegistry) -> st.Search
     )
 
 
-address_strategy = st.binary(min_size=20, max_size=20).map(encode_hex)
+address_strategy = st.binary(min_size=20, max_size=20).map(to_checksum_address)
 bool_strategy = st.booleans()
 
 
