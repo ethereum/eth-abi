@@ -32,6 +32,7 @@ Table of Contents
     codecs
     nested_dynamic_arrays
     grammar
+    tools
     eth_abi
     releases
 

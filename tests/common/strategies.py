@@ -1,4 +1,3 @@
-import decimal
 import random
 
 from eth_utils import (
@@ -7,7 +6,7 @@ from eth_utils import (
 import hypothesis.strategies as st
 
 from eth_abi.utils.numeric import (
-    abi_decimal_context,
+    scale_places,
 )
 
 total_bits = st.integers(min_value=1, max_value=32).map(lambda n: n * 8)
@@ -133,18 +132,6 @@ int_values = int_total_bits.flatmap(lambda n: st.integers(
     min_value=-2 ** (n - 1),
     max_value=2 ** (n - 1) - 1,
 ))
-
-
-def scale_places(places):
-    """
-    Scaling must happen with adequate precision.  Otherwise, we get bounds
-    checking errors.
-    """
-    def f(x):
-        with decimal.localcontext(abi_decimal_context):
-            return x / 10 ** places
-    return f
-
 
 ufixed_size_tuples = st.shared(fixed_sizes, key='ufixed_size_tuples')
 ufixed_strs = ufixed_size_tuples.map(join_with_x).map('ufixed{}'.format)

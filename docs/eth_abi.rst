@@ -2,7 +2,7 @@ API
 ===
 
 eth\_abi.abi module
---------------------
+-------------------
 
 .. automodule:: eth_abi.abi
     :members:
@@ -10,7 +10,7 @@ eth\_abi.abi module
     :show-inheritance:
 
 eth\_abi.base module
-------------------------
+--------------------
 
 .. automodule:: eth_abi.base
     :members: BaseCoder
@@ -39,7 +39,7 @@ eth\_abi.encoding module
     :show-inheritance:
 
 eth\_abi.exceptions module
----------------------------
+--------------------------
 
 .. automodule:: eth_abi.exceptions
     :members:
@@ -47,7 +47,7 @@ eth\_abi.exceptions module
     :show-inheritance:
 
 eth\_abi.registry module
--------------------------
+------------------------
 
 .. automodule:: eth_abi.registry
 
@@ -67,3 +67,10 @@ eth\_abi.grammar module
         :members:
     .. autofunction:: normalize
     .. autofunction:: parse(type_str)
+
+eth\_abi.tools module
+---------------------
+
+.. automodule:: eth_abi.tools
+
+    .. autofunction:: get_abi_strategy

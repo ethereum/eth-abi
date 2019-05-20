@@ -297,19 +297,15 @@ def _clear_decoder_cache(old_method):
     return new_method
 
 
-class ABIRegistry(Copyable):
-    def __init__(self):
-        self._encoders = PredicateMapping('encoder registry')
-        self._decoders = PredicateMapping('decoder registry')
-
+class BaseRegistry:
     @staticmethod
-    def _register_coder(mapping, lookup, coder, label=None):
+    def _register(mapping, lookup, value, label=None):
         if callable(lookup):
-            mapping.add(lookup, coder, label)
+            mapping.add(lookup, value, label)
             return
 
         if isinstance(lookup, str):
-            mapping.add(Equals(lookup), coder, lookup)
+            mapping.add(Equals(lookup), value, lookup)
             return
 
         raise TypeError(
@@ -319,7 +315,7 @@ class ABIRegistry(Copyable):
         )
 
     @staticmethod
-    def _unregister_coder(mapping, lookup_or_label):
+    def _unregister(mapping, lookup_or_label):
         if callable(lookup_or_label):
             mapping.remove_by_equality(lookup_or_label)
             return
@@ -334,9 +330,10 @@ class ABIRegistry(Copyable):
             )
         )
 
-    def _get_coder(self, mapping, type_str):
+    @staticmethod
+    def _get_registration(mapping, type_str):
         try:
-            coder = mapping.find(type_str)
+            value = mapping.find(type_str)
         except ValueError as e:
             if 'No matching' in e.args[0]:
                 # If no matches found, attempt to parse in case lack of matches
@@ -344,6 +341,17 @@ class ABIRegistry(Copyable):
                 grammar.parse(type_str)
 
             raise
+
+        return value
+
+
+class ABIRegistry(Copyable, BaseRegistry):
+    def __init__(self):
+        self._encoders = PredicateMapping('encoder registry')
+        self._decoders = PredicateMapping('decoder registry')
+
+    def _get_registration(self, mapping, type_str):
+        coder = super()._get_registration(mapping, type_str)
 
         if isinstance(coder, type) and issubclass(coder, BaseCoder):
             return coder.from_type_str(type_str, self)
@@ -358,7 +366,7 @@ class ABIRegistry(Copyable):
         the registration by name.  For more information about arguments, refer
         to :any:`register`.
         """
-        self._register_coder(self._encoders, lookup, encoder, label=label)
+        self._register(self._encoders, lookup, encoder, label=label)
 
     @_clear_encoder_cache
     def unregister_encoder(self, lookup_or_label: Lookup) -> None:
@@ -369,7 +377,7 @@ class ABIRegistry(Copyable):
         encoder with the lookup function ``lookup_or_label`` will be
         unregistered.
         """
-        self._unregister_coder(self._encoders, lookup_or_label)
+        self._unregister(self._encoders, lookup_or_label)
 
     @_clear_decoder_cache
     def register_decoder(self, lookup: Lookup, decoder: Decoder, label: str=None) -> None:
@@ -379,7 +387,7 @@ class ABIRegistry(Copyable):
         the registration by name.  For more information about arguments, refer
         to :any:`register`.
         """
-        self._register_coder(self._decoders, lookup, decoder, label=label)
+        self._register(self._decoders, lookup, decoder, label=label)
 
     @_clear_decoder_cache
     def unregister_decoder(self, lookup_or_label: Lookup) -> None:
@@ -390,7 +398,7 @@ class ABIRegistry(Copyable):
         decoder with the lookup function ``lookup_or_label`` will be
         unregistered.
         """
-        self._unregister_coder(self._decoders, lookup_or_label)
+        self._unregister(self._decoders, lookup_or_label)
 
     def register(self, lookup: Lookup, encoder: Encoder, decoder: Decoder, label: str=None) -> None:
         """
@@ -440,7 +448,7 @@ class ABIRegistry(Copyable):
 
     @functools.lru_cache(maxsize=None)
     def get_encoder(self, type_str):
-        return self._get_coder(self._encoders, type_str)
+        return self._get_registration(self._encoders, type_str)
 
     def has_encoder(self, type_str: abi.TypeStr) -> bool:
         """
@@ -458,7 +466,7 @@ class ABIRegistry(Copyable):
 
     @functools.lru_cache(maxsize=None)
     def get_decoder(self, type_str):
-        return self._get_coder(self._decoders, type_str)
+        return self._get_registration(self._decoders, type_str)
 
     def copy(self):
         """
