@@ -1,6 +1,12 @@
 Release Notes
 =============
 
+v2.0.0-beta.9
+-------------
+
+- Added ``eth_abi.tools`` submodule with extra requirements installable with
+  ``pip install eth-abi[tools]``.  See :ref:`tools`.
+
 v2.0.0-beta.8
 -------------
 
