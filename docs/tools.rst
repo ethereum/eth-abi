@@ -22,43 +22,22 @@ given ABI type specified by its canonical string representation:
 .. doctest::
 
     >>> from eth_abi.tools import get_abi_strategy
-    >>> import random
 
     >>> uint_st = get_abi_strategy('uint8')
     >>> uint_st
     integers(min_value=0, max_value=255)
-    >>> uint_st.example(random.Random(0))
-    10
 
     >>> uint_list_st = get_abi_strategy('uint8[2]')
     >>> uint_list_st
     lists(elements=integers(min_value=0, max_value=255), min_size=2, max_size=2)
-    >>> uint_list_st.example(random.Random(0))
-    [66, 247]
 
     >>> fixed_st = get_abi_strategy('fixed8x1')
     >>> fixed_st
     decimals(min_value=-128, max_value=127, places=0).map(scale_by_Eneg1)
-    >>> fixed_st.example(random.Random(0))
-    Decimal('9.8')
 
     >>> tuple_st = get_abi_strategy('(bool,string)')
     >>> tuple_st
     tuples(booleans(), text())
-    >>> tuple_st.example(random.Random(0))
-    (False, '')
-
-.. warning::
-
-    In the above code snippet, we use the ``example`` method on hypothesis
-    strategy objects with an explicit random number generator with seed zero.
-    Both the use of that method and the use of zero-seeded random number
-    generators are *not* recommended for normal use.  Their use in this context
-    is intended to make the code snippet reproducible.  In normal test code,
-    use of the ``example`` method may prevent hypothesis from finding a useful
-    sample of values.  See `here
-    <https://github.com/HypothesisWorks/hypothesis/blob/31a181fb7c5ce4227d4475f667a776ce86cd412c/hypothesis-python/src/hypothesis/searchstrategy/strategies.py#L258-L266>`_
-    for more information.
 
 Hypothesis strategies can be used to conduct property testing on contract code.
 For more information on property testing, visit the `Hypothesis homepage
