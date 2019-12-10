@@ -1,6 +1,7 @@
 from hypothesis import (
     example,
     given,
+    settings,
     strategies as st,
 )
 import pytest
@@ -20,6 +21,7 @@ from .common.strategies import (
 
 
 @given(type_strs)
+@settings(deadline=None)
 def test_get_abi_strategy_returns_strategy_for_valid_type_strs(type_str):
     assert isinstance(get_abi_strategy(type_str), st.SearchStrategy)
 
