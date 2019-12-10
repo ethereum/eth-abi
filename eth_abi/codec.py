@@ -132,6 +132,8 @@ class ABIDecoder(BaseABICoder):
     """
     Wraps a registry to provide last-mile decoding functionality.
     """
+    stream_class = ContextFramesBytesIO
+
     def decode_single(self, typ: TypeStr, data: Decodable) -> Any:
         """
         Decodes the binary value ``data`` of the ABI type ``typ`` into its
@@ -148,7 +150,7 @@ class ABIDecoder(BaseABICoder):
             raise TypeError("The `data` value must be of bytes type.  Got {0}".format(type(data)))
 
         decoder = self._registry.get_decoder(typ)
-        stream = ContextFramesBytesIO(data)
+        stream = self.stream_class(data)
 
         return decoder(stream)
 
@@ -174,7 +176,7 @@ class ABIDecoder(BaseABICoder):
         ]
 
         decoder = TupleDecoder(decoders=decoders)
-        stream = ContextFramesBytesIO(data)
+        stream = self.stream_class(data)
 
         return decoder(stream)
 
