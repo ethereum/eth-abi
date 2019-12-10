@@ -91,3 +91,28 @@ capability coupled with the use of a custom codec:
         default_codec.encode_single('address', '0x' + 'ff' * 20) ==
         b'\x00' * 12 + b'\xff' * 20
     )
+
+.. _custom_stream_class:
+
+Using a Custom Stream Class
+---------------------------
+
+If a user wishes to customize the behavior of the internal stream class used
+for decoding, they can do the following:
+
+.. testcode:: custom-stream-class
+
+    from eth_abi.codec import ABIEncoder, ABIDecoder
+    from eth_abi.registry import registry
+
+    class MyStream:
+        # Custom behavior...
+        pass
+
+    class MyDecoder(ABIDecoder):
+        stream_class = MyStream
+
+    class MyCodec(ABIEncoder, MyDecoder):
+        pass
+
+    codec = MyCodec(registry)
