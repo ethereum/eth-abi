@@ -1,6 +1,18 @@
 Release Notes
 =============
 
+v2.1.0
+------
+
+- Added support for "byte" alias for "bytes1" type.
+- Added support for custom stream class in :class:`~eth_abi.codec.ABIDecoder`.
+  See :ref:`custom_stream_class`.
+
+v2.0.0
+------
+
+- Includes all changes from v2.0.0 beta and alpha versions.
+
 v2.0.0-beta.9
 -------------
 
