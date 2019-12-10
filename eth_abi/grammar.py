@@ -405,6 +405,7 @@ TYPE_ALIASES = {
     'fixed': 'fixed128x18',
     'ufixed': 'ufixed128x18',
     'function': 'bytes24',
+    'byte': 'bytes1',
 }
 
 TYPE_ALIAS_RE = re.compile(r'\b({})\b'.format(

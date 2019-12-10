@@ -196,7 +196,7 @@ def test_valid_abi_types(type_str):
     'type_str, normalized',
     tuple(TYPE_ALIASES.items()) + (
         ('(int,uint,fixed,ufixed)', '(int256,uint256,fixed128x18,ufixed128x18)'),
-        ('(function,function,function)', '(bytes24,bytes24,bytes24)'),
+        ('(function,function,(function,byte))', '(bytes24,bytes24,(bytes24,bytes1))'),
     ),
 )
 def test_normalize(type_str, normalized):
