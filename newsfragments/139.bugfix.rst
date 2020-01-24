@@ -1,0 +1,2 @@
+If subclassing :meth:`eth_abi.decoding.ContextFramesBytesIO.seek`, the new functionality was not
+being used up by :meth:`~eth_abi.decoding.ContextFramesBytesIO.seek_in_frame`. Now it will be.
