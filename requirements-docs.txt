@@ -1,1 +1,1 @@
-<PYPI_NAME>[doc]
+eth_abi[doc]

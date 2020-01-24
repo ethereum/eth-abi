@@ -52,15 +52,15 @@ with open('./README.md') as readme:
 
 
 setup(
-    name='<PYPI_NAME>',
+    name='eth_abi',
     # *IMPORTANT*: Don't manually change the version here. Use `make bump`, as described in readme
     version='2.1.0',
-    description="""<PYPI_NAME>: <SHORT_DESCRIPTION>""",
+    description="""eth_abi: Python utilities for working with Ethereum ABI definitions, especially encoding and decoding""",
     long_description=long_description,
     long_description_content_type='text/markdown',
     author='The Ethereum Foundation',
     author_email='snakecharmers@ethereum.org',
-    url='https://github.com/ethereum/<REPO_NAME>',
+    url='https://github.com/ethereum/eth-abi',
     include_package_data=True,
     install_requires=[
         'eth-utils>=1.2.0,<2.0.0',
@@ -69,7 +69,7 @@ setup(
     ],
     python_requires='>=3.6, <4',
     extras_require=extras_require,
-    py_modules=['<MODULE_NAME>'],
+    py_modules=['eth_abi'],
     license="MIT",
     zip_safe=False,
     keywords='ethereum',

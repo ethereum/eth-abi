@@ -27,7 +27,7 @@ lint:
 	tox -elint
 
 lint-roll:
-	isort --recursive <MODULE_NAME> tests
+	isort --recursive eth_abi tests
 	$(MAKE) lint
 
 test:

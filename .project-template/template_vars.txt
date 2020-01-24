@@ -1,6 +1,6 @@
-<MODULE_NAME>
-<PYPI_NAME>
-<REPO_NAME>
-<RTD_NAME>
-<PROJECT_NAME>
-<SHORT_DESCRIPTION>
+eth_abi
+eth_abi
+eth-abi
+eth-abi
+Ethereum Contract Interface (ABI) Utility
+Python utilities for working with Ethereum ABI definitions, especially encoding and decoding
