@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# eth-abi documentation build configuration file, created by
+# <PROJECT_NAME> documentation build configuration file, created by
 # sphinx-quickstart on Thu Oct 16 20:43:24 2014.
 #
 # This file is execfile()d with the current directory set to its
@@ -53,9 +53,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = 'eth-abi'
-copyright = '2018, Piper Merriam <pipermerriam@gmail.com>'
-author = 'Piper Merriam <pipermerriam@gmail.com>'
+project = '<PROJECT_NAME>'
+copyright = '2020, The Ethereum Foundation'
 
 __version__ = setup_version
 # The version info for the project you're documenting, acts as replacement for
@@ -190,7 +189,7 @@ html_static_path = ['_static']
 #html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'eth_abidoc'
+htmlhelp_basename = '<MODULE_NAME>doc'
 
 
 # -- Options for LaTeX output ---------------------------------------------
@@ -210,8 +209,8 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-  ('index', 'eth_abi.tex', 'eth-abi Documentation',
-   'Piper Merriam \\textless{}pipermerriam@gmail.com\\textgreater{}', 'manual'),
+  ('index', '<MODULE_NAME>.tex', '<PROJECT_NAME> Documentation',
+   'The Ethereum Foundation', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -240,8 +239,8 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'eth_abi', 'eth-abi Documentation',
-     ['Piper Merriam'], 1)
+    ('index', '<MODULE_NAME>', '<PROJECT_NAME> Documentation',
+     ['The Ethereum Foundation'], 1)
 ]
 
 # If true, show URL addresses after external links.
@@ -254,8 +253,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'eth-abi', 'eth-abi Documentation',
-   'Piper Merriam', 'eth-abi', 'Python utilities for working with the Ethereum ABI',
+  ('index', '<PROJECT_NAME>', '<PROJECT_NAME> Documentation',
+   'The Ethereum Foundation', '<PROJECT_NAME>', '<SHORT_DESCRIPTION>',
    'Miscellaneous'),
 ]
 
@@ -274,7 +273,7 @@ texinfo_documents = [
 # -- Intersphinx configuration ------------------------------------------------
 
 intersphinx_mapping = {
-    'python': ('https://docs.python.org/3.5', None),
+    'python': ('https://docs.python.org/3.6', None),
 }
 
 # -- Doctest configuration ----------------------------------------
