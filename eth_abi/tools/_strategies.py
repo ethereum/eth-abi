@@ -41,7 +41,7 @@ class StrategyRegistry(BaseRegistry):
     def register_strategy(self,
                           lookup: Lookup,
                           registration: StrategyRegistration,
-                          label: str=None) -> None:
+                          label: str = None) -> None:
         self._register(self._strategies, lookup, registration, label=label)
 
     def unregister_strategy(self, lookup_or_label: Lookup) -> None:
