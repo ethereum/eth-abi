@@ -12,9 +12,9 @@ extras_require = {
         HYPOTHESIS_REQUIREMENT,
     ],
     'test': [
-        "pytest==4.4.1",
+        "pytest>=6.2.5,<7",
         "pytest-pythonpath>=0.7.1",
-        "pytest-xdist==1.22.3",
+        "pytest-xdist>=2.5.0,<3",
         "tox>=2.9.1,<3",
         "eth-hash[pycryptodome]",
         HYPOTHESIS_REQUIREMENT,
@@ -84,5 +84,6 @@ setup(
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
     ],
 )
