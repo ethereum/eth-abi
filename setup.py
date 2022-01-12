@@ -67,7 +67,7 @@ setup(
         'eth-typing>=3.0.0,<4.0.0',
         'parsimonious>=0.8.0,<0.9.0',
     ],
-    python_requires='>=3.6, <4',
+    python_requires='>=3.7, <4',
     extras_require=extras_require,
     py_modules=['eth_abi'],
     license="MIT",
@@ -81,7 +81,6 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Natural Language :: English',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
     ],
 )
