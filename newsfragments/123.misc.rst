@@ -1,0 +1,1 @@
+Rename testing modules to reflect snake-charmers guidelines
