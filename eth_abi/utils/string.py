@@ -3,7 +3,7 @@ from typing import (
 )
 
 
-def abbr(value: Any, limit: int=20) -> str:
+def abbr(value: Any, limit: int = 20) -> str:
     """
     Converts a value into its string representation and abbreviates that
     representation based on the given length `limit` if necessary.

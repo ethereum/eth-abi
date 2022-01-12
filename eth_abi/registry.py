@@ -359,7 +359,7 @@ class ABIRegistry(Copyable, BaseRegistry):
         return coder
 
     @_clear_encoder_cache
-    def register_encoder(self, lookup: Lookup, encoder: Encoder, label: str=None) -> None:
+    def register_encoder(self, lookup: Lookup, encoder: Encoder, label: str = None) -> None:
         """
         Registers the given ``encoder`` under the given ``lookup``.  A unique
         string label may be optionally provided that can be used to refer to
@@ -380,7 +380,7 @@ class ABIRegistry(Copyable, BaseRegistry):
         self._unregister(self._encoders, lookup_or_label)
 
     @_clear_decoder_cache
-    def register_decoder(self, lookup: Lookup, decoder: Decoder, label: str=None) -> None:
+    def register_decoder(self, lookup: Lookup, decoder: Decoder, label: str = None) -> None:
         """
         Registers the given ``decoder`` under the given ``lookup``.  A unique
         string label may be optionally provided that can be used to refer to
@@ -400,7 +400,11 @@ class ABIRegistry(Copyable, BaseRegistry):
         """
         self._unregister(self._decoders, lookup_or_label)
 
-    def register(self, lookup: Lookup, encoder: Encoder, decoder: Decoder, label: str=None) -> None:
+    def register(self,
+                 lookup: Lookup,
+                 encoder: Encoder,
+                 decoder: Decoder,
+                 label: str = None) -> None:
         """
         Registers the given ``encoder`` and ``decoder`` under the given
         ``lookup``.  A unique string label may be optionally provided that can
