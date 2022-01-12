@@ -4,7 +4,7 @@ from eth_utils import (
     big_endian_to_int,
     decode_hex,
     int_to_big_endian,
-    to_normalized_address,
+    to_checksum_address,
 )
 from eth_utils.toolz import (
     complement,
@@ -369,7 +369,7 @@ def test_decode_address(address_bytes, padding_size, data_byte_size):
     else:
         decoded_value = decoder(stream)
 
-    actual_value = to_normalized_address(stream_bytes[:data_byte_size][-20:])
+    actual_value = to_checksum_address(stream_bytes[:data_byte_size][-20:])
 
     assert decoded_value == actual_value
 

@@ -7,7 +7,7 @@ from typing import (
 
 from eth_utils import (
     big_endian_to_int,
-    to_normalized_address,
+    to_checksum_address,
     to_tuple,
 )
 
@@ -365,7 +365,7 @@ class BooleanDecoder(Fixed32ByteSizeDecoder):
 class AddressDecoder(Fixed32ByteSizeDecoder):
     value_bit_size = 20 * 8
     is_big_endian = True
-    decoder_fn = staticmethod(to_normalized_address)
+    decoder_fn = staticmethod(to_checksum_address)
 
     @parse_type_str('address')
     def from_type_str(cls, abi_type, registry):
