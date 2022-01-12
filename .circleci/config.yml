@@ -39,13 +39,13 @@ jobs:
   docs:
     <<: *common
     docker:
-      - image: circleci/python:3.8
+      - image: circleci/python:3.10
         environment:
           TOXENV: docs
   lint:
     <<: *common
     docker:
-      - image: circleci/python:3.8
+      - image: circleci/python:3.10
         environment:
           TOXENV: lint
   py37-core:
