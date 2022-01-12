@@ -39,21 +39,15 @@ jobs:
   docs:
     <<: *common
     docker:
-      - image: circleci/python:3.8
+      - image: circleci/python:3.10
         environment:
           TOXENV: docs
   lint:
     <<: *common
     docker:
-      - image: circleci/python:3.8
+      - image: circleci/python:3.10
         environment:
           TOXENV: lint
-  py36-core:
-    <<: *common
-    docker:
-      - image: circleci/python:3.6
-        environment:
-          TOXENV: py36-core
   py37-core:
     <<: *common
     docker:
@@ -66,12 +60,25 @@ jobs:
       - image: circleci/python:3.8
         environment:
           TOXENV: py38-core
+  py39-core:
+    <<: *common
+    docker:
+      - image: circleci/python:3.9
+        environment:
+          TOXENV: py39-core
+  py310-core:
+    <<: *common
+    docker:
+      - image: circleci/python:3.10
+        environment:
+          TOXENV: py310-core
 workflows:
   version: 2
   test:
     jobs:
       - docs
       - lint
-      - py36-core
       - py37-core
       - py38-core
+      - py39-core
+      - py310-core
