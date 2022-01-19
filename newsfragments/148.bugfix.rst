@@ -1,1 +1,0 @@
-Catch ABITypeError exceptions when checking ``has_encoder``
