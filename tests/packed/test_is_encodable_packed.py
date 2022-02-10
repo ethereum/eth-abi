@@ -18,10 +18,10 @@ from tests.common.unit import (
 
 
 @pytest.mark.parametrize(
-    'type_str,python_value,_1,_2',
+    'type_str,python_value,_1,_2,_3',
     CORRECT_SINGLE_ENCODINGS,
 )
-def test_is_encodable_returns_true(type_str, python_value, _1, _2):
+def test_is_encodable_returns_true(type_str, python_value, _1, _2, _3):
     assert is_encodable_packed(type_str, python_value)
 
 

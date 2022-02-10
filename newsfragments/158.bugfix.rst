@@ -1,0 +1,1 @@
+Reconcile differences in 32-byte padding between eth-abi encoders for dynamic types and Solidity's abi.encode() for 0 or empty values

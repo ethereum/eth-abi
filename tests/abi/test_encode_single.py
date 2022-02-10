@@ -10,9 +10,9 @@ from ..common.unit import (
 
 
 @pytest.mark.parametrize(
-    'typ,python_value,abi_encoding,_',
+    'typ,python_value,_1,single_type_encoding,_2',
     CORRECT_SINGLE_ENCODINGS,
 )
-def test_encode_single(typ, python_value, abi_encoding, _):
+def test_encode_single(typ, python_value, _1, single_type_encoding, _2):
     actual = encode_single(typ, python_value)
-    assert actual == abi_encoding
+    assert actual == single_type_encoding

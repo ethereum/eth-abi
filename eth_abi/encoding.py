@@ -159,7 +159,6 @@ class TupleEncoder(BaseEncoder):
         )
 
         encoded_value = b''.join(head_chunks + tuple(tail_chunks))
-
         return encoded_value
 
     @parse_tuple_type_str
@@ -530,16 +529,12 @@ class ByteStringEncoder(BaseEncoder):
     @classmethod
     def encode(cls, value):
         cls.validate_value(value)
+        value_length = len(value)
 
-        if not value:
-            padded_value = b'\x00' * 32
-        else:
-            padded_value = zpad_right(value, ceil32(len(value)))
+        encoded_size = encode_uint_256(value_length)
+        padded_value = zpad_right(value, ceil32(value_length))
 
-        encoded_size = encode_uint_256(len(value))
-        encoded_value = encoded_size + padded_value
-
-        return encoded_value
+        return encoded_size + padded_value
 
     @parse_type_str('bytes')
     def from_type_str(cls, abi_type, registry):
@@ -568,16 +563,12 @@ class TextStringEncoder(BaseEncoder):
         cls.validate_value(value)
 
         value_as_bytes = codecs.encode(value, 'utf8')
+        value_length = len(value_as_bytes)
 
-        if not value_as_bytes:
-            padded_value = b'\x00' * 32
-        else:
-            padded_value = zpad_right(value_as_bytes, ceil32(len(value_as_bytes)))
+        encoded_size = encode_uint_256(value_length)
+        padded_value = zpad_right(value_as_bytes, ceil32(value_length))
 
-        encoded_size = encode_uint_256(len(value_as_bytes))
-        encoded_value = encoded_size + padded_value
-
-        return encoded_value
+        return encoded_size + padded_value
 
     @parse_type_str('string')
     def from_type_str(cls, abi_type, registry):
@@ -619,7 +610,7 @@ class BaseArrayEncoder(BaseEncoder):
         tail_chunks = tuple(item_encoder(i) for i in value)
 
         items_are_dynamic = getattr(item_encoder, 'is_dynamic', False)
-        if not items_are_dynamic:
+        if not items_are_dynamic or len(value) == 0:
             return b''.join(tail_chunks)
 
         head_length = 32 * len(value)

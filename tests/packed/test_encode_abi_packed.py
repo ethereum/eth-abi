@@ -12,10 +12,10 @@ from tests.common.unit import (
 
 
 @pytest.mark.parametrize(
-    'type_str,python_value,_,packed_encoding',
+    'type_str,python_value,_1,_2,packed_encoding',
     CORRECT_TUPLE_ENCODINGS,
 )
-def test_encode_abi(type_str, python_value, _, packed_encoding):
+def test_encode_abi(type_str, python_value, _1, _2, packed_encoding):
     abi_type = parse(type_str)
     if abi_type.arrlist is not None:
         pytest.skip('ABI coding functions do not support array types')
