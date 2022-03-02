@@ -272,7 +272,7 @@ def test_encode_byte_string(string_value):
         (
             zpad_right(string_value, ceil32(len(string_value)))
             if string_value
-            else b'\x00' * 32
+            else b''
         )
     )
     encoded_value = encoder(string_value)
@@ -307,7 +307,7 @@ def test_encode_text_string(string_value):
                 ceil32(len(string_value_as_bytes)),
             )
             if string_value
-            else b'\x00' * 32
+            else b''
         )
     )
     encoded_value = encoder(string_value)
@@ -441,6 +441,10 @@ def test_tuple_encoder():
         UnsignedIntegerEncoder(value_bit_size=256),
         ByteStringEncoder(),
     ))
-    expected = decode_hex('0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000')  # noqa: E501
+    expected = decode_hex(
+        '0000000000000000000000000000000000000000000000000000000000000000'
+        '0000000000000000000000000000000000000000000000000000000000000040'
+        '0000000000000000000000000000000000000000000000000000000000000000'
+    )
     actual = encoder((0, b''))
     assert actual == expected
