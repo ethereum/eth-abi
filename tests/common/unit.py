@@ -73,7 +73,7 @@ CORRECT_TUPLE_ENCODINGS = [
 
     # Empty tuples
     (
-        '()', (), b'', b'', b'',
+        '()', (), False, b'', b'',
     ),
     (
         '((),((),((),())))',
