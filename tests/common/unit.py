@@ -68,17 +68,16 @@ def words(*descriptions: str) -> bytes:
     return b''.join(make_word(d) for d in descriptions)
 
 
-CORRECT_TUPLE_ENCODINGS = [
-    # (type string, python value, is_dynamic, abi encoding, packed encoding)
+CORRECT_STATIC_TUPLE_ENCODINGS = [
+    # (type string, python value, abi encoding, packed encoding)
 
     # Empty tuples
     (
-        '()', (), False, b'', b'',
+        '()', (), b'', b'',
     ),
     (
         '((),((),((),())))',
         ((), ((), ((), ()))),
-        False,
         b'',
         b'',
     ),
@@ -87,21 +86,18 @@ CORRECT_TUPLE_ENCODINGS = [
     (
         '(uint32)',
         (6,),
-        False,
         words('6'),
         words('6 (4 wide)'),
     ),
     (
         '(uint32,uint32)',
         (2 ** 32 - 1, 2 ** 32 - 1),
-        False,
         words('ffffffff', 'ffffffff'),
         words('f<f (4 wide)', 'f<f (4 wide)')
     ),
     (
         '(bytes32,bytes32)',
         (zpad32_right(b'a'), zpad32_right(b'b')),
-        False,
         words('61>0', '62>0'),
         words('61>0', '62>0'),
     ),
@@ -113,7 +109,6 @@ CORRECT_TUPLE_ENCODINGS = [
             zpad32_right(b'stupid pink animal'),
             0,
         ),
-        False,
         words(
             '82a978b3f5962a5b0957d9ee9eef472ee55b42f1',
             '1',
@@ -127,113 +122,109 @@ CORRECT_TUPLE_ENCODINGS = [
             '0 (4 wide)',
         ),
     ),
+]
 
-    # Dynamic tuples
-
-    # tuple w/ empty dynamic array
+CORRECT_DYNAMIC_TUPLE_ENCODINGS = [
+    # tuple w/ empty dynamic arrays
     (
-        '(string[])', ((),), True, words('20', '0'), b'',
+        '(string[])', ((),), words('20', '0'), b'',
     ),
     (
-        '(bytes[])', ((),), True, words('20', '0'), b'',
+        '(bytes[])', ((),), words('20', '0'), b'',
     ),
     (
-        '(bytes32[])', ((),), True, words('20', '0'), b'',
+        '(bytes32[])', ((),), words('20', '0'), b'',
     ),
     (
-        '(address[])', ((),), True, words('20', '0'), b'',
+        '(address[])', ((),), words('20', '0'), b'',
     ),
     (
-        '(int[])', ((),), True, words('20', '0'), b'',
+        '(int[])', ((),), words('20', '0'), b'',
     ),
     (
-        '(uint[])', ((),), True, words('20', '0'), b'',
+        '(uint[])', ((),), words('20', '0'), b'',
     ),
     (
-        '(uint8[])', ((),), True, words('20', '0'), b'',
+        '(uint8[])', ((),), words('20', '0'), b'',
     ),
     (
-        '(uint256[])', ((),), True, words('20', '0'), b'',
+        '(uint256[])', ((),), words('20', '0'), b'',
     ),
 
     # nested tuple w/ empty dynamic arrays
     (
-        '((string[]))', (((),),), True, words('20', '20', '0'), b'',
+        '((string[]))', (((),),), words('20', '20', '0'), b'',
     ),
     (
-        '((bytes[]))', (((),),), True, words('20', '20', '0'), b'',
+        '((bytes[]))', (((),),), words('20', '20', '0'), b'',
     ),
     (
-        '((bytes32[]))', (((),),), True, words('20', '20', '0'), b'',
+        '((bytes32[]))', (((),),), words('20', '20', '0'), b'',
     ),
     (
-        '((address[]))', (((),),), True, words('20', '20', '0'), b'',
+        '((address[]))', (((),),), words('20', '20', '0'), b'',
     ),
     (
-        '((int[]))', (((),),), True, words('20', '20', '0'), b'',
+        '((int[]))', (((),),), words('20', '20', '0'), b'',
     ),
     (
-        '((uint8[]))', (((),),), True, words('20', '20', '0'), b'',
+        '((uint8[]))', (((),),), words('20', '20', '0'), b'',
     ),
     (
-        '((uint256[]))', (((),),), True, words('20', '20', '0'), b'',
+        '((uint256[]))', (((),),), words('20', '20', '0'), b'',
     ),
 
     # sanity check / consistency - doubly nested tuples with empty dynamic array
     (
-        '(((string[])))', ((((),),),), True, words('20', '20', '20', '0'), b'',
+        '(((string[])))', ((((),),),), words('20', '20', '20', '0'), b'',
     ),
     (
-        '(((bytes[])))', ((((),),),), True, words('20', '20', '20', '0'), b'',
+        '(((bytes[])))', ((((),),),), words('20', '20', '20', '0'), b'',
     ),
     (
-        '(((bytes32[])))', ((((),),),), True, words('20', '20', '20', '0'), b'',
+        '(((bytes32[])))', ((((),),),), words('20', '20', '20', '0'), b'',
     ),
     (
-        '(((address[])))', ((((),),),), True, words('20', '20', '20', '0'), b'',
+        '(((address[])))', ((((),),),), words('20', '20', '20', '0'), b'',
     ),
     (
-        '(((int[])))', ((((),),),), True, words('20', '20', '20', '0'), b'',
+        '(((int[])))', ((((),),),), words('20', '20', '20', '0'), b'',
     ),
     (
-        '(((uint8[])))', ((((),),),), True, words('20', '20', '20', '0'), b'',
+        '(((uint8[])))', ((((),),),), words('20', '20', '20', '0'), b'',
     ),
     (
-        '(((uint256[])))', ((((),),),), True, words('20', '20', '20', '0'), b'',
+        '(((uint256[])))', ((((),),),), words('20', '20', '20', '0'), b'',
     ),
+
 
     (
         '(bytes32[])',
         ((zpad32_right(b'a'), zpad32_right(b'b')),),
-        True,
         words('20', '2', '61>0', '62>0'),
         words('61>0', '62>0'),
     ),
     (
         '(uint256,bytes)',
         (0, b''),
-        True,
         words('0', '40', '0'),
         words('0'),
     ),
     (
         '(int,(int,int[]))',
         (1, (2, (3, 3))),
-        True,
         words('1', '40', '2', '40', '2', '3', '3'),
         words('1', '2', '3', '3'),
     ),
     (
         '((int[],int),int)',
         (((1, 1), 2), 3),
-        True,
         words('40', '3', '40', '2', '2', '1', '1'),
         words('1', '1', '2', '3'),
     ),
     (
         '((bytes,bool),(bytes,bool))',
         ((b'david attenborough', False), (b'boaty mcboatface', True)),
-        True,
         words(
             '40',  # offset of first (bytes,bool)
             'c0',  # offset of second (bytes,bool)
@@ -258,7 +249,6 @@ CORRECT_TUPLE_ENCODINGS = [
     (
         '((int,int)[])',
         (((1, 2), (3, 4)),),
-        True,
         words('20', '2', '1', '2', '3', '4'),
         words('1', '2', '3', '4'),
     ),
@@ -273,7 +263,6 @@ CORRECT_TUPLE_ENCODINGS = [
             (8, 9),
             10,
         ),
-        True,
         words(
             '80',  # offset of dynamic tuple
             '8',  # outer tuple static tuple
@@ -300,7 +289,6 @@ CORRECT_TUPLE_ENCODINGS = [
             ((3, 4), (5, 6)),
             ((7, 8), (9, 10), (11, 12)),
         ),
-        True,
         words(
             '3',  # size of outer dynamic list
             '60',  # offset of first dynamic list
@@ -332,7 +320,6 @@ CORRECT_TUPLE_ENCODINGS = [
                 ((5, 6), (7, 8), (9, 10)),
             ),
         ),
-        True,
         words(
             '20',  # offset of constant size array
             '40',  # offset of first dynamic list of tuples
@@ -354,149 +341,160 @@ CORRECT_TUPLE_ENCODINGS = [
     ),
 ]
 
-CORRECT_SINGLE_ENCODINGS = CORRECT_TUPLE_ENCODINGS + [
+CORRECT_TUPLE_ENCODINGS = CORRECT_STATIC_TUPLE_ENCODINGS + CORRECT_DYNAMIC_TUPLE_ENCODINGS
+
+CORRECT_STATIC_SINGLE_ENCODINGS = [
     #####
-    # (type string, python value, _, abi encoding, packed encoding)
+    # (type string, python value, abi encoding, packed encoding)
     #####
 
     # uint<M>
-    ('uint8', 255, None, words('ff'), b'\xff'),
-    ('uint8', 21, None, words('15'), b'\x15'),
-    ('uint8', 1, None, words('1'), b'\x01'),
-    ('uint256', 2 ** 256 - 1, None, words('f<f'), words('f<f')),
-    ('uint256', 2 ** 256 - 100, None, words('f<9c'), words('f<9c')),
-    ('uint256', 21, None, words('15'), words('15')),
-    ('uint256', 1, None, words('1'), words('1')),
+    ('uint8', 255, words('ff'), b'\xff'),
+    ('uint8', 21, words('15'), b'\x15'),
+    ('uint8', 1, words('1'), b'\x01'),
+    ('uint256', 2 ** 256 - 1, words('f<f'), words('f<f')),
+    ('uint256', 2 ** 256 - 100, words('f<9c'), words('f<9c')),
+    ('uint256', 21, words('15'), words('15')),
+    ('uint256', 1, words('1'), words('1')),
 
     # int<M>
-    ('int8', 21, None, words('15'), b'\x15'),
-    ('int8', 1, None, words('1'), b'\x01'),
-    ('int8', -1, None, words('f<f'), b'\xff'),
-    ('int8', -100, None, words('f<9c'), b'\x9c'),
-    ('int256', 21, None, words('15'), words('15')),
-    ('int256', 1, None, words('1'), words('1')),
-    ('int256', -1, None, words('f<f'), words('f<f')),
-    ('int256', -100, None, words('f<9c'), words('f<9c')),
+    ('int8', 21, words('15'), b'\x15'),
+    ('int8', 1, words('1'), b'\x01'),
+    ('int8', -1, words('f<f'), b'\xff'),
+    ('int8', -100, words('f<9c'), b'\x9c'),
+    ('int256', 21, words('15'), words('15')),
+    ('int256', 1, words('1'), words('1')),
+    ('int256', -1, words('f<f'), words('f<f')),
+    ('int256', -100, words('f<9c'), words('f<9c')),
 
     # address
     (
         'address',
         '0x0000000000000000000000000000000000000000',
-        None,
         words('0'),
         words('0 (20 wide)'),
     ),
     (
         'address',
         '0xd3cda913deb6f67967b99d67acdfa1712c293601',
-        None,
         words('d3cda913deb6f67967b99d67acdfa1712c293601'),
         decode_hex('d3cda913deb6f67967b99d67acdfa1712c293601'),
     ),
     (
         'address',
         '0x0005c901078781c232a2a521c2af7980f8385ee9',
-        None,
         words('0005c901078781c232a2a521c2af7980f8385ee9'),
         decode_hex('0005c901078781c232a2a521c2af7980f8385ee9'),
     ),
     (
         'address',
         '0x5c901078781c232a2a521c2af7980f8385ee9000',
-        None,
         words('5c901078781c232a2a521c2af7980f8385ee9000'),
         decode_hex('5c901078781c232a2a521c2af7980f8385ee9000'),
     ),
 
     # uint, int
-    ('uint', 2 ** 256 - 1, None, words('f<f'), words('f<f')),
-    ('uint', 2 ** 256 - 100, None, words('f<9c'), words('f<9c')),
-    ('uint', 21, None, words('15'), words('15')),
-    ('uint', 1, None, words('1'), words('1')),
-    ('int', 21, None, words('15'), words('15')),
-    ('int', 1, None, words('1'), words('1')),
-    ('int', -1, None, words('f<f'), words('f<f')),
-    ('int', -100, None, words('f<9c'), words('f<9c')),
+    ('uint', 2 ** 256 - 1, words('f<f'), words('f<f')),
+    ('uint', 2 ** 256 - 100, words('f<9c'), words('f<9c')),
+    ('uint', 21, words('15'), words('15')),
+    ('uint', 1, words('1'), words('1')),
+    ('int', 21, words('15'), words('15')),
+    ('int', 1, words('1'), words('1')),
+    ('int', -1, words('f<f'), words('f<f')),
+    ('int', -100, words('f<9c'), words('f<9c')),
 
     # bool
-    ('bool', True, None, words('1'), b'\x01'),
-    ('bool', False, None, words('0'), b'\x00'),
+    ('bool', True, words('1'), b'\x01'),
+    ('bool', False, words('0'), b'\x00'),
 
     # fixed<M>x<N>
-    ('fixed8x1', Decimal('127e-1'), None, words('7f'), b'\x7f'),
-    ('fixed8x1', Decimal('1e-1'), None, words('1'), b'\x01'),
-    ('fixed8x1', Decimal('0'), None, words('0'), b'\x00'),
-    ('fixed8x1', Decimal('-1e-1'), None, words('f<f'), b'\xff'),
-    ('fixed8x1', Decimal('-128e-1'), None, words('f<80'), b'\x80'),
+    ('fixed8x1', Decimal('127e-1'), words('7f'), b'\x7f'),
+    ('fixed8x1', Decimal('1e-1'), words('1'), b'\x01'),
+    ('fixed8x1', Decimal('0'), words('0'), b'\x00'),
+    ('fixed8x1', Decimal('-1e-1'), words('f<f'), b'\xff'),
+    ('fixed8x1', Decimal('-128e-1'), words('f<80'), b'\x80'),
 
-    ('fixed128x18', Decimal('127e-18'), None, words('7f'), words('7f (16 wide)')),
-    ('fixed128x18', Decimal('1e-18'), None, words('1'), words('1 (16 wide)')),
-    ('fixed128x18', Decimal('0'), None, words('0'), words('0 (16 wide)')),
-    ('fixed128x18', Decimal('-1e-18'), None, words('f<f'), words('f<f (16 wide)')),
-    ('fixed128x18', Decimal('-128e-18'), None, words('f<80'), words('f<80 (16 wide)')),
+    ('fixed128x18', Decimal('127e-18'), words('7f'), words('7f (16 wide)')),
+    ('fixed128x18', Decimal('1e-18'), words('1'), words('1 (16 wide)')),
+    ('fixed128x18', Decimal('0'), words('0'), words('0 (16 wide)')),
+    ('fixed128x18', Decimal('-1e-18'), words('f<f'), words('f<f (16 wide)')),
+    ('fixed128x18', Decimal('-128e-18'), words('f<80'), words('f<80 (16 wide)')),
 
-    ('fixed256x80', Decimal('127e-80'), None, words('7f'), words('7f')),
-    ('fixed256x80', Decimal('1e-80'), None, words('1'), words('1')),
-    ('fixed256x80', Decimal('0'), None, words('0'), words('0')),
-    ('fixed256x80', Decimal('-1e-80'), None, words('f<f'), words('f<f')),
-    ('fixed256x80', Decimal('-128e-80'), None, words('f<80'), words('f<80')),
+    ('fixed256x80', Decimal('127e-80'), words('7f'), words('7f')),
+    ('fixed256x80', Decimal('1e-80'), words('1'), words('1')),
+    ('fixed256x80', Decimal('0'), words('0'), words('0')),
+    ('fixed256x80', Decimal('-1e-80'), words('f<f'), words('f<f')),
+    ('fixed256x80', Decimal('-128e-80'), words('f<80'), words('f<80')),
 
     # ufixed<M>x<N>
-    ('ufixed8x1', Decimal('255e-1'), None, words('ff'), b'\xff'),
-    ('ufixed8x1', Decimal('254e-1'), None, words('fe'), b'\xfe'),
-    ('ufixed8x1', Decimal('1e-1'), None, words('1'), b'\x01'),
-    ('ufixed8x1', Decimal('0'), None, words('0'), b'\x00'),
+    ('ufixed8x1', Decimal('255e-1'), words('ff'), b'\xff'),
+    ('ufixed8x1', Decimal('254e-1'), words('fe'), b'\xfe'),
+    ('ufixed8x1', Decimal('1e-1'), words('1'), b'\x01'),
+    ('ufixed8x1', Decimal('0'), words('0'), b'\x00'),
 
-    ('ufixed128x18', Decimal('255e-18'), None, words('ff'), words('ff (16 wide)')),
-    ('ufixed128x18', Decimal('254e-18'), None, words('fe'), words('fe (16 wide)')),
-    ('ufixed128x18', Decimal('1e-18'), None, words('1'), words('1 (16 wide)')),
-    ('ufixed128x18', Decimal('0'), None, words('0'), words('0 (16 wide)')),
+    ('ufixed128x18', Decimal('255e-18'), words('ff'), words('ff (16 wide)')),
+    ('ufixed128x18', Decimal('254e-18'), words('fe'), words('fe (16 wide)')),
+    ('ufixed128x18', Decimal('1e-18'), words('1'), words('1 (16 wide)')),
+    ('ufixed128x18', Decimal('0'), words('0'), words('0 (16 wide)')),
 
-    ('ufixed256x80', Decimal('255e-80'), None, words('ff'), words('ff')),
-    ('ufixed256x80', Decimal('254e-80'), None, words('fe'), words('fe')),
-    ('ufixed256x80', Decimal('1e-80'), None, words('1'), words('1')),
-    ('ufixed256x80', Decimal('0'), None, words('0'), words('0')),
+    ('ufixed256x80', Decimal('255e-80'), words('ff'), words('ff')),
+    ('ufixed256x80', Decimal('254e-80'), words('fe'), words('fe')),
+    ('ufixed256x80', Decimal('1e-80'), words('1'), words('1')),
+    ('ufixed256x80', Decimal('0'), words('0'), words('0')),
 
     # fixed, ufixed
-    ('fixed', Decimal('127e-18'), None, words('7f'), words('7f (16 wide)')),
-    ('fixed', Decimal('1e-18'), None, words('1'), words('1 (16 wide)')),
-    ('fixed', Decimal('0'), None, words('0'), words('0 (16 wide)')),
-    ('fixed', Decimal('-1e-18'), None, words('f<f'), words('f<f (16 wide)')),
-    ('fixed', Decimal('-128e-18'), None, words('f<80'), words('f<80 (16 wide)')),
-    ('ufixed', Decimal('255e-18'), None, words('ff'), words('ff (16 wide)')),
-    ('ufixed', Decimal('254e-18'), None, words('fe'), words('fe (16 wide)')),
-    ('ufixed', Decimal('1e-18'), None, words('1'), words('1 (16 wide)')),
-    ('ufixed', Decimal('0'), None, words('0'), words('0 (16 wide)')),
+    ('fixed', Decimal('127e-18'), words('7f'), words('7f (16 wide)')),
+    ('fixed', Decimal('1e-18'), words('1'), words('1 (16 wide)')),
+    ('fixed', Decimal('0'), words('0'), words('0 (16 wide)')),
+    ('fixed', Decimal('-1e-18'), words('f<f'), words('f<f (16 wide)')),
+    ('fixed', Decimal('-128e-18'), words('f<80'), words('f<80 (16 wide)')),
+    ('ufixed', Decimal('255e-18'), words('ff'), words('ff (16 wide)')),
+    ('ufixed', Decimal('254e-18'), words('fe'), words('fe (16 wide)')),
+    ('ufixed', Decimal('1e-18'), words('1'), words('1 (16 wide)')),
+    ('ufixed', Decimal('0'), words('0'), words('0 (16 wide)')),
 
     # bytes<M>
-    ('bytes32', zpad32_right(b'test'), None, words('74657374>0'), zpad32_right(b'test')),
+    ('bytes32', zpad32_right(b'test'), words('74657374>0'), zpad32_right(b'test')),
     (
         'bytes32',
         zpad32_right(b'abcdefghijklmnopqrstuvwxyz'),
-        None,
         words('6162636465666768696a6b6c6d6e6f707172737475767778797a>0'),
         words('6162636465666768696a6b6c6d6e6f707172737475767778797a>0'),
     ),
     (
         'bytes32',
         zpad32_right(b'0123456789!@#$%^&*()'),
-        None,
         words('3031323334353637383921402324255e262a2829>0'),
         words('3031323334353637383921402324255e262a2829>0'),
     ),
     (
         'bytes32',
         zpad32_right(b'abc' + 5 * b'\x00' + b'abc'),
-        None,
         words('6162630000000000616263>0'),
         words('6162630000000000616263>0'),
     ),
-    ('bytes1', b'a', None, words('61>0'), b'a'),
+    ('bytes1', b'a', words('61>0'), b'a'),
+]
+
+CORRECT_DYNAMIC_SINGLE_ENCODINGS = [
+    # string
+    ('string', '', words('0'), b''),
+    ('string', 'test', words('4', '74657374>0'), b'test'),
 
     # bytes
-    ('bytes', b'', None, words('0'), b''),
-    ('bytes', b'\xde', None, words('1', 'de>0'), b'\xde'),
+    ('bytes', b'', words('0'), b''),
+    ('bytes', b'\xde', words('1', 'de>0'), b'\xde'),
+
+    # bytes[]
+    ('bytes[]', [], words('0'), b''),
+    ('bytes[]', [b''], words('1', '20', '0'), b''),
+    ('bytes[]', [b'\xde\xad\xbe\xef'], words('1', '20', '4', 'deadbeef>0'), b'\xde\xad\xbe\xef'),
 ]
+
+CORRECT_STATIC_ENCODINGS = CORRECT_STATIC_TUPLE_ENCODINGS + CORRECT_STATIC_SINGLE_ENCODINGS
+CORRECT_DYNAMIC_ENCODINGS = CORRECT_DYNAMIC_TUPLE_ENCODINGS + CORRECT_DYNAMIC_SINGLE_ENCODINGS
+CORRECT_ENCODINGS = CORRECT_STATIC_ENCODINGS + CORRECT_DYNAMIC_ENCODINGS
+
 
 NOT_ENCODABLE = [
     # Wrong value type

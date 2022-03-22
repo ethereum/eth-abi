@@ -47,22 +47,6 @@ class ABIEncoder(BaseABICoder):
     """
     Wraps a registry to provide last-mile encoding functionality.
     """
-    def encode_single(self, typ: TypeStr, arg: Any) -> bytes:
-        """
-        Encodes the python value ``arg`` as a binary value of the ABI type
-        ``typ``.
-
-        :param typ: The string representation of the ABI type that will be used
-            for encoding e.g. ``'uint256'``, ``'bytes[]'``, ``'(int,int)'``,
-            etc.
-        :param arg: The python value to be encoded.
-
-        :returns: The binary representation of the python value ``arg`` as a
-            value of the ABI type ``typ``.
-        """
-        encoder = self._registry.get_encoder(typ)
-
-        return encoder(arg)
 
     def encode_abi(self, types: Iterable[TypeStr], args: Iterable[Any]) -> bytes:
         """
@@ -133,26 +117,6 @@ class ABIDecoder(BaseABICoder):
     Wraps a registry to provide last-mile decoding functionality.
     """
     stream_class = ContextFramesBytesIO
-
-    def decode_single(self, typ: TypeStr, data: Decodable) -> Any:
-        """
-        Decodes the binary value ``data`` of the ABI type ``typ`` into its
-        equivalent python value.
-
-        :param typ: The string representation of the ABI type that will be used for
-            decoding e.g. ``'uint256'``, ``'bytes[]'``, ``'(int,int)'``, etc.
-        :param data: The binary value to be decoded.
-
-        :returns: The equivalent python value of the ABI value represented in
-            ``data``.
-        """
-        if not is_bytes(data):
-            raise TypeError("The `data` value must be of bytes type.  Got {0}".format(type(data)))
-
-        decoder = self._registry.get_decoder(typ)
-        stream = self.stream_class(data)
-
-        return decoder(stream)
 
     def decode_abi(self, types: Iterable[TypeStr], data: Decodable) -> Tuple[Any, ...]:
         """

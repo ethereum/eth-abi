@@ -8,16 +8,20 @@ from eth_abi.grammar import (
 )
 
 from ..common.unit import (
+    CORRECT_DYNAMIC_ENCODINGS,
+    CORRECT_STATIC_ENCODINGS,
     CORRECT_TUPLE_ENCODINGS,
     words,
 )
 
 
 @pytest.mark.parametrize(
-    'tuple_type,python_value,_1,encoded_list_of_types,_2',
+    'tuple_type,python_value,solidity_abi_encoded,_',
     CORRECT_TUPLE_ENCODINGS,
 )
-def test_encode_abi_as_list_of_types(tuple_type, python_value, _1, encoded_list_of_types, _2):
+def test_encode_abi_for_multiple_types_as_list(
+    tuple_type, python_value, solidity_abi_encoded, _
+):
     abi_type = parse(tuple_type)
     if abi_type.arrlist is not None:
         pytest.skip('ABI coding functions do not support array types')
@@ -34,17 +38,18 @@ def test_encode_abi_as_list_of_types(tuple_type, python_value, _1, encoded_list_
     #   abi.encode(arr,num);
     separated_list_of_types = [t.to_type_str() for t in abi_type.components]
     eth_abi_encoded = encode_abi(separated_list_of_types, python_value)
-    assert eth_abi_encoded == encoded_list_of_types
+
+    assert eth_abi_encoded == solidity_abi_encoded
 
 
 @pytest.mark.parametrize(
-    'tuple_type,python_value,is_dynamic,encoded_list_of_types,_2',
-    CORRECT_TUPLE_ENCODINGS,
+    'single_abi_type,python_value,solidity_abi_encoded,_',
+    CORRECT_STATIC_ENCODINGS,
 )
-def test_encode_abi_as_single_tuple_type(
-    tuple_type, python_value, is_dynamic, encoded_list_of_types, _2
+def test_encode_abi_for_single_static_types(
+    single_abi_type, python_value, solidity_abi_encoded, _
 ):
-    # assert the tuple type is encoded correctly
+    # If single_abi_type is a tuple, assert the tuple type is encoded correctly
     # e.g. encode_abi(['(bytes32[],uint256)'], [([b'a', b'b'], 22)])
     #
     # compare to solidity:
@@ -58,13 +63,24 @@ def test_encode_abi_as_single_tuple_type(
     #   uint256 num = 22;
     #
     #   abi.encode(TupleExample(arr,num));
-    eth_abi_encoded = encode_abi([tuple_type], [python_value])
+    eth_abi_encoded = encode_abi([single_abi_type], [python_value])
 
-    encoded_tuple_type = (
-        # 32 bytes offset for dynamic tuple types
-        b''.join([words('20'), encoded_list_of_types]) if is_dynamic
+    assert eth_abi_encoded == solidity_abi_encoded
 
-        # no offset for static tuples so same encoding as if encoding a list of the types
-        else encoded_list_of_types
+
+@pytest.mark.parametrize(
+    'single_abi_type,python_value,solidity_abi_encoded,_',
+    CORRECT_DYNAMIC_ENCODINGS,
+)
+def test_encode_abi_for_single_dynamic_types(
+    single_abi_type, python_value, solidity_abi_encoded, _
+):
+    # Same test as the single static types test above but with dynamic types
+    eth_abi_encoded = encode_abi([single_abi_type], [python_value])
+
+    solidity_abi_encoded = (
+        # 32 bytes offset for dynamic types
+        b''.join([words('20'), solidity_abi_encoded])
     )
-    assert eth_abi_encoded == encoded_tuple_type
+
+    assert eth_abi_encoded == solidity_abi_encoded

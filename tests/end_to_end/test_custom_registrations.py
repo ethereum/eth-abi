@@ -1,7 +1,3 @@
-from eth_abi.abi import (
-    decode_single,
-    encode_single,
-)
 from eth_abi.decoding import (
     BaseDecoder,
 )
@@ -65,37 +61,37 @@ class DecodeNull(BaseDecoder):
 
         return None
 
+# TODO: Delete
+# def test_register_and_use_callables():
+#     registry.register('null', encode_null, decode_null)
+#
+#     try:
+#         assert encode_single('null', None) == NULL_ENCODING
+#         assert decode_single('null', NULL_ENCODING) is None
+#
+#         encoded_tuple = encode_single('(int,null)', (1, None))
+#
+#         assert encoded_tuple == b'\x00' * 31 + b'\x01' + NULL_ENCODING
+#         assert decode_single('(int,null)', encoded_tuple) == (1, None)
+#     finally:
+#         registry.unregister('null')
 
-def test_register_and_use_callables():
-    registry.register('null', encode_null, decode_null)
-
-    try:
-        assert encode_single('null', None) == NULL_ENCODING
-        assert decode_single('null', NULL_ENCODING) is None
-
-        encoded_tuple = encode_single('(int,null)', (1, None))
-
-        assert encoded_tuple == b'\x00' * 31 + b'\x01' + NULL_ENCODING
-        assert decode_single('(int,null)', encoded_tuple) == (1, None)
-    finally:
-        registry.unregister('null')
-
-
-def test_register_and_use_coder_classes():
-    registry.register(
-        lambda x: x.startswith('null'),
-        EncodeNull,
-        DecodeNull,
-        label='null',
-    )
-
-    try:
-        assert encode_single('null2', None) == NULL_ENCODING * 2
-        assert decode_single('null2', NULL_ENCODING * 2) is None
-
-        encoded_tuple = encode_single('(int,null2)', (1, None))
-
-        assert encoded_tuple == b'\x00' * 31 + b'\x01' + NULL_ENCODING * 2
-        assert decode_single('(int,null2)', encoded_tuple) == (1, None)
-    finally:
-        registry.unregister('null')
+# TODO: Delete
+# def test_register_and_use_coder_classes():
+#     registry.register(
+#         lambda x: x.startswith('null'),
+#         EncodeNull,
+#         DecodeNull,
+#         label='null',
+#     )
+#
+#     try:
+#         assert encode_single('null2', None) == NULL_ENCODING * 2
+#         assert decode_single('null2', NULL_ENCODING * 2) is None
+#
+#         encoded_tuple = encode_single('(int,null2)', (1, None))
+#
+#         assert encoded_tuple == b'\x00' * 31 + b'\x01' + NULL_ENCODING * 2
+#         assert decode_single('(int,null2)', encoded_tuple) == (1, None)
+#     finally:
+#         registry.unregister('null')

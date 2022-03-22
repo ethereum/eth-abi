@@ -7,20 +7,30 @@ from eth_abi.packed import (
     encode_abi_packed,
 )
 from tests.common.unit import (
+    CORRECT_ENCODINGS,
     CORRECT_TUPLE_ENCODINGS,
 )
 
 
 @pytest.mark.parametrize(
-    'type_str,python_value,_1,_2,packed_encoding',
+    'single_abi_type,python_value,_,packed_encoding',
     CORRECT_TUPLE_ENCODINGS,
 )
-def test_encode_abi(type_str, python_value, _1, _2, packed_encoding):
-    abi_type = parse(type_str)
+def test_encode_abi_packed(single_abi_type, python_value, _, packed_encoding):
+    abi_type = parse(single_abi_type)
     if abi_type.arrlist is not None:
         pytest.skip('ABI coding functions do not support array types')
 
     types = [t.to_type_str() for t in abi_type.components]
 
     actual = encode_abi_packed(types, python_value)
+    assert actual == packed_encoding
+
+
+@pytest.mark.parametrize(
+    'single_abi_type,python_value,_,packed_encoding',
+    CORRECT_ENCODINGS,
+)
+def test_encode_abi_packed_single_types(single_abi_type, python_value, _, packed_encoding):
+    actual = encode_abi_packed([single_abi_type], [python_value])
     assert actual == packed_encoding
