@@ -34,6 +34,6 @@ follows:
     ... )
     ((b'a', b'b'),)
 
-The :any:`decode` function provides an API for decoding ABI types. It accepts the binary data to be decoded for the
+The :meth:`~eth_abi.codec.ABIDecoder.decode` function provides an API for decoding ABI types. It accepts the binary data to be decoded for the
 first argument, as a python ``bytes`` or ``bytearray`` value, and a sequence of type strings to be decoded into for the
 second argument.

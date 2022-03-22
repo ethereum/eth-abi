@@ -26,7 +26,7 @@ follows:
     b'a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00b\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
 
 
-The :any:`encode` function provides an API for encoding ABI values. It accepts a sequence of values to be encoded as the
+The :meth:`~eth_abi.codec.ABIEncoder.encode` function provides an API for encoding ABI values. It accepts a sequence of values to be encoded as the
 first argument and a sequence of the respective type strings for the values as the second argument.
 
 Checking for Encodability

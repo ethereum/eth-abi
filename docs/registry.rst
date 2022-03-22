@@ -62,10 +62,10 @@ exact matches against the ``'null'`` type string.  We do this by calling
 :any:`register` on the `registry` object.
 
 When a call is made to one of the coding functions (such as
-:any:`encode_single` or :any:`decode_single`), the type string which is
-provided (which we'll call ``query``) is sent to the registry.  This ``query``
-will be checked against every registration in the registry.  Since we created a
-registration for the exact type string ``'null'``, coding operations for that
+:meth:`~eth_abi.codec.ABIEncoder.encode` or :meth:`~eth_abi.codec.ABIDecoder.decode`),
+the type string which is provided (which we'll call ``query``) is sent to the registry.
+This ``query`` will be checked against every registration in the registry.  Since we
+created a registration for the exact type string ``'null'``, coding operations for that
 type string will be routed to the encoder and decoder which were provided by
 the call to :any:`register`.  This also works when the registered type string
 appears in a compound type as with the tuple type in the example.
