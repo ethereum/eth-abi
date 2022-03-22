@@ -1,7 +1,7 @@
 import pytest
 
 from eth_abi.abi import (
-    decode_abi,
+    decode,
 )
 from eth_abi.exceptions import (
     DecodingError,
@@ -29,7 +29,7 @@ def test_decode_abi_for_multiple_types_as_list(type_str, expected, abi_encoding,
 
     types = [t.to_type_str() for t in abi_type.components]
 
-    actual = decode_abi(types, abi_encoding)
+    actual = decode(types, abi_encoding)
     assert actual == expected
 
 
@@ -63,9 +63,9 @@ def test_abi_decode_for_single_dynamic_types(type_str, expected, abi_encoding, _
 
 def test_decode_abi_empty_data_raises():
     with pytest.raises(DecodingError):
-        decode_abi(['uint32', 'uint32'], b'')
+        decode(['uint32', 'uint32'], b'')
 
 
 def test_decode_abi_wrong_data_type_raises():
     with pytest.raises(TypeError):
-        decode_abi(['uint32', 'uint32'], '')
+        decode(['uint32', 'uint32'], '')

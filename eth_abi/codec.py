@@ -48,7 +48,7 @@ class ABIEncoder(BaseABICoder):
     Wraps a registry to provide last-mile encoding functionality.
     """
 
-    def encode_abi(self, types: Iterable[TypeStr], args: Iterable[Any]) -> bytes:
+    def encode(self, types: Iterable[TypeStr], args: Iterable[Any]) -> bytes:
         """
         Encodes the python values in ``args`` as a sequence of binary values of
         the ABI types in ``types`` via the head-tail mechanism.
@@ -118,7 +118,7 @@ class ABIDecoder(BaseABICoder):
     """
     stream_class = ContextFramesBytesIO
 
-    def decode_abi(self, types: Iterable[TypeStr], data: Decodable) -> Tuple[Any, ...]:
+    def decode(self, types: Iterable[TypeStr], data: Decodable) -> Tuple[Any, ...]:
         """
         Decodes the binary value ``data`` as a sequence of values of the ABI types
         in ``types`` via the head-tail mechanism into a tuple of equivalent python
