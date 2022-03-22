@@ -27,7 +27,7 @@ def test_abi_encode_for_multiple_types_as_list(
         pytest.skip('ABI coding functions do not support array types')
 
     # assert different types encoded correctly as a list
-    # e.g. encode(['bytes32[]', 'uint256'], ([b'a', b'b'], 22))
+    # e.g. encode([[b'a', b'b'], 22], ['bytes32[]', 'uint256'])
     #
     # compare to solidity:
     #   bytes32 a = 0x6100000000000000000000000000000000000000000000000000000000000000;
@@ -37,7 +37,7 @@ def test_abi_encode_for_multiple_types_as_list(
     #
     #   abi.encode(arr,num);
     separated_list_of_types = [t.to_type_str() for t in abi_type.components]
-    eth_abi_encoded = encode(separated_list_of_types, python_value)
+    eth_abi_encoded = encode(python_value, separated_list_of_types)
 
     assert eth_abi_encoded == solidity_abi_encoded
 
@@ -50,7 +50,7 @@ def test_abi_encode_for_single_static_types(
     single_abi_type, python_value, solidity_abi_encoded, _
 ):
     # If single_abi_type is a tuple, assert the tuple type is encoded correctly
-    # e.g. encode(['(bytes32[],uint256)'], [([b'a', b'b'], 22)])
+    # e.g. encode([([b'a', b'b'], 22)], ['(bytes32[],uint256)'])
     #
     # compare to solidity:
     #   struct TupleExample {
@@ -63,7 +63,7 @@ def test_abi_encode_for_single_static_types(
     #   uint256 num = 22;
     #
     #   abi.encode(TupleExample(arr,num));
-    eth_abi_encoded = encode([single_abi_type], [python_value])
+    eth_abi_encoded = encode([python_value], [single_abi_type])
 
     assert eth_abi_encoded == solidity_abi_encoded
 
@@ -76,7 +76,7 @@ def test_abi_encode_for_single_dynamic_types(
     single_abi_type, python_value, solidity_abi_encoded, _
 ):
     # Same test as the single static types test above but with dynamic types
-    eth_abi_encoded = encode([single_abi_type], [python_value])
+    eth_abi_encoded = encode([python_value], [single_abi_type])
 
     solidity_abi_encoded = (
         # 32 bytes offset for dynamic types

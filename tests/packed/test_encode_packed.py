@@ -23,7 +23,7 @@ def test_encode_packed(single_abi_type, python_value, _, packed_encoding):
 
     types = [t.to_type_str() for t in abi_type.components]
 
-    actual = encode_packed(types, python_value)
+    actual = encode_packed(python_value, types)
     assert actual == packed_encoding
 
 
@@ -32,5 +32,5 @@ def test_encode_packed(single_abi_type, python_value, _, packed_encoding):
     CORRECT_ENCODINGS,
 )
 def test_encode_packed_single_types(single_abi_type, python_value, _, packed_encoding):
-    actual = encode_packed([single_abi_type], [python_value])
+    actual = encode_packed([python_value], [single_abi_type])
     assert actual == packed_encoding

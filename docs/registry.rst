@@ -41,15 +41,15 @@ callables:
     # Try them out
     from eth_abi import encode, decode
 
-    assert encode(['null'], [None]) == NULL_ENCODING
+    assert encode([None], ['null']) == NULL_ENCODING
 
-    (decoded_null_val,) = decode(['null'], NULL_ENCODING)
+    (decoded_null_val,) = decode(NULL_ENCODING, ['null'])
     assert decoded_null_val is None
 
-    encoded_tuple = encode(['(int,null)'], [(1, None)])
+    encoded_tuple = encode([(1, None)], ['(int,null)'])
     assert encoded_tuple == b'\x00' * 31 + b'\x01' + NULL_ENCODING
 
-    (decoded_tuple,) = decode(['(int,null)'], encoded_tuple)
+    (decoded_tuple,) = decode(encoded_tuple, ['(int,null)'])
     assert decoded_tuple == (1, None)
 
 .. testcleanup:: nulltype-callables
@@ -139,15 +139,15 @@ stream.  We could do that in the following way:
     # Try them out
     from eth_abi import encode, decode
 
-    assert encode(['null2'], [None]) == NULL_ENCODING * 2
+    assert encode([None], ['null2']) == NULL_ENCODING * 2
 
-    (decoded_null_val,) = decode(['null2'], NULL_ENCODING * 2)
+    (decoded_null_val,) = decode(NULL_ENCODING * 2, ['null2'])
     assert decoded_null_val is None
 
-    encoded_tuple = encode(['(int,null2)'], [(1, None)])
+    encoded_tuple = encode([(1, None)], ['(int,null2)'])
     assert encoded_tuple == b'\x00' * 31 + b'\x01' + NULL_ENCODING * 2
 
-    (decoded_tuple,) = decode(['(int,null2)'], encoded_tuple)
+    (decoded_tuple,) = decode(encoded_tuple, ['(int,null2)'])
     assert decoded_tuple == (1, None)
 
 .. testcleanup:: nulltype-classes

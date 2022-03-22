@@ -48,15 +48,15 @@ class ABIEncoder(BaseABICoder):
     Wraps a registry to provide last-mile encoding functionality.
     """
 
-    def encode(self, types: Iterable[TypeStr], args: Iterable[Any]) -> bytes:
+    def encode(self, args: Iterable[Any], types: Iterable[TypeStr]) -> bytes:
         """
         Encodes the python values in ``args`` as a sequence of binary values of
         the ABI types in ``types`` via the head-tail mechanism.
 
+        :param args: An iterable of python values to be encoded.
         :param types: An iterable of string representations of the ABI types
             that will be used for encoding e.g.  ``('uint256', 'bytes[]',
             '(int,int)')``
-        :param args: An iterable of python values to be encoded.
 
         :returns: The head-tail encoded binary representation of the python
             values in ``args`` as values of the ABI types in ``types``.
@@ -70,15 +70,15 @@ class ABIEncoder(BaseABICoder):
 
         return encoder(args)
 
-    def is_encodable(self, typ: TypeStr, arg: Any) -> bool:
+    def is_encodable(self, arg: Any, typ: TypeStr) -> bool:
         """
         Determines if the python value ``arg`` is encodable as a value of the
         ABI type ``typ``.
 
+        :param arg: The python value whose encodability should be checked.
         :param typ: A string representation for the ABI type against which the
             python value ``arg`` will be checked e.g. ``'uint256'``,
             ``'bytes[]'``, ``'(int,int)'``, etc.
-        :param arg: The python value whose encodability should be checked.
 
         :returns: ``True`` if ``arg`` is encodable as a value of the ABI type
             ``typ``.  Otherwise, ``False``.
@@ -118,15 +118,15 @@ class ABIDecoder(BaseABICoder):
     """
     stream_class = ContextFramesBytesIO
 
-    def decode(self, types: Iterable[TypeStr], data: Decodable) -> Tuple[Any, ...]:
+    def decode(self, data: Decodable, types: Iterable[TypeStr]) -> Tuple[Any, ...]:
         """
         Decodes the binary value ``data`` as a sequence of values of the ABI types
         in ``types`` via the head-tail mechanism into a tuple of equivalent python
         values.
 
+        :param data: The binary value to be decoded.
         :param types: An iterable of string representations of the ABI types that
             will be used for decoding e.g. ``('uint256', 'bytes[]', '(int,int)')``
-        :param data: The binary value to be decoded.
 
         :returns: A tuple of equivalent python values for the ABI values
             represented in ``data``.

@@ -29,7 +29,7 @@ def test_decode_abi_for_multiple_types_as_list(type_str, expected, abi_encoding,
 
     types = [t.to_type_str() for t in abi_type.components]
 
-    actual = decode(types, abi_encoding)
+    actual = decode(abi_encoding, types)
     assert actual == expected
 
 
@@ -63,9 +63,9 @@ def test_abi_decode_for_single_dynamic_types(type_str, expected, abi_encoding, _
 
 def test_decode_abi_empty_data_raises():
     with pytest.raises(DecodingError):
-        decode(['uint32', 'uint32'], b'')
+        decode(b'', ['uint32', 'uint32'])
 
 
 def test_decode_abi_wrong_data_type_raises():
     with pytest.raises(TypeError):
-        decode(['uint32', 'uint32'], '')
+        decode('', ['uint32', 'uint32'])

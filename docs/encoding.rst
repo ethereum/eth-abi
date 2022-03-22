@@ -14,20 +14,20 @@ follows:
     >>> from eth_abi import encode
 
     >>> # encode a single ABI type
-    >>> encode(['uint256'], [12345])
+    >>> encode([12345], ['uint256'])
     b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0009'
 
-    >>> # encode a list of ABI types
-    >>> encode(['bytes32', 'bytes32'], [b'a', b'b'])
+    >>> # encode multiple ABI types
+    >>> encode([b'a', b'b'], ['bytes32', 'bytes32'])
     b'a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00b\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
 
     >>> # encode a single tuple type with two `bytes32` types
-    >>> encode(['(bytes32,bytes32)'], [(b'a', b'b')])
+    >>> encode([(b'a', b'b')], ['(bytes32,bytes32)'],)
     b'a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00b\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
 
 
-The :any:`encode` function provides an API for encoding ABI values. It accepts a list of type strings as the first
-argument and a list of values to be encoded for the respective ABI types provided as the second argument.
+The :any:`encode` function provides an API for encoding ABI values. It accepts a sequence of values to be encoded as the
+first argument and a sequence of the respective type strings for the values as the second argument.
 
 Checking for Encodability
 -------------------------
@@ -39,16 +39,16 @@ for a given ABI type using :any:`is_encodable`:
 
     >>> from eth_abi import is_encodable
 
-    >>> is_encodable('int', 2)
+    >>> is_encodable(2, 'int')
     True
 
-    >>> is_encodable('int', 'foo')
+    >>> is_encodable('foo', 'int')
     False
 
-    >>> is_encodable('(int,bool)', (0, True))
+    >>> is_encodable((0, True), '(int,bool)')
     True
 
-    >>> is_encodable('(int,bool)', (0, 0))
+    >>> is_encodable((0, 0), '(int,bool)')
     False
 
 Non-Standard Packed Mode Encoding
@@ -68,15 +68,15 @@ encoding.  You can encode values in this format like so:
     >>> from eth_abi.packed import encode_packed
 
     >>> # encode_packed for a single ABI type
-    >>> encode_packed(['uint32'], [12345])
+    >>> encode_packed([12345], ['uint32'])
     b'\x00\x0009'
 
-    >>> # encode_packed for a list of ABI types
-    >>> encode_packed(['int8[]', 'uint32'], ([1, 2, 3, 4], 12345))
+    >>> # encode_packed for multiple ABI types
+    >>> encode_packed(([1, 2, 3, 4], 12345), ['int8[]', 'uint32'])
     b'\x01\x02\x03\x04\x00\x0009'
 
     >>> # encode_packed for a tuple with `uint8[]` and `uint32` types
-    >>> encode_packed(['(int8[],uint32)'], [([1, 2, 3, 4], 12345)])
+    >>> encode_packed([([1, 2, 3, 4], 12345)], ['(int8[],uint32)'])
     b'\x01\x02\x03\x04\x00\x0009'
 
 
