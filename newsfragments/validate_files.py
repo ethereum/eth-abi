@@ -3,7 +3,6 @@
 # Towncrier silently ignores files that do not match the expected ending.
 # We use this script to ensure we catch these as errors in CI.
 
-import os
 import pathlib
 import sys
 
@@ -15,6 +14,8 @@ ALLOWED_EXTENSIONS = {
     '.misc.rst',
     '.performance.rst',
     '.removal.rst',
+    '.breaking-change.rst',
+    '.deprecation.rst',
 }
 
 ALLOWED_FILES = {
