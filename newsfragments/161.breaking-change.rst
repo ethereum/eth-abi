@@ -1,0 +1,3 @@
+Remove ``encode_abi_single()``, ``encode_packed_single()``, and ``decode_abi_single()``.
+Rename ``encode_abi()``, ``encode_abi_packed()``, and ``decode_abi()`` to ``encode()``, ``encode_packed()``, and ``decode()``, respectively.
+Reverse the order for arguments in encoding / decoding methods to better match Solidity.
