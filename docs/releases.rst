@@ -4,7 +4,7 @@ Release Notes
 .. towncrier release notes start
 
 eth-abi v2.1.1 (2020-02-27)
---------------------------
+---------------------------
 
 Bugfixes
 ~~~~~~~~
