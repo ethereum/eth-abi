@@ -20,4 +20,9 @@ def test_decode_single(typ, expected, abi_encoding, _):
 
 def test_decode_single_wrong_data_type_raises():
     with pytest.raises(TypeError):
-        decode_single('uint32', '')
+        with pytest.warns(
+            DeprecationWarning,
+            match=r"abi.decode_single\(\) is deprecated and will be removed in version 4.0.0 in "
+                  r"favor of abi.decode\(\)"
+        ):
+            decode_single('uint32', '')
