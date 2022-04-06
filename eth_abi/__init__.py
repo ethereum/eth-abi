@@ -1,8 +1,10 @@
 import pkg_resources
 
 from eth_abi.abi import (  # NOQA
+    decode,
     decode_abi,
     decode_single,
+    encode,
     encode_abi,
     encode_single,
     is_encodable,

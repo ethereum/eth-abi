@@ -1,6 +1,7 @@
 import pytest
 
 from eth_abi.abi import (
+    decode,
     decode_abi,
 )
 from eth_abi.exceptions import (
@@ -26,15 +27,37 @@ def test_decode_abi(type_str, expected, abi_encoding, _):
 
     types = [t.to_type_str() for t in abi_type.components]
 
-    actual = decode_abi(types, abi_encoding)
-    assert actual == expected
+    assert decode(types, abi_encoding) == expected
+
+    with pytest.warns(
+        DeprecationWarning,
+        match=r"abi.decode_abi\(\) is deprecated and will be removed in version 4.0.0 in favor of "
+              r"abi.decode\(\)"
+    ):
+        assert decode_abi(types, abi_encoding) == expected
 
 
 def test_decode_abi_empty_data_raises():
     with pytest.raises(DecodingError):
-        decode_abi(['uint32', 'uint32'], b'')
+        with pytest.warns(
+            DeprecationWarning,
+            match=r"abi.decode_abi\(\) is deprecated and will be removed in version 4.0.0 in favor "
+                  r"of abi.decode\(\)"
+        ):
+            decode_abi(['uint32', 'uint32'], b'')
+
+    with pytest.raises(DecodingError):
+        decode(['uint32', 'uint32'], b'')
 
 
 def test_decode_abi_wrong_data_type_raises():
     with pytest.raises(TypeError):
-        decode_abi(['uint32', 'uint32'], '')
+        with pytest.warns(
+            DeprecationWarning,
+            match=r"abi.decode_abi\(\) is deprecated and will be removed in version 4.0.0 in favor "
+                  r"of abi.decode\(\)"
+        ):
+            decode_abi(['uint32', 'uint32'], '')
+
+    with pytest.raises(DecodingError):
+        decode(['uint32', 'uint32'], b'')

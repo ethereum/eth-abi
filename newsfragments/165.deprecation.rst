@@ -1,0 +1,1 @@
+Add ``DeprecationWarning`` for ``encode_abi()``, ``encode_single()``, ``decode_abi()``, and ``decode_single()`` and add temporary versions of ``abi.encode()`` and ``abi.decode()`` so users can start making these changes early.
