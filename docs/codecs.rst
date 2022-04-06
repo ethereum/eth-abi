@@ -44,9 +44,9 @@ API:
     # Try them out
     codec = ABICodec(registry)
 
-    assert codec.encode([None], ['null']) == NULL_ENCODING
+    assert codec.encode(['null'], [None]) == NULL_ENCODING
 
-    (decoded_null_val,) = codec.decode(NULL_ENCODING, ['null'])
+    (decoded_null_val,) = codec.decode(['null'], NULL_ENCODING)
     assert decoded_null_val is None
 
 In the above example, we define two coder callables and register them to handle
@@ -79,7 +79,7 @@ capability coupled with the use of a custom codec:
     codec = ABICodec(registry)
 
     try:
-        codec.encode([None], ['address'])
+        codec.encode(['address'], [None])
     except ValueError:
         pass
     else:
@@ -90,7 +90,7 @@ capability coupled with the use of a custom codec:
 
     # The default registry is unaffected since a copy was made
     assert (
-        default_codec.encode(['0x' + 'ff' * 20], ['address']) ==
+        default_codec.encode(['address'], ['0x' + 'ff' * 20]) ==
         b'\x00' * 12 + b'\xff' * 20
     )
 

@@ -20,7 +20,7 @@ def test_always_positive_multi(_type, value):
     """
     assert value >= 0
 
-    encoded_value = encode([value], [_type])
-    (decoded_value,) = decode(encoded_value, [_type])
+    encoded_value = encode([_type], [value])
+    (decoded_value,) = decode([_type], encoded_value)
 
     assert decoded_value >= 0

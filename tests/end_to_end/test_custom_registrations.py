@@ -70,15 +70,15 @@ def test_register_and_use_callables():
     registry.register('null', encode_null, decode_null)
 
     try:
-        assert encode([None], ['null']) == NULL_ENCODING
+        assert encode(['null'], [None]) == NULL_ENCODING
 
-        (decoded_null_data,) = decode(NULL_ENCODING, ['null'])
+        (decoded_null_data,) = decode(['null'], NULL_ENCODING)
         assert decoded_null_data is None
 
-        encoded_tuple = encode([(1, None)], ['(int,null)'])
+        encoded_tuple = encode(['(int,null)'], [(1, None)])
         assert encoded_tuple == b'\x00' * 31 + b'\x01' + NULL_ENCODING
 
-        (decoded_tuple,) = decode(encoded_tuple, ['(int,null)'])
+        (decoded_tuple,) = decode(['(int,null)'], encoded_tuple)
         assert decoded_tuple == (1, None)
     finally:
         registry.unregister('null')
@@ -93,15 +93,15 @@ def test_register_and_use_coder_classes():
     )
 
     try:
-        assert encode([None], ['null2']) == NULL_ENCODING * 2
+        assert encode(['null2'], [None]) == NULL_ENCODING * 2
 
-        (decoded_null_data,) = decode(NULL_ENCODING * 2, ['null2'])
+        (decoded_null_data,) = decode(['null2'], NULL_ENCODING * 2)
         assert decoded_null_data is None
 
-        encoded_tuple = encode([(1, None)], ['(int,null2)'])
+        encoded_tuple = encode(['(int,null2)'], [(1, None)])
         assert encoded_tuple == b'\x00' * 31 + b'\x01' + NULL_ENCODING * 2
 
-        (decoded_tuple,) = decode(encoded_tuple, ['(int,null2)'])
+        (decoded_tuple,) = decode(['(int,null2)'], encoded_tuple)
         assert decoded_tuple == (1, None)
     finally:
         registry.unregister('null')

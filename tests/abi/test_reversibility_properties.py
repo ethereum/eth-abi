@@ -22,8 +22,8 @@ def test_multi_abi_reversibility(types_and_values):
     types.
     """
     types, values = types_and_values
-    encoded_values = encode(values, types)
-    decoded_values = decode(encoded_values, types)
+    encoded_values = encode(types, values)
+    decoded_values = decode(types, encoded_values)
     assert values == decoded_values
 
 
@@ -35,8 +35,8 @@ def test_single_abi_type_reversibility(type_and_value):
     types.
     """
     _type, value = type_and_value
-    encoded_value = encode([value], [_type])
-    (decoded_value,) = decode(encoded_value, [_type])
+    encoded_value = encode([_type], [value])
+    (decoded_value,) = decode([_type], encoded_value)
     assert value == decoded_value
 
 
@@ -47,6 +47,6 @@ def test_single_abi_type_tuple_reversibility(type_and_value):
     Tests round trip encoding and decoding for tuple types.
     """
     _type, value = type_and_value
-    encoded_value = encode([value], [_type])
-    (decoded_value,) = decode(encoded_value, [_type])
+    encoded_value = encode([_type], [value])
+    (decoded_value,) = decode([_type], encoded_value)
     assert value == decoded_value

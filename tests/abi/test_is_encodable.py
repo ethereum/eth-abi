@@ -22,7 +22,7 @@ from tests.common.unit import (
     CORRECT_ENCODINGS,
 )
 def test_is_encodable_returns_true(type_str, python_value, _1, _2):
-    assert is_encodable(python_value, type_str)
+    assert is_encodable(type_str, python_value)
 
 
 @pytest.mark.parametrize(
@@ -30,18 +30,18 @@ def test_is_encodable_returns_true(type_str, python_value, _1, _2):
     NOT_ENCODABLE,
 )
 def test_is_encodable_returns_false(type_str, python_value):
-    assert not is_encodable(python_value, type_str)
+    assert not is_encodable(type_str, python_value)
 
 
 @settings(deadline=None)
 @given(single_strs_values)
 def test_is_encodable_returns_true_for_random_valid_values(type_and_value):
     _type, value = type_and_value
-    assert is_encodable(value, _type)
+    assert is_encodable(_type, value)
 
 
 @settings(deadline=None)
 @given(tuple_strs_values)
 def test_is_encodable_returns_true_for_random_valid_tuple_values(type_and_value):
     _type, value = type_and_value
-    assert is_encodable(value, _type)
+    assert is_encodable(_type, value)
