@@ -27,6 +27,7 @@ extras_require = {
     ],
     'doc': [
         "Sphinx>=1.6.5,<2",
+        "jinja2>=3.0.0,<3.1.0",  # jinja2<3.0 or >=3.1.0 cause doc build failures.
         "sphinx_rtd_theme>=0.1.9",
         "towncrier>=19.2.0, <20",
     ],
