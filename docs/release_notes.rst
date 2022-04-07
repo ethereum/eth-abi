@@ -3,9 +3,7 @@ Release Notes
 
 .. towncrier release notes start
 
-eth-abi v3.0.0 (2022-01-19)
----------------------------
-Eth_Abi 3.0.0 (2022-01-19)
+eth_abi 3.0.0 (2022-01-19)
 --------------------------
 
 Features
@@ -35,7 +33,7 @@ Miscellaneous changes
 
 
 eth-abi v2.1.1 (2020-02-27)
---------------------------
+---------------------------
 
 Bugfixes
 ~~~~~~~~
