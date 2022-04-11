@@ -4,7 +4,7 @@ from eth_abi.abi import (
     decode,
 )
 from eth_abi.exceptions import (
-    DecodingError,
+    InsufficientDataBytes,
 )
 from eth_abi.grammar import (
     parse,
@@ -61,11 +61,28 @@ def test_abi_decode_for_single_dynamic_types(type_str, expected, abi_encoding, _
     assert actual == expected
 
 
-def test_decode_abi_empty_data_raises():
-    with pytest.raises(DecodingError):
-        decode(['uint32', 'uint32'], b'')
+@pytest.mark.parametrize('data', (b'', bytearray()))
+def test_decode_abi_empty_data_raises(data):
+    with pytest.raises(InsufficientDataBytes):
+        decode(['uint'], data)
 
 
-def test_decode_abi_wrong_data_type_raises():
-    with pytest.raises(TypeError):
-        decode(['uint32', 'uint32'], '')
+@pytest.mark.parametrize('data', ('', 123, 0x123, [b'\x01'], (b'\x01',), {b'\x01'}))
+def test_decode_abi_wrong_data_param_type_raises(data):
+    with pytest.raises(
+        TypeError,
+        match=f"The `data` value must be of bytes type. Got {type(data)}"
+    ):
+        decode(['uint32', 'uint32'], data)
+
+
+@pytest.mark.parametrize(
+    'types',
+    ('', 123, b'', b'\xff', b'david attenborough', bytearray(b'\x01\xff'), {'key': 'val'}, {1, 2})
+)
+def test_decode_abi_wrong_types_param_type_raises(types):
+    with pytest.raises(
+        TypeError,
+        match=f"The `types` value type must be one of list or tuple. Got {type(types)}"
+    ):
+        decode(types, b'\x00' * 32)
