@@ -12,16 +12,16 @@ from tests.common.strategies import (
     tuple_strs_values,
 )
 from tests.common.unit import (
-    CORRECT_SINGLE_ENCODINGS,
+    CORRECT_ENCODINGS,
     NOT_ENCODABLE,
 )
 
 
 @pytest.mark.parametrize(
-    'type_str,python_value,_1,_2,_3',
-    CORRECT_SINGLE_ENCODINGS,
+    'type_str,python_value,_1,_2',
+    CORRECT_ENCODINGS,
 )
-def test_is_encodable_returns_true(type_str, python_value, _1, _2, _3):
+def test_is_encodable_returns_true(type_str, python_value, _1, _2):
     assert is_encodable_packed(type_str, python_value)
 
 

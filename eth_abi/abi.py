@@ -7,9 +7,7 @@ from eth_abi.registry import (
 
 default_codec = ABICodec(registry)
 
-encode_abi = default_codec.encode_abi
-encode_single = default_codec.encode_single
-decode_abi = default_codec.decode_abi
-decode_single = default_codec.decode_single
+encode = default_codec.encode
+decode = default_codec.decode
 is_encodable = default_codec.is_encodable
 is_encodable_type = default_codec.is_encodable_type

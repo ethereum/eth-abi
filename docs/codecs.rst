@@ -44,8 +44,10 @@ API:
     # Try them out
     codec = ABICodec(registry)
 
-    assert codec.encode_single('null', None) == NULL_ENCODING
-    assert codec.decode_single('null', NULL_ENCODING) is None
+    assert codec.encode(['null'], [None]) == NULL_ENCODING
+
+    (decoded_null_val,) = codec.decode(['null'], NULL_ENCODING)
+    assert decoded_null_val is None
 
 In the above example, we define two coder callables and register them to handle
 exact matches against the ``'null'`` type string in a custom registry.  For
@@ -77,7 +79,7 @@ capability coupled with the use of a custom codec:
     codec = ABICodec(registry)
 
     try:
-        codec.encode_single('address', None)
+        codec.encode(['address'], [None])
     except ValueError:
         pass
     else:
@@ -88,7 +90,7 @@ capability coupled with the use of a custom codec:
 
     # The default registry is unaffected since a copy was made
     assert (
-        default_codec.encode_single('address', '0x' + 'ff' * 20) ==
+        default_codec.encode(['address'], ['0x' + 'ff' * 20]) ==
         b'\x00' * 12 + b'\xff' * 20
     )
 

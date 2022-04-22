@@ -8,9 +8,6 @@ from eth_typing.abi import (
     Decodable,
     TypeStr,
 )
-from eth_utils import (
-    is_bytes,
-)
 
 from eth_abi.decoding import (
     ContextFramesBytesIO,
@@ -24,6 +21,10 @@ from eth_abi.exceptions import (
 )
 from eth_abi.registry import (
     ABIRegistry,
+)
+from eth_abi.utils.validation import (
+    validate_bytes_param,
+    validate_list_like_param,
 )
 
 
@@ -47,36 +48,23 @@ class ABIEncoder(BaseABICoder):
     """
     Wraps a registry to provide last-mile encoding functionality.
     """
-    def encode_single(self, typ: TypeStr, arg: Any) -> bytes:
-        """
-        Encodes the python value ``arg`` as a binary value of the ABI type
-        ``typ``.
 
-        :param typ: The string representation of the ABI type that will be used
-            for encoding e.g. ``'uint256'``, ``'bytes[]'``, ``'(int,int)'``,
-            etc.
-        :param arg: The python value to be encoded.
-
-        :returns: The binary representation of the python value ``arg`` as a
-            value of the ABI type ``typ``.
-        """
-        encoder = self._registry.get_encoder(typ)
-
-        return encoder(arg)
-
-    def encode_abi(self, types: Iterable[TypeStr], args: Iterable[Any]) -> bytes:
+    def encode(self, types: Iterable[TypeStr], args: Iterable[Any]) -> bytes:
         """
         Encodes the python values in ``args`` as a sequence of binary values of
         the ABI types in ``types`` via the head-tail mechanism.
 
-        :param types: An iterable of string representations of the ABI types
+        :param types: A list or tuple of string representations of the ABI types
             that will be used for encoding e.g.  ``('uint256', 'bytes[]',
             '(int,int)')``
-        :param args: An iterable of python values to be encoded.
+        :param args: A list or tuple of python values to be encoded.
 
         :returns: The head-tail encoded binary representation of the python
             values in ``args`` as values of the ABI types in ``types``.
         """
+        validate_list_like_param(types, 'types')
+        validate_list_like_param(args, 'args')
+
         encoders = [
             self._registry.get_encoder(type_str)
             for type_str in types
@@ -134,41 +122,21 @@ class ABIDecoder(BaseABICoder):
     """
     stream_class = ContextFramesBytesIO
 
-    def decode_single(self, typ: TypeStr, data: Decodable) -> Any:
-        """
-        Decodes the binary value ``data`` of the ABI type ``typ`` into its
-        equivalent python value.
-
-        :param typ: The string representation of the ABI type that will be used for
-            decoding e.g. ``'uint256'``, ``'bytes[]'``, ``'(int,int)'``, etc.
-        :param data: The binary value to be decoded.
-
-        :returns: The equivalent python value of the ABI value represented in
-            ``data``.
-        """
-        if not is_bytes(data):
-            raise TypeError("The `data` value must be of bytes type.  Got {0}".format(type(data)))
-
-        decoder = self._registry.get_decoder(typ)
-        stream = self.stream_class(data)
-
-        return decoder(stream)
-
-    def decode_abi(self, types: Iterable[TypeStr], data: Decodable) -> Tuple[Any, ...]:
+    def decode(self, types: Iterable[TypeStr], data: Decodable) -> Tuple[Any, ...]:
         """
         Decodes the binary value ``data`` as a sequence of values of the ABI types
         in ``types`` via the head-tail mechanism into a tuple of equivalent python
         values.
 
-        :param types: An iterable of string representations of the ABI types that
+        :param types: A list or tuple of string representations of the ABI types that
             will be used for decoding e.g. ``('uint256', 'bytes[]', '(int,int)')``
         :param data: The binary value to be decoded.
 
         :returns: A tuple of equivalent python values for the ABI values
             represented in ``data``.
         """
-        if not is_bytes(data):
-            raise TypeError("The `data` value must be of bytes type.  Got {0}".format(type(data)))
+        validate_list_like_param(types, 'types')
+        validate_bytes_param(data, 'data')
 
         decoders = [
             self._registry.get_decoder(type_str)
