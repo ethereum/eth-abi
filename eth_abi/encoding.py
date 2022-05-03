@@ -78,8 +78,8 @@ class BaseEncoder(BaseCoder, metaclass=abc.ABCMeta):
     def invalidate_value(
         cls,
         value: Any,
-        exc: Type[Exception]=EncodingTypeError,
-        msg: Optional[str]=None,
+        exc: Type[Exception] = EncodingTypeError,
+        msg: Optional[str] = None,
     ) -> None:
         """
         Throws a standard exception for when a value is not encodable by an

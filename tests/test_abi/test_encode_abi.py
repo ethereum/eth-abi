@@ -1,6 +1,7 @@
 import pytest
 
 from eth_abi import (
+    encode,
     encode_abi,
 )
 from eth_abi.grammar import (
@@ -23,5 +24,12 @@ def test_encode_abi(type_str, python_value, abi_encoding, _):
 
     types = [t.to_type_str() for t in abi_type.components]
 
-    actual = encode_abi(types, python_value)
-    assert actual == abi_encoding
+    assert encode(types, python_value) == abi_encoding
+
+    with pytest.warns(
+        DeprecationWarning,
+        match=r"abi.encode_abi\(\) and abi.encode_abi_packed\(\) are deprecated and will be "
+              r"removed in version 4.0.0 in favor of abi.encode\(\) and abi.encode_packed\(\), "
+              r"respectively"
+    ):
+        assert encode_abi(types, python_value) == abi_encoding
