@@ -3,6 +3,7 @@ from typing import (
     Iterable,
     Tuple,
 )
+import warnings
 
 from eth_typing.abi import (
     Decodable,
@@ -60,6 +61,12 @@ class ABIEncoder(BaseABICoder):
         :returns: The binary representation of the python value ``arg`` as a
             value of the ABI type ``typ``.
         """
+        warnings.warn(
+            "abi.encode_single() and abi.encode_single_packed() are deprecated and will be removed "
+            "in version 4.0.0 in favor of abi.encode() and abi.encode_packed(), respectively",
+            category=DeprecationWarning,
+        )
+
         encoder = self._registry.get_encoder(typ)
 
         return encoder(arg)
@@ -77,6 +84,14 @@ class ABIEncoder(BaseABICoder):
         :returns: The head-tail encoded binary representation of the python
             values in ``args`` as values of the ABI types in ``types``.
         """
+        warnings.warn(
+            "abi.encode_abi() and abi.encode_abi_packed() are deprecated and will be removed in "
+            "version 4.0.0 in favor of abi.encode() and abi.encode_packed(), respectively",
+            category=DeprecationWarning,
+        )
+        return self.encode(types, args)
+
+    def encode(self, types, args):
         encoders = [
             self._registry.get_encoder(type_str)
             for type_str in types
@@ -146,6 +161,12 @@ class ABIDecoder(BaseABICoder):
         :returns: The equivalent python value of the ABI value represented in
             ``data``.
         """
+        warnings.warn(
+            "abi.decode_single() is deprecated and will be removed in version 4.0.0 in favor of "
+            "abi.decode()",
+            category=DeprecationWarning,
+        )
+
         if not is_bytes(data):
             raise TypeError("The `data` value must be of bytes type.  Got {0}".format(type(data)))
 
@@ -167,8 +188,16 @@ class ABIDecoder(BaseABICoder):
         :returns: A tuple of equivalent python values for the ABI values
             represented in ``data``.
         """
+        warnings.warn(
+            "abi.decode_abi() is deprecated and will be removed in version 4.0.0 in favor of "
+            "abi.decode()",
+            category=DeprecationWarning
+        )
+        return self.decode(types, data)
+
+    def decode(self, types, data):
         if not is_bytes(data):
-            raise TypeError("The `data` value must be of bytes type.  Got {0}".format(type(data)))
+            raise TypeError(f"The `data` value must be of bytes type.  Got {type(data)}")
 
         decoders = [
             self._registry.get_decoder(type_str)
