@@ -39,15 +39,18 @@ callables:
     registry.register('null', encode_null, decode_null)
 
     # Try them out
-    from eth_abi import encode_single, decode_single
+    from eth_abi import encode, decode
 
-    assert encode_single('null', None) == NULL_ENCODING
-    assert decode_single('null', NULL_ENCODING) is None
+    assert encode(['null'], [None]) == NULL_ENCODING
 
-    encoded_tuple = encode_single('(int,null)', (1, None))
+    (decoded_null_val,) = decode(['null'], NULL_ENCODING)
+    assert decoded_null_val is None
 
+    encoded_tuple = encode(['(int,null)'], [(1, None)])
     assert encoded_tuple == b'\x00' * 31 + b'\x01' + NULL_ENCODING
-    assert decode_single('(int,null)', encoded_tuple) == (1, None)
+
+    (decoded_tuple,) = decode(['(int,null)'], encoded_tuple)
+    assert decoded_tuple == (1, None)
 
 .. testcleanup:: nulltype-callables
 
@@ -59,10 +62,10 @@ exact matches against the ``'null'`` type string.  We do this by calling
 :any:`register` on the `registry` object.
 
 When a call is made to one of the coding functions (such as
-:any:`encode_single` or :any:`decode_single`), the type string which is
-provided (which we'll call ``query``) is sent to the registry.  This ``query``
-will be checked against every registration in the registry.  Since we created a
-registration for the exact type string ``'null'``, coding operations for that
+:meth:`~eth_abi.codec.ABIEncoder.encode` or :meth:`~eth_abi.codec.ABIDecoder.decode`),
+the type string which is provided (which we'll call ``query``) is sent to the registry.
+This ``query`` will be checked against every registration in the registry.  Since we
+created a registration for the exact type string ``'null'``, coding operations for that
 type string will be routed to the encoder and decoder which were provided by
 the call to :any:`register`.  This also works when the registered type string
 appears in a compound type as with the tuple type in the example.
@@ -134,15 +137,18 @@ stream.  We could do that in the following way:
     )
 
     # Try them out
-    from eth_abi import encode_single, decode_single
+    from eth_abi import encode, decode
 
-    assert encode_single('null2', None) == NULL_ENCODING * 2
-    assert decode_single('null2', NULL_ENCODING * 2) is None
+    assert encode(['null2'], [None]) == NULL_ENCODING * 2
 
-    encoded_tuple = encode_single('(int,null2)', (1, None))
+    (decoded_null_val,) = decode(['null2'], NULL_ENCODING * 2)
+    assert decoded_null_val is None
 
+    encoded_tuple = encode(['(int,null2)'], [(1, None)])
     assert encoded_tuple == b'\x00' * 31 + b'\x01' + NULL_ENCODING * 2
-    assert decode_single('(int,null2)', encoded_tuple) == (1, None)
+
+    (decoded_tuple,) = decode(['(int,null2)'], encoded_tuple)
+    assert decoded_tuple == (1, None)
 
 .. testcleanup:: nulltype-classes
 

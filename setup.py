@@ -5,30 +5,31 @@ from setuptools import (
     find_packages,
 )
 
-HYPOTHESIS_REQUIREMENT = "hypothesis>=3.6.1,<4"
+HYPOTHESIS_REQUIREMENT = "hypothesis>=4.18.2,<5.0.0"
 
 extras_require = {
     'tools': [
         HYPOTHESIS_REQUIREMENT,
     ],
     'test': [
-        "pytest==4.4.1",
+        "pytest>=6.2.5,<7",
         "pytest-pythonpath>=0.7.1",
-        "pytest-xdist==1.22.3",
+        "pytest-xdist>=2.5.0,<3",
         "tox>=2.9.1,<3",
         "eth-hash[pycryptodome]",
         HYPOTHESIS_REQUIREMENT,
     ],
     'lint': [
-        "flake8==3.4.1",
+        "flake8==4.0.1",
         "isort>=4.2.15,<5",
-        "mypy==0.701",
+        "mypy==0.910",
         "pydocstyle>=3.0.0,<4",
     ],
     'doc': [
-        "Sphinx>=1.6.5,<2",
-        "sphinx_rtd_theme>=0.1.9",
-        "towncrier>=19.2.0, <20",
+        "sphinx>=4.5.0,<5",
+        "jinja2>=3.0.0,<3.1.0",  # jinja2<3.0 or >=3.1.0 cause doc build failures.
+        "sphinx_rtd_theme>=1.0.0",
+        "towncrier==18.5.0",  # towncrier doesn't follow semver
     ],
     'dev': [
         "bumpversion>=0.5.3,<1",
@@ -54,7 +55,7 @@ with open('./README.md') as readme:
 setup(
     name='eth_abi',
     # *IMPORTANT*: Don't manually change the version here. Use `make bump`, as described in readme
-    version='2.1.1',
+    version='3.0.0',
     description="""eth_abi: Python utilities for working with Ethereum ABI definitions, especially encoding and decoding""",
     long_description=long_description,
     long_description_content_type='text/markdown',
@@ -63,11 +64,11 @@ setup(
     url='https://github.com/ethereum/eth-abi',
     include_package_data=True,
     install_requires=[
-        'eth-utils>=1.2.0,<2.0.0',
-        'eth-typing>=2.0.0,<3.0.0',
+        'eth-utils>=2.0.0,<3.0.0',
+        'eth-typing>=3.0.0,<4.0.0',
         'parsimonious>=0.8.0,<0.9.0',
     ],
-    python_requires='>=3.6, <4',
+    python_requires='>=3.7, <4',
     extras_require=extras_require,
     py_modules=['eth_abi'],
     license="MIT",
@@ -81,7 +82,9 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Natural Language :: English',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
     ],
 )

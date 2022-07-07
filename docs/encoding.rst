@@ -11,33 +11,30 @@ follows:
 
 .. doctest::
 
-    >>> from eth_abi import encode_single, encode_abi
+    >>> from eth_abi import encode
 
-    >>> encode_single('uint256', 12345)
+    >>> # encode a single ABI type
+    >>> encode(['uint256'], [12345])
     b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0009'
 
-    >>> encode_single('(bytes32,bytes32)', [b'a', b'b'])
+    >>> # encode multiple ABI types
+    >>> encode(['bytes32', 'bytes32'], [b'a', b'b'])
     b'a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00b\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
 
-    >>> encode_abi(['bytes32', 'bytes32'], [b'a', b'b'])
+    >>> # encode a single tuple type with two `bytes32` types
+    >>> encode(['(bytes32,bytes32)'], [(b'a', b'b')])
     b'a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00b\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
 
-The :any:`encode_single` function can be used to perform any encoding operation
-from a python value to a binary ABI value for an ABI type.  As is seen in the
-example above, :any:`encode_single` supports encoding of tuple ABI values which
-can be used to encode sequences of python values in a single binary payload.
 
-The :any:`encode_abi` function provides an alternate API for encoding tuple
-values.  It accepts a list of type strings instead of a single tuple type
-string.  Internally, it uses the :any:`encode_single` function to do this.
-Because of this redundancy, it will eventually be removed in favor of
-:any:`encode_single`.
+The :any:`encode` function provides an API for encoding python values into binary values for ABI types. It accepts a
+sequence of ABI type strings as the first argument and a sequence of python values to be encoded into the respective ABI
+types as the second argument.
 
 Checking for Encodability
 -------------------------
 
 It is also possible to check whether or not a certain python value is encodable
-for a given ABI type using :any:`encode_single`:
+for a given ABI type using :any:`is_encodable`:
 
 .. doctest::
 
@@ -69,16 +66,20 @@ encoding.  You can encode values in this format like so:
 
 .. doctest::
 
-    >>> from eth_abi.packed import encode_single_packed, encode_abi_packed
+    >>> from eth_abi.packed import encode_packed
 
-    >>> encode_single_packed('uint32', 12345)
+    >>> # encode_packed for a single ABI type
+    >>> encode_packed(['uint32'], [12345])
     b'\x00\x0009'
 
-    >>> encode_single_packed('(int8[],uint32)', ([1, 2, 3, 4], 12345))
+    >>> # encode_packed for multiple ABI types
+    >>> encode_packed(['int8[]', 'uint32'], ([1, 2, 3, 4], 12345))
     b'\x01\x02\x03\x04\x00\x0009'
 
-    >>> encode_abi_packed(['int8[]', 'uint32'], ([1, 2, 3, 4], 12345))
+    >>> # encode_packed for a tuple with `uint8[]` and `uint32` types
+    >>> encode_packed(['(int8[],uint32)'], [([1, 2, 3, 4], 12345)])
     b'\x01\x02\x03\x04\x00\x0009'
+
 
 More information about this encoding format is available at
 https://solidity.readthedocs.io/en/develop/abi-spec.html#non-standard-packed-mode.

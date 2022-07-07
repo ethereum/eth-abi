@@ -68,7 +68,7 @@ def words(*descriptions: str) -> bytes:
     return b''.join(make_word(d) for d in descriptions)
 
 
-CORRECT_TUPLE_ENCODINGS = [
+CORRECT_STATIC_TUPLE_ENCODINGS = [
     # (type string, python value, abi encoding, packed encoding)
 
     # Empty tuples
@@ -122,8 +122,82 @@ CORRECT_TUPLE_ENCODINGS = [
             '0 (4 wide)',
         ),
     ),
+]
 
-    # Dynamic tuples
+CORRECT_DYNAMIC_TUPLE_ENCODINGS = [
+    # tuple w/ empty dynamic arrays
+    (
+        '(string[])', ((),), words('20', '0'), b'',
+    ),
+    (
+        '(bytes[])', ((),), words('20', '0'), b'',
+    ),
+    (
+        '(bytes32[])', ((),), words('20', '0'), b'',
+    ),
+    (
+        '(address[])', ((),), words('20', '0'), b'',
+    ),
+    (
+        '(int[])', ((),), words('20', '0'), b'',
+    ),
+    (
+        '(uint[])', ((),), words('20', '0'), b'',
+    ),
+    (
+        '(uint8[])', ((),), words('20', '0'), b'',
+    ),
+    (
+        '(uint256[])', ((),), words('20', '0'), b'',
+    ),
+
+    # nested tuple w/ empty dynamic arrays
+    (
+        '((string[]))', (((),),), words('20', '20', '0'), b'',
+    ),
+    (
+        '((bytes[]))', (((),),), words('20', '20', '0'), b'',
+    ),
+    (
+        '((bytes32[]))', (((),),), words('20', '20', '0'), b'',
+    ),
+    (
+        '((address[]))', (((),),), words('20', '20', '0'), b'',
+    ),
+    (
+        '((int[]))', (((),),), words('20', '20', '0'), b'',
+    ),
+    (
+        '((uint8[]))', (((),),), words('20', '20', '0'), b'',
+    ),
+    (
+        '((uint256[]))', (((),),), words('20', '20', '0'), b'',
+    ),
+
+    # sanity check / consistency - doubly nested tuples with empty dynamic array
+    (
+        '(((string[])))', ((((),),),), words('20', '20', '20', '0'), b'',
+    ),
+    (
+        '(((bytes[])))', ((((),),),), words('20', '20', '20', '0'), b'',
+    ),
+    (
+        '(((bytes32[])))', ((((),),),), words('20', '20', '20', '0'), b'',
+    ),
+    (
+        '(((address[])))', ((((),),),), words('20', '20', '20', '0'), b'',
+    ),
+    (
+        '(((int[])))', ((((),),),), words('20', '20', '20', '0'), b'',
+    ),
+    (
+        '(((uint8[])))', ((((),),),), words('20', '20', '20', '0'), b'',
+    ),
+    (
+        '(((uint256[])))', ((((),),),), words('20', '20', '20', '0'), b'',
+    ),
+
+
     (
         '(bytes32[])',
         ((zpad32_right(b'a'), zpad32_right(b'b')),),
@@ -133,7 +207,7 @@ CORRECT_TUPLE_ENCODINGS = [
     (
         '(uint256,bytes)',
         (0, b''),
-        words('0', '40', '0', '0'),
+        words('0', '40', '0'),
         words('0'),
     ),
     (
@@ -267,7 +341,9 @@ CORRECT_TUPLE_ENCODINGS = [
     ),
 ]
 
-CORRECT_SINGLE_ENCODINGS = CORRECT_TUPLE_ENCODINGS + [
+CORRECT_TUPLE_ENCODINGS = CORRECT_STATIC_TUPLE_ENCODINGS + CORRECT_DYNAMIC_TUPLE_ENCODINGS
+
+CORRECT_STATIC_SINGLE_ENCODINGS = [
     #####
     # (type string, python value, abi encoding, packed encoding)
     #####
@@ -398,11 +474,27 @@ CORRECT_SINGLE_ENCODINGS = CORRECT_TUPLE_ENCODINGS + [
         words('6162630000000000616263>0'),
     ),
     ('bytes1', b'a', words('61>0'), b'a'),
+]
+
+CORRECT_DYNAMIC_SINGLE_ENCODINGS = [
+    # string
+    ('string', '', words('0'), b''),
+    ('string', 'test', words('4', '74657374>0'), b'test'),
 
     # bytes
-    ('bytes', b'', words('0', '0'), b''),
+    ('bytes', b'', words('0'), b''),
     ('bytes', b'\xde', words('1', 'de>0'), b'\xde'),
+
+    # bytes[]
+    ('bytes[]', [], words('0'), b''),
+    ('bytes[]', [b''], words('1', '20', '0'), b''),
+    ('bytes[]', [b'\xde\xad\xbe\xef'], words('1', '20', '4', 'deadbeef>0'), b'\xde\xad\xbe\xef'),
 ]
+
+CORRECT_STATIC_ENCODINGS = CORRECT_STATIC_TUPLE_ENCODINGS + CORRECT_STATIC_SINGLE_ENCODINGS
+CORRECT_DYNAMIC_ENCODINGS = CORRECT_DYNAMIC_TUPLE_ENCODINGS + CORRECT_DYNAMIC_SINGLE_ENCODINGS
+CORRECT_ENCODINGS = CORRECT_STATIC_ENCODINGS + CORRECT_DYNAMIC_ENCODINGS
+
 
 NOT_ENCODABLE = [
     # Wrong value type
