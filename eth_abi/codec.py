@@ -34,6 +34,7 @@ class BaseABICoder:
     instances of :class:`~eth_abi.registry.ABIRegistry` to provide last-mile
     coding functionality.
     """
+
     def __init__(self, registry: ABIRegistry):
         """
         Constructor.
@@ -48,6 +49,7 @@ class ABIEncoder(BaseABICoder):
     """
     Wraps a registry to provide last-mile encoding functionality.
     """
+
     def encode_single(self, typ: TypeStr, arg: Any) -> bytes:
         """
         Encodes the python value ``arg`` as a binary value of the ABI type
@@ -92,10 +94,7 @@ class ABIEncoder(BaseABICoder):
         return self.encode(types, args)
 
     def encode(self, types, args):
-        encoders = [
-            self._registry.get_encoder(type_str)
-            for type_str in types
-        ]
+        encoders = [self._registry.get_encoder(type_str) for type_str in types]
 
         encoder = TupleEncoder(encoders=encoders)
 
@@ -147,6 +146,7 @@ class ABIDecoder(BaseABICoder):
     """
     Wraps a registry to provide last-mile decoding functionality.
     """
+
     stream_class = ContextFramesBytesIO
 
     def decode_single(self, typ: TypeStr, data: Decodable) -> Any:
@@ -168,7 +168,9 @@ class ABIDecoder(BaseABICoder):
         )
 
         if not is_bytes(data):
-            raise TypeError("The `data` value must be of bytes type.  Got {0}".format(type(data)))
+            raise TypeError(
+                "The `data` value must be of bytes type.  Got {0}".format(type(data))
+            )
 
         decoder = self._registry.get_decoder(typ)
         stream = self.stream_class(data)
@@ -191,18 +193,17 @@ class ABIDecoder(BaseABICoder):
         warnings.warn(
             "abi.decode_abi() is deprecated and will be removed in version 4.0.0 in favor of "
             "abi.decode()",
-            category=DeprecationWarning
+            category=DeprecationWarning,
         )
         return self.decode(types, data)
 
     def decode(self, types, data):
         if not is_bytes(data):
-            raise TypeError(f"The `data` value must be of bytes type.  Got {type(data)}")
+            raise TypeError(
+                f"The `data` value must be of bytes type.  Got {type(data)}"
+            )
 
-        decoders = [
-            self._registry.get_decoder(type_str)
-            for type_str in types
-        ]
+        decoders = [self._registry.get_decoder(type_str) for type_str in types]
 
         decoder = TupleDecoder(decoders=decoders)
         stream = self.stream_class(data)

@@ -17,7 +17,7 @@ from eth_abi.utils.numeric import (
     scale_places,
 )
 
-T = TypeVar('T')
+T = TypeVar("T")
 
 
 def take(n: int, it: Iterable[T]) -> Iterator[T]:
@@ -33,19 +33,21 @@ def get_test_value(prec: int, frac_places: int) -> decimal.Decimal:
     ``frac_places`` fractional places.
     """
     digits = itertools.cycle(map(str, range(1, 10)))
-    decimal_repr = ''.join(take(prec, digits))
+    decimal_repr = "".join(take(prec, digits))
 
     if frac_places <= 0:
         # Add zeroes to right side of repr
-        return decimal.Decimal(decimal_repr + '0' * -frac_places)
+        return decimal.Decimal(decimal_repr + "0" * -frac_places)
     elif frac_places > prec:
         # Add zeroes to left side of repr
         extra_frac_places = frac_places - prec
-        return decimal.Decimal('.' + '0' * extra_frac_places + decimal_repr)
+        return decimal.Decimal("." + "0" * extra_frac_places + decimal_repr)
     else:
         # Split repr according to frac places
         whole_places = prec - frac_places
-        return decimal.Decimal(decimal_repr[:whole_places] + '.' + decimal_repr[-frac_places:])
+        return decimal.Decimal(
+            decimal_repr[:whole_places] + "." + decimal_repr[-frac_places:]
+        )
 
 
 @given(st.integers(min_value=1, max_value=ABI_DECIMAL_PREC))

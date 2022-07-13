@@ -20,26 +20,36 @@ fixed_sizes = st.tuples(total_bits, frac_places)
 # Type string strategies #
 ##########################
 
+
 def join(xs):
-    return ''.join(map(str, xs))
+    return "".join(map(str, xs))
 
 
 def join_with_x(xs):
-    return 'x'.join(map(str, xs))
+    return "x".join(map(str, xs))
 
 
-bare_type_strs = st.sampled_from([
-    'uint', 'int', 'ufixed', 'fixed', 'address', 'bool', 'bytes', 'function',
-    'string',
-])
+bare_type_strs = st.sampled_from(
+    [
+        "uint",
+        "int",
+        "ufixed",
+        "fixed",
+        "address",
+        "bool",
+        "bytes",
+        "function",
+        "string",
+    ]
+)
 
-fixed_bytes_type_strs = bytes_sizes.map('bytes{}'.format)
-uint_type_strs = total_bits.map('uint{}'.format)
-int_type_strs = total_bits.map('int{}'.format)
+fixed_bytes_type_strs = bytes_sizes.map("bytes{}".format)
+uint_type_strs = total_bits.map("uint{}".format)
+int_type_strs = total_bits.map("int{}".format)
 
 fixed_size_strs = fixed_sizes.map(join_with_x)
-ufixed_type_strs = fixed_size_strs.map('ufixed{}'.format)
-fixed_type_strs = fixed_size_strs.map('fixed{}'.format)
+ufixed_type_strs = fixed_size_strs.map("ufixed{}".format)
+fixed_type_strs = fixed_size_strs.map("fixed{}".format)
 
 non_array_type_strs = st.one_of(
     bare_type_strs,
@@ -55,7 +65,7 @@ fixed_array_components = st.integers(min_value=1).map(lambda x: (x,))
 array_components = st.one_of(dynam_array_components, fixed_array_components)
 
 array_lists = st.lists(array_components, min_size=1, max_size=6)
-array_list_strs = array_lists.map(lambda x: ''.join(repr(list(i)) for i in x))
+array_list_strs = array_lists.map(lambda x: "".join(repr(list(i)) for i in x))
 
 array_type_strs = st.tuples(non_array_type_strs, array_list_strs).map(join)
 
@@ -66,14 +76,15 @@ def join_tuple(xs):
     if not isinstance(xs, list):
         return xs
 
-    return '({})'.format(','.join(join_tuple(x) for x in xs))
+    return "({})".format(",".join(join_tuple(x) for x in xs))
 
 
 tuple_type_strs = st.recursive(
     st.lists(non_tuple_type_strs, min_size=0, max_size=10),
     lambda this_strategy: st.lists(
         st.one_of(non_tuple_type_strs, this_strategy),
-        min_size=0, max_size=10,
+        min_size=0,
+        max_size=10,
     ),
 ).map(join_tuple)
 
@@ -91,17 +102,22 @@ def guaranteed_permute(xs):
     return tuple(xs[i] for i in shuffled_indices)
 
 
-malformed_non_tuple_type_strs = st.tuples(
-    st.one_of(bare_type_strs, st.text()),
-    st.one_of(total_bits, fixed_size_strs),
-    array_list_strs,
-).map(guaranteed_permute).map(join)
+malformed_non_tuple_type_strs = (
+    st.tuples(
+        st.one_of(bare_type_strs, st.text()),
+        st.one_of(total_bits, fixed_size_strs),
+        array_list_strs,
+    )
+    .map(guaranteed_permute)
+    .map(join)
+)
 
 malformed_tuple_type_strs = st.recursive(
     st.lists(malformed_non_tuple_type_strs, min_size=1, max_size=10),
     lambda this_strategy: st.lists(
         st.one_of(malformed_non_tuple_type_strs, this_strategy),
-        min_size=1, max_size=10,
+        min_size=1,
+        max_size=10,
     ),
     max_leaves=5,
 ).map(join_tuple)
@@ -119,48 +135,58 @@ malformed_type_strs = st.one_of(
 MIN_LIST_SIZE = 1
 MAX_LIST_SIZE = 8
 
-uint_total_bits = st.shared(total_bits, key='uint_total_bits')
-uint_strs = uint_total_bits.map('uint{}'.format)
-uint_values = uint_total_bits.flatmap(lambda n: st.integers(
-    min_value=0,
-    max_value=2 ** n - 1,
-))
+uint_total_bits = st.shared(total_bits, key="uint_total_bits")
+uint_strs = uint_total_bits.map("uint{}".format)
+uint_values = uint_total_bits.flatmap(
+    lambda n: st.integers(
+        min_value=0,
+        max_value=2**n - 1,
+    )
+)
 
-int_total_bits = st.shared(total_bits, key='int_total_bits')
-int_strs = int_total_bits.map('int{}'.format)
-int_values = int_total_bits.flatmap(lambda n: st.integers(
-    min_value=-2 ** (n - 1),
-    max_value=2 ** (n - 1) - 1,
-))
+int_total_bits = st.shared(total_bits, key="int_total_bits")
+int_strs = int_total_bits.map("int{}".format)
+int_values = int_total_bits.flatmap(
+    lambda n: st.integers(
+        min_value=-(2 ** (n - 1)),
+        max_value=2 ** (n - 1) - 1,
+    )
+)
 
-ufixed_size_tuples = st.shared(fixed_sizes, key='ufixed_size_tuples')
-ufixed_strs = ufixed_size_tuples.map(join_with_x).map('ufixed{}'.format)
-ufixed_values = ufixed_size_tuples.flatmap(lambda sz: st.decimals(
-    min_value=0,
-    max_value=2 ** sz[0] - 1,
-    places=0,
-).map(scale_places(sz[1])))
+ufixed_size_tuples = st.shared(fixed_sizes, key="ufixed_size_tuples")
+ufixed_strs = ufixed_size_tuples.map(join_with_x).map("ufixed{}".format)
+ufixed_values = ufixed_size_tuples.flatmap(
+    lambda sz: st.decimals(
+        min_value=0,
+        max_value=2 ** sz[0] - 1,
+        places=0,
+    ).map(scale_places(sz[1]))
+)
 
-fixed_size_tuples = st.shared(fixed_sizes, key='fixed_size_tuples')
-fixed_strs = fixed_size_tuples.map(join_with_x).map('fixed{}'.format)
-fixed_values = fixed_size_tuples.flatmap(lambda sz: st.decimals(
-    min_value=-2 ** (sz[0] - 1),
-    max_value=2 ** (sz[0] - 1) - 1,
-    places=0,
-).map(scale_places(sz[1])))
+fixed_size_tuples = st.shared(fixed_sizes, key="fixed_size_tuples")
+fixed_strs = fixed_size_tuples.map(join_with_x).map("fixed{}".format)
+fixed_values = fixed_size_tuples.flatmap(
+    lambda sz: st.decimals(
+        min_value=-(2 ** (sz[0] - 1)),
+        max_value=2 ** (sz[0] - 1) - 1,
+        places=0,
+    ).map(scale_places(sz[1]))
+)
 
-fixed_bytes_sizes = st.shared(bytes_sizes, key='fixed_bytes_sizes')
-fixed_bytes_strs = fixed_bytes_sizes.map('bytes{}'.format)
-fixed_bytes_values = fixed_bytes_sizes.flatmap(lambda n: st.binary(
-    min_size=n,
-    max_size=n,
-))
+fixed_bytes_sizes = st.shared(bytes_sizes, key="fixed_bytes_sizes")
+fixed_bytes_strs = fixed_bytes_sizes.map("bytes{}".format)
+fixed_bytes_values = fixed_bytes_sizes.flatmap(
+    lambda n: st.binary(
+        min_size=n,
+        max_size=n,
+    )
+)
 
-address_strs = st.just('address')
+address_strs = st.just("address")
 address_values = st.binary(min_size=20, max_size=20).map(encode_hex)
 
 bytes_strs_and_values = st.tuples(
-    st.just('bytes'),
+    st.just("bytes"),
     st.binary(min_size=0, max_size=4096),
 )
 
@@ -173,30 +199,34 @@ non_array = (
     (address_strs, address_values),
 )
 
-non_array_strs_values = st.one_of(*[
-    st.tuples(type_strs, type_values) for type_strs, type_values in non_array
-])
+non_array_strs_values = st.one_of(
+    *[st.tuples(type_strs, type_values) for type_strs, type_values in non_array]
+)
 
 num_unsized_elements = st.integers(min_value=0, max_value=MAX_LIST_SIZE)
 unsized_array_strs_values = num_unsized_elements.flatmap(
-    lambda n: st.one_of([
-        st.tuples(
-            type_strs.map('{}[]'.format),
-            st.lists(type_values, min_size=n, max_size=n).map(tuple),
-        )
-        for type_strs, type_values in non_array
-    ])
+    lambda n: st.one_of(
+        [
+            st.tuples(
+                type_strs.map("{}[]".format),
+                st.lists(type_values, min_size=n, max_size=n).map(tuple),
+            )
+            for type_strs, type_values in non_array
+        ]
+    )
 )
 
 num_sized_elements = st.integers(min_value=MIN_LIST_SIZE, max_value=MAX_LIST_SIZE)
 sized_array_strs_values = num_sized_elements.flatmap(
-    lambda n: st.one_of([
-        st.tuples(
-            type_strs.map(lambda ts: '{}[{}]'.format(ts, n)),
-            st.lists(type_values, min_size=n, max_size=n).map(tuple),
-        )
-        for type_strs, type_values in non_array
-    ])
+    lambda n: st.one_of(
+        [
+            st.tuples(
+                type_strs.map(lambda ts: "{}[{}]".format(ts, n)),
+                st.lists(type_values, min_size=n, max_size=n).map(tuple),
+            )
+            for type_strs, type_values in non_array
+        ]
+    )
 )
 
 single_strs_values = st.one_of(
@@ -240,7 +270,8 @@ tuple_strs_values = st.recursive(
     st.lists(single_strs_values, min_size=0, max_size=10),
     lambda this_strategy: st.lists(
         st.one_of(single_strs_values, this_strategy),
-        min_size=0, max_size=10,
+        min_size=0,
+        max_size=10,
     ),
 ).map(destructure_tuple_example)
 

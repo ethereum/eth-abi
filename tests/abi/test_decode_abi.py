@@ -17,13 +17,13 @@ from ..common.unit import (
 
 
 @pytest.mark.parametrize(
-    'type_str,expected,abi_encoding,_',
+    "type_str,expected,abi_encoding,_",
     CORRECT_TUPLE_ENCODINGS,
 )
 def test_decode_abi(type_str, expected, abi_encoding, _):
     abi_type = parse(type_str)
     if abi_type.arrlist is not None:
-        pytest.skip('ABI coding functions do not support array types')
+        pytest.skip("ABI coding functions do not support array types")
 
     types = [t.to_type_str() for t in abi_type.components]
 
@@ -32,7 +32,7 @@ def test_decode_abi(type_str, expected, abi_encoding, _):
     with pytest.warns(
         DeprecationWarning,
         match=r"abi.decode_abi\(\) is deprecated and will be removed in version 4.0.0 in favor of "
-              r"abi.decode\(\)"
+        r"abi.decode\(\)",
     ):
         assert decode_abi(types, abi_encoding) == expected
 
@@ -42,12 +42,12 @@ def test_decode_abi_empty_data_raises():
         with pytest.warns(
             DeprecationWarning,
             match=r"abi.decode_abi\(\) is deprecated and will be removed in version 4.0.0 in favor "
-                  r"of abi.decode\(\)"
+            r"of abi.decode\(\)",
         ):
-            decode_abi(['uint32', 'uint32'], b'')
+            decode_abi(["uint32", "uint32"], b"")
 
     with pytest.raises(DecodingError):
-        decode(['uint32', 'uint32'], b'')
+        decode(["uint32", "uint32"], b"")
 
 
 def test_decode_abi_wrong_data_type_raises():
@@ -55,9 +55,9 @@ def test_decode_abi_wrong_data_type_raises():
         with pytest.warns(
             DeprecationWarning,
             match=r"abi.decode_abi\(\) is deprecated and will be removed in version 4.0.0 in favor "
-                  r"of abi.decode\(\)"
+            r"of abi.decode\(\)",
         ):
-            decode_abi(['uint32', 'uint32'], '')
+            decode_abi(["uint32", "uint32"], "")
 
     with pytest.raises(DecodingError):
-        decode(['uint32', 'uint32'], b'')
+        decode(["uint32", "uint32"], b"")

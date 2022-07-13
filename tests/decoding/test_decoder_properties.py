@@ -79,11 +79,11 @@ def is_valid_padding_bytes(padding_bytes, data_bytes):
 
     if leading_data_bit_is_one:
         # All padding bits must be 1
-        if padding_bytes.replace(b'\xff', b'') == b'':
+        if padding_bytes.replace(b"\xff", b"") == b"":
             return True
     else:
         # All padding bits must be 0
-        if padding_bytes.replace(b'\x00', b'') == b'':
+        if padding_bytes.replace(b"\x00", b"") == b"":
             return True
 
     return False
@@ -130,7 +130,7 @@ def test_decode_unsigned_int(integer_bit_size, stream_bytes, data_byte_size):
         with pytest.raises(InsufficientDataBytes):
             decoder(stream)
         return
-    elif actual_value > 2 ** integer_bit_size - 1:
+    elif actual_value > 2**integer_bit_size - 1:
         with pytest.raises(NonEmptyPaddingBytes):
             decoder(stream)
         return
@@ -146,8 +146,8 @@ def test_decode_unsigned_int(integer_bit_size, stream_bytes, data_byte_size):
     stream_bytes=st.binary(min_size=0, max_size=32),
     data_byte_size=st.integers(min_value=0, max_value=32),
 )
-@example(8, b'\x00\x80', 2)
-@example(8, b'\xff\xff', 2)
+@example(8, b"\x00\x80", 2)
+@example(8, b"\xff\xff", 2)
 def test_decode_signed_int(integer_bit_size, stream_bytes, data_byte_size):
     if integer_bit_size % 8 != 0:
         with pytest.raises(ValueError):
@@ -175,7 +175,7 @@ def test_decode_signed_int(integer_bit_size, stream_bytes, data_byte_size):
 
     raw_value = big_endian_to_int(stream_bytes[padding_bytes:data_byte_size])
     if raw_value >= 2 ** (integer_bit_size - 1):
-        actual_value = raw_value - 2 ** integer_bit_size
+        actual_value = raw_value - 2**integer_bit_size
     else:
         actual_value = raw_value
 
@@ -184,9 +184,8 @@ def test_decode_signed_int(integer_bit_size, stream_bytes, data_byte_size):
             decoder(stream)
         return
     elif (
-        (actual_value >= 0 and not all_bytes_equal(stream_bytes[:padding_bytes], 0)) or
-        (actual_value < 0 and not all_bytes_equal(stream_bytes[:padding_bytes], 255))
-    ):
+        actual_value >= 0 and not all_bytes_equal(stream_bytes[:padding_bytes], 0)
+    ) or (actual_value < 0 and not all_bytes_equal(stream_bytes[:padding_bytes], 255)):
         with pytest.raises(NonEmptyPaddingBytes):
             decoder(stream)
         return
@@ -203,7 +202,7 @@ def test_decode_signed_int(integer_bit_size, stream_bytes, data_byte_size):
 )
 def test_decode_bytes(_bytes, pad_size):
     size_bytes = zpad32(int_to_big_endian(len(_bytes)))
-    padded_bytes = _bytes + b'\x00' * pad_size
+    padded_bytes = _bytes + b"\x00" * pad_size
     stream_bytes = size_bytes + padded_bytes
     stream = ContextFramesBytesIO(stream_bytes)
 
@@ -225,7 +224,7 @@ def test_decode_bytes(_bytes, pad_size):
 )
 def test_decode_strings(_strings, pad_size):
     size_bytes = zpad32(int_to_big_endian(len(_strings.encode("utf-8"))))
-    padded_bytes = _strings.encode("utf-8") + b'\x00' * pad_size
+    padded_bytes = _strings.encode("utf-8") + b"\x00" * pad_size
     stream_bytes = size_bytes + padded_bytes
     stream = ContextFramesBytesIO(stream_bytes)
 
@@ -247,7 +246,7 @@ def test_decode_strings(_strings, pad_size):
 )
 def test_decode_strings_raises(_bytes, pad_size):
     size_bytes = zpad32(int_to_big_endian(len(_bytes)))
-    padded_bytes = _bytes + b'\x00' * pad_size
+    padded_bytes = _bytes + b"\x00" * pad_size
     stream_bytes = size_bytes + padded_bytes
     stream = ContextFramesBytesIO(stream_bytes)
 
@@ -285,9 +284,9 @@ def test_decode_boolean(stream_bytes, data_byte_size):
 
     byte_value = stream_bytes[data_byte_size - 1]
 
-    if byte_value in {0, b'\x00'}:
+    if byte_value in {0, b"\x00"}:
         actual_value = False
-    elif byte_value in {1, b'\x01'}:
+    elif byte_value in {1, b"\x01"}:
         actual_value = True
     else:
         with pytest.raises(NonEmptyPaddingBytes):
@@ -343,7 +342,7 @@ def test_decode_bytes_xx(value_byte_size, stream_bytes, data_byte_size):
     data_byte_size=st.integers(min_value=0, max_value=32),
 )
 def test_decode_address(address_bytes, padding_size, data_byte_size):
-    stream_bytes = b'\x00' * padding_size + address_bytes
+    stream_bytes = b"\x00" * padding_size + address_bytes
     if data_byte_size < 20:
         with pytest.raises(ValueError):
             AddressDecoder(
@@ -379,14 +378,13 @@ def test_decode_address(address_bytes, padding_size, data_byte_size):
     array_size=st.integers(min_value=0, max_value=32),
     array_values=st.lists(
         st.integers(min_value=0, max_value=TT256M1),
-        min_size=0, max_size=64,
+        min_size=0,
+        max_size=64,
     ).map(tuple),
 )
 def test_decode_array_of_unsigned_integers(array_size, array_values):
     size_bytes = zpad32(int_to_big_endian(array_size))
-    values_bytes = b''.join((
-        zpad32(int_to_big_endian(v)) for v in array_values
-    ))
+    values_bytes = b"".join((zpad32(int_to_big_endian(v)) for v in array_values))
     stream_bytes = size_bytes + values_bytes
 
     decoder = DynamicArrayDecoder(
@@ -404,27 +402,27 @@ def test_decode_array_of_unsigned_integers(array_size, array_values):
 
 
 @pytest.mark.parametrize(
-    'types,data,expected',
+    "types,data,expected",
     (
         (
-            ('address', 'uint256'),
+            ("address", "uint256"),
             (
-                '0x'
-                '000000000000000000000000abf7d8b5c1322b3e553d2fac90ff006c30f1b875'
-                '0000000000000000000000000000000000000000000000000000005d21dba000'
+                "0x"
+                "000000000000000000000000abf7d8b5c1322b3e553d2fac90ff006c30f1b875"
+                "0000000000000000000000000000000000000000000000000000005d21dba000"
             ),
-            ('0xabf7d8b5c1322b3e553d2fac90ff006c30f1b875', 400000000000)
+            ("0xabf7d8b5c1322b3e553d2fac90ff006c30f1b875", 400000000000),
         ),
         (
-            ('uint256', 'bytes'),
+            ("uint256", "bytes"),
             (
-                '0x'
-                '0000000000000000000000000000000000000000000000000000000000000000'
-                '0000000000000000000000000000000000000000000000000000000000000040'
-                '0000000000000000000000000000000000000000000000000000000000000000'
-                '0000000000000000000000000000000000000000000000000000000000000000'
+                "0x"
+                "0000000000000000000000000000000000000000000000000000000000000000"
+                "0000000000000000000000000000000000000000000000000000000000000040"
+                "0000000000000000000000000000000000000000000000000000000000000000"
+                "0000000000000000000000000000000000000000000000000000000000000000"
             ),
-            (0, b''),
+            (0, b""),
         ),
     ),
 )
@@ -443,10 +441,9 @@ def test_tuple_decoder(types, data, expected):
     stream_bytes=st.binary(min_size=0, max_size=32),
     data_byte_size=st.integers(min_value=0, max_value=32),
 )
-def test_decode_unsigned_fixed(value_bit_size,
-                               frac_places,
-                               stream_bytes,
-                               data_byte_size):
+def test_decode_unsigned_fixed(
+    value_bit_size, frac_places, stream_bytes, data_byte_size
+):
     if value_bit_size > data_byte_size * 8:
         with pytest.raises(ValueError):
             UnsignedFixedDecoder(
@@ -463,7 +460,9 @@ def test_decode_unsigned_fixed(value_bit_size,
     )
 
     stream = ContextFramesBytesIO(stream_bytes)
-    padding_bytes = stream_bytes[:data_byte_size][:data_byte_size - value_bit_size // 8]
+    padding_bytes = stream_bytes[:data_byte_size][
+        : data_byte_size - value_bit_size // 8
+    ]
 
     if len(stream_bytes) < data_byte_size:
         with pytest.raises(InsufficientDataBytes):
@@ -486,10 +485,7 @@ def test_decode_unsigned_fixed(value_bit_size,
     stream_bytes=st.binary(min_size=0, max_size=32),
     data_byte_size=st.integers(min_value=0, max_value=32),
 )
-def test_decode_signed_fixed(value_bit_size,
-                             frac_places,
-                             stream_bytes,
-                             data_byte_size):
+def test_decode_signed_fixed(value_bit_size, frac_places, stream_bytes, data_byte_size):
     if value_bit_size > data_byte_size * 8:
         with pytest.raises(ValueError):
             SignedFixedDecoder(
@@ -527,6 +523,6 @@ def test_decode_signed_fixed(value_bit_size,
 
     if padding_bytes:
         if actual_value >= 0:
-            assert bytes(set(padding_bytes)) == b'\x00'
+            assert bytes(set(padding_bytes)) == b"\x00"
         else:
-            assert bytes(set(padding_bytes)) == b'\xff'
+            assert bytes(set(padding_bytes)) == b"\xff"
