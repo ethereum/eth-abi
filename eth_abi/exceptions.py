@@ -24,10 +24,12 @@ class IllegalValue(EncodingError):
     a value that is not considered legal for the output ABI type.
 
     Example:
+    -------
 
     .. code-block:: python
 
         fixed128x19_encoder(Decimal('NaN'))  # cannot encode NaN
+
     """
 
     pass
@@ -40,10 +42,12 @@ class ValueOutOfBounds(IllegalValue):
     type.
 
     Example:
+    -------
 
     .. code-block:: python
 
         ufixed8x1_encoder(Decimal('25.6'))  # out of bounds
+
     """
 
     pass
