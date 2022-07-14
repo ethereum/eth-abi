@@ -64,8 +64,9 @@ class ABIEncoder(BaseABICoder):
             value of the ABI type ``typ``.
         """
         warnings.warn(
-            "abi.encode_single() and abi.encode_single_packed() are deprecated and will be removed "
-            "in version 4.0.0 in favor of abi.encode() and abi.encode_packed(), respectively",
+            "abi.encode_single() and abi.encode_single_packed() are deprecated "
+            "and will be removed in version 4.0.0 in favor of abi.encode() and "
+            "abi.encode_packed(), respectively",
             category=DeprecationWarning,
         )
 
@@ -87,8 +88,9 @@ class ABIEncoder(BaseABICoder):
             values in ``args`` as values of the ABI types in ``types``.
         """
         warnings.warn(
-            "abi.encode_abi() and abi.encode_abi_packed() are deprecated and will be removed in "
-            "version 4.0.0 in favor of abi.encode() and abi.encode_packed(), respectively",
+            "abi.encode_abi() and abi.encode_abi_packed() are deprecated and will be "
+            "removed in version 4.0.0 in favor of abi.encode() and "
+            "abi.encode_packed(), respectively",
             category=DeprecationWarning,
         )
         return self.encode(types, args)
@@ -162,8 +164,8 @@ class ABIDecoder(BaseABICoder):
             ``data``.
         """
         warnings.warn(
-            "abi.decode_single() is deprecated and will be removed in version 4.0.0 in favor of "
-            "abi.decode()",
+            "abi.decode_single() is deprecated and will be removed in version 4.0.0 "
+            "in favor of abi.decode()",
             category=DeprecationWarning,
         )
 
@@ -191,8 +193,8 @@ class ABIDecoder(BaseABICoder):
             represented in ``data``.
         """
         warnings.warn(
-            "abi.decode_abi() is deprecated and will be removed in version 4.0.0 in favor of "
-            "abi.decode()",
+            "abi.decode_abi() is deprecated and will be removed in version 4.0.0 in "
+            "favor of abi.decode()",
             category=DeprecationWarning,
         )
         return self.decode(types, data)

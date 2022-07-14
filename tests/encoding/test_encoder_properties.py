@@ -335,13 +335,19 @@ def test_encode_unsigned_fixed(value, value_bit_size, frac_places, data_byte_siz
     )
 
     if not is_number(value):
-        pattern = r"Value `None` of type .*NoneType.* cannot be encoded by UnsignedFixedEncoder"
+        pattern = (
+            r"Value `None` of type .*NoneType.* cannot be "
+            r"encoded by UnsignedFixedEncoder"
+        )
         with pytest.raises(EncodingTypeError, match=pattern):
             encoder(value)
         return
 
     if UnsignedFixedEncoder.illegal_value_fn(value):
-        pattern = r"Value .*(NaN|Infinity|-Infinity).* cannot be encoded by UnsignedFixedEncoder"
+        pattern = (
+            r"Value .*(NaN|Infinity|-Infinity).* cannot be "
+            r"encoded by UnsignedFixedEncoder"
+        )
         with pytest.raises(IllegalValue, match=pattern):
             encoder(value)
         return
@@ -359,7 +365,10 @@ def test_encode_unsigned_fixed(value, value_bit_size, frac_places, data_byte_siz
     with decimal.localcontext(abi_decimal_context):
         residue = value % (TEN**-frac_places)
     if residue > 0:
-        pattern = r"Value .* cannot be encoded by UnsignedFixedEncoder: residue .* outside allowed"
+        pattern = (
+            r"Value .* cannot be encoded by UnsignedFixedEncoder: "
+            r"residue .* outside allowed"
+        )
         with pytest.raises(IllegalValue, match=pattern):
             encoder(value)
         return
@@ -401,14 +410,20 @@ def test_encode_signed_fixed(value, value_bit_size, frac_places, data_byte_size)
         return
 
     if SignedFixedEncoder.illegal_value_fn(value):
-        pattern = r"Value .*(NaN|Infinity|-Infinity).* cannot be encoded by SignedFixedEncoder"
+        pattern = (
+            r"Value .*(NaN|Infinity|-Infinity).* cannot be encoded "
+            r"by SignedFixedEncoder"
+        )
         with pytest.raises(IllegalValue, match=pattern):
             encoder(value)
         return
 
     lower, upper = compute_signed_fixed_bounds(value_bit_size, frac_places)
     if value < lower or value > upper:
-        pattern = r"Value .* cannot be encoded by SignedFixedEncoder: Cannot be encoded in .* bits"
+        pattern = (
+            r"Value .* cannot be encoded by SignedFixedEncoder: "
+            r"Cannot be encoded in .* bits"
+        )
         with pytest.raises(ValueOutOfBounds, match=pattern):
             encoder(value)
         return
@@ -416,7 +431,10 @@ def test_encode_signed_fixed(value, value_bit_size, frac_places, data_byte_size)
     with decimal.localcontext(abi_decimal_context):
         residue = value % (TEN**-frac_places)
     if residue > 0:
-        pattern = r"Value .* cannot be encoded by SignedFixedEncoder: residue .* outside allowed"
+        pattern = (
+            r"Value .* cannot be encoded by SignedFixedEncoder: "
+            r"residue .* outside allowed"
+        )
         with pytest.raises(IllegalValue, match=pattern):
             encoder(value)
         return
@@ -434,7 +452,7 @@ def test_tuple_encoder():
         )
     )
     expected = decode_hex(
-        "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
-    )  # noqa: E501
+        "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"  # noqa: E501
+    )
     actual = encoder((0, b""))
     assert actual == expected

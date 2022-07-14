@@ -157,7 +157,7 @@ CORRECT_TUPLE_ENCODINGS = [
             "40",  # offset of bytes in first (bytes,bool)
             "0",  # encoding for `False`
             "12",  # length of b'david attenborough'
-            "646176696420617474656e626f726f756768>0",  # encoding of b'david attenborough'
+            "646176696420617474656e626f726f756768>0",  # encoding of b'david attenborough'  # noqa: E501
             "40",  # offset of bytes in second (bytes,bool)
             "1",  # encoding for `True`
             "10",  # length of b'boaty mcboatface'

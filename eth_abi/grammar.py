@@ -381,7 +381,8 @@ class BasicType(ABIType):
         elif base in ("fixed", "ufixed"):
             if not isinstance(sub, tuple):
                 self.invalidate(
-                    "fixed type must have suffix of form <bits>x<exponent>, e.g. 128x19",
+                    "fixed type must have suffix of form <bits>x<exponent>, "
+                    "e.g. 128x19",
                 )
 
             bits, minus_e = sub

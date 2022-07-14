@@ -28,8 +28,8 @@ def test_encode_abi(type_str, python_value, abi_encoding, _):
 
     with pytest.warns(
         DeprecationWarning,
-        match=r"abi.encode_abi\(\) and abi.encode_abi_packed\(\) are deprecated and will be "
-        r"removed in version 4.0.0 in favor of abi.encode\(\) and abi.encode_packed\(\), "
-        r"respectively",
+        match=r"abi.encode_abi\(\) and abi.encode_abi_packed\(\) are deprecated "
+        r"and will be removed in version 4.0.0 in favor of abi.encode\(\) and "
+        r"abi.encode_packed\(\), respectively",
     ):
         assert encode_abi(types, python_value) == abi_encoding

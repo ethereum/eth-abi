@@ -18,8 +18,8 @@ def test_encode_single(typ, python_value, _, packed_encoding):
 
     with pytest.warns(
         DeprecationWarning,
-        match=r"abi.encode_single\(\) and abi.encode_single_packed\(\) are deprecated and will be "
-        r"removed in version 4.0.0 in favor of abi.encode\(\) and abi.encode_packed\(\), "
-        r"respectively",
+        match=r"abi.encode_single\(\) and abi.encode_single_packed\(\) are "
+        r"deprecated and will be removed in version 4.0.0 in favor of abi.encode\(\) "
+        r"and abi.encode_packed\(\), respectively",
     ):
         assert encode_single_packed(typ, python_value) == packed_encoding
