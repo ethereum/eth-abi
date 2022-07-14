@@ -6,7 +6,7 @@ from eth_abi.utils.numeric import (
 
 
 @pytest.mark.parametrize(
-    'value,expected',
+    "value,expected",
     (
         (0, 0),
         (1, 32),
@@ -16,7 +16,7 @@ from eth_abi.utils.numeric import (
         (63, 64),
         (64, 64),
         (100, 128),
-    )
+    ),
 )
 def test_ceil32(value, expected):
     actual = ceil32(value)

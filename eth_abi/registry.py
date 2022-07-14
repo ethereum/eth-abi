@@ -54,6 +54,7 @@ class PredicateMapping(Copyable):
     when their corresponding predicate matches a given input.  Predicates can
     also be labeled to facilitate removal from the mapping.
     """
+
     def __init__(self, name):
         self._name = name
         self._values = {}
@@ -61,10 +62,12 @@ class PredicateMapping(Copyable):
 
     def add(self, predicate, value, label=None):
         if predicate in self._values:
-            raise ValueError('Matcher {} already exists in {}'.format(
-                repr(predicate),
-                self._name,
-            ))
+            raise ValueError(
+                "Matcher {} already exists in {}".format(
+                    repr(predicate),
+                    self._name,
+                )
+            )
 
         if label is not None:
             if label in self._labeled_predicates:
@@ -82,26 +85,29 @@ class PredicateMapping(Copyable):
 
     def find(self, type_str):
         results = tuple(
-            (predicate, value) for predicate, value in self._values.items()
+            (predicate, value)
+            for predicate, value in self._values.items()
             if predicate(type_str)
         )
 
         if len(results) == 0:
-            raise NoEntriesFound("No matching entries for '{}' in {}".format(
-                type_str,
-                self._name,
-            ))
+            raise NoEntriesFound(
+                "No matching entries for '{}' in {}".format(
+                    type_str,
+                    self._name,
+                )
+            )
 
         predicates, values = tuple(zip(*results))
 
         if len(results) > 1:
-            predicate_reprs = ', '.join(map(repr, predicates))
+            predicate_reprs = ", ".join(map(repr, predicates))
             raise MultipleEntriesFound(
                 f"Multiple matching entries for '{type_str}' in {self._name}: "
                 f"{predicate_reprs}. This occurs when two registrations match the "
                 "same type string. You may need to delete one of the "
                 "registrations or modify its matching behavior to ensure it "
-                "doesn't collide with other registrations. See the \"Registry\" "
+                'doesn\'t collide with other registrations. See the "Registry" '
                 "documentation for more information."
             )
 
@@ -112,10 +118,12 @@ class PredicateMapping(Copyable):
         try:
             del self._values[predicate]
         except KeyError:
-            raise KeyError('Matcher {} not found in {}'.format(
-                repr(predicate),
-                self._name,
-            ))
+            raise KeyError(
+                "Matcher {} not found in {}".format(
+                    repr(predicate),
+                    self._name,
+                )
+            )
 
         # Delete any label which refers to this predicate
         try:
@@ -132,10 +140,12 @@ class PredicateMapping(Copyable):
             if value is predicate:
                 return key
 
-        raise ValueError('Matcher {} not referred to by any label in {}'.format(
-            repr(predicate),
-            self._name,
-        ))
+        raise ValueError(
+            "Matcher {} not referred to by any label in {}".format(
+                repr(predicate),
+                self._name,
+            )
+        )
 
     def remove_by_label(self, label):
         try:
@@ -152,9 +162,11 @@ class PredicateMapping(Copyable):
         elif isinstance(predicate_or_label, str):
             self.remove_by_label(predicate_or_label)
         else:
-            raise TypeError('Key to be removed must be callable or string: got {}'.format(
-                type(predicate_or_label),
-            ))
+            raise TypeError(
+                "Key to be removed must be callable or string: got {}".format(
+                    type(predicate_or_label),
+                )
+            )
 
     def copy(self):
         cpy = type(self)(self._name)
@@ -170,16 +182,17 @@ class Predicate:
     Represents a predicate function to be used for type matching in
     ``ABIRegistry``.
     """
+
     __slots__ = tuple()
 
     def __call__(self, *args, **kwargs):  # pragma: no cover
-        raise NotImplementedError('Must implement `__call__`')
+        raise NotImplementedError("Must implement `__call__`")
 
     def __str__(self):  # pragma: no cover
-        raise NotImplementedError('Must implement `__str__`')
+        raise NotImplementedError("Must implement `__str__`")
 
     def __repr__(self):
-        return '<{} {}>'.format(type(self).__name__, self)
+        return "<{} {}>".format(type(self).__name__, self)
 
     def __iter__(self):
         for attr in self.__slots__:
@@ -189,17 +202,15 @@ class Predicate:
         return hash(tuple(self))
 
     def __eq__(self, other):
-        return (
-            type(self) is type(other) and
-            tuple(self) == tuple(other)
-        )
+        return type(self) is type(other) and tuple(self) == tuple(other)
 
 
 class Equals(Predicate):
     """
     A predicate that matches any input equal to `value`.
     """
-    __slots__ = ('value',)
+
+    __slots__ = ("value",)
 
     def __init__(self, value):
         self.value = value
@@ -208,7 +219,7 @@ class Equals(Predicate):
         return self.value == other
 
     def __str__(self):
-        return '(== {})'.format(repr(self.value))
+        return "(== {})".format(repr(self.value))
 
 
 class BaseEquals(Predicate):
@@ -219,7 +230,8 @@ class BaseEquals(Predicate):
     string must *not* have a sub component to match.  If `with_sub` is None,
     the type string's sub component is ignored.
     """
-    __slots__ = ('base', 'with_sub')
+
+    __slots__ = ("base", "with_sub")
 
     def __init__(self, base, *, with_sub=None):
         self.base = base
@@ -248,11 +260,11 @@ class BaseEquals(Predicate):
         return False
 
     def __str__(self):
-        return '(base == {}{})'.format(
+        return "(base == {}{})".format(
             repr(self.base),
-            '' if self.with_sub is None else (
-                ' and sub is not None' if self.with_sub else ' and sub is None'
-            ),
+            ""
+            if self.with_sub is None
+            else (" and sub is not None" if self.with_sub else " and sub is None"),
         )
 
 
@@ -310,7 +322,7 @@ class BaseRegistry:
             return
 
         raise TypeError(
-            'Lookup must be a callable or a value of type `str`: got {}'.format(
+            "Lookup must be a callable or a value of type `str`: got {}".format(
                 repr(lookup),
             )
         )
@@ -326,7 +338,7 @@ class BaseRegistry:
             return
 
         raise TypeError(
-            'Lookup/label must be a callable or a value of type `str`: got {}'.format(
+            "Lookup/label must be a callable or a value of type `str`: got {}".format(
                 repr(lookup_or_label),
             )
         )
@@ -336,7 +348,7 @@ class BaseRegistry:
         try:
             value = mapping.find(type_str)
         except ValueError as e:
-            if 'No matching' in e.args[0]:
+            if "No matching" in e.args[0]:
                 # If no matches found, attempt to parse in case lack of matches
                 # was due to unparsability
                 grammar.parse(type_str)
@@ -348,8 +360,8 @@ class BaseRegistry:
 
 class ABIRegistry(Copyable, BaseRegistry):
     def __init__(self):
-        self._encoders = PredicateMapping('encoder registry')
-        self._decoders = PredicateMapping('decoder registry')
+        self._encoders = PredicateMapping("encoder registry")
+        self._decoders = PredicateMapping("decoder registry")
 
     def _get_registration(self, mapping, type_str):
         coder = super()._get_registration(mapping, type_str)
@@ -360,7 +372,9 @@ class ABIRegistry(Copyable, BaseRegistry):
         return coder
 
     @_clear_encoder_cache
-    def register_encoder(self, lookup: Lookup, encoder: Encoder, label: str = None) -> None:
+    def register_encoder(
+        self, lookup: Lookup, encoder: Encoder, label: str = None
+    ) -> None:
         """
         Registers the given ``encoder`` under the given ``lookup``.  A unique
         string label may be optionally provided that can be used to refer to
@@ -381,7 +395,9 @@ class ABIRegistry(Copyable, BaseRegistry):
         self._unregister(self._encoders, lookup_or_label)
 
     @_clear_decoder_cache
-    def register_decoder(self, lookup: Lookup, decoder: Decoder, label: str = None) -> None:
+    def register_decoder(
+        self, lookup: Lookup, decoder: Decoder, label: str = None
+    ) -> None:
         """
         Registers the given ``decoder`` under the given ``lookup``.  A unique
         string label may be optionally provided that can be used to refer to
@@ -401,11 +417,9 @@ class ABIRegistry(Copyable, BaseRegistry):
         """
         self._unregister(self._decoders, lookup_or_label)
 
-    def register(self,
-                 lookup: Lookup,
-                 encoder: Encoder,
-                 decoder: Decoder,
-                 label: str = None) -> None:
+    def register(
+        self, lookup: Lookup, encoder: Encoder, decoder: Decoder, label: str = None
+    ) -> None:
         """
         Registers the given ``encoder`` and ``decoder`` under the given
         ``lookup``.  A unique string label may be optionally provided that can
@@ -493,125 +507,137 @@ class ABIRegistry(Copyable, BaseRegistry):
 registry = ABIRegistry()
 
 registry.register(
-    BaseEquals('uint'),
-    encoding.UnsignedIntegerEncoder, decoding.UnsignedIntegerDecoder,
-    label='uint',
+    BaseEquals("uint"),
+    encoding.UnsignedIntegerEncoder,
+    decoding.UnsignedIntegerDecoder,
+    label="uint",
 )
 registry.register(
-    BaseEquals('int'),
-    encoding.SignedIntegerEncoder, decoding.SignedIntegerDecoder,
-    label='int',
+    BaseEquals("int"),
+    encoding.SignedIntegerEncoder,
+    decoding.SignedIntegerDecoder,
+    label="int",
 )
 registry.register(
-    BaseEquals('address'),
-    encoding.AddressEncoder, decoding.AddressDecoder,
-    label='address',
+    BaseEquals("address"),
+    encoding.AddressEncoder,
+    decoding.AddressDecoder,
+    label="address",
 )
 registry.register(
-    BaseEquals('bool'),
-    encoding.BooleanEncoder, decoding.BooleanDecoder,
-    label='bool',
+    BaseEquals("bool"),
+    encoding.BooleanEncoder,
+    decoding.BooleanDecoder,
+    label="bool",
 )
 registry.register(
-    BaseEquals('ufixed'),
-    encoding.UnsignedFixedEncoder, decoding.UnsignedFixedDecoder,
-    label='ufixed',
+    BaseEquals("ufixed"),
+    encoding.UnsignedFixedEncoder,
+    decoding.UnsignedFixedDecoder,
+    label="ufixed",
 )
 registry.register(
-    BaseEquals('fixed'),
-    encoding.SignedFixedEncoder, decoding.SignedFixedDecoder,
-    label='fixed',
+    BaseEquals("fixed"),
+    encoding.SignedFixedEncoder,
+    decoding.SignedFixedDecoder,
+    label="fixed",
 )
 registry.register(
-    BaseEquals('bytes', with_sub=True),
-    encoding.BytesEncoder, decoding.BytesDecoder,
-    label='bytes<M>',
+    BaseEquals("bytes", with_sub=True),
+    encoding.BytesEncoder,
+    decoding.BytesDecoder,
+    label="bytes<M>",
 )
 registry.register(
-    BaseEquals('bytes', with_sub=False),
-    encoding.ByteStringEncoder, decoding.ByteStringDecoder,
-    label='bytes',
+    BaseEquals("bytes", with_sub=False),
+    encoding.ByteStringEncoder,
+    decoding.ByteStringDecoder,
+    label="bytes",
 )
 registry.register(
-    BaseEquals('function'),
-    encoding.BytesEncoder, decoding.BytesDecoder,
-    label='function',
+    BaseEquals("function"),
+    encoding.BytesEncoder,
+    decoding.BytesDecoder,
+    label="function",
 )
 registry.register(
-    BaseEquals('string'),
-    encoding.TextStringEncoder, decoding.StringDecoder,
-    label='string',
+    BaseEquals("string"),
+    encoding.TextStringEncoder,
+    decoding.StringDecoder,
+    label="string",
 )
 registry.register(
     has_arrlist,
-    encoding.BaseArrayEncoder, decoding.BaseArrayDecoder,
-    label='has_arrlist',
+    encoding.BaseArrayEncoder,
+    decoding.BaseArrayDecoder,
+    label="has_arrlist",
 )
 registry.register(
     is_base_tuple,
-    encoding.TupleEncoder, decoding.TupleDecoder,
-    label='is_base_tuple',
+    encoding.TupleEncoder,
+    decoding.TupleDecoder,
+    label="is_base_tuple",
 )
 
 registry_packed = ABIRegistry()
 
 registry_packed.register_encoder(
-    BaseEquals('uint'),
+    BaseEquals("uint"),
     encoding.PackedUnsignedIntegerEncoder,
-    label='uint',
+    label="uint",
 )
 registry_packed.register_encoder(
-    BaseEquals('int'),
+    BaseEquals("int"),
     encoding.PackedSignedIntegerEncoder,
-    label='int',
+    label="int",
 )
 registry_packed.register_encoder(
-    BaseEquals('address'),
+    BaseEquals("address"),
     encoding.PackedAddressEncoder,
-    label='address',
+    label="address",
 )
 registry_packed.register_encoder(
-    BaseEquals('bool'),
+    BaseEquals("bool"),
     encoding.PackedBooleanEncoder,
-    label='bool',
+    label="bool",
 )
 registry_packed.register_encoder(
-    BaseEquals('ufixed'),
+    BaseEquals("ufixed"),
     encoding.PackedUnsignedFixedEncoder,
-    label='ufixed',
+    label="ufixed",
 )
 registry_packed.register_encoder(
-    BaseEquals('fixed'),
+    BaseEquals("fixed"),
     encoding.PackedSignedFixedEncoder,
-    label='fixed',
+    label="fixed",
 )
 registry_packed.register_encoder(
-    BaseEquals('bytes', with_sub=True),
+    BaseEquals("bytes", with_sub=True),
     encoding.PackedBytesEncoder,
-    label='bytes<M>',
+    label="bytes<M>",
 )
 registry_packed.register_encoder(
-    BaseEquals('bytes', with_sub=False),
+    BaseEquals("bytes", with_sub=False),
     encoding.PackedByteStringEncoder,
-    label='bytes',
+    label="bytes",
 )
 registry_packed.register_encoder(
-    BaseEquals('function'),
+    BaseEquals("function"),
     encoding.PackedBytesEncoder,
-    label='function',
+    label="function",
 )
 registry_packed.register_encoder(
-    BaseEquals('string'),
+    BaseEquals("string"),
     encoding.PackedTextStringEncoder,
-    label='string',
+    label="string",
 )
 registry_packed.register_encoder(
     has_arrlist,
     encoding.PackedArrayEncoder,
-    label='has_arrlist',
+    label="has_arrlist",
 )
 registry_packed.register_encoder(
     is_base_tuple,
     encoding.TupleEncoder,
-    label='is_base_tuple',
+    label="is_base_tuple",
 )

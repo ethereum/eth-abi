@@ -22,92 +22,97 @@ def registry():
 
     reg.register(
         has_arrlist,
-        encoding.BaseArrayEncoder, decoding.BaseArrayDecoder,
-        label='has_arrlist',
+        encoding.BaseArrayEncoder,
+        decoding.BaseArrayDecoder,
+        label="has_arrlist",
     )
     reg.register(
-        BaseEquals('address'),
-        encoding.AddressEncoder, decoding.AddressDecoder,
-        label='address',
+        BaseEquals("address"),
+        encoding.AddressEncoder,
+        decoding.AddressDecoder,
+        label="address",
     )
 
     return reg
 
 
 @pytest.mark.parametrize(
-    'type_str, encoder_class, decoder_class',
+    "type_str, encoder_class, decoder_class",
     (
-        ('address', encoding.AddressEncoder, decoding.AddressDecoder),
-        ('bool', encoding.BooleanEncoder, decoding.BooleanDecoder),
-        ('bytes12', encoding.BytesEncoder, decoding.BytesDecoder),
-        ('function', encoding.BytesEncoder, decoding.BytesDecoder),
-        ('bytes', encoding.ByteStringEncoder, decoding.ByteStringDecoder),
-        ('int', encoding.SignedIntegerEncoder, decoding.SignedIntegerDecoder),
-        ('int128', encoding.SignedIntegerEncoder, decoding.SignedIntegerDecoder),
-        ('string', encoding.TextStringEncoder, decoding.StringDecoder),
-        ('uint', encoding.UnsignedIntegerEncoder, decoding.UnsignedIntegerDecoder),
-        ('uint8', encoding.UnsignedIntegerEncoder, decoding.UnsignedIntegerDecoder),
-        ('int[]', encoding.DynamicArrayEncoder, decoding.DynamicArrayDecoder),
-        ('int[2]', encoding.SizedArrayEncoder, decoding.SizedArrayDecoder),
-        ('int[2][]', encoding.DynamicArrayEncoder, decoding.DynamicArrayDecoder),
-        ('int[][2]', encoding.SizedArrayEncoder, decoding.SizedArrayDecoder),
+        ("address", encoding.AddressEncoder, decoding.AddressDecoder),
+        ("bool", encoding.BooleanEncoder, decoding.BooleanDecoder),
+        ("bytes12", encoding.BytesEncoder, decoding.BytesDecoder),
+        ("function", encoding.BytesEncoder, decoding.BytesDecoder),
+        ("bytes", encoding.ByteStringEncoder, decoding.ByteStringDecoder),
+        ("int", encoding.SignedIntegerEncoder, decoding.SignedIntegerDecoder),
+        ("int128", encoding.SignedIntegerEncoder, decoding.SignedIntegerDecoder),
+        ("string", encoding.TextStringEncoder, decoding.StringDecoder),
+        ("uint", encoding.UnsignedIntegerEncoder, decoding.UnsignedIntegerDecoder),
+        ("uint8", encoding.UnsignedIntegerEncoder, decoding.UnsignedIntegerDecoder),
+        ("int[]", encoding.DynamicArrayEncoder, decoding.DynamicArrayDecoder),
+        ("int[2]", encoding.SizedArrayEncoder, decoding.SizedArrayDecoder),
+        ("int[2][]", encoding.DynamicArrayEncoder, decoding.DynamicArrayDecoder),
+        ("int[][2]", encoding.SizedArrayEncoder, decoding.SizedArrayDecoder),
     ),
 )
-def test_default_registry_gives_correct_basic_coders(type_str, encoder_class, decoder_class):
+def test_default_registry_gives_correct_basic_coders(
+    type_str, encoder_class, decoder_class
+):
     assert isinstance(default_registry.get_encoder(type_str), encoder_class)
     assert isinstance(default_registry.get_decoder(type_str), decoder_class)
 
 
 def test_cache_resets_after_register_and_register_works(registry: ABIRegistry):
     # Populate cache
-    registry.get_encoder('address')
-    registry.get_decoder('address')
+    registry.get_encoder("address")
+    registry.get_decoder("address")
 
     # Perform cache resetting action
     registry.register(
-        BaseEquals('address', with_sub=False),
-        encoding.AddressEncoder, decoding.AddressDecoder,
-        label='address without sub',
+        BaseEquals("address", with_sub=False),
+        encoding.AddressEncoder,
+        decoding.AddressDecoder,
+        label="address without sub",
     )
 
     # Confirm cache reset
     with pytest.raises(exceptions.MultipleEntriesFound):
-        registry.get_encoder('address')
+        registry.get_encoder("address")
     with pytest.raises(exceptions.MultipleEntriesFound):
-        registry.get_decoder('address')
+        registry.get_decoder("address")
 
 
 def test_cache_resets_after_unregister_and_unregister_works(registry: ABIRegistry):
     # Populate cache
-    registry.get_encoder('address')
-    registry.get_decoder('address')
+    registry.get_encoder("address")
+    registry.get_decoder("address")
 
     # Perform cache resetting action
-    registry.unregister('address')
+    registry.unregister("address")
 
     # Confirm cache reset
     with pytest.raises(exceptions.NoEntriesFound):
-        registry.get_encoder('address')
+        registry.get_encoder("address")
     with pytest.raises(exceptions.NoEntriesFound):
-        registry.get_decoder('address')
+        registry.get_decoder("address")
 
 
 def test_can_register_and_unregister_string_lookups(registry: ABIRegistry):
     registry.register(
-        'bool',
+        "bool",
         encoding.BooleanEncoder,
         decoding.BooleanDecoder,
     )
 
-    assert isinstance(registry.get_encoder('bool'), encoding.BooleanEncoder)
-    assert isinstance(registry.get_decoder('bool'), decoding.BooleanDecoder)
+    assert isinstance(registry.get_encoder("bool"), encoding.BooleanEncoder)
+    assert isinstance(registry.get_decoder("bool"), decoding.BooleanDecoder)
 
-    registry.unregister('bool')
+    registry.unregister("bool")
 
     with pytest.raises(exceptions.NoEntriesFound):
-        registry.get_encoder('bool')
+        registry.get_encoder("bool")
     with pytest.raises(exceptions.NoEntriesFound):
-        registry.get_decoder('bool')
+        registry.get_decoder("bool")
 
 
 def test_registry_should_reject_unknown_types(registry: ABIRegistry):
@@ -118,35 +123,36 @@ def test_registry_should_reject_unknown_types(registry: ABIRegistry):
 
 
 def test_can_unregister_by_equality(registry: ABIRegistry):
-    registry.unregister(BaseEquals('address'))
+    registry.unregister(BaseEquals("address"))
 
     with pytest.raises(exceptions.NoEntriesFound):
-        registry.get_encoder('address')
+        registry.get_encoder("address")
     with pytest.raises(exceptions.NoEntriesFound):
-        registry.get_decoder('address')
+        registry.get_decoder("address")
 
 
 def test_can_register_simple_callables(registry: ABIRegistry):
     def encode_bool(x):
         return x
+
     decode_bool = encode_bool
 
-    registry.register('bool', encode_bool, decode_bool)
+    registry.register("bool", encode_bool, decode_bool)
 
-    assert registry.get_encoder('bool') is encode_bool
-    assert registry.get_decoder('bool') is decode_bool
+    assert registry.get_encoder("bool") is encode_bool
+    assert registry.get_decoder("bool") is decode_bool
 
 
 def test_unregister_unknown_lookups(registry: ABIRegistry):
-    with pytest.raises(KeyError, match=r'Matcher .* not found in encoder registry'):
+    with pytest.raises(KeyError, match=r"Matcher .* not found in encoder registry"):
         registry.unregister(lambda x: x)
-    with pytest.raises(KeyError, match=r'Label .* not found in encoder registry'):
-        registry.unregister('foo')
+    with pytest.raises(KeyError, match=r"Label .* not found in encoder registry"):
+        registry.unregister("foo")
 
 
 def test_looking_up_unparsable_type_causes_error(registry: ABIRegistry):
-    with pytest.raises(exceptions.ParseError, match='Parse error at'):
-        registry.get_encoder('uint[]256')
+    with pytest.raises(exceptions.ParseError, match="Parse error at"):
+        registry.get_encoder("uint[]256")
 
 
 def test_copying_copies_internal_mappings(registry: ABIRegistry):
@@ -163,26 +169,27 @@ def test_copying_copies_internal_mappings(registry: ABIRegistry):
         assert id(x._decoders) != id(y._decoders)
 
         # Coders can be found for existing registrations
-        assert isinstance(x.get_encoder('address'), encoding.AddressEncoder)
-        assert isinstance(x.get_decoder('address'), decoding.AddressDecoder)
-        assert isinstance(y.get_encoder('address'), encoding.AddressEncoder)
-        assert isinstance(y.get_decoder('address'), decoding.AddressDecoder)
+        assert isinstance(x.get_encoder("address"), encoding.AddressEncoder)
+        assert isinstance(x.get_decoder("address"), decoding.AddressDecoder)
+        assert isinstance(y.get_encoder("address"), encoding.AddressEncoder)
+        assert isinstance(y.get_decoder("address"), decoding.AddressDecoder)
 
 
 def test_has_encoder_returns_true(registry: ABIRegistry):
-    assert registry.has_encoder('address')
+    assert registry.has_encoder("address")
 
 
 def test_has_encoder_raises(registry: ABIRegistry):
     registry.register(
-        BaseEquals('address', with_sub=False),
-        encoding.AddressEncoder, decoding.AddressDecoder,
-        label='other_address',
+        BaseEquals("address", with_sub=False),
+        encoding.AddressEncoder,
+        decoding.AddressDecoder,
+        label="other_address",
     )
 
     with pytest.raises(exceptions.MultipleEntriesFound):
-        assert registry.has_encoder('address')
+        assert registry.has_encoder("address")
 
 
 def test_has_encoder_returns_false(registry: ABIRegistry):
-    assert not registry.has_encoder('foo')
+    assert not registry.has_encoder("foo")

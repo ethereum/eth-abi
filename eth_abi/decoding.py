@@ -71,6 +71,7 @@ class ContextFramesBytesIO(io.BytesIO):
     sense out of object B's offset, it needs to be positioned in the context of
     its enclosing object's frame (object A).
     """
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -102,7 +103,7 @@ class ContextFramesBytesIO(io.BytesIO):
         try:
             offset, return_pos = self._frames.pop()
         except IndexError:
-            raise IndexError('no frames to pop')
+            raise IndexError("no frames to pop")
         self._total_offset -= offset
 
         self.seek(return_pos)
@@ -114,6 +115,7 @@ class BaseDecoder(BaseCoder, metaclass=abc.ABCMeta):
     custom decoder class.  Subclasses must also implement
     :any:`BaseCoder.from_type_str`.
     """
+
     @abc.abstractmethod
     def decode(self, stream: ContextFramesBytesIO) -> Any:  # pragma: no cover
         """
@@ -155,11 +157,11 @@ class TupleDecoder(BaseDecoder):
         super().__init__(**kwargs)
 
         self.decoders = tuple(
-            HeadTailDecoder(tail_decoder=d) if getattr(d, 'is_dynamic', False) else d
+            HeadTailDecoder(tail_decoder=d) if getattr(d, "is_dynamic", False) else d
             for d in self.decoders
         )
 
-        self.is_dynamic = any(getattr(d, 'is_dynamic', False) for d in self.decoders)
+        self.is_dynamic = any(getattr(d, "is_dynamic", False) for d in self.decoders)
 
     def validate(self):
         super().validate()
@@ -175,8 +177,7 @@ class TupleDecoder(BaseDecoder):
     @parse_tuple_type_str
     def from_type_str(cls, abi_type, registry):
         decoders = tuple(
-            registry.get_decoder(c.to_type_str())
-            for c in abi_type.components
+            registry.get_decoder(c.to_type_str()) for c in abi_type.components
         )
 
         return cls(decoders=decoders)
@@ -206,7 +207,7 @@ class SingleDecoder(BaseDecoder):
         raise NotImplementedError("Must be implemented by subclasses")
 
     def split_data_and_padding(self, raw_data):
-        return raw_data, b''
+        return raw_data, b""
 
 
 class BaseArrayDecoder(BaseDecoder):
@@ -328,7 +329,7 @@ class FixedByteSizeDecoder(SingleDecoder):
         value_byte_size = self._get_value_byte_size()
         padding_size = self.data_byte_size - value_byte_size
 
-        if padding_bytes != b'\x00' * padding_size:
+        if padding_bytes != b"\x00" * padding_size:
             raise NonEmptyPaddingBytes(
                 "Padding bytes were not empty: {0}".format(repr(padding_bytes))
             )
@@ -348,16 +349,16 @@ class BooleanDecoder(Fixed32ByteSizeDecoder):
 
     @staticmethod
     def decoder_fn(data):
-        if data == b'\x00':
+        if data == b"\x00":
             return False
-        elif data == b'\x01':
+        elif data == b"\x01":
             return True
         else:
             raise NonEmptyPaddingBytes(
                 "Boolean must be either 0x0 or 0x1.  Got: {0}".format(repr(data))
             )
 
-    @parse_type_str('bool')
+    @parse_type_str("bool")
     def from_type_str(cls, abi_type, registry):
         return cls()
 
@@ -367,7 +368,7 @@ class AddressDecoder(Fixed32ByteSizeDecoder):
     is_big_endian = True
     decoder_fn = staticmethod(to_normalized_address)
 
-    @parse_type_str('address')
+    @parse_type_str("address")
     def from_type_str(cls, abi_type, registry):
         return cls()
 
@@ -379,7 +380,7 @@ class UnsignedIntegerDecoder(Fixed32ByteSizeDecoder):
     decoder_fn = staticmethod(big_endian_to_int)
     is_big_endian = True
 
-    @parse_type_str('uint')
+    @parse_type_str("uint")
     def from_type_str(cls, abi_type, registry):
         return cls(value_bit_size=abi_type.sub)
 
@@ -396,7 +397,7 @@ class SignedIntegerDecoder(Fixed32ByteSizeDecoder):
     def decoder_fn(self, data):
         value = big_endian_to_int(data)
         if value >= 2 ** (self.value_bit_size - 1):
-            return value - 2 ** self.value_bit_size
+            return value - 2**self.value_bit_size
         else:
             return value
 
@@ -405,16 +406,16 @@ class SignedIntegerDecoder(Fixed32ByteSizeDecoder):
         padding_size = self.data_byte_size - value_byte_size
 
         if value >= 0:
-            expected_padding_bytes = b'\x00' * padding_size
+            expected_padding_bytes = b"\x00" * padding_size
         else:
-            expected_padding_bytes = b'\xff' * padding_size
+            expected_padding_bytes = b"\xff" * padding_size
 
         if padding_bytes != expected_padding_bytes:
             raise NonEmptyPaddingBytes(
                 "Padding bytes were not empty: {0}".format(repr(padding_bytes))
             )
 
-    @parse_type_str('int')
+    @parse_type_str("int")
     def from_type_str(cls, abi_type, registry):
         return cls(value_bit_size=abi_type.sub)
 
@@ -429,7 +430,7 @@ class BytesDecoder(Fixed32ByteSizeDecoder):
     def decoder_fn(data):
         return data
 
-    @parse_type_str('bytes')
+    @parse_type_str("bytes")
     def from_type_str(cls, abi_type, registry):
         return cls(value_bit_size=abi_type.sub * 8)
 
@@ -453,11 +454,11 @@ class UnsignedFixedDecoder(BaseFixedDecoder):
         value = big_endian_to_int(data)
 
         with decimal.localcontext(abi_decimal_context):
-            decimal_value = decimal.Decimal(value) / TEN ** self.frac_places
+            decimal_value = decimal.Decimal(value) / TEN**self.frac_places
 
         return decimal_value
 
-    @parse_type_str('ufixed')
+    @parse_type_str("ufixed")
     def from_type_str(cls, abi_type, registry):
         value_bit_size, frac_places = abi_type.sub
 
@@ -468,12 +469,12 @@ class SignedFixedDecoder(BaseFixedDecoder):
     def decoder_fn(self, data):
         value = big_endian_to_int(data)
         if value >= 2 ** (self.value_bit_size - 1):
-            signed_value = value - 2 ** self.value_bit_size
+            signed_value = value - 2**self.value_bit_size
         else:
             signed_value = value
 
         with decimal.localcontext(abi_decimal_context):
-            decimal_value = decimal.Decimal(signed_value) / TEN ** self.frac_places
+            decimal_value = decimal.Decimal(signed_value) / TEN**self.frac_places
 
         return decimal_value
 
@@ -482,16 +483,16 @@ class SignedFixedDecoder(BaseFixedDecoder):
         padding_size = self.data_byte_size - value_byte_size
 
         if value >= 0:
-            expected_padding_bytes = b'\x00' * padding_size
+            expected_padding_bytes = b"\x00" * padding_size
         else:
-            expected_padding_bytes = b'\xff' * padding_size
+            expected_padding_bytes = b"\xff" * padding_size
 
         if padding_bytes != expected_padding_bytes:
             raise NonEmptyPaddingBytes(
                 "Padding bytes were not empty: {0}".format(repr(padding_bytes))
             )
 
-    @parse_type_str('fixed')
+    @parse_type_str("fixed")
     def from_type_str(cls, abi_type, registry):
         value_bit_size, frac_places = abi_type.sub
 
@@ -525,7 +526,7 @@ class ByteStringDecoder(SingleDecoder):
 
         padding_bytes = data[data_length:]
 
-        if padding_bytes != b'\x00' * (padded_length - data_length):
+        if padding_bytes != b"\x00" * (padded_length - data_length):
             raise NonEmptyPaddingBytes(
                 "Padding bytes were not empty: {0}".format(repr(padding_bytes))
             )
@@ -535,13 +536,13 @@ class ByteStringDecoder(SingleDecoder):
     def validate_padding_bytes(self, value, padding_bytes):
         pass
 
-    @parse_type_str('bytes')
+    @parse_type_str("bytes")
     def from_type_str(cls, abi_type, registry):
         return cls()
 
 
 class StringDecoder(ByteStringDecoder):
-    @parse_type_str('string')
+    @parse_type_str("string")
     def from_type_str(cls, abi_type, registry):
         return cls()
 
@@ -559,5 +560,6 @@ class StringDecoder(ByteStringDecoder):
                 "expected to be a UTF8 encoded string of text. The returned "
                 "value could not be decoded as valid UTF8. This is indicative "
                 "of a broken application which is using incorrect return types for "
-                "binary data.") from e
+                "binary data.",
+            ) from e
         return value

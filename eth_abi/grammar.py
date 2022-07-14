@@ -11,31 +11,33 @@ from eth_abi.exceptions import (
     ParseError,
 )
 
-grammar = parsimonious.Grammar(r"""
-type = tuple_type / basic_type
+grammar = parsimonious.Grammar(
+    r"""
+    type = tuple_type / basic_type
 
-tuple_type = components arrlist?
-components = non_zero_tuple / zero_tuple
+    tuple_type = components arrlist?
+    components = non_zero_tuple / zero_tuple
 
-non_zero_tuple = "(" type next_type* ")"
-next_type = "," type
+    non_zero_tuple = "(" type next_type* ")"
+    next_type = "," type
 
-zero_tuple = "()"
+    zero_tuple = "()"
 
-basic_type = base sub? arrlist?
+    basic_type = base sub? arrlist?
 
-base = alphas
+    base = alphas
 
-sub = two_size / digits
-two_size = (digits "x" digits)
+    sub = two_size / digits
+    two_size = (digits "x" digits)
 
-arrlist = (const_arr / dynam_arr)+
-const_arr = "[" digits "]"
-dynam_arr = "[]"
+    arrlist = (const_arr / dynam_arr)+
+    const_arr = "[" digits "]"
+    dynam_arr = "[]"
 
-alphas = ~"[A-Za-z]+"
-digits = ~"[1-9][0-9]*"
-""")
+    alphas = ~"[A-Za-z]+"
+    digits = ~"[1-9][0-9]*"
+    """
+)
 
 
 class NodeVisitor(parsimonious.NodeVisitor):
@@ -43,6 +45,7 @@ class NodeVisitor(parsimonious.NodeVisitor):
     Parsimonious node visitor which performs both parsing of type strings and
     post-processing of parse trees.  Parsing operations are cached.
     """
+
     grammar = grammar
 
     def visit_non_zero_tuple(self, node, visited_children):
@@ -117,7 +120,9 @@ class NodeVisitor(parsimonious.NodeVisitor):
             information about the parsed type string.
         """
         if not isinstance(type_str, str):
-            raise TypeError('Can only parse string values: got {}'.format(type(type_str)))
+            raise TypeError(
+                "Can only parse string values: got {}".format(type(type_str))
+            )
 
         try:
             return super().parse(type_str)
@@ -132,7 +137,8 @@ class ABIType:
     """
     Base class for results of type string parsing operations.
     """
-    __slots__ = ('arrlist', 'node')
+
+    __slots__ = ("arrlist", "node")
 
     def __init__(self, arrlist=None, node=None):
         self.arrlist = arrlist
@@ -148,24 +154,21 @@ class ABIType:
         """
 
     def __repr__(self):  # pragma: no cover
-        return '<{} {}>'.format(
+        return "<{} {}>".format(
             type(self).__qualname__,
             repr(self.to_type_str()),
         )
 
     def __eq__(self, other):
         # Two ABI types are equal if their string representations are equal
-        return (
-            type(self) is type(other) and
-            self.to_type_str() == other.to_type_str()
-        )
+        return type(self) is type(other) and self.to_type_str() == other.to_type_str()
 
     def to_type_str(self):  # pragma: no cover
         """
         Returns the string representation of an ABI type.  This will be equal to
         the type string from which it was created.
         """
-        raise NotImplementedError('Must implement `to_type_str`')
+        raise NotImplementedError("Must implement `to_type_str`")
 
     @property
     def item_type(self):
@@ -173,7 +176,7 @@ class ABIType:
         If this type is an array type, equal to an appropriate
         :class:`~eth_abi.grammar.ABIType` instance for the array's items.
         """
-        raise NotImplementedError('Must implement `item_type`')
+        raise NotImplementedError("Must implement `item_type`")
 
     def validate(self):  # pragma: no cover
         """
@@ -183,7 +186,7 @@ class ABIType:
 
         Raises :class:`~eth_abi.exceptions.ABITypeError` if validation fails.
         """
-        raise NotImplementedError('Must implement `validate`')
+        raise NotImplementedError("Must implement `validate`")
 
     def invalidate(self, error_msg):
         # Invalidates an ABI type with the given error message.  Expects that a
@@ -215,7 +218,7 @@ class ABIType:
         Equal to ``True`` if a type has a dynamically sized encoding.
         Otherwise, equal to ``False``.
         """
-        raise NotImplementedError('Must implement `is_dynamic`')
+        raise NotImplementedError("Must implement `is_dynamic`")
 
     @property
     def _has_dynamic_arrlist(self):
@@ -226,7 +229,8 @@ class TupleType(ABIType):
     """
     Represents the result of parsing a tuple type string e.g. "(int,bool)".
     """
-    __slots__ = ('components',)
+
+    __slots__ = ("components",)
 
     def __init__(self, components, arrlist=None, *, node=None):
         super().__init__(arrlist, node)
@@ -241,21 +245,23 @@ class TupleType(ABIType):
         arrlist = self.arrlist
 
         if isinstance(arrlist, tuple):
-            arrlist = ''.join(repr(list(a)) for a in arrlist)
+            arrlist = "".join(repr(list(a)) for a in arrlist)
         else:
-            arrlist = ''
+            arrlist = ""
 
-        return '({}){}'.format(
-            ','.join(c.to_type_str() for c in self.components),
+        return "({}){}".format(
+            ",".join(c.to_type_str() for c in self.components),
             arrlist,
         )
 
     @property
     def item_type(self):
         if not self.is_array:
-            raise ValueError("Cannot determine item type for non-array type '{}'".format(
-                self.to_type_str(),
-            ))
+            raise ValueError(
+                "Cannot determine item type for non-array type '{}'".format(
+                    self.to_type_str(),
+                )
+            )
 
         return type(self)(
             self.components,
@@ -280,7 +286,8 @@ class BasicType(ABIType):
     Represents the result of parsing a basic type string e.g. "uint", "address",
     "ufixed128x19[][2]".
     """
-    __slots__ = ('base', 'sub')
+
+    __slots__ = ("base", "sub")
 
     def __init__(self, base, sub=None, arrlist=None, *, node=None):
         super().__init__(arrlist, node)
@@ -301,23 +308,25 @@ class BasicType(ABIType):
         if isinstance(sub, int):
             sub = str(sub)
         elif isinstance(sub, tuple):
-            sub = 'x'.join(str(s) for s in sub)
+            sub = "x".join(str(s) for s in sub)
         else:
-            sub = ''
+            sub = ""
 
         if isinstance(arrlist, tuple):
-            arrlist = ''.join(repr(list(a)) for a in arrlist)
+            arrlist = "".join(repr(list(a)) for a in arrlist)
         else:
-            arrlist = ''
+            arrlist = ""
 
         return self.base + sub + arrlist
 
     @property
     def item_type(self):
         if not self.is_array:
-            raise ValueError("Cannot determine item type for non-array type '{}'".format(
-                self.to_type_str(),
-            ))
+            raise ValueError(
+                "Cannot determine item type for non-array type '{}'".format(
+                    self.to_type_str(),
+                )
+            )
 
         return type(self)(
             self.base,
@@ -331,10 +340,10 @@ class BasicType(ABIType):
         if self._has_dynamic_arrlist:
             return True
 
-        if self.base == 'string':
+        if self.base == "string":
             return True
 
-        if self.base == 'bytes' and self.sub is None:
+        if self.base == "bytes" and self.sub is None:
             return True
 
         return False
@@ -343,74 +352,77 @@ class BasicType(ABIType):
         base, sub = self.base, self.sub
 
         # Check validity of string type
-        if base == 'string':
+        if base == "string":
             if sub is not None:
-                self.invalidate('string type cannot have suffix')
+                self.invalidate("string type cannot have suffix")
 
         # Check validity of bytes type
-        elif base == 'bytes':
+        elif base == "bytes":
             if not (sub is None or isinstance(sub, int)):
-                self.invalidate('bytes type must have either no suffix or a numerical suffix')
+                self.invalidate(
+                    "bytes type must have either no suffix or a numerical suffix"
+                )
 
             if isinstance(sub, int) and sub > 32:
-                self.invalidate('maximum 32 bytes for fixed-length bytes')
+                self.invalidate("maximum 32 bytes for fixed-length bytes")
 
         # Check validity of integer type
-        elif base in ('int', 'uint'):
+        elif base in ("int", "uint"):
             if not isinstance(sub, int):
-                self.invalidate('integer type must have numerical suffix')
+                self.invalidate("integer type must have numerical suffix")
 
             if sub < 8 or 256 < sub:
-                self.invalidate('integer size out of bounds (max 256 bits)')
+                self.invalidate("integer size out of bounds (max 256 bits)")
 
             if sub % 8 != 0:
-                self.invalidate('integer size must be multiple of 8')
+                self.invalidate("integer size must be multiple of 8")
 
         # Check validity of fixed type
-        elif base in ('fixed', 'ufixed'):
+        elif base in ("fixed", "ufixed"):
             if not isinstance(sub, tuple):
                 self.invalidate(
-                    'fixed type must have suffix of form <bits>x<exponent>, e.g. 128x19',
+                    "fixed type must have suffix of form <bits>x<exponent>, "
+                    "e.g. 128x19",
                 )
 
             bits, minus_e = sub
 
             if bits < 8 or 256 < bits:
-                self.invalidate('fixed size out of bounds (max 256 bits)')
+                self.invalidate("fixed size out of bounds (max 256 bits)")
 
             if bits % 8 != 0:
-                self.invalidate('fixed size must be multiple of 8')
+                self.invalidate("fixed size must be multiple of 8")
 
             if minus_e < 1 or 80 < minus_e:
                 self.invalidate(
-                    'fixed exponent size out of bounds, {} must be in 1-80'.format(
+                    "fixed exponent size out of bounds, {} must be in 1-80".format(
                         minus_e,
                     ),
                 )
 
         # Check validity of hash type
-        elif base == 'hash':
+        elif base == "hash":
             if not isinstance(sub, int):
-                self.invalidate('hash type must have numerical suffix')
+                self.invalidate("hash type must have numerical suffix")
 
         # Check validity of address type
-        elif base == 'address':
+        elif base == "address":
             if sub is not None:
-                self.invalidate('address cannot have suffix')
+                self.invalidate("address cannot have suffix")
 
 
 TYPE_ALIASES = {
-    'int': 'int256',
-    'uint': 'uint256',
-    'fixed': 'fixed128x18',
-    'ufixed': 'ufixed128x18',
-    'function': 'bytes24',
-    'byte': 'bytes1',
+    "int": "int256",
+    "uint": "uint256",
+    "fixed": "fixed128x18",
+    "ufixed": "ufixed128x18",
+    "function": "bytes24",
+    "byte": "bytes1",
 }
 
-TYPE_ALIAS_RE = re.compile(r'\b({})\b'.format(
-    '|'.join(re.escape(a) for a in TYPE_ALIASES.keys())
-))
+TYPE_ALIAS_RE = re.compile(
+    r"\b({})\b".format("|".join(re.escape(a) for a in TYPE_ALIASES.keys()))
+)
 
 
 def normalize(type_str):

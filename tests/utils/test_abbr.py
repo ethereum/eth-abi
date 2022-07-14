@@ -12,7 +12,7 @@ from eth_abi.utils.string import (
         (12345678912345678912, "12345678912345678912", None),
         (
             "asdf" * 30,
-            "'asdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasd...",
+            "'asdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasd...",  # noqa: E501
             None,
         ),
         (
