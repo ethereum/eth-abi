@@ -1,0 +1,1 @@
+Exclude venv files from git tracking, and from getting put into dist/. Add ``make notes`` command to Makefile, and add some checks
