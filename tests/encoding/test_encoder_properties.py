@@ -68,10 +68,10 @@ def test_encode_boolean(bool_value, data_byte_size):
     if not is_boolean(bool_value):
         with pytest.raises(EncodingTypeError) as exception_info:
             encoder(bool_value)
-        assert 'BooleanEncoder' in str(exception_info.value)
+        assert "BooleanEncoder" in str(exception_info.value)
         return
 
-    expected_value = zpad(b'\x01' if bool_value else b'\x00', data_byte_size)
+    expected_value = zpad(b"\x01" if bool_value else b"\x00", data_byte_size)
     encoded_value = encoder(bool_value)
 
     assert encoded_value == expected_value
@@ -102,7 +102,7 @@ def test_encode_unsigned_integer(integer_value, value_bit_size, data_byte_size):
     if not is_integer(integer_value):
         with pytest.raises(EncodingTypeError) as exception_info:
             encoder(integer_value)
-        assert 'UnsignedInteger' in str(exception_info.value)
+        assert "UnsignedInteger" in str(exception_info.value)
         return
     elif integer_value < lower_bound or integer_value > upper_bound:
         with pytest.raises(ValueOutOfBounds):
@@ -144,7 +144,7 @@ def test_encode_signed_integer(integer_value, value_bit_size, data_byte_size):
     if not is_integer(integer_value):
         with pytest.raises(EncodingTypeError) as exception_info:
             encoder(integer_value)
-        assert 'SignedInteger' in str(exception_info.value)
+        assert "SignedInteger" in str(exception_info.value)
         return
     elif integer_value < lower_bound or integer_value > upper_bound:
         with pytest.raises(ValueOutOfBounds):
@@ -153,13 +153,11 @@ def test_encode_signed_integer(integer_value, value_bit_size, data_byte_size):
 
     if integer_value >= 0:
         expected_value = zpad(
-            int_to_big_endian(integer_value % 2**value_bit_size),
-            data_byte_size
+            int_to_big_endian(integer_value % 2**value_bit_size), data_byte_size
         )
     else:
         expected_value = fpad(
-            int_to_big_endian(integer_value % 2**value_bit_size),
-            data_byte_size
+            int_to_big_endian(integer_value % 2**value_bit_size), data_byte_size
         )
 
     encoded_value = encoder(integer_value)
@@ -202,7 +200,7 @@ def test_encode_address(address_value, value_bit_size, data_byte_size):
     if not is_address(address_value):
         with pytest.raises(EncodingTypeError) as exception_info:
             encoder(address_value)
-        assert 'AddressEncoder' in str(exception_info.value)
+        assert "AddressEncoder" in str(exception_info.value)
         return
 
     expected_value = zpad(to_canonical_address(address_value), data_byte_size)
@@ -237,7 +235,7 @@ def test_encode_bytes_xx(bytes_value, value_bit_size, data_byte_size):
     if not is_bytes(bytes_value):
         with pytest.raises(EncodingTypeError) as exception_info:
             encoder(bytes_value)
-        assert 'BytesEncoder' in str(exception_info.value)
+        assert "BytesEncoder" in str(exception_info.value)
         return
     elif len(bytes_value) * 8 > value_bit_size:
         with pytest.raises(ValueOutOfBounds):
@@ -264,16 +262,11 @@ def test_encode_byte_string(string_value):
     if not is_bytes(string_value):
         with pytest.raises(EncodingTypeError) as exception_info:
             encoder(string_value)
-        assert 'ByteStringEncoder' in str(exception_info.value)
+        assert "ByteStringEncoder" in str(exception_info.value)
         return
 
-    expected_value = (
-        encode_uint_256(len(string_value)) +
-        (
-            zpad_right(string_value, ceil32(len(string_value)))
-            if string_value
-            else b''
-        )
+    expected_value = encode_uint_256(len(string_value)) + (
+        zpad_right(string_value, ceil32(len(string_value))) if string_value else b""
     )
     encoded_value = encoder(string_value)
 
@@ -294,21 +287,23 @@ def test_encode_text_string(string_value):
     if not is_text(string_value):
         with pytest.raises(EncodingTypeError) as exception_info:
             encoder(string_value)
-        assert 'TextStringEncoder' in str(exception_info.value)
+        assert "TextStringEncoder" in str(exception_info.value)
         return
 
-    string_value_as_bytes = codecs.encode(string_value, 'utf8')
+    string_value_as_bytes = codecs.encode(string_value, "utf8")
 
     expected_value = (
-        encode_uint_256(len(string_value_as_bytes)) +
-        (
+        encode_uint_256(len(string_value_as_bytes))
+        + (
             zpad_right(
                 string_value_as_bytes,
                 ceil32(len(string_value_as_bytes)),
             )
             if string_value
-            else b''
+            else b""
         )
+        if string_value
+        else b"\x00" * 32
     )
     encoded_value = encoder(string_value)
 
@@ -322,13 +317,12 @@ def test_encode_text_string(string_value):
     frac_places=st.integers(min_value=1, max_value=80),
     data_byte_size=st.integers(min_value=0, max_value=32),
 )
-@example(value=decimal.Decimal('5.33'), value_bit_size=8, frac_places=1, data_byte_size=1)
-def test_encode_unsigned_fixed(value,
-                               value_bit_size,
-                               frac_places,
-                               data_byte_size):
+@example(
+    value=decimal.Decimal("5.33"), value_bit_size=8, frac_places=1, data_byte_size=1
+)
+def test_encode_unsigned_fixed(value, value_bit_size, frac_places, data_byte_size):
     if value_bit_size > data_byte_size * 8:
-        pattern = r'Value byte size exceeds data size'
+        pattern = r"Value byte size exceeds data size"
         with pytest.raises(ValueError, match=pattern):
             UnsignedFixedEncoder(
                 value_bit_size=value_bit_size,
@@ -344,13 +338,19 @@ def test_encode_unsigned_fixed(value,
     )
 
     if not is_number(value):
-        pattern = r'Value `None` of type .*NoneType.* cannot be encoded by UnsignedFixedEncoder'
+        pattern = (
+            r"Value `None` of type .*NoneType.* cannot be "
+            r"encoded by UnsignedFixedEncoder"
+        )
         with pytest.raises(EncodingTypeError, match=pattern):
             encoder(value)
         return
 
     if UnsignedFixedEncoder.illegal_value_fn(value):
-        pattern = r'Value .*(NaN|Infinity|-Infinity).* cannot be encoded by UnsignedFixedEncoder'
+        pattern = (
+            r"Value .*(NaN|Infinity|-Infinity).* cannot be "
+            r"encoded by UnsignedFixedEncoder"
+        )
         with pytest.raises(IllegalValue, match=pattern):
             encoder(value)
         return
@@ -358,17 +358,20 @@ def test_encode_unsigned_fixed(value,
     lower, upper = compute_unsigned_fixed_bounds(value_bit_size, frac_places)
     if value < lower or value > upper:
         pattern = (
-            r'Value .* cannot be encoded by UnsignedFixedEncoder: '
-            r'Cannot be encoded in .* bits'
+            r"Value .* cannot be encoded by UnsignedFixedEncoder: "
+            r"Cannot be encoded in .* bits"
         )
         with pytest.raises(ValueOutOfBounds, match=pattern):
             encoder(value)
         return
 
     with decimal.localcontext(abi_decimal_context):
-        residue = value % (TEN ** -frac_places)
+        residue = value % (TEN**-frac_places)
     if residue > 0:
-        pattern = r'Value .* cannot be encoded by UnsignedFixedEncoder: residue .* outside allowed'
+        pattern = (
+            r"Value .* cannot be encoded by UnsignedFixedEncoder: "
+            r"residue .* outside allowed"
+        )
         with pytest.raises(IllegalValue, match=pattern):
             encoder(value)
         return
@@ -384,12 +387,9 @@ def test_encode_unsigned_fixed(value,
     frac_places=st.integers(min_value=1, max_value=80),
     data_byte_size=st.integers(min_value=0, max_value=32),
 )
-def test_encode_signed_fixed(value,
-                             value_bit_size,
-                             frac_places,
-                             data_byte_size):
+def test_encode_signed_fixed(value, value_bit_size, frac_places, data_byte_size):
     if value_bit_size > data_byte_size * 8:
-        pattern = r'Value byte size exceeds data size'
+        pattern = r"Value byte size exceeds data size"
         with pytest.raises(ValueError, match=pattern):
             SignedFixedEncoder(
                 value_bit_size=value_bit_size,
@@ -405,28 +405,39 @@ def test_encode_signed_fixed(value,
     )
 
     if not is_number(value):
-        pattern = r'Value `None` of type .*NoneType.* cannot be encoded by SignedFixedEncoder'
+        pattern = (
+            r"Value `None` of type .*NoneType.* cannot be encoded by SignedFixedEncoder"
+        )
         with pytest.raises(EncodingTypeError, match=pattern):
             encoder(value)
         return
 
     if SignedFixedEncoder.illegal_value_fn(value):
-        pattern = r'Value .*(NaN|Infinity|-Infinity).* cannot be encoded by SignedFixedEncoder'
+        pattern = (
+            r"Value .*(NaN|Infinity|-Infinity).* cannot be encoded "
+            r"by SignedFixedEncoder"
+        )
         with pytest.raises(IllegalValue, match=pattern):
             encoder(value)
         return
 
     lower, upper = compute_signed_fixed_bounds(value_bit_size, frac_places)
     if value < lower or value > upper:
-        pattern = r'Value .* cannot be encoded by SignedFixedEncoder: Cannot be encoded in .* bits'
+        pattern = (
+            r"Value .* cannot be encoded by SignedFixedEncoder: "
+            r"Cannot be encoded in .* bits"
+        )
         with pytest.raises(ValueOutOfBounds, match=pattern):
             encoder(value)
         return
 
     with decimal.localcontext(abi_decimal_context):
-        residue = value % (TEN ** -frac_places)
+        residue = value % (TEN**-frac_places)
     if residue > 0:
-        pattern = r'Value .* cannot be encoded by SignedFixedEncoder: residue .* outside allowed'
+        pattern = (
+            r"Value .* cannot be encoded by SignedFixedEncoder: "
+            r"residue .* outside allowed"
+        )
         with pytest.raises(IllegalValue, match=pattern):
             encoder(value)
         return
@@ -437,14 +448,16 @@ def test_encode_signed_fixed(value,
 
 # TODO: make this generic
 def test_tuple_encoder():
-    encoder = TupleEncoder(encoders=(
-        UnsignedIntegerEncoder(value_bit_size=256),
-        ByteStringEncoder(),
-    ))
-    expected = decode_hex(
-        '0000000000000000000000000000000000000000000000000000000000000000'
-        '0000000000000000000000000000000000000000000000000000000000000040'
-        '0000000000000000000000000000000000000000000000000000000000000000'
+    encoder = TupleEncoder(
+        encoders=(
+            UnsignedIntegerEncoder(value_bit_size=256),
+            ByteStringEncoder(),
+        )
     )
-    actual = encoder((0, b''))
+    expected = decode_hex(
+        "0000000000000000000000000000000000000000000000000000000000000000"
+        "0000000000000000000000000000000000000000000000000000000000000040"
+        "0000000000000000000000000000000000000000000000000000000000000000"
+    )
+    actual = encoder((0, b""))
     assert actual == expected

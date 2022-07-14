@@ -16,7 +16,7 @@ from ..common.unit import (
 
 
 @pytest.mark.parametrize(
-    'tuple_type,python_value,solidity_abi_encoded,_',
+    "tuple_type,python_value,solidity_abi_encoded,_",
     CORRECT_TUPLE_ENCODINGS,
 )
 def test_abi_encode_for_multiple_types_as_list(
@@ -24,7 +24,7 @@ def test_abi_encode_for_multiple_types_as_list(
 ):
     abi_type = parse(tuple_type)
     if abi_type.arrlist is not None:
-        pytest.skip('ABI coding functions do not support array types')
+        pytest.skip("ABI coding functions do not support array types")
 
     # assert different types encoded correctly as a list
     # e.g. encode(['bytes32[]', 'uint256'], ([b'a', b'b'], 22))
@@ -43,7 +43,7 @@ def test_abi_encode_for_multiple_types_as_list(
 
 
 @pytest.mark.parametrize(
-    'single_abi_type,python_value,solidity_abi_encoded,_',
+    "single_abi_type,python_value,solidity_abi_encoded,_",
     CORRECT_STATIC_ENCODINGS,
 )
 def test_abi_encode_for_single_static_types(
@@ -69,7 +69,7 @@ def test_abi_encode_for_single_static_types(
 
 
 @pytest.mark.parametrize(
-    'single_abi_type,python_value,solidity_abi_encoded,_',
+    "single_abi_type,python_value,solidity_abi_encoded,_",
     CORRECT_DYNAMIC_ENCODINGS,
 )
 def test_abi_encode_for_single_dynamic_types(
@@ -80,28 +80,38 @@ def test_abi_encode_for_single_dynamic_types(
 
     solidity_abi_encoded = (
         # 32 bytes offset for dynamic types
-        b''.join([words('20'), solidity_abi_encoded])
+        b"".join([words("20"), solidity_abi_encoded])
     )
 
     assert eth_abi_encoded == solidity_abi_encoded
 
 
 @pytest.mark.parametrize(
-    'non_list_like_value',
-    ('', 123, b'', b'\xff', b'david attenborough', bytearray(b'\x01\xff'), {'key': 'val'}, {1, 2})
+    "non_list_like_value",
+    (
+        "",
+        123,
+        b"",
+        b"\xff",
+        b"david attenborough",
+        bytearray(b"\x01\xff"),
+        {"key": "val"},
+        {1, 2},
+    ),
 )
 def test_abi_encode_raises_for_non_list_like_params(non_list_like_value):
     # test raises when `types` param is not list-like
     with pytest.raises(
         TypeError,
         match=f"The `types` value type must be one of list or tuple. "
-              f"Got {type(non_list_like_value)}"
+        f"Got {type(non_list_like_value)}",
     ):
-        encode(non_list_like_value, ['bytes'])
+        encode(non_list_like_value, ["bytes"])
 
     # test raises when `args` param is not list-like
     with pytest.raises(
         TypeError,
-        match=f"The `args` value type must be one of list or tuple. Got {type(non_list_like_value)}"
+        match=f"The `args` value type must be one of list or tuple. "
+        f"Got {type(non_list_like_value)}",
     ):
-        encode(['valid_string_value'], non_list_like_value)
+        encode(["valid_string_value"], non_list_like_value)

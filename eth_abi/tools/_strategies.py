@@ -30,18 +30,17 @@ from eth_abi.utils.numeric import (
     scale_places,
 )
 
-StrategyFactory = Callable[[ABIType, 'StrategyRegistry'], st.SearchStrategy]
+StrategyFactory = Callable[[ABIType, "StrategyRegistry"], st.SearchStrategy]
 StrategyRegistration = Union[st.SearchStrategy, StrategyFactory]
 
 
 class StrategyRegistry(BaseRegistry):
     def __init__(self):
-        self._strategies = PredicateMapping('strategy registry')
+        self._strategies = PredicateMapping("strategy registry")
 
-    def register_strategy(self,
-                          lookup: Lookup,
-                          registration: StrategyRegistration,
-                          label: str = None) -> None:
+    def register_strategy(
+        self, lookup: Lookup, registration: StrategyRegistration, label: str = None
+    ) -> None:
         self._register(self._strategies, lookup, registration, label=label)
 
     def unregister_strategy(self, lookup_or_label: Lookup) -> None:
@@ -72,20 +71,24 @@ class StrategyRegistry(BaseRegistry):
             return strategy
 
 
-def get_uint_strategy(abi_type: ABIType, registry: StrategyRegistry) -> st.SearchStrategy:
+def get_uint_strategy(
+    abi_type: ABIType, registry: StrategyRegistry
+) -> st.SearchStrategy:
     bits = abi_type.sub
 
     return st.integers(
         min_value=0,
-        max_value=2 ** bits - 1,
+        max_value=2**bits - 1,
     )
 
 
-def get_int_strategy(abi_type: ABIType, registry: StrategyRegistry) -> st.SearchStrategy:
+def get_int_strategy(
+    abi_type: ABIType, registry: StrategyRegistry
+) -> st.SearchStrategy:
     bits = abi_type.sub
 
     return st.integers(
-        min_value=-2 ** (bits - 1),
+        min_value=-(2 ** (bits - 1)),
         max_value=2 ** (bits - 1) - 1,
     )
 
@@ -94,27 +97,33 @@ address_strategy = st.binary(min_size=20, max_size=20).map(to_checksum_address)
 bool_strategy = st.booleans()
 
 
-def get_ufixed_strategy(abi_type: ABIType, registry: StrategyRegistry) -> st.SearchStrategy:
+def get_ufixed_strategy(
+    abi_type: ABIType, registry: StrategyRegistry
+) -> st.SearchStrategy:
     bits, places = abi_type.sub
 
     return st.decimals(
         min_value=0,
-        max_value=2 ** bits - 1,
+        max_value=2**bits - 1,
         places=0,
     ).map(scale_places(places))
 
 
-def get_fixed_strategy(abi_type: ABIType, registry: StrategyRegistry) -> st.SearchStrategy:
+def get_fixed_strategy(
+    abi_type: ABIType, registry: StrategyRegistry
+) -> st.SearchStrategy:
     bits, places = abi_type.sub
 
     return st.decimals(
-        min_value=-2 ** (bits - 1),
+        min_value=-(2 ** (bits - 1)),
         max_value=2 ** (bits - 1) - 1,
         places=0,
     ).map(scale_places(places))
 
 
-def get_bytes_strategy(abi_type: ABIType, registry: StrategyRegistry) -> st.SearchStrategy:
+def get_bytes_strategy(
+    abi_type: ABIType, registry: StrategyRegistry
+) -> st.SearchStrategy:
     num_bytes = abi_type.sub
 
     return st.binary(
@@ -127,7 +136,9 @@ bytes_strategy = st.binary(min_size=0, max_size=4096)
 string_strategy = st.text()
 
 
-def get_array_strategy(abi_type: ABIType, registry: StrategyRegistry) -> st.SearchStrategy:
+def get_array_strategy(
+    abi_type: ABIType, registry: StrategyRegistry
+) -> st.SearchStrategy:
     item_type = abi_type.item_type
     item_type_str = item_type.to_type_str()
     item_strategy = registry.get_strategy(item_type_str)
@@ -142,7 +153,9 @@ def get_array_strategy(abi_type: ABIType, registry: StrategyRegistry) -> st.Sear
         return st.lists(item_strategy, min_size=dim_size, max_size=dim_size)
 
 
-def get_tuple_strategy(abi_type: ABIType, registry: StrategyRegistry) -> st.SearchStrategy:
+def get_tuple_strategy(
+    abi_type: ABIType, registry: StrategyRegistry
+) -> st.SearchStrategy:
     component_strategies = [
         registry.get_strategy(comp_abi_type.to_type_str())
         for comp_abi_type in abi_type.components
@@ -154,64 +167,64 @@ def get_tuple_strategy(abi_type: ABIType, registry: StrategyRegistry) -> st.Sear
 strategy_registry = StrategyRegistry()
 
 strategy_registry.register_strategy(
-    BaseEquals('uint'),
+    BaseEquals("uint"),
     get_uint_strategy,
-    label='uint',
+    label="uint",
 )
 strategy_registry.register_strategy(
-    BaseEquals('int'),
+    BaseEquals("int"),
     get_int_strategy,
-    label='int',
+    label="int",
 )
 strategy_registry.register_strategy(
-    BaseEquals('address', with_sub=False),
+    BaseEquals("address", with_sub=False),
     address_strategy,
-    label='address',
+    label="address",
 )
 strategy_registry.register_strategy(
-    BaseEquals('bool', with_sub=False),
+    BaseEquals("bool", with_sub=False),
     bool_strategy,
-    label='bool',
+    label="bool",
 )
 strategy_registry.register_strategy(
-    BaseEquals('ufixed'),
+    BaseEquals("ufixed"),
     get_ufixed_strategy,
-    label='ufixed',
+    label="ufixed",
 )
 strategy_registry.register_strategy(
-    BaseEquals('fixed'),
+    BaseEquals("fixed"),
     get_fixed_strategy,
-    label='fixed',
+    label="fixed",
 )
 strategy_registry.register_strategy(
-    BaseEquals('bytes', with_sub=True),
+    BaseEquals("bytes", with_sub=True),
     get_bytes_strategy,
-    label='bytes<M>',
+    label="bytes<M>",
 )
 strategy_registry.register_strategy(
-    BaseEquals('bytes', with_sub=False),
+    BaseEquals("bytes", with_sub=False),
     bytes_strategy,
-    label='bytes',
+    label="bytes",
 )
 strategy_registry.register_strategy(
-    BaseEquals('function', with_sub=False),
+    BaseEquals("function", with_sub=False),
     get_bytes_strategy,
-    label='function',
+    label="function",
 )
 strategy_registry.register_strategy(
-    BaseEquals('string', with_sub=False),
+    BaseEquals("string", with_sub=False),
     string_strategy,
-    label='string',
+    label="string",
 )
 strategy_registry.register_strategy(
     has_arrlist,
     get_array_strategy,
-    label='has_arrlist',
+    label="has_arrlist",
 )
 strategy_registry.register_strategy(
     is_base_tuple,
     get_tuple_strategy,
-    label='is_base_tuple',
+    label="is_base_tuple",
 )
 
 get_abi_strategy = strategy_registry.get_strategy

@@ -57,6 +57,7 @@ class BaseEncoder(BaseCoder, metaclass=abc.ABCMeta):
     custom encoder class.  Subclasses must also implement
     :any:`BaseCoder.from_type_str`.
     """
+
     @abc.abstractmethod
     def encode(self, value: Any) -> bytes:  # pragma: no cover
         """
@@ -104,7 +105,7 @@ class TupleEncoder(BaseEncoder):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-        self.is_dynamic = any(getattr(e, 'is_dynamic', False) for e in self.encoders)
+        self.is_dynamic = any(getattr(e, "is_dynamic", False) for e in self.encoders)
 
     def validate(self):
         super().validate()
@@ -141,31 +142,27 @@ class TupleEncoder(BaseEncoder):
         raw_head_chunks = []
         tail_chunks = []
         for value, encoder in zip(values, self.encoders):
-            if getattr(encoder, 'is_dynamic', False):
+            if getattr(encoder, "is_dynamic", False):
                 raw_head_chunks.append(None)
                 tail_chunks.append(encoder(value))
             else:
                 raw_head_chunks.append(encoder(value))
-                tail_chunks.append(b'')
+                tail_chunks.append(b"")
 
-        head_length = sum(
-            32 if item is None else len(item)
-            for item in raw_head_chunks
-        )
+        head_length = sum(32 if item is None else len(item) for item in raw_head_chunks)
         tail_offsets = (0,) + tuple(accumulate(map(len, tail_chunks[:-1])))
         head_chunks = tuple(
             encode_uint_256(head_length + offset) if chunk is None else chunk
             for chunk, offset in zip(raw_head_chunks, tail_offsets)
         )
 
-        encoded_value = b''.join(head_chunks + tuple(tail_chunks))
+        encoded_value = b"".join(head_chunks + tuple(tail_chunks))
         return encoded_value
 
     @parse_tuple_type_str
     def from_type_str(cls, abi_type, registry):
         encoders = tuple(
-            registry.get_encoder(c.to_type_str())
-            for c in abi_type.components
+            registry.get_encoder(c.to_type_str()) for c in abi_type.components
         )
 
         return cls(encoders=encoders)
@@ -231,13 +228,13 @@ class BooleanEncoder(Fixed32ByteSizeEncoder):
     @classmethod
     def encode_fn(cls, value):
         if value is True:
-            return b'\x01'
+            return b"\x01"
         elif value is False:
-            return b'\x00'
+            return b"\x00"
         else:
             raise ValueError("Invariant")
 
-    @parse_type_str('bool')
+    @parse_type_str("bool")
     def from_type_str(cls, abi_type, registry):
         return cls()
 
@@ -264,9 +261,8 @@ class NumberEncoder(Fixed32ByteSizeEncoder):
         if not self.type_check_fn(value):
             self.invalidate_value(value)
 
-        illegal_value = (
-            self.illegal_value_fn is not None and
-            self.illegal_value_fn(value)
+        illegal_value = self.illegal_value_fn is not None and self.illegal_value_fn(
+            value
         )
         if illegal_value:
             self.invalidate_value(value, exc=IllegalValue)
@@ -283,7 +279,7 @@ class NumberEncoder(Fixed32ByteSizeEncoder):
                         lower_bound,
                         upper_bound,
                     )
-                )
+                ),
             )
 
 
@@ -292,7 +288,7 @@ class UnsignedIntegerEncoder(NumberEncoder):
     bounds_fn = staticmethod(compute_unsigned_integer_bounds)
     type_check_fn = staticmethod(is_integer)
 
-    @parse_type_str('uint')
+    @parse_type_str("uint")
     def from_type_str(cls, abi_type, registry):
         return cls(value_bit_size=abi_type.sub)
 
@@ -301,7 +297,7 @@ encode_uint_256 = UnsignedIntegerEncoder(value_bit_size=256, data_byte_size=32)
 
 
 class PackedUnsignedIntegerEncoder(UnsignedIntegerEncoder):
-    @parse_type_str('uint')
+    @parse_type_str("uint")
     def from_type_str(cls, abi_type, registry):
         return cls(
             value_bit_size=abi_type.sub,
@@ -314,7 +310,7 @@ class SignedIntegerEncoder(NumberEncoder):
     type_check_fn = staticmethod(is_integer)
 
     def encode_fn(self, value):
-        return int_to_big_endian(value % (2 ** self.value_bit_size))
+        return int_to_big_endian(value % (2**self.value_bit_size))
 
     def encode(self, value):
         self.validate_value(value)
@@ -327,13 +323,13 @@ class SignedIntegerEncoder(NumberEncoder):
 
         return padded_encoded_value
 
-    @parse_type_str('int')
+    @parse_type_str("int")
     def from_type_str(cls, abi_type, registry):
         return cls(value_bit_size=abi_type.sub)
 
 
 class PackedSignedIntegerEncoder(SignedIntegerEncoder):
-    @parse_type_str('int')
+    @parse_type_str("int")
     def from_type_str(cls, abi_type, registry):
         return cls(
             value_bit_size=abi_type.sub,
@@ -359,13 +355,13 @@ class BaseFixedEncoder(NumberEncoder):
         super().validate_value(value)
 
         with decimal.localcontext(abi_decimal_context):
-            residue = value % (TEN ** -self.frac_places)
+            residue = value % (TEN**-self.frac_places)
 
         if residue > 0:
             self.invalidate_value(
                 value,
                 exc=IllegalValue,
-                msg='residue {} outside allowed fractional precision of {}'.format(
+                msg="residue {} outside allowed fractional precision of {}".format(
                     repr(residue),
                     self.frac_places,
                 ),
@@ -387,12 +383,12 @@ class UnsignedFixedEncoder(BaseFixedEncoder):
 
     def encode_fn(self, value):
         with decimal.localcontext(abi_decimal_context):
-            scaled_value = value * TEN ** self.frac_places
+            scaled_value = value * TEN**self.frac_places
             integer_value = int(scaled_value)
 
         return int_to_big_endian(integer_value)
 
-    @parse_type_str('ufixed')
+    @parse_type_str("ufixed")
     def from_type_str(cls, abi_type, registry):
         value_bit_size, frac_places = abi_type.sub
 
@@ -403,7 +399,7 @@ class UnsignedFixedEncoder(BaseFixedEncoder):
 
 
 class PackedUnsignedFixedEncoder(UnsignedFixedEncoder):
-    @parse_type_str('ufixed')
+    @parse_type_str("ufixed")
     def from_type_str(cls, abi_type, registry):
         value_bit_size, frac_places = abi_type.sub
 
@@ -420,10 +416,10 @@ class SignedFixedEncoder(BaseFixedEncoder):
 
     def encode_fn(self, value):
         with decimal.localcontext(abi_decimal_context):
-            scaled_value = value * TEN ** self.frac_places
+            scaled_value = value * TEN**self.frac_places
             integer_value = int(scaled_value)
 
-        unsigned_integer_value = integer_value % (2 ** self.value_bit_size)
+        unsigned_integer_value = integer_value % (2**self.value_bit_size)
 
         return int_to_big_endian(unsigned_integer_value)
 
@@ -438,7 +434,7 @@ class SignedFixedEncoder(BaseFixedEncoder):
 
         return padded_encoded_value
 
-    @parse_type_str('fixed')
+    @parse_type_str("fixed")
     def from_type_str(cls, abi_type, registry):
         value_bit_size, frac_places = abi_type.sub
 
@@ -449,7 +445,7 @@ class SignedFixedEncoder(BaseFixedEncoder):
 
 
 class PackedSignedFixedEncoder(SignedFixedEncoder):
-    @parse_type_str('fixed')
+    @parse_type_str("fixed")
     def from_type_str(cls, abi_type, registry):
         value_bit_size, frac_places = abi_type.sub
 
@@ -474,9 +470,9 @@ class AddressEncoder(Fixed32ByteSizeEncoder):
         super().validate()
 
         if self.value_bit_size != 20 * 8:
-            raise ValueError('Addresses must be 160 bits in length')
+            raise ValueError("Addresses must be 160 bits in length")
 
-    @parse_type_str('address')
+    @parse_type_str("address")
     def from_type_str(cls, abi_type, registry):
         return cls()
 
@@ -504,13 +500,13 @@ class BytesEncoder(Fixed32ByteSizeEncoder):
     def encode_fn(value):
         return value
 
-    @parse_type_str('bytes')
+    @parse_type_str("bytes")
     def from_type_str(cls, abi_type, registry):
         return cls(value_bit_size=abi_type.sub * 8)
 
 
 class PackedBytesEncoder(BytesEncoder):
-    @parse_type_str('bytes')
+    @parse_type_str("bytes")
     def from_type_str(cls, abi_type, registry):
         return cls(
             value_bit_size=abi_type.sub * 8,
@@ -536,7 +532,7 @@ class ByteStringEncoder(BaseEncoder):
 
         return encoded_size + padded_value
 
-    @parse_type_str('bytes')
+    @parse_type_str("bytes")
     def from_type_str(cls, abi_type, registry):
         return cls()
 
@@ -562,7 +558,7 @@ class TextStringEncoder(BaseEncoder):
     def encode(cls, value):
         cls.validate_value(value)
 
-        value_as_bytes = codecs.encode(value, 'utf8')
+        value_as_bytes = codecs.encode(value, "utf8")
         value_length = len(value_as_bytes)
 
         encoded_size = encode_uint_256(value_length)
@@ -570,7 +566,7 @@ class TextStringEncoder(BaseEncoder):
 
         return encoded_size + padded_value
 
-    @parse_type_str('string')
+    @parse_type_str("string")
     def from_type_str(cls, abi_type, registry):
         return cls()
 
@@ -581,7 +577,7 @@ class PackedTextStringEncoder(TextStringEncoder):
     @classmethod
     def encode(cls, value):
         cls.validate_value(value)
-        return codecs.encode(value, 'utf8')
+        return codecs.encode(value, "utf8")
 
 
 class BaseArrayEncoder(BaseEncoder):
@@ -609,17 +605,16 @@ class BaseArrayEncoder(BaseEncoder):
         item_encoder = self.item_encoder
         tail_chunks = tuple(item_encoder(i) for i in value)
 
-        items_are_dynamic = getattr(item_encoder, 'is_dynamic', False)
+        items_are_dynamic = getattr(item_encoder, "is_dynamic", False)
         if not items_are_dynamic or len(value) == 0:
-            return b''.join(tail_chunks)
+            return b"".join(tail_chunks)
 
         head_length = 32 * len(value)
         tail_offsets = (0,) + tuple(accumulate(map(len, tail_chunks[:-1])))
         head_chunks = tuple(
-            encode_uint_256(head_length + offset)
-            for offset in tail_offsets
+            encode_uint_256(head_length + offset) for offset in tail_offsets
         )
-        return b''.join(head_chunks + tail_chunks)
+        return b"".join(head_chunks + tail_chunks)
 
     @parse_type_str(with_arrlist=True)
     def from_type_str(cls, abi_type, registry):

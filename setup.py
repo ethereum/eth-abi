@@ -8,10 +8,10 @@ from setuptools import (
 HYPOTHESIS_REQUIREMENT = "hypothesis>=4.18.2,<5.0.0"
 
 extras_require = {
-    'tools': [
+    "tools": [
         HYPOTHESIS_REQUIREMENT,
     ],
-    'test': [
+    "test": [
         "pytest>=6.2.5,<7",
         "pytest-pythonpath>=0.7.1",
         "pytest-xdist>=2.5.0,<3",
@@ -19,19 +19,20 @@ extras_require = {
         "eth-hash[pycryptodome]",
         HYPOTHESIS_REQUIREMENT,
     ],
-    'lint': [
+    "lint": [
         "flake8==4.0.1",
         "isort>=4.2.15,<5",
         "mypy==0.910",
-        "pydocstyle>=3.0.0,<4",
+        "pydocstyle>=6.0.0,<7",
+        "black",
     ],
-    'doc': [
+    "doc": [
         "sphinx>=4.5.0,<5",
         "jinja2>=3.0.0,<3.1.0",  # jinja2<3.0 or >=3.1.0 cause doc build failures.
         "sphinx_rtd_theme>=1.0.0",
         "towncrier==18.5.0",  # towncrier doesn't follow semver
     ],
-    'dev': [
+    "dev": [
         "bumpversion>=0.5.3,<1",
         "pytest-watch>=4.1.0,<5",
         "wheel",
@@ -40,51 +41,51 @@ extras_require = {
     ],
 }
 
-extras_require['dev'] = (
-    extras_require['dev'] +  # noqa: W504
-    extras_require['test'] +  # noqa: W504
-    extras_require['lint'] +  # noqa: W504
-    extras_require['doc']
+extras_require["dev"] = (
+    extras_require["dev"]
+    + extras_require["test"]
+    + extras_require["lint"]
+    + extras_require["doc"]
 )
 
 
-with open('./README.md') as readme:
+with open("./README.md") as readme:
     long_description = readme.read()
 
 
 setup(
-    name='eth_abi',
+    name="eth_abi",
     # *IMPORTANT*: Don't manually change the version here. Use `make bump`, as described in readme
-    version='3.0.0',
+    version="3.0.0",
     description="""eth_abi: Python utilities for working with Ethereum ABI definitions, especially encoding and decoding""",
     long_description=long_description,
-    long_description_content_type='text/markdown',
-    author='The Ethereum Foundation',
-    author_email='snakecharmers@ethereum.org',
-    url='https://github.com/ethereum/eth-abi',
+    long_description_content_type="text/markdown",
+    author="The Ethereum Foundation",
+    author_email="snakecharmers@ethereum.org",
+    url="https://github.com/ethereum/eth-abi",
     include_package_data=True,
     install_requires=[
-        'eth-utils>=2.0.0,<3.0.0',
-        'eth-typing>=3.0.0,<4.0.0',
-        'parsimonious>=0.8.0,<0.9.0',
+        "eth-utils>=2.0.0,<3.0.0",
+        "eth-typing>=3.0.0,<4.0.0",
+        "parsimonious>=0.8.0,<0.9.0",
     ],
-    python_requires='>=3.7, <4',
+    python_requires=">=3.7, <4",
     extras_require=extras_require,
-    py_modules=['eth_abi'],
+    py_modules=["eth_abi"],
     license="MIT",
     zip_safe=False,
-    keywords='ethereum',
+    keywords="ethereum",
     packages=find_packages(exclude=["tests", "tests.*"]),
-    package_data={'eth_abi': ['py.typed']},
+    package_data={"eth_abi": ["py.typed"]},
     classifiers=[
-        'Development Status :: 5 - Production/Stable',
-        'Intended Audience :: Developers',
-        'License :: OSI Approved :: MIT License',
-        'Natural Language :: English',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.7',
-        'Programming Language :: Python :: 3.8',
-        'Programming Language :: Python :: 3.9',
-        'Programming Language :: Python :: 3.10',
+        "Development Status :: 5 - Production/Stable",
+        "Intended Audience :: Developers",
+        "License :: OSI Approved :: MIT License",
+        "Natural Language :: English",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
     ],
 )
