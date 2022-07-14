@@ -34,6 +34,7 @@ class BaseABICoder:
     instances of :class:`~eth_abi.registry.ABIRegistry` to provide last-mile
     coding functionality.
     """
+
     def __init__(self, registry: ABIRegistry):
         """
         Constructor.
@@ -62,13 +63,10 @@ class ABIEncoder(BaseABICoder):
         :returns: The head-tail encoded binary representation of the python
             values in ``args`` as values of the ABI types in ``types``.
         """
-        validate_list_like_param(types, 'types')
-        validate_list_like_param(args, 'args')
+        validate_list_like_param(types, "types")
+        validate_list_like_param(args, "args")
 
-        encoders = [
-            self._registry.get_encoder(type_str)
-            for type_str in types
-        ]
+        encoders = [self._registry.get_encoder(type_str) for type_str in types]
 
         encoder = TupleEncoder(encoders=encoders)
 
@@ -120,6 +118,7 @@ class ABIDecoder(BaseABICoder):
     """
     Wraps a registry to provide last-mile decoding functionality.
     """
+
     stream_class = ContextFramesBytesIO
 
     def decode(self, types: Iterable[TypeStr], data: Decodable) -> Tuple[Any, ...]:
@@ -135,13 +134,10 @@ class ABIDecoder(BaseABICoder):
         :returns: A tuple of equivalent python values for the ABI values
             represented in ``data``.
         """
-        validate_list_like_param(types, 'types')
-        validate_bytes_param(data, 'data')
+        validate_list_like_param(types, "types")
+        validate_bytes_param(data, "data")
 
-        decoders = [
-            self._registry.get_decoder(type_str)
-            for type_str in types
-        ]
+        decoders = [self._registry.get_decoder(type_str) for type_str in types]
 
         decoder = TupleDecoder(decoders=decoders)
         stream = self.stream_class(data)

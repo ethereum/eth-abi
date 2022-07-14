@@ -12,8 +12,8 @@ def abbr(value: Any, limit: int = 79) -> str:
 
     if len(rep) > limit:
         if limit < 3:
-            raise ValueError('Abbreviation limit may not be less than 3')
+            raise ValueError("Abbreviation limit may not be less than 3")
 
-        rep = rep[:limit - 3] + '...'
+        rep = rep[: limit - 3] + "..."
 
     return rep

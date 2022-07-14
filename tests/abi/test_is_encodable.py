@@ -18,7 +18,7 @@ from tests.common.unit import (
 
 
 @pytest.mark.parametrize(
-    'type_str,python_value,_1,_2',
+    "type_str,python_value,_1,_2",
     CORRECT_ENCODINGS,
 )
 def test_is_encodable_returns_true(type_str, python_value, _1, _2):
@@ -26,7 +26,7 @@ def test_is_encodable_returns_true(type_str, python_value, _1, _2):
 
 
 @pytest.mark.parametrize(
-    'type_str,python_value',
+    "type_str,python_value",
     NOT_ENCODABLE,
 )
 def test_is_encodable_returns_false(type_str, python_value):

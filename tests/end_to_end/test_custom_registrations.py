@@ -16,19 +16,19 @@ from eth_abi.registry import (
     registry,
 )
 
-NULL_ENCODING = b'\x00' * 32
+NULL_ENCODING = b"\x00" * 32
 
 
 def encode_null(x):
     if x is not None:
-        raise EncodingError('Unsupported value')
+        raise EncodingError("Unsupported value")
 
     return NULL_ENCODING
 
 
 def decode_null(stream):
     if stream.read(32) != NULL_ENCODING:
-        raise DecodingError('Not enough data or wrong data')
+        raise DecodingError("Not enough data or wrong data")
 
     return None
 
@@ -47,7 +47,7 @@ class EncodeNull(BaseEncoder):
 
     def validate_value(self, value):
         if value is not None:
-            raise EncodingError('Unsupported value')
+            raise EncodingError("Unsupported value")
 
 
 class DecodeNull(BaseDecoder):
@@ -61,47 +61,47 @@ class DecodeNull(BaseDecoder):
     def decode(self, stream):
         byts = stream.read(32 * self.word_width)
         if byts != NULL_ENCODING * self.word_width:
-            raise DecodingError('Not enough data or wrong data')
+            raise DecodingError("Not enough data or wrong data")
 
         return None
 
 
 def test_register_and_use_callables():
-    registry.register('null', encode_null, decode_null)
+    registry.register("null", encode_null, decode_null)
 
     try:
-        assert encode(['null'], [None]) == NULL_ENCODING
+        assert encode(["null"], [None]) == NULL_ENCODING
 
-        (decoded_null_data,) = decode(['null'], NULL_ENCODING)
+        (decoded_null_data,) = decode(["null"], NULL_ENCODING)
         assert decoded_null_data is None
 
-        encoded_tuple = encode(['(int,null)'], [(1, None)])
-        assert encoded_tuple == b'\x00' * 31 + b'\x01' + NULL_ENCODING
+        encoded_tuple = encode(["(int,null)"], [(1, None)])
+        assert encoded_tuple == b"\x00" * 31 + b"\x01" + NULL_ENCODING
 
-        (decoded_tuple,) = decode(['(int,null)'], encoded_tuple)
+        (decoded_tuple,) = decode(["(int,null)"], encoded_tuple)
         assert decoded_tuple == (1, None)
     finally:
-        registry.unregister('null')
+        registry.unregister("null")
 
 
 def test_register_and_use_coder_classes():
     registry.register(
-        lambda x: x.startswith('null'),
+        lambda x: x.startswith("null"),
         EncodeNull,
         DecodeNull,
-        label='null',
+        label="null",
     )
 
     try:
-        assert encode(['null2'], [None]) == NULL_ENCODING * 2
+        assert encode(["null2"], [None]) == NULL_ENCODING * 2
 
-        (decoded_null_data,) = decode(['null2'], NULL_ENCODING * 2)
+        (decoded_null_data,) = decode(["null2"], NULL_ENCODING * 2)
         assert decoded_null_data is None
 
-        encoded_tuple = encode(['(int,null2)'], [(1, None)])
-        assert encoded_tuple == b'\x00' * 31 + b'\x01' + NULL_ENCODING * 2
+        encoded_tuple = encode(["(int,null2)"], [(1, None)])
+        assert encoded_tuple == b"\x00" * 31 + b"\x01" + NULL_ENCODING * 2
 
-        (decoded_tuple,) = decode(['(int,null2)'], encoded_tuple)
+        (decoded_tuple,) = decode(["(int,null2)"], encoded_tuple)
         assert decoded_tuple == (1, None)
     finally:
-        registry.unregister('null')
+        registry.unregister("null")
