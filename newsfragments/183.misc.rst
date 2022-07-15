@@ -1,0 +1,1 @@
+Ignore SHA that added ``black`` linting in git blame
