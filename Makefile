@@ -22,9 +22,10 @@ clean-pyc:
 	find . -name '*.pyc' -exec rm -f {} +
 	find . -name '*.pyo' -exec rm -f {} +
 	find . -name '*~' -exec rm -f {} +
+	find . -name '__pycache__' -exec rm -rf {} +
 
 lint:
-	tox -elint
+	tox -e lint
 
 lint-roll:
 	isort --recursive eth_abi tests
@@ -41,8 +42,10 @@ build-docs:
 	$(MAKE) -C docs clean
 	$(MAKE) -C docs html
 	$(MAKE) -C docs doctest
+
+validate-docs:
 	./newsfragments/validate_files.py
-	towncrier --draft --version preview
+	towncrier build --draft --version preview
 
 docs: build-docs
 	open docs/_build/html/index.html
@@ -55,11 +58,11 @@ ifndef bump
 	$(error bump must be set, typically: major, minor, patch, or devnum)
 endif
 
-notes: check-bump
+notes: check-bump validate-docs
 	# Let UPCOMING_VERSION be the version that is used for the current bump
 	$(eval UPCOMING_VERSION=$(shell bumpversion $(bump) --dry-run --list | grep new_version= | sed 's/new_version=//g'))
 	# Now generate the release notes to have them included in the release commit
-	towncrier --yes --version $(UPCOMING_VERSION)
+	towncrier build --yes --version $(UPCOMING_VERSION)
 	# Before we bump the version, make sure that the towncrier-generated docs will build
 	make build-docs
 	git commit -m "Compile release notes"
