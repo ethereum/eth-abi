@@ -34,7 +34,7 @@ Table of Contents
     grammar
     tools
     eth_abi
-    releases
+    release_notes
 
 
 Indices and Tables
