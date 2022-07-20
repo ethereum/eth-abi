@@ -3,6 +3,33 @@ Release Notes
 
 .. towncrier release notes start
 
+eth-abi v2.2.0 (2022-07-20)
+---------------------------
+
+Features
+~~~~~~~~
+
+- Add support for Python 3.8. Includes updating mypy and flake8 version requirements (`#164 <https://github.com/ethereum/eth-abi/issues/164>`__)
+
+
+Improved Documentation
+~~~~~~~~~~~~~~~~~~~~~~
+
+- Fix broken badges in README (`#164 <https://github.com/ethereum/eth-abi/issues/164>`__)
+
+
+Deprecations
+~~~~~~~~~~~~
+
+- Add ``DeprecationWarning`` for ``encode_abi()``, ``encode_single()``, ``decode_abi()``, and ``decode_single()`` and add temporary versions of ``abi.encode()`` and ``abi.decode()`` so users can start making these changes early. (`#164 <https://github.com/ethereum/eth-abi/issues/164>`__)
+
+
+Miscellaneous changes
+~~~~~~~~~~~~~~~~~~~~~
+
+- `#164 <https://github.com/ethereum/eth-abi/issues/164>`__, `#166 <https://github.com/ethereum/eth-abi/issues/166>`__, `#172 <https://github.com/ethereum/eth-abi/issues/172>`__, `#184 <https://github.com/ethereum/eth-abi/issues/184>`__
+
+
 eth-abi v2.1.1 (2020-02-27)
 ---------------------------
 
