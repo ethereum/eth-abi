@@ -9,7 +9,7 @@
 
 Python utilities for working with Ethereum ABI definitions, especially encoding and decoding
 
-Read more in the [documentation on ReadTheDocs](https://eth-abi.readthedocs.io/). [View the change log](https://eth-abi.readthedocs.io/en/latest/releases.html).
+Read more in the [documentation on ReadTheDocs](https://eth-abi.readthedocs.io/). [View the change log](https://eth-abi.readthedocs.io/en/latest/release_notes.html).
 
 ## Quickstart
 
