@@ -528,6 +528,10 @@ class ByteStringEncoder(BaseEncoder):
         value_length = len(value)
 
         encoded_size = encode_uint_256(value_length)
+
+        if value_length == 0:
+            return encoded_size
+
         padded_value = zpad_right(value, ceil32(value_length))
 
         return encoded_size + padded_value
