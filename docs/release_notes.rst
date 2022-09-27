@@ -3,6 +3,38 @@ Release Notes
 
 .. towncrier release notes start
 
+eth-abi v4.0.0-beta.1 (2022-09-27)
+----------------------------------
+
+Bugfixes
+~~~~~~~~
+
+- Reconcile differences in 32-byte padding between eth-abi encoders for dynamic
+  types and Solidity's abi.encode() for 0 or empty values (`#158
+  <https://github.com/ethereum/eth-abi/issues/158>`__)
+
+
+Breaking Changes
+~~~~~~~~~~~~~~~~
+
+- Remove ``encode_abi_single()``, ``encode_packed_single()``, and
+  ``decode_abi_single()``. Rename ``encode_abi()``, ``encode_abi_packed()``,
+  and ``decode_abi()`` to ``encode()``, ``encode_packed()``, and ``decode()``,
+  respectively. (`#161 <https://github.com/ethereum/eth-abi/issues/161>`__)
+
+
+Miscellaneous changes
+~~~~~~~~~~~~~~~~~~~~~
+
+- `#161 <https://github.com/ethereum/eth-abi/issues/161>`__, `#166
+  <https://github.com/ethereum/eth-abi/issues/166>`__, `#167
+  <https://github.com/ethereum/eth-abi/issues/167>`__, `#168
+  <https://github.com/ethereum/eth-abi/issues/168>`__, `#177
+  <https://github.com/ethereum/eth-abi/issues/177>`__, `#183
+  <https://github.com/ethereum/eth-abi/issues/183>`__, `#186
+  <https://github.com/ethereum/eth-abi/issues/186>`__
+
+
 eth_abi 3.0.0 (2022-01-19)
 --------------------------
 

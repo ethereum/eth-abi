@@ -1,1 +1,0 @@
-Dependency updates: sphinx>=4.5.0,<5 and sphinx_rtd_theme>=1.0.0
