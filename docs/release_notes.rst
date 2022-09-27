@@ -35,6 +35,21 @@ Miscellaneous changes
   <https://github.com/ethereum/eth-abi/issues/186>`__
 
 
+eth-abi v3.0.1 (2022-07-18)
+---------------------------
+
+Deprecations
+~~~~~~~~~~~~
+
+- Add ``DeprecationWarning`` for ``encode_abi()``, ``encode_single()``, ``decode_abi()``, and ``decode_single()`` and add temporary versions of ``abi.encode()`` and ``abi.decode()`` so users can start making these changes early. (`#165 <https://github.com/ethereum/eth-abi/issues/165>`__)
+
+
+Miscellaneous changes
+~~~~~~~~~~~~~~~~~~~~~
+
+- `#165 <https://github.com/ethereum/eth-abi/issues/165>`__, `#166 <https://github.com/ethereum/eth-abi/issues/166>`__, `#172 <https://github.com/ethereum/eth-abi/issues/172>`__, `#177 <https://github.com/ethereum/eth-abi/issues/177>`__, `#178 <https://github.com/ethereum/eth-abi/issues/178>`__
+
+
 eth_abi 3.0.0 (2022-01-19)
 --------------------------
 
