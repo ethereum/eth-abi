@@ -25,6 +25,7 @@ follows:
     >>> decode(['(bytes1,bytes1)'], b'a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00b\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00')
     ((b'a', b'b'),)
 
-The :any:`decode` function provides an API for decoding binary values for ABI types into python values. It accepts a
-sequence of ABI type strings as the first argument and the binary data to be decoded, as a python ``bytes`` or
-``bytearray`` value, as the second argument.
+The :py:meth:`eth_abi.decoding.BaseDecoder.decode` function provides an API for
+decoding binary values for ABI types into python values. It accepts a sequence of
+ABI type strings as the first argument and the binary data to be decoded, as a python
+``bytes`` or ``bytearray`` value, as the second argument.
