@@ -56,7 +56,7 @@ with open("./README.md") as readme:
 setup(
     name="eth_abi",
     # *IMPORTANT*: Don't manually change the version here. Use `make bump`, as described in readme
-    version="3.0.0",
+    version="4.0.0-beta.1",
     description="""eth_abi: Python utilities for working with Ethereum ABI definitions, especially encoding and decoding""",
     long_description=long_description,
     long_description_content_type="text/markdown",
