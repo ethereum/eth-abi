@@ -70,7 +70,7 @@ class ABIEncoder(BaseABICoder):
 
         encoder = TupleEncoder(encoders=encoders)
 
-        return encoder(args)
+        return encoder(tuple(args))
 
     def is_encodable(self, typ: TypeStr, arg: Any) -> bool:
         """

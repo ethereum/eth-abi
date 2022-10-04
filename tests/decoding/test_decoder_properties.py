@@ -380,7 +380,7 @@ def test_decode_address(address_bytes, padding_size, data_byte_size):
         st.integers(min_value=0, max_value=TT256M1),
         min_size=0,
         max_size=64,
-    ).map(tuple),
+    ),
 )
 def test_decode_array_of_unsigned_integers(array_size, array_values):
     size_bytes = zpad32(int_to_big_endian(array_size))

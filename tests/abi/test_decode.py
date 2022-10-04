@@ -47,10 +47,6 @@ def test_abi_decode_for_single_static_types(type_str, expected, abi_encoding, _)
     CORRECT_DYNAMIC_ENCODINGS,
 )
 def test_abi_decode_for_single_dynamic_types(type_str, expected, abi_encoding, _):
-    # Tests set up list values but encoders return sequences as tuples.
-    # i.e. [b'\xde\xad\xbe\xef'] vs encoder return type (b'\xde\xad\xbe\xef',)
-    expected = tuple(expected) if isinstance(expected, list) else expected
-
     abi_encoding = (
         # 32 bytes offset for dynamic types
         b"".join([words("20"), abi_encoding])

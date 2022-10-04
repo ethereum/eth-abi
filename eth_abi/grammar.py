@@ -83,10 +83,10 @@ class NodeVisitor(parsimonious.NodeVisitor):
         # Ignore left and right brackets
         _, int_value, _ = visited_children
 
-        return (int_value,)
+        return [int_value]
 
     def visit_dynam_arr(self, node, visited_children):
-        return tuple()
+        return list()
 
     def visit_alphas(self, node, visited_children):
         return node.text
@@ -119,6 +119,9 @@ class NodeVisitor(parsimonious.NodeVisitor):
         :returns: An instance of :class:`~eth_abi.grammar.ABIType` containing
             information about the parsed type string.
         """
+        if type_str == "[]":
+            raise ParseError("empty python `list` does not map to an ABI type.")
+
         if not isinstance(type_str, str):
             raise TypeError(
                 "Can only parse string values: got {}".format(type(type_str))

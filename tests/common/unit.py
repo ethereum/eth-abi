@@ -129,141 +129,141 @@ CORRECT_DYNAMIC_TUPLE_ENCODINGS = [
     # tuple w/ empty dynamic arrays
     (
         "(string[])",
-        ((),),
+        ([],),
         words("20", "0"),
         b"",
     ),
     (
         "(bytes[])",
-        ((),),
+        ([],),
         words("20", "0"),
         b"",
     ),
     (
         "(bytes32[])",
-        ((),),
+        ([],),
         words("20", "0"),
         b"",
     ),
     (
         "(address[])",
-        ((),),
+        ([],),
         words("20", "0"),
         b"",
     ),
     (
         "(int[])",
-        ((),),
+        ([],),
         words("20", "0"),
         b"",
     ),
     (
         "(uint[])",
-        ((),),
+        ([],),
         words("20", "0"),
         b"",
     ),
     (
         "(uint8[])",
-        ((),),
+        ([],),
         words("20", "0"),
         b"",
     ),
     (
         "(uint256[])",
-        ((),),
+        ([],),
         words("20", "0"),
         b"",
     ),
     # nested tuple w/ empty dynamic arrays
     (
         "((string[]))",
-        (((),),),
+        (([],),),
         words("20", "20", "0"),
         b"",
     ),
     (
         "((bytes[]))",
-        (((),),),
+        (([],),),
         words("20", "20", "0"),
         b"",
     ),
     (
         "((bytes32[]))",
-        (((),),),
+        (([],),),
         words("20", "20", "0"),
         b"",
     ),
     (
         "((address[]))",
-        (((),),),
+        (([],),),
         words("20", "20", "0"),
         b"",
     ),
     (
         "((int[]))",
-        (((),),),
+        (([],),),
         words("20", "20", "0"),
         b"",
     ),
     (
         "((uint8[]))",
-        (((),),),
+        (([],),),
         words("20", "20", "0"),
         b"",
     ),
     (
         "((uint256[]))",
-        (((),),),
+        (([],),),
         words("20", "20", "0"),
         b"",
     ),
     # sanity check / consistency - doubly nested tuples with empty dynamic array
     (
         "(((string[])))",
-        ((((),),),),
+        ((([],),),),
         words("20", "20", "20", "0"),
         b"",
     ),
     (
         "(((bytes[])))",
-        ((((),),),),
+        ((([],),),),
         words("20", "20", "20", "0"),
         b"",
     ),
     (
         "(((bytes32[])))",
-        ((((),),),),
+        ((([],),),),
         words("20", "20", "20", "0"),
         b"",
     ),
     (
         "(((address[])))",
-        ((((),),),),
+        ((([],),),),
         words("20", "20", "20", "0"),
         b"",
     ),
     (
         "(((int[])))",
-        ((((),),),),
+        ((([],),),),
         words("20", "20", "20", "0"),
         b"",
     ),
     (
         "(((uint8[])))",
-        ((((),),),),
+        ((([],),),),
         words("20", "20", "20", "0"),
         b"",
     ),
     (
         "(((uint256[])))",
-        ((((),),),),
+        ((([],),),),
         words("20", "20", "20", "0"),
         b"",
     ),
     (
         "(bytes32[])",
-        ((zpad32_right(b"a"), zpad32_right(b"b")),),
+        ([zpad32_right(b"a"), zpad32_right(b"b")],),
         words("20", "2", "61>0", "62>0"),
         words("61>0", "62>0"),
     ),
@@ -275,13 +275,13 @@ CORRECT_DYNAMIC_TUPLE_ENCODINGS = [
     ),
     (
         "(int,(int,int[]))",
-        (1, (2, (3, 3))),
+        (1, (2, [3, 3])),
         words("1", "40", "2", "40", "2", "3", "3"),
         words("1", "2", "3", "3"),
     ),
     (
         "((int[],int),int)",
-        (((1, 1), 2), 3),
+        (([1, 1], 2), 3),
         words("40", "3", "40", "2", "2", "1", "1"),
         words("1", "1", "2", "3"),
     ),
@@ -310,7 +310,7 @@ CORRECT_DYNAMIC_TUPLE_ENCODINGS = [
     # Tuple arrays
     (
         "((int,int)[])",
-        (((1, 2), (3, 4)),),
+        ([(1, 2), (3, 4)],),
         words("20", "2", "1", "2", "3", "4"),
         words("1", "2", "3", "4"),
     ),
@@ -319,8 +319,8 @@ CORRECT_DYNAMIC_TUPLE_ENCODINGS = [
         (
             (
                 1,
-                (2, 3),
-                ((4, 5), (6, 7)),
+                [2, 3],
+                [(4, 5), (6, 7)],
             ),
             (8, 9),
             10,
@@ -346,11 +346,11 @@ CORRECT_DYNAMIC_TUPLE_ENCODINGS = [
     ),
     (
         "(int,int)[][]",
-        (
-            ((1, 2),),
-            ((3, 4), (5, 6)),
-            ((7, 8), (9, 10), (11, 12)),
-        ),
+        [
+            [(1, 2)],
+            [(3, 4), (5, 6)],
+            [(7, 8), (9, 10), (11, 12)],
+        ],
         words(
             "3",  # size of outer dynamic list
             "60",  # offset of first dynamic list
@@ -376,12 +376,7 @@ CORRECT_DYNAMIC_TUPLE_ENCODINGS = [
     ),
     (
         "((int,int)[][2])",
-        (
-            (
-                ((1, 2), (3, 4)),
-                ((5, 6), (7, 8), (9, 10)),
-            ),
-        ),
+        (([[(1, 2), (3, 4)], [(5, 6), (7, 8), (9, 10)]]),),
         words(
             "20",  # offset of constant size array
             "40",  # offset of first dynamic list of tuples
@@ -568,6 +563,14 @@ NOT_ENCODABLE = [
     ("int", True),
     ("bytes", 129),
     ("fixed8x1", 0.1),  # only Decimal and int are allowed
+    # `tuple` instead of `list` / `list` instead of `tuple`
+    ("string[]", ("shall", "not", "pass")),
+    ("bytes[]", (b"shall", b"not", b"pass")),
+    ("uint256[]", (1, 2, 3)),
+    ("()", []),
+    ("(string,string,string)", ["shall", "not", "pass"]),
+    ("(bytes,bytes,bytes)", [b"shall", b"not", b"pass"]),
+    ("(uint256,uint256,uint256)", [1, 2, 3]),
     # List size mismatch
     ("int[3]", (6, 2)),
     # Bytes string is wrong size

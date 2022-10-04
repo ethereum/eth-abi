@@ -7,6 +7,7 @@ from typing import (
 
 from eth_utils import (
     big_endian_to_int,
+    to_list,
     to_normalized_address,
     to_tuple,
 )
@@ -252,7 +253,7 @@ class SizedArrayDecoder(BaseArrayDecoder):
 
         self.is_dynamic = self.item_decoder.is_dynamic
 
-    @to_tuple
+    @to_list
     def decode(self, stream):
         for _ in range(self.array_size):
             yield self.item_decoder(stream)
@@ -262,7 +263,7 @@ class DynamicArrayDecoder(BaseArrayDecoder):
     # Dynamic arrays are always dynamic, regardless of their elements
     is_dynamic = True
 
-    @to_tuple
+    @to_list
     def decode(self, stream):
         array_size = decode_uint_256(stream)
         stream.push_frame(32)

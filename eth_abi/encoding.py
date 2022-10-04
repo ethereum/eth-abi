@@ -16,7 +16,6 @@ from eth_utils import (
     is_boolean,
     is_bytes,
     is_integer,
-    is_list_like,
     is_number,
     is_text,
     to_canonical_address,
@@ -114,10 +113,10 @@ class TupleEncoder(BaseEncoder):
             raise ValueError("`encoders` may not be none")
 
     def validate_value(self, value):
-        if not is_list_like(value):
+        if not isinstance(value, tuple):
             self.invalidate_value(
                 value,
-                msg="must be list-like object such as array or tuple",
+                msg="`value` type expected as python `tuple`.",
             )
 
         if len(value) != len(self.encoders):
@@ -590,10 +589,10 @@ class BaseArrayEncoder(BaseEncoder):
             raise ValueError("`item_encoder` may not be none")
 
     def validate_value(self, value):
-        if not is_list_like(value):
+        if not isinstance(value, list):
             self.invalidate_value(
                 value,
-                msg="must be list-like such as array or tuple",
+                msg="`value` type expected as python `list`.",
             )
 
         for item in value:
