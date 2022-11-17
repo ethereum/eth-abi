@@ -109,7 +109,7 @@ class NodeVisitor(parsimonious.NodeVisitor):
         return tuple(visited_children)
 
     @functools.lru_cache(maxsize=None)
-    def parse(self, type_str):
+    def parse(self, type_str, **kwargs):
         """
         Parses a type string into an appropriate instance of
         :class:`~eth_abi.grammar.ABIType`.  If a type string cannot be parsed,
@@ -125,7 +125,7 @@ class NodeVisitor(parsimonious.NodeVisitor):
             )
 
         try:
-            return super().parse(type_str)
+            return super().parse(type_str, **kwargs)
         except parsimonious.ParseError as e:
             raise ParseError(e.text, e.pos, e.expr)
 
