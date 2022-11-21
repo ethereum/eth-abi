@@ -3,6 +3,7 @@ Release Notes
 
 .. towncrier release notes start
 
+
 eth-abi v4.0.0-beta.2 (2022-11-21)
 ----------------------------------
 
@@ -11,6 +12,11 @@ Features
 
 - Add support for Python 3.11 (`#194
   <https://github.com/ethereum/eth-abi/issues/194>`__)
+
+Miscellaneous changes
+~~~~~~~~~~~~~~~~~~~~~
+
+- `#196 <https://github.com/ethereum/eth-abi/issues/196>`__
 
 
 eth-abi v4.0.0-beta.1 (2022-09-27)
