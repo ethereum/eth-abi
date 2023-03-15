@@ -42,12 +42,66 @@ jobs:
       - image: cimg/python:3.10
         environment:
           TOXENV: docs
-  lint:
+  py37-lint:
+    <<: *common
+    docker:
+      - image: cimg/python:3.7
+        environment:
+          TOXENV: py37-lint
+  py38-lint:
+    <<: *common
+    docker:
+      - image: cimg/python:3.8
+        environment:
+          TOXENV: py38-lint
+  py39-lint:
+    <<: *common
+    docker:
+      - image: cimg/python:3.9
+        environment:
+          TOXENV: py39-lint
+  py310-lint:
     <<: *common
     docker:
       - image: cimg/python:3.10
         environment:
-          TOXENV: lint
+          TOXENV: py310-lint
+  py311-lint:
+    <<: *common
+    docker:
+      - image: cimg/python:3.11
+        environment:
+          TOXENV: py311-lint
+  py37-wheel:
+    <<: *common
+    docker:
+      - image: cimg/python:3.7
+        environment:
+          TOXENV: py37-wheel
+  py38-wheel:
+    <<: *common
+    docker:
+      - image: cimg/python:3.8
+        environment:
+          TOXENV: py38-wheel
+  py39-wheel:
+    <<: *common
+    docker:
+      - image: cimg/python:3.9
+        environment:
+          TOXENV: py39-wheel
+  py310-wheel:
+    <<: *common
+    docker:
+      - image: cimg/python:3.10
+        environment:
+          TOXENV: py310-wheel
+  py311-wheel:
+    <<: *common
+    docker:
+      - image: cimg/python:3.11
+        environment:
+          TOXENV: py311-wheel
   py37-core:
     <<: *common
     docker:
@@ -83,7 +137,16 @@ workflows:
   test:
     jobs:
       - docs
-      - lint
+      - py37-lint
+      - py38-lint
+      - py39-lint
+      - py310-lint
+      - py311-lint
+      - py37-wheel
+      - py38-wheel
+      - py39-wheel
+      - py310-wheel
+      - py311-wheel
       - py37-core
       - py38-core
       - py39-core
