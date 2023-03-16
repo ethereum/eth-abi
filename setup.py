@@ -20,7 +20,7 @@ extras_require = {
         HYPOTHESIS_REQUIREMENT,
     ],
     "lint": [
-        "flake8==4.0.1",
+        "flake8",
         "isort>=4.2.15,<5",
         "mypy==0.910",
         "pydocstyle>=6.0.0,<7",
