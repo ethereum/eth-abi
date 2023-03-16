@@ -24,7 +24,7 @@ clean-pyc:
 	find . -name '*~' -exec rm -f {} +
 
 lint:
-	tox -elint
+	tox -e lint
 
 lint-roll:
 	isort --recursive eth_abi tests
