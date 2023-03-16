@@ -20,7 +20,7 @@ extras_require = {
         HYPOTHESIS_REQUIREMENT,
     ],
     "lint": [
-        "flake8==4.0.1",
+        "flake8",
         "isort>=4.2.15,<5",
         "mypy==0.910",
         "pydocstyle>=6.0.0,<7",
@@ -67,7 +67,7 @@ setup(
     install_requires=[
         "eth-utils>=2.0.0",
         "eth-typing>=3.0.0",
-        "parsimonious>=0.8.0,<0.10.0",
+        "parsimonious>=0.9.0,<0.10.0",
     ],
     python_requires=">=3.7, <4",
     extras_require=extras_require,
