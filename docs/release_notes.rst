@@ -3,6 +3,15 @@ Release Notes
 
 .. towncrier release notes start
 
+eth-abi v4.0.0-beta.3 (2023-03-20)
+----------------------------------
+
+Breaking Changes
+~~~~~~~~~~~~~~~~
+
+- Upgrade Parsimonious dependency to allow >=0.9,<0.10 (`#201
+  <https://github.com/ethereum/eth-abi/issues/201>`__)
+
 
 eth-abi v4.0.0-beta.2 (2022-11-21)
 ----------------------------------
