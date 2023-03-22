@@ -3,6 +3,12 @@ Release Notes
 
 .. towncrier release notes start
 
+eth-abi v4.0.0 (2023-03-22)
+---------------------------
+
+No significant changes.
+
+
 eth-abi v4.0.0-beta.3 (2023-03-20)
 ----------------------------------
 
