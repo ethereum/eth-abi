@@ -27,10 +27,9 @@ extras_require = {
         "black",
     ],
     "doc": [
-        "sphinx>=4.5.0,<5",
-        "jinja2>=3.0.0,<3.1.0",  # jinja2<3.0 or >=3.1.0 cause doc build failures.
+        "sphinx>=5.0.0",
         "sphinx_rtd_theme>=1.0.0",
-        "towncrier==18.5.0",  # towncrier doesn't follow semver
+        "towncrier>=21,<22",
     ],
     "dev": [
         "bumpversion>=0.5.3,<1",
