@@ -12,29 +12,28 @@ extras_require = {
         HYPOTHESIS_REQUIREMENT,
     ],
     "test": [
-        "pytest>=6.2.5,<7",
+        "pytest>=6.2.5",
         "pytest-pythonpath>=0.7.1",
-        "pytest-xdist>=2.5.0,<3",
-        "tox>=2.9.1,<3",
+        "pytest-xdist>=2.5.0",
+        "tox>=2.9.1",
         "eth-hash[pycryptodome]",
         HYPOTHESIS_REQUIREMENT,
     ],
     "lint": [
         "flake8",
-        "isort>=4.2.15,<5",
+        "isort>=5.11.0",
         "mypy==0.910",
-        "pydocstyle>=6.0.0,<7",
+        "pydocstyle>=6.0.0",
         "black",
     ],
     "doc": [
-        "sphinx>=4.5.0,<5",
-        "jinja2>=3.0.0,<3.1.0",  # jinja2<3.0 or >=3.1.0 cause doc build failures.
+        "sphinx>=5.0.0",
         "sphinx_rtd_theme>=1.0.0",
-        "towncrier==18.5.0",  # towncrier doesn't follow semver
+        "towncrier>=21,<22",
     ],
     "dev": [
-        "bumpversion>=0.5.3,<1",
-        "pytest-watch>=4.1.0,<5",
+        "bumpversion>=0.5.3",
+        "pytest-watch>=4.1.0",
         "wheel",
         "twine",
         "ipython",
