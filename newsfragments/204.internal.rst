@@ -1,0 +1,1 @@
+Moved requirements-docs.txt info into .readthedocs.yml
