@@ -1,5 +1,5 @@
 eth_abi
-eth_abi
+eth-abi
 eth-abi
 eth-abi
 Ethereum Contract Interface (ABI) Utility
