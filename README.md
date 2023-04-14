@@ -1,15 +1,15 @@
 # Ethereum Contract Interface (ABI) Utility
 
-[![Join the chat at https://gitter.im/ethereum/eth-abi](https://badges.gitter.im/ethereum/eth-abi.svg)](https://gitter.im/ethereum/eth-abi?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![Build Status](https://circleci.com/gh/ethereum/eth-abi.svg?style=shield)](https://circleci.com/gh/ethereum/eth-abi)
-[![PyPI version](https://badge.fury.io/py/eth-abi.svg)](https://badge.fury.io/py/eth-abi)
-[![Python versions](https://img.shields.io/pypi/pyversions/eth-abi.svg)](https://pypi.python.org/pypi/eth-abi)
-[![Docs build](https://readthedocs.org/projects/eth-abi/badge/?version=latest)](http://eth-abi.readthedocs.io/en/latest/?badge=latest)
+[![Join the conversation on Discord](https://img.shields.io/discord/809793915578089484?color=blue&label=chat&logo=discord&logoColor=white)](https://discord.gg/GHryRvPB84)
+[![Build Status](https://circleci.com/gh/ethereum/<REPO_NAME>.svg?style=shield)](https://circleci.com/gh/ethereum/<REPO_NAME>)
+[![PyPI version](https://badge.fury.io/py/<PYPI_NAME>.svg)](https://badge.fury.io/py/<PYPI_NAME>)
+[![Python versions](https://img.shields.io/pypi/pyversions/<PYPI_NAME>.svg)](https://pypi.python.org/pypi/<PYPI_NAME>)
+[![Docs build](https://readthedocs.org/projects/<RTD_NAME>/badge/?version=latest)](https://<RTD_NAME>.readthedocs.io/en/latest/?badge=latest)
    
 
 Python utilities for working with Ethereum ABI definitions, especially encoding and decoding
 
-Read more in the [documentation on ReadTheDocs](https://eth-abi.readthedocs.io/). [View the change log](https://eth-abi.readthedocs.io/en/latest/release_notes.html).
+Read more in the [documentation on ReadTheDocs](https://<RTD_NAME>.readthedocs.io/). [View the change log](https://<RTD_NAME>.readthedocs.io/en/latest/release_notes.html).
 
 ## Quickstart
 
@@ -37,42 +37,10 @@ git clone git@github.com:ethereum/eth-abi.git
 cd eth-abi
 virtualenv -p python3 venv
 . venv/bin/activate
-pip install -e .[dev]
-```
-
-### Testing Setup
-
-During development, you might like to have tests run on every file save.
-
-Show flake8 errors on file change:
-
-```sh
-# Test flake8
-when-changed -v -s -r -1 eth_abi/ tests/ -c "clear; flake8 eth_abi tests && echo 'flake8 success' || echo 'error'"
-```
-
-Run multi-process tests in one command, but without color:
-
-```sh
-# in the project root:
-pytest --numprocesses=4 --looponfail --maxfail=1
-# the same thing, succinctly:
-pytest -n 4 -f --maxfail=1
-```
-
-Run in one thread, with color and desktop notifications:
-
-```sh
-cd venv
-ptw --onfail "notify-send -t 5000 'Test failure ⚠⚠⚠⚠⚠' 'python 3 test on eth-abi failed'" ../tests ../eth_abi
+pip install -e ".[dev]"
 ```
 
 ### Release setup
-
-For Debian-like systems:
-```
-apt install pandoc
-```
 
 To release a new version:
 

@@ -55,7 +55,7 @@ master_doc = "index"
 
 # General information about the project.
 project = "Ethereum Contract Interface (ABI) Utility"
-copyright = "2020, The Ethereum Foundation"
+copyright = "2016-2020, 2022-2023, The Ethereum Foundation"
 
 __version__ = setup_version
 # The version info for the project you're documenting, acts as replacement for
@@ -210,8 +210,8 @@ latex_elements = {
 latex_documents = [
     (
         "index",
-        "eth_abi.tex",
-        "Ethereum Contract Interface (ABI) Utility Documentation",
+        "<MODULE_NAME>.tex",
+        "<PROJECT_NAME> Documentation",
         "The Ethereum Foundation",
         "manual",
     ),
@@ -245,8 +245,8 @@ latex_documents = [
 man_pages = [
     (
         "index",
-        "eth_abi",
-        "Ethereum Contract Interface (ABI) Utility Documentation",
+        "<MODULE_NAME>",
+        "<PROJECT_NAME> Documentation",
         ["The Ethereum Foundation"],
         1,
     )
@@ -264,11 +264,11 @@ man_pages = [
 texinfo_documents = [
     (
         "index",
-        "Ethereum Contract Interface (ABI) Utility",
-        "Ethereum Contract Interface (ABI) Utility Documentation",
+        "<PROJECT_NAME>",
+        "<PROJECT_NAME> Documentation",
         "The Ethereum Foundation",
-        "Ethereum Contract Interface (ABI) Utility",
-        "Python utilities for working with Ethereum ABI definitions, especially encoding and decoding",
+        "<PROJECT_NAME>",
+        "<SHORT_DESCRIPTION>",
         "Miscellaneous",
     ),
 ]
@@ -288,7 +288,7 @@ texinfo_documents = [
 # -- Intersphinx configuration ------------------------------------------------
 
 intersphinx_mapping = {
-    "python": ("https://docs.python.org/3.6", None),
+    "python": ("https://docs.python.org/3.10", None),
 }
 
 # -- Doctest configuration ----------------------------------------
