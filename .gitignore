@@ -89,9 +89,6 @@ out/
 
 ## Plugin-specific files:
 
-### mpeltonen/sbt-idea plugin
-.idea_modules/
-
 ### JIRA plugin
 atlassian-ide-plugin.xml
 

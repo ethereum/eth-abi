@@ -24,7 +24,7 @@ class IllegalValue(EncodingError):
     a value that is not considered legal for the output ABI type.
 
     Example:
-    -------
+    --------
 
     .. code-block:: python
 
@@ -42,7 +42,7 @@ class ValueOutOfBounds(IllegalValue):
     type.
 
     Example:
-    -------
+    --------
 
     .. code-block:: python
 
