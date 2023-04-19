@@ -12,19 +12,19 @@ extras_require = {
         HYPOTHESIS_REQUIREMENT,
     ],
     "test": [
-        "pytest>=6.2.5",
+        "pytest>=7.0.0",
+        "pytest-xdist>=2.4.0",
         "pytest-pythonpath>=0.7.1",
-        "pytest-xdist>=2.5.0",
-        "tox>=2.9.1",
         "eth-hash[pycryptodome]",
         HYPOTHESIS_REQUIREMENT,
     ],
     "lint": [
-        "flake8",
-        "isort>=5.11.0",
-        "mypy==0.910",
+        "flake8==6.0.0",  # flake8 claims semver but adds new warnings at minor releases, leave it pinned.
+        "flake8-bugbear==23.3.23",  # flake8-bugbear does not follow semver, leave it pinned.
+        "isort>=5.10.1",
+        "mypy==0.971",  # mypy does not follow semver, leave it pinned.
         "pydocstyle>=6.0.0",
-        "black",
+        "black>=23",
     ],
     "doc": [
         "sphinx>=5.0.0",
@@ -34,6 +34,8 @@ extras_require = {
     "dev": [
         "bumpversion>=0.5.3",
         "pytest-watch>=4.1.0",
+        "tox>=4.0.0",
+        "build>=0.9.0",
         "wheel",
         "twine",
         "ipython",
@@ -68,7 +70,7 @@ setup(
         "eth-typing>=3.0.0",
         "parsimonious>=0.9.0,<0.10.0",
     ],
-    python_requires=">=3.7, <4",
+    python_requires=">=3.7.2, <4",
     extras_require=extras_require,
     py_modules=["eth_abi"],
     license="MIT",
@@ -86,5 +88,6 @@ setup(
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
     ],
 )
