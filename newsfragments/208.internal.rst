@@ -1,0 +1,1 @@
+Updated CI process to handle tox issue caused by `virtualenv` update
