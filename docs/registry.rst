@@ -205,3 +205,72 @@ is necessary to implement this method since it is used by the
 :any:`is_encodable` function to determine if a value is encodable without doing
 the extra work of encoding it.  For certain data types, this can be more
 efficient than simply attempting to encode a value.
+
+
+
+Handling Malformed Strings
+--------------------------
+
+Sometimes a ``string`` we receive is malformed, i.e. not utf-8 decodeable.
+This will throw an error by default, but we can adjust how it is handled by
+registering a new decoder with our preferred handler.
+
+The :class:`StringDecoder` class uses the Python :meth:`bytes.decode` method at its core,
+which accepts an ``errors`` argument to define how un-decodeable bytes are handled.
+:class:`StringDecoder` uses ``errors=strict`` by default, but can also accept
+``surrogateescape``, ``ignore``, ``replace``, or ``backslashreplace``. You can read
+more about each of these options in the Python
+`docs <https://docs.python.org/3/library/codecs.html#error-handlers>`_.
+
+The ability to handle malformed strings is only available for decoding. It is assumed
+that attempting to encode a malformed string indicates user error.
+
+.. testcode:: handle-malformed-strings
+
+    from eth_abi import decode, encode
+    from eth_abi.decoding import StringDecoder
+    from eth_abi.encoding import TextStringEncoder
+    from eth_abi.registry import registry
+
+    # encode a string
+    test_string = encode(["string"], ["cat"])
+    assert (test_string == b"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00 \x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x03cat\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+    )
+
+    # insert an un-decodeable byte
+    bad_string = test_string[:65] + b"\xff" + test_string[66:]
+
+    # verify the original test_string decodes properly
+    assert decode(["string"], test_string) == ("cat",)
+    
+    # default `StringDecoder` will throw an error
+    try:
+        decode(["string"], bad_string)
+
+    except UnicodeDecodeError as e:
+        assert "'utf-8' codec can't decode byte 0xff" in str(e)
+
+    # If we want to handle un-decodeable strings, we can register multiple string
+    # decoders, each with its own `handle_string_errors` option
+    
+    registry.register(
+        "surrogateescape_string",
+        TextStringEncoder,
+        StringDecoder(handle_string_errors="surrogateescape")
+    )
+    registry.register(
+        "backslashreplace_string",
+        TextStringEncoder,
+        StringDecoder(handle_string_errors="backslashreplace"),
+    )
+    
+    assert decode(["surrogateescape_string"], bad_string) == ("c\udcfft",)
+    assert decode(["backslashreplace_string"], bad_string) == ("c\\xfft",)
+
+.. testcleanup:: handle-malformed-strings
+
+    from eth_abi.registry import registry
+    registry.unregister('surrogateescape_string')
+    registry.unregister('backslashreplace_string')
+
+

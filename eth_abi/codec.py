@@ -121,7 +121,11 @@ class ABIDecoder(BaseABICoder):
 
     stream_class = ContextFramesBytesIO
 
-    def decode(self, types: Iterable[TypeStr], data: Decodable) -> Tuple[Any, ...]:
+    def decode(
+        self,
+        types: Iterable[TypeStr],
+        data: Decodable,
+    ) -> Tuple[Any, ...]:
         """
         Decodes the binary value ``data`` as a sequence of values of the ABI types
         in ``types`` via the head-tail mechanism into a tuple of equivalent python

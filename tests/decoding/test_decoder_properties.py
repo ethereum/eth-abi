@@ -17,6 +17,10 @@ from hypothesis import (
 )
 import pytest
 
+from eth_abi import (
+    decode,
+    encode,
+)
 from eth_abi.constants import (
     TT256M1,
 )
@@ -34,8 +38,10 @@ from eth_abi.decoding import (
     UnsignedFixedDecoder,
     UnsignedIntegerDecoder,
 )
+from eth_abi.encoding import (
+    TextStringEncoder,
+)
 from eth_abi.exceptions import (
-    DecodingError,
     InsufficientDataBytes,
     NonEmptyPaddingBytes,
 )
@@ -244,21 +250,52 @@ def test_decode_strings(_strings, pad_size):
     _bytes=st.binary(min_size=0, max_size=256).filter(complement(is_utf8_decodable)),
     pad_size=st.integers(min_value=0, max_value=32),
 )
-def test_decode_strings_raises(_bytes, pad_size):
+@pytest.mark.parametrize(
+    "handle_string_errors,error",
+    [
+        ("strict", UnicodeError),
+        ("ignore", None),
+        ("replace", None),
+        ("backslashreplace", None),
+        ("surrogateescape", None),
+    ],
+)
+def test_decode_strings_error_handling(_bytes, pad_size, handle_string_errors, error):
     size_bytes = zpad32(int_to_big_endian(len(_bytes)))
     padded_bytes = _bytes + b"\x00" * pad_size
     stream_bytes = size_bytes + padded_bytes
     stream = ContextFramesBytesIO(stream_bytes)
-
-    decoder = StringDecoder()
+    decoder = StringDecoder(handle_string_errors=handle_string_errors)
 
     if len(padded_bytes) < ceil32(len(_bytes)):
         with pytest.raises(InsufficientDataBytes):
             decoder(stream)
         return
 
-    with pytest.raises(DecodingError):
-        decoder(stream)
+    if error:
+        with pytest.raises(error):
+            decoder(stream)
+    else:
+        assert decoder(stream) == _bytes.decode("utf-8", errors=handle_string_errors)
+
+
+def test_string_decode_errors_are_strict_by_default():
+    test_string = encode(["string"], ["cat"])
+    bad_string = test_string[:65] + b"\xff" + test_string[66:]
+    with pytest.raises(UnicodeError):
+        decode(["string"], bad_string)
+
+
+def test_registering_invalid_handle_string_errors_raises():
+    test_string = encode(["string"], ["cat"])
+    bad_string = test_string[:65] + b"\xff" + test_string[66:]
+    registry.register(
+        "nonexistent_handler",
+        TextStringEncoder,
+        StringDecoder(handle_string_errors="nonexistent"),
+    )
+    with pytest.raises(LookupError):
+        decode(["nonexistent_handler"], bad_string)
 
 
 @settings(max_examples=250)

@@ -541,10 +541,21 @@ class ByteStringDecoder(SingleDecoder):
 
 
 class StringDecoder(ByteStringDecoder):
+    def __init__(self, handle_string_errors="strict"):
+        self.bytes_errors = handle_string_errors
+        super().__init__()
+
     @parse_type_str("string")
     def from_type_str(cls, abi_type, registry):
         return cls()
 
+    def decode(self, stream):
+        raw_data = self.read_data_from_stream(stream)
+        data, padding_bytes = self.split_data_and_padding(raw_data)
+        value = self.decoder_fn(data, self.bytes_errors)
+        self.validate_padding_bytes(value, padding_bytes)
+        return value
+
     @staticmethod
-    def decoder_fn(data):
-        return data.decode("utf-8", errors="surrogateescape")
+    def decoder_fn(data, handle_string_errors="strict"):
+        return data.decode("utf-8", errors=handle_string_errors)
