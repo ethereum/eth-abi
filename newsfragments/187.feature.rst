@@ -1,0 +1,1 @@
+updated `StringDecoder` class to allow user-defined handling of malformed strings, handle with `strict` by default

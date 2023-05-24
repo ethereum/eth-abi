@@ -17,7 +17,6 @@ from eth_abi.base import (
     parse_type_str,
 )
 from eth_abi.exceptions import (
-    DecodingError,
     InsufficientDataBytes,
     NonEmptyPaddingBytes,
 )
@@ -542,24 +541,21 @@ class ByteStringDecoder(SingleDecoder):
 
 
 class StringDecoder(ByteStringDecoder):
+    def __init__(self, handle_string_errors="strict"):
+        self.bytes_errors = handle_string_errors
+        super().__init__()
+
     @parse_type_str("string")
     def from_type_str(cls, abi_type, registry):
         return cls()
 
-    @staticmethod
-    def decoder_fn(data):
-        try:
-            value = data.decode("utf-8")
-        except UnicodeDecodeError as e:
-            raise DecodingError(
-                e.encoding,
-                e.object,
-                e.start,
-                e.end,
-                "The returned type for this function is string which is "
-                "expected to be a UTF8 encoded string of text. The returned "
-                "value could not be decoded as valid UTF8. This is indicative "
-                "of a broken application which is using incorrect return types for "
-                "binary data.",
-            ) from e
+    def decode(self, stream):
+        raw_data = self.read_data_from_stream(stream)
+        data, padding_bytes = self.split_data_and_padding(raw_data)
+        value = self.decoder_fn(data, self.bytes_errors)
+        self.validate_padding_bytes(value, padding_bytes)
         return value
+
+    @staticmethod
+    def decoder_fn(data, handle_string_errors="strict"):
+        return data.decode("utf-8", errors=handle_string_errors)
