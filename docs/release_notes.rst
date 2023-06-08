@@ -3,6 +3,24 @@ Release Notes
 
 .. towncrier release notes start
 
+eth-abi v4.1.0 (2023-06-08)
+---------------------------
+
+Features
+~~~~~~~~
+
+- updated `StringDecoder` class to allow user-defined handling of malformed strings, handle with `strict` by default (`#187 <https://github.com/ethereum/eth-abi/issues/187>`__)
+
+
+Internal Changes - for eth-abi contributors
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- remove unused docs deps, bump version of remaining (`#203 <https://github.com/ethereum/eth-abi/issues/203>`__)
+- Moved requirements-docs.txt info into .readthedocs.yml (`#204 <https://github.com/ethereum/eth-abi/issues/204>`__)
+- pull in updates from the python project template (`#205 <https://github.com/ethereum/eth-abi/issues/205>`__)
+- Updated CI process to handle tox issue caused by `virtualenv` update (`#208 <https://github.com/ethereum/eth-abi/issues/208>`__)
+
+
 eth-abi v4.0.0 (2023-03-22)
 ---------------------------
 
