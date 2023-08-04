@@ -214,7 +214,7 @@ def test_decode_bytes(_bytes, pad_size):
 
     decoder = ByteStringDecoder()
 
-    if len(padded_bytes) < ceil32(len(_bytes)):
+    if pad_size != 0 and len(padded_bytes) < ceil32(len(_bytes)):
         with pytest.raises(InsufficientDataBytes):
             decoder(stream)
         return
@@ -236,7 +236,7 @@ def test_decode_strings(_strings, pad_size):
 
     decoder = StringDecoder()
 
-    if len(padded_bytes) < ceil32(len(_strings.encode("utf-8"))):
+    if pad_size != 0 and len(padded_bytes) < ceil32(len(_strings.encode("utf-8"))):
         with pytest.raises(InsufficientDataBytes):
             decoder(stream)
         return
@@ -267,7 +267,7 @@ def test_decode_strings_error_handling(_bytes, pad_size, handle_string_errors, e
     stream = ContextFramesBytesIO(stream_bytes)
     decoder = StringDecoder(handle_string_errors=handle_string_errors)
 
-    if len(padded_bytes) < ceil32(len(_bytes)):
+    if pad_size != 0 and len(padded_bytes) < ceil32(len(_bytes)):
         with pytest.raises(InsufficientDataBytes):
             decoder(stream)
         return
