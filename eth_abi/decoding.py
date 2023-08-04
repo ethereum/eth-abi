@@ -516,6 +516,10 @@ class ByteStringDecoder(SingleDecoder):
         data = stream.read(padded_length)
 
         if len(data) < padded_length:
+            if len(data) == data_length:
+                # padding does not exist
+                return data
+
             raise InsufficientDataBytes(
                 "Tried to read {0} bytes.  Only got {1} bytes".format(
                     padded_length,
