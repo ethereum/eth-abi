@@ -1,3 +1,5 @@
+import re
+
 import pytest
 
 from eth_abi import (
@@ -115,3 +117,25 @@ def test_abi_encode_raises_for_non_list_like_params(non_list_like_value):
         f"Got {type(non_list_like_value)}",
     ):
         encode(["valid_string_value"], non_list_like_value)
+
+
+@pytest.mark.parametrize(
+    "zero_sized_tuple_type,python_value",
+    (
+        ("()", ()),
+        ("(int,())", (1, ())),
+        ("(int,((),))", (1, ((),))),
+        ("(((),),int)", (((),), 1)),
+        ("(((),),int,())", (((),), 1, ())),
+        ("(int,(),int)", (1, (), 1)),
+    ),
+)
+def test_abi_encode_raises_for_zero_sized_tuple_types(
+    zero_sized_tuple_type,
+    python_value,
+):
+    with pytest.raises(
+        ValueError,
+        match=re.escape('Zero-sized tuple types "()" are not supported.'),
+    ):
+        encode([zero_sized_tuple_type], [python_value])

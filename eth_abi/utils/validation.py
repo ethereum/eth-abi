@@ -26,7 +26,7 @@ def validate_list_like_param(param: Any, param_name: str) -> None:
         )
 
 
-def validate_against_zero_sized_tuples(types: Iterable[TypeStr]):
+def validate_against_zero_sized_tuples(types: Iterable[TypeStr]) -> None:
     if any("()" in type_str for type_str in types):
         raise ValueError('Zero-sized tuple types "()" are not supported.')
 
