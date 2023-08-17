@@ -5,6 +5,7 @@ from typing import (
     Any,
 )
 
+from eth_abi.grammar import TupleType
 from eth_utils import (
     big_endian_to_int,
     to_normalized_address,

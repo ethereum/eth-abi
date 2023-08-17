@@ -1,3 +1,5 @@
+import re
+
 import pytest
 
 from eth_abi.abi import (
@@ -22,7 +24,7 @@ from ..common.unit import (
     "type_str,expected,abi_encoding,_",
     CORRECT_TUPLE_ENCODINGS,
 )
-def test_decode_abi_for_multiple_types_as_list(type_str, expected, abi_encoding, _):
+def test_abi_decode_for_multiple_types_as_list(type_str, expected, abi_encoding, _):
     abi_type = parse(type_str)
     if abi_type.arrlist is not None:
         pytest.skip("ABI coding functions do not support array types")
@@ -62,13 +64,13 @@ def test_abi_decode_for_single_dynamic_types(type_str, expected, abi_encoding, _
 
 
 @pytest.mark.parametrize("data", (b"", bytearray()))
-def test_decode_abi_empty_data_raises(data):
+def test_abi_decode_empty_data_raises(data):
     with pytest.raises(InsufficientDataBytes):
         decode(["uint"], data)
 
 
 @pytest.mark.parametrize("data", ("", 123, 0x123, [b"\x01"], (b"\x01",), {b"\x01"}))
-def test_decode_abi_wrong_data_param_type_raises(data):
+def test_abi_decode_wrong_data_param_type_raises(data):
     with pytest.raises(
         TypeError, match=f"The `data` value must be of bytes type. Got {type(data)}"
     ):
@@ -88,9 +90,21 @@ def test_decode_abi_wrong_data_param_type_raises(data):
         {1, 2},
     ),
 )
-def test_decode_abi_wrong_types_param_type_raises(types):
+def test_abi_decode_wrong_types_param_type_raises(types):
     with pytest.raises(
         TypeError,
         match=f"The `types` value type must be one of list or tuple. Got {type(types)}",
     ):
         decode(types, b"\x00" * 32)
+
+
+@pytest.mark.parametrize(
+    "zero_sized_tuple_type",
+    ("()[]", "()", "(int,())", "(int,((),))", "(int,(),int)"),
+)
+def test_abi_decode_raises_for_zero_sized_tuple_type(zero_sized_tuple_type):
+    with pytest.raises(
+        ValueError,
+        match=re.escape('Zero-sized tuple types "()" are not supported.'),
+    ):
+        decode([zero_sized_tuple_type], b"bytes data shouldn't matter for validation")

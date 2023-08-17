@@ -70,19 +70,6 @@ def words(*descriptions: str) -> bytes:
 
 CORRECT_STATIC_TUPLE_ENCODINGS = [
     # (type string, python value, abi encoding, packed encoding)
-    # Empty tuples
-    (
-        "()",
-        (),
-        b"",
-        b"",
-    ),
-    (
-        "((),((),((),())))",
-        ((), ((), ((), ()))),
-        b"",
-        b"",
-    ),
     # Static tuples
     (
         "(uint32)",
@@ -555,6 +542,9 @@ CORRECT_ENCODINGS = CORRECT_STATIC_ENCODINGS + CORRECT_DYNAMIC_ENCODINGS
 
 
 NOT_ENCODABLE = [
+    # Empty tuples
+    ("()", ()),
+    ("((),((),((),())))", ((), ((), ((), ())))),
     # Wrong value type
     (
         "((bytes,bool),(bytes,bool))",
