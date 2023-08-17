@@ -267,10 +267,10 @@ def destructure_tuple_example(xs):
 
 
 tuple_strs_values = st.recursive(
-    st.lists(single_strs_values, min_size=0, max_size=10),
+    st.lists(single_strs_values, min_size=1, max_size=10),
     lambda this_strategy: st.lists(
         st.one_of(single_strs_values, this_strategy),
-        min_size=0,
+        min_size=1,
         max_size=10,
     ),
 ).map(destructure_tuple_example)
