@@ -80,10 +80,10 @@ def join_tuple(xs):
 
 
 tuple_type_strs = st.recursive(
-    st.lists(non_tuple_type_strs, min_size=0, max_size=10),
+    st.lists(non_tuple_type_strs, min_size=1, max_size=10),
     lambda this_strategy: st.lists(
         st.one_of(non_tuple_type_strs, this_strategy),
-        min_size=0,
+        min_size=1,
         max_size=10,
     ),
 ).map(join_tuple)

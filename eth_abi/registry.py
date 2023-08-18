@@ -22,7 +22,6 @@ from .base import (
     BaseCoder,
 )
 from .exceptions import (
-    ABITypeError,
     MultipleEntriesFound,
     NoEntriesFound,
 )
@@ -240,7 +239,7 @@ class BaseEquals(Predicate):
     def __call__(self, type_str):
         try:
             abi_type = grammar.parse(type_str)
-        except exceptions.ParseError:
+        except (exceptions.ParseError, ValueError):
             return False
 
         if isinstance(abi_type, grammar.BasicType):
@@ -274,7 +273,7 @@ def has_arrlist(type_str):
     """
     try:
         abi_type = grammar.parse(type_str)
-    except exceptions.ParseError:
+    except (exceptions.ParseError, ValueError):
         return False
 
     return abi_type.arrlist is not None
@@ -286,7 +285,7 @@ def is_base_tuple(type_str):
     """
     try:
         abi_type = grammar.parse(type_str)
-    except exceptions.ParseError:
+    except (exceptions.ParseError, ValueError):
         return False
 
     return isinstance(abi_type, grammar.TupleType) and abi_type.arrlist is None
@@ -478,10 +477,12 @@ class ABIRegistry(Copyable, BaseRegistry):
         """
         try:
             self.get_encoder(type_str)
-        except (ABITypeError, NoEntriesFound):
+        except Exception as e:
+            if isinstance(e, MultipleEntriesFound):
+                raise e
             return False
-        else:
-            return True
+
+        return True
 
     @functools.lru_cache(maxsize=None)
     def get_decoder(self, type_str):

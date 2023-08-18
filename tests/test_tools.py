@@ -31,7 +31,7 @@ def test_get_abi_strategy_returns_strategy_for_valid_type_strs(type_str):
 def test_get_abi_strategy_returns_no_strategy_for_invalid_type_strs(malformed_type_str):
     try:
         get_abi_strategy(malformed_type_str)
-    except (ParseError, NoEntriesFound):
+    except (ParseError, NoEntriesFound, ValueError):
         pass
     else:
         assert False, "Expected ParseError or NoEntriesFound"

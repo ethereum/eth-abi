@@ -16,12 +16,10 @@ grammar = parsimonious.Grammar(
     type = tuple_type / basic_type
 
     tuple_type = components arrlist?
-    components = non_zero_tuple / zero_tuple
+    components = non_zero_tuple
 
     non_zero_tuple = "(" type next_type* ")"
     next_type = "," type
-
-    zero_tuple = "()"
 
     basic_type = base sub? arrlist?
 
@@ -64,9 +62,6 @@ class NodeVisitor(parsimonious.NodeVisitor):
         _, abi_type = visited_children
 
         return abi_type
-
-    def visit_zero_tuple(self, node, visited_children):
-        return tuple()
 
     def visit_basic_type(self, node, visited_children):
         base, sub, arrlist = visited_children
@@ -127,6 +122,12 @@ class NodeVisitor(parsimonious.NodeVisitor):
         try:
             return super().parse(type_str, **kwargs)
         except parsimonious.ParseError as e:
+            # This is a good place to add some better messaging around the type string.
+            # If this logic grows any bigger, we should abstract it to its own function.
+            if "()" in type_str:
+                # validate against zero-sized tuple types
+                raise ValueError('Zero-sized tuple types "()" are not supported.')
+
             raise ParseError(e.text, e.pos, e.expr)
 
 

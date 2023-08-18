@@ -24,7 +24,6 @@ from eth_abi.registry import (
 )
 from eth_abi.utils.validation import (
     validate_bytes_param,
-    validate_codec_types,
     validate_list_like_param,
 )
 
@@ -64,10 +63,8 @@ class ABIEncoder(BaseABICoder):
         :returns: The head-tail encoded binary representation of the python
             values in ``args`` as values of the ABI types in ``types``.
         """
-        # validate encode types
-        validate_codec_types(types)
-
-        # validate encode args
+        # validate encode types and args
+        validate_list_like_param(types, "types")
         validate_list_like_param(args, "args")
 
         encoders = [self._registry.get_encoder(type_str) for type_str in types]
@@ -89,6 +86,9 @@ class ABIEncoder(BaseABICoder):
         :returns: ``True`` if ``arg`` is encodable as a value of the ABI type
             ``typ``.  Otherwise, ``False``.
         """
+        if not self.is_encodable_type(typ):
+            return False
+
         encoder = self._registry.get_encoder(typ)
 
         try:
@@ -142,10 +142,8 @@ class ABIDecoder(BaseABICoder):
         :returns: A tuple of equivalent python values for the ABI values
             represented in ``data``.
         """
-        # validate decode types
-        validate_codec_types(types)
-
-        # validate decode data
+        # validate decode types and data
+        validate_list_like_param(types, "types")
         validate_bytes_param(data, "data")
 
         decoders = [self._registry.get_decoder(type_str) for type_str in types]
