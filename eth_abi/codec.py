@@ -129,6 +129,7 @@ class ABIDecoder(BaseABICoder):
         self,
         types: Iterable[TypeStr],
         data: Decodable,
+        strict: bool = True,
     ) -> Tuple[Any, ...]:
         """
         Decodes the binary value ``data`` as a sequence of values of the ABI types
@@ -138,6 +139,11 @@ class ABIDecoder(BaseABICoder):
         :param types: A list or tuple of string representations of the ABI types that
             will be used for decoding e.g. ``('uint256', 'bytes[]', '(int,int)')``
         :param data: The binary value to be decoded.
+        :param strict: If ``False``, then the decoder will ignore properties such as
+            the length of the data being a multiple of 32 bytes. ``False`` is how the
+            Solidity ABI decoder currently works. However, ``True`` is the default for
+            the eth-abi library.
+
 
         :returns: A tuple of equivalent python values for the ABI values
             represented in ``data``.
@@ -146,7 +152,9 @@ class ABIDecoder(BaseABICoder):
         validate_list_like_param(types, "types")
         validate_bytes_param(data, "data")
 
-        decoders = [self._registry.get_decoder(type_str) for type_str in types]
+        decoders = [
+            self._registry.get_decoder(type_str, strict=strict) for type_str in types
+        ]
 
         decoder = TupleDecoder(decoders=decoders)
         stream = self.stream_class(data)

@@ -7,7 +7,7 @@ from typing import (
 
 from eth_utils import (
     big_endian_to_int,
-    to_normalized_address,
+    to_bytes, to_hex, to_normalized_address,
     to_tuple,
 )
 
@@ -114,6 +114,8 @@ class BaseDecoder(BaseCoder, metaclass=abc.ABCMeta):
     custom decoder class.  Subclasses must also implement
     :any:`BaseCoder.from_type_str`.
     """
+
+    strict = True
 
     @abc.abstractmethod
     def decode(self, stream: ContextFramesBytesIO) -> Any:  # pragma: no cover
@@ -508,31 +510,33 @@ class ByteStringDecoder(SingleDecoder):
     def decoder_fn(data):
         return data
 
-    @staticmethod
-    def read_data_from_stream(stream):
+    def read_data_from_stream(self, stream):
         data_length = decode_uint_256(stream)
         padded_length = ceil32(data_length)
 
         data = stream.read(padded_length)
+        padding_bytes = data[data_length:]
 
         if len(data) < padded_length:
-            if len(data) == data_length:
-                # padding does not exist
-                return data
-
-            raise InsufficientDataBytes(
-                "Tried to read {0} bytes.  Only got {1} bytes".format(
-                    padded_length,
-                    len(data),
+            if not self.strict:
+                data_length = padded_length
+                padding_bytes = data[data_length:]
+            else:
+                raise InsufficientDataBytes(
+                    "Tried to read {0} bytes.  Only got {1} bytes".format(
+                        padded_length,
+                        len(data),
+                    )
                 )
-            )
-
-        padding_bytes = data[data_length:]
 
         if padding_bytes != b"\x00" * (padded_length - data_length):
             raise NonEmptyPaddingBytes(
                 "Padding bytes were not empty: {0}".format(repr(padding_bytes))
             )
+
+        if not self.strict:
+            # remove trailing zero-byte padding
+            return to_bytes(hexstr=to_hex(data[:data_length]).rstrip("00"))
 
         return data[:data_length]
 
