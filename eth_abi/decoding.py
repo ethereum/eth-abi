@@ -7,7 +7,7 @@ from typing import (
 
 from eth_utils import (
     big_endian_to_int,
-    to_bytes, to_hex, to_normalized_address,
+    to_normalized_address,
     to_tuple,
 )
 
@@ -536,7 +536,7 @@ class ByteStringDecoder(SingleDecoder):
 
         if not self.strict:
             # remove trailing zero-byte padding
-            return to_bytes(hexstr=to_hex(data[:data_length]).rstrip("00"))
+            return data[:data_length].rstrip(b"\x00")
 
         return data[:data_length]
 
