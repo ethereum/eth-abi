@@ -120,12 +120,6 @@ class TupleEncoder(BaseEncoder):
                 msg="must be list-like object such as array or tuple",
             )
 
-        if len(value) == 0:
-            self.invalidate_value(
-                value,
-                msg='Zero-sized tuple types "()" are not supported.',
-            )
-
         if len(value) != len(self.encoders):
             self.invalidate_value(
                 value,
