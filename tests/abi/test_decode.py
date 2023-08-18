@@ -20,35 +20,44 @@ from ..common.unit import (
 )
 
 
+@pytest.mark.parametrize("strict", (True, False))
 @pytest.mark.parametrize(
     "type_str,expected,abi_encoding,_",
     CORRECT_TUPLE_ENCODINGS,
 )
-def test_abi_decode_for_multiple_types_as_list(type_str, expected, abi_encoding, _):
+def test_abi_decode_for_multiple_types_as_list(
+    type_str, expected, abi_encoding, _, strict
+):
     abi_type = parse(type_str)
     if abi_type.arrlist is not None:
         pytest.skip("ABI coding functions do not support array types")
 
     types = [t.to_type_str() for t in abi_type.components]
 
-    actual = decode(types, abi_encoding)
+    actual = decode(types, abi_encoding, strict=strict)
     assert actual == expected
 
 
+@pytest.mark.parametrize("strict", (True, False))
 @pytest.mark.parametrize(
     "type_str,expected,abi_encoding,_",
     CORRECT_STATIC_ENCODINGS,
 )
-def test_abi_decode_for_single_static_types(type_str, expected, abi_encoding, _):
-    (actual,) = decode([type_str], abi_encoding)
+def test_abi_decode_for_single_static_types(
+    type_str, expected, abi_encoding, _, strict
+):
+    (actual,) = decode([type_str], abi_encoding, strict=strict)
     assert actual == expected
 
 
+@pytest.mark.parametrize("strict", (True, False))
 @pytest.mark.parametrize(
     "type_str,expected,abi_encoding,_",
     CORRECT_DYNAMIC_ENCODINGS,
 )
-def test_abi_decode_for_single_dynamic_types(type_str, expected, abi_encoding, _):
+def test_abi_decode_for_single_dynamic_types(
+    type_str, expected, abi_encoding, _, strict
+):
     # Tests set up list values but encoders return sequences as tuples.
     # i.e. [b'\xde\xad\xbe\xef'] vs encoder return type (b'\xde\xad\xbe\xef',)
     expected = tuple(expected) if isinstance(expected, list) else expected
@@ -58,25 +67,28 @@ def test_abi_decode_for_single_dynamic_types(type_str, expected, abi_encoding, _
         b"".join([words("20"), abi_encoding])
     )
 
-    (actual,) = decode([type_str], abi_encoding)
+    (actual,) = decode([type_str], abi_encoding, strict=strict)
 
     assert actual == expected
 
 
+@pytest.mark.parametrize("strict", (True, False))
 @pytest.mark.parametrize("data", (b"", bytearray()))
-def test_abi_decode_empty_data_raises(data):
+def test_abi_decode_empty_data_raises(data, strict):
     with pytest.raises(InsufficientDataBytes):
-        decode(["uint"], data)
+        decode(["uint"], data, strict=strict)
 
 
+@pytest.mark.parametrize("strict", (True, False))
 @pytest.mark.parametrize("data", ("", 123, 0x123, [b"\x01"], (b"\x01",), {b"\x01"}))
-def test_abi_decode_wrong_data_param_type_raises(data):
+def test_abi_decode_wrong_data_param_type_raises(data, strict):
     with pytest.raises(
         TypeError, match=f"The `data` value must be of bytes type. Got {type(data)}"
     ):
-        decode(["uint32", "uint32"], data)
+        decode(["uint32", "uint32"], data, strict=strict)
 
 
+@pytest.mark.parametrize("strict", (True, False))
 @pytest.mark.parametrize(
     "types",
     (
@@ -90,24 +102,29 @@ def test_abi_decode_wrong_data_param_type_raises(data):
         {1, 2},
     ),
 )
-def test_abi_decode_wrong_types_param_type_raises(types):
+def test_abi_decode_wrong_types_param_type_raises(types, strict):
     with pytest.raises(
         TypeError,
         match=f"The `types` value type must be one of list or tuple. Got {type(types)}",
     ):
-        decode(types, b"\x00" * 32)
+        decode(types, b"\x00" * 32, strict=strict)
 
 
+@pytest.mark.parametrize("strict", (True, False))
 @pytest.mark.parametrize(
     "zero_sized_tuple_type",
     ("()[]", "()", "(int,())", "(int,((),))", "(int,(),int)"),
 )
-def test_abi_decode_raises_for_zero_sized_tuple_type(zero_sized_tuple_type):
+def test_abi_decode_raises_for_zero_sized_tuple_type(zero_sized_tuple_type, strict):
     with pytest.raises(
         ValueError,
         match=re.escape('Zero-sized tuple types "()" are not supported.'),
     ):
-        decode([zero_sized_tuple_type], b"bytes data shouldn't matter for validation")
+        decode(
+            [zero_sized_tuple_type],
+            b"bytes data shouldn't matter for validation",
+            strict=strict,
+        )
 
 
 @pytest.mark.parametrize(
