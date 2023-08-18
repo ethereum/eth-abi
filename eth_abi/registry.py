@@ -485,8 +485,12 @@ class ABIRegistry(Copyable, BaseRegistry):
         return True
 
     @functools.lru_cache(maxsize=None)
-    def get_decoder(self, type_str):
-        return self._get_registration(self._decoders, type_str)
+    def get_decoder(self, type_str, strict=True):
+        decoder = self._get_registration(self._decoders, type_str)
+
+        # set a transient flag each time a call is made to get_decoder
+        decoder.strict = strict
+        return decoder
 
     def copy(self):
         """

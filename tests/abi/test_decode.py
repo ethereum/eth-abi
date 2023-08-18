@@ -108,3 +108,8 @@ def test_abi_decode_raises_for_zero_sized_tuple_type(zero_sized_tuple_type):
         match=re.escape('Zero-sized tuple types "()" are not supported.'),
     ):
         decode([zero_sized_tuple_type], b"bytes data shouldn't matter for validation")
+
+
+def test_abi_decode_with_shorter_data_than_32_bytes():
+    data = b"\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+    assert decode(["bytes"], data, strict=False) == (1,)
