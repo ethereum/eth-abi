@@ -1,0 +1,1 @@
+Allow turning off abi decoder "strict mode" when calling ``abi.decode()``.
