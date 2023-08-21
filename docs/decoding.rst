@@ -29,3 +29,32 @@ The :py:meth:`eth_abi.decoding.BaseDecoder.decode` function provides an API for
 decoding binary values for ABI types into python values. It accepts a sequence of
 ABI type strings as the first argument and the binary data to be decoded, as a python
 ``bytes`` or ``bytearray`` value, as the second argument.
+
+Strict Mode
+-----------
+
+By default, the decoder will raise an exception if the binary data to be decoded
+is not padded to the next 32-byte boundary. This behavior can be disabled for the
+``ByteStringDecoder`` (the default decoder for ``bytes`` and ``string`` types) by
+passing ``strict=False`` to the :py:meth:`eth_abi.abi.decode` method. Turning off
+strict mode will also ignore any trailing bytes beyond the data size specified. This
+means that if there is any padding, the validation for only empty bytes in the padding
+area is also ignored.
+
+.. doctest::
+
+    >>> from eth_abi import abi
+
+    >>> # decode a bytes value without strict mode
+    >>> hex_val = (
+    ...     # offset to data is 32 bytes:
+    ...     "0000000000000000000000000000000000000000000000000000000000000020"
+    ...     # length of data is 1 byte:
+    ...     "0000000000000000000000000000000000000000000000000000000000000001"
+    ...     # b"\x01" with less than 32 bytes of padding
+    ...     # and not strictly padded with only zero bytes:
+    ...     "0100000000000001020300"
+    ... )
+    >>> (decoded,) = abi.decode(['bytes'], bytes.fromhex(hex_val), strict=False)
+    >>> decoded
+    b'\x01'
