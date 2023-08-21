@@ -1,0 +1,1 @@
+Validate against zero-sized ``tuple`` types / empty Solidity structs.
