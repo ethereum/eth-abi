@@ -488,7 +488,7 @@ class ABIRegistry(Copyable, BaseRegistry):
     def get_decoder(self, type_str, strict=True):
         decoder = self._get_registration(self._decoders, type_str)
 
-        if decoder.is_dynamic:
+        if hasattr(decoder, "is_dynamic") and decoder.is_dynamic:
             # Set a transient flag each time a call is made to ``get_decoder()``.
             # Only dynamic decoders should be allowed these looser constraints. All
             # other decoders should keep the default value of ``True``.
