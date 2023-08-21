@@ -305,10 +305,8 @@ class FixedByteSizeDecoder(SingleDecoder):
 
         if len(data) != self.data_byte_size:
             raise InsufficientDataBytes(
-                "Tried to read {0} bytes.  Only got {1} bytes".format(
-                    self.data_byte_size,
-                    len(data),
-                )
+                f"Tried to read {self.data_byte_size} bytes, "
+                f"only got {len(data)} bytes."
             )
 
         return data
@@ -332,7 +330,7 @@ class FixedByteSizeDecoder(SingleDecoder):
 
         if padding_bytes != b"\x00" * padding_size:
             raise NonEmptyPaddingBytes(
-                "Padding bytes were not empty: {0}".format(repr(padding_bytes))
+                f"Padding bytes were not empty: {repr(padding_bytes)}"
             )
 
     def _get_value_byte_size(self):
@@ -413,7 +411,7 @@ class SignedIntegerDecoder(Fixed32ByteSizeDecoder):
 
         if padding_bytes != expected_padding_bytes:
             raise NonEmptyPaddingBytes(
-                "Padding bytes were not empty: {0}".format(repr(padding_bytes))
+                f"Padding bytes were not empty: {repr(padding_bytes)}"
             )
 
     @parse_type_str("int")
@@ -490,7 +488,7 @@ class SignedFixedDecoder(BaseFixedDecoder):
 
         if padding_bytes != expected_padding_bytes:
             raise NonEmptyPaddingBytes(
-                "Padding bytes were not empty: {0}".format(repr(padding_bytes))
+                f"Padding bytes were not empty: {repr(padding_bytes)}"
             )
 
     @parse_type_str("fixed")
@@ -515,28 +513,18 @@ class ByteStringDecoder(SingleDecoder):
         padded_length = ceil32(data_length)
 
         data = stream.read(padded_length)
-        padding_bytes = data[data_length:]
 
-        if len(data) < padded_length:
-            if not self.strict:
-                data_length = padded_length
-                padding_bytes = data[data_length:]
-            else:
+        if self.strict:
+            if len(data) < padded_length:
                 raise InsufficientDataBytes(
-                    "Tried to read {0} bytes.  Only got {1} bytes".format(
-                        padded_length,
-                        len(data),
-                    )
+                    f"Tried to read {padded_length} bytes, only got {len(data)} bytes"
                 )
 
-        if padding_bytes != b"\x00" * (padded_length - data_length):
-            raise NonEmptyPaddingBytes(
-                "Padding bytes were not empty: {0}".format(repr(padding_bytes))
-            )
-
-        if not self.strict:
-            # remove trailing zero-byte padding
-            return data[:data_length].rstrip(b"\x00")
+            padding_bytes = data[data_length:]
+            if padding_bytes != b"\x00" * (padded_length - data_length):
+                raise NonEmptyPaddingBytes(
+                    f"Padding bytes were not empty: {repr(padding_bytes)}"
+                )
 
         return data[:data_length]
 
