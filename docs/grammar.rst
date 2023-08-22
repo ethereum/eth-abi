@@ -36,7 +36,7 @@ and do various operations with the results:
     >>> len(tuple_type.components)
     4
     >>> tuple_type.arrlist
-    ((2,),)
+    ([2],)
     >>> int_type.base, int_type.sub, int_type.arrlist
     ('int', 256, None)
     >>> bytes_type.base, bytes_type.sub, bytes_type.arrlist
@@ -44,7 +44,7 @@ and do various operations with the results:
     >>> ufixed_type.base, ufixed_type.sub, ufixed_type.arrlist
     ('ufixed', (128, 18), None)
     >>> bool_type.base, bool_type.sub, bool_type.arrlist
-    ('bool', None, ((),))
+    ('bool', None, ([],))
 
     >>> # Checking for arrays or dynamicism
     >>> tuple_type.is_array, tuple_type.is_dynamic

@@ -60,8 +60,8 @@ non_array_type_strs = st.one_of(
     fixed_type_strs,
 )
 
-dynam_array_components = st.just(tuple())
-fixed_array_components = st.integers(min_value=1).map(lambda x: (x,))
+dynam_array_components = st.just(list())
+fixed_array_components = st.integers(min_value=1).map(lambda x: [x])
 array_components = st.one_of(dynam_array_components, fixed_array_components)
 
 array_lists = st.lists(array_components, min_size=1, max_size=6)
@@ -209,7 +209,7 @@ unsized_array_strs_values = num_unsized_elements.flatmap(
         [
             st.tuples(
                 type_strs.map("{}[]".format),
-                st.lists(type_values, min_size=n, max_size=n).map(tuple),
+                st.lists(type_values, min_size=n, max_size=n),
             )
             for type_strs, type_values in non_array
         ]
@@ -222,7 +222,7 @@ sized_array_strs_values = num_sized_elements.flatmap(
         [
             st.tuples(
                 type_strs.map(lambda ts: "{}[{}]".format(ts, n)),
-                st.lists(type_values, min_size=n, max_size=n).map(tuple),
+                st.lists(type_values, min_size=n, max_size=n),
             )
             for type_strs, type_values in non_array
         ]
