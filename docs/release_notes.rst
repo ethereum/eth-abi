@@ -3,6 +3,21 @@ Release Notes
 
 .. towncrier release notes start
 
+eth-abi v4.2.0 (2023-08-28)
+---------------------------
+
+Features
+~~~~~~~~
+
+- Allow turning off abi decoder "strict mode" when calling ``abi.decode()``. (`#198 <https://github.com/ethereum/eth-abi/issues/198>`__)
+
+
+Bugfixes
+~~~~~~~~
+
+- Validate against zero-sized ``tuple`` types / empty Solidity structs. (`#212 <https://github.com/ethereum/eth-abi/issues/212>`__)
+
+
 eth-abi v4.1.0 (2023-06-08)
 ---------------------------
 
