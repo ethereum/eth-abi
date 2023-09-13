@@ -1,1 +1,0 @@
-Add ``build.os`` section to readthedocs build settings

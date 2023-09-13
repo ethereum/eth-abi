@@ -3,6 +3,21 @@ Release Notes
 
 .. towncrier release notes start
 
+eth-abi v4.2.1 (2023-09-13)
+---------------------------
+
+Internal Changes - for eth-abi contributors
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Add ``build.os`` section to readthedocs build settings (`#213 <https://github.com/ethereum/eth-abi/issues/213>`__)
+
+
+Miscellaneous changes
+~~~~~~~~~~~~~~~~~~~~~
+
+- `#214 <https://github.com/ethereum/eth-abi/issues/214>`__
+
+
 eth-abi v4.2.0 (2023-08-28)
 ---------------------------
 
