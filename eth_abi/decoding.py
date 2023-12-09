@@ -124,7 +124,6 @@ class BaseDecoder(BaseCoder, metaclass=abc.ABCMeta):
         :any:`exceptions.DecodingError` if a python value cannot be decoded
         from the given byte stream.
         """
-        pass
 
     def __call__(self, stream: ContextFramesBytesIO) -> Any:
         return self.decode(stream)
@@ -292,9 +291,7 @@ class FixedByteSizeDecoder(SingleDecoder):
 
         if self.value_bit_size % 8 != 0:
             raise ValueError(
-                "Invalid value bit size: {0}.  Must be a multiple of 8".format(
-                    self.value_bit_size,
-                )
+                "Invalid value bit size: {self.value_bit_size}. Must be a multiple of 8"
             )
 
         if self.value_bit_size > self.data_byte_size * 8:
@@ -354,7 +351,7 @@ class BooleanDecoder(Fixed32ByteSizeDecoder):
             return True
         else:
             raise NonEmptyPaddingBytes(
-                "Boolean must be either 0x0 or 0x1.  Got: {0}".format(repr(data))
+                f"Boolean must be either 0x0 or 0x1.  Got: {repr(data)}"
             )
 
     @parse_type_str("bool")

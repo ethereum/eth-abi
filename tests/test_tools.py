@@ -34,7 +34,7 @@ def test_get_abi_strategy_returns_no_strategy_for_invalid_type_strs(malformed_ty
     except (ParseError, NoEntriesFound, ValueError):
         pass
     else:
-        assert False, "Expected ParseError or NoEntriesFound"
+        raise AssertionError("Expected ParseError or NoEntriesFound")
 
 
 @pytest.mark.parametrize(

@@ -62,20 +62,14 @@ class PredicateMapping(Copyable):
     def add(self, predicate, value, label=None):
         if predicate in self._values:
             raise ValueError(
-                "Matcher {} already exists in {}".format(
-                    repr(predicate),
-                    self._name,
-                )
+                f"Matcher {repr(predicate)} already exists in {self._name}"
             )
 
         if label is not None:
             if label in self._labeled_predicates:
                 raise ValueError(
-                    "Matcher {} with label '{}' already exists in {}".format(
-                        repr(predicate),
-                        label,
-                        self._name,
-                    ),
+                    f"Matcher {repr(predicate)} with label '{label}' already exists "
+                    f"in {self._name}"
                 )
 
             self._labeled_predicates[label] = predicate
@@ -91,10 +85,7 @@ class PredicateMapping(Copyable):
 
         if len(results) == 0:
             raise NoEntriesFound(
-                "No matching entries for '{}' in {}".format(
-                    type_str,
-                    self._name,
-                )
+                f"No matching entries for '{type_str}' in {self._name}"
             )
 
         predicates, values = tuple(zip(*results))
@@ -117,12 +108,7 @@ class PredicateMapping(Copyable):
         try:
             del self._values[predicate]
         except KeyError:
-            raise KeyError(
-                "Matcher {} not found in {}".format(
-                    repr(predicate),
-                    self._name,
-                )
-            )
+            raise KeyError(f"Matcher {repr(predicate)} not found in {self._name}")
 
         # Delete any label which refers to this predicate
         try:
@@ -140,17 +126,14 @@ class PredicateMapping(Copyable):
                 return key
 
         raise ValueError(
-            "Matcher {} not referred to by any label in {}".format(
-                repr(predicate),
-                self._name,
-            )
+            f"Matcher {repr(predicate)} not referred to by any label in {self._name}"
         )
 
     def remove_by_label(self, label):
         try:
             predicate = self._labeled_predicates[label]
         except KeyError:
-            raise KeyError("Label '{}' not found in {}".format(label, self._name))
+            raise KeyError(f"Label '{label}' not found in {self._name}")
 
         del self._labeled_predicates[label]
         del self._values[predicate]
@@ -162,9 +145,8 @@ class PredicateMapping(Copyable):
             self.remove_by_label(predicate_or_label)
         else:
             raise TypeError(
-                "Key to be removed must be callable or string: got {}".format(
-                    type(predicate_or_label),
-                )
+                "Key to be removed must be callable or string: got "
+                f"{type(predicate_or_label)}"
             )
 
     def copy(self):
@@ -191,7 +173,7 @@ class Predicate:
         raise NotImplementedError("Must implement `__str__`")
 
     def __repr__(self):
-        return "<{} {}>".format(type(self).__name__, self)
+        return f"<{type(self).__name__} {self}>"
 
     def __iter__(self):
         for attr in self.__slots__:
@@ -218,7 +200,7 @@ class Equals(Predicate):
         return self.value == other
 
     def __str__(self):
-        return "(== {})".format(repr(self.value))
+        return f"(== {repr(self.value)})"
 
 
 class BaseEquals(Predicate):
@@ -259,11 +241,14 @@ class BaseEquals(Predicate):
         return False
 
     def __str__(self):
-        return "(base == {}{})".format(
-            repr(self.base),
-            ""
-            if self.with_sub is None
-            else (" and sub is not None" if self.with_sub else " and sub is None"),
+        return (
+            f"(base == {repr(self.base)}"
+            + (
+                ""
+                if self.with_sub is None
+                else (" and sub is not None" if self.with_sub else " and sub is None")
+            )
+            + ")"
         )
 
 
@@ -321,9 +306,7 @@ class BaseRegistry:
             return
 
         raise TypeError(
-            "Lookup must be a callable or a value of type `str`: got {}".format(
-                repr(lookup),
-            )
+            f"Lookup must be a callable or a value of type `str`: got {repr(lookup)}"
         )
 
     @staticmethod
@@ -337,9 +320,8 @@ class BaseRegistry:
             return
 
         raise TypeError(
-            "Lookup/label must be a callable or a value of type `str`: got {}".format(
-                repr(lookup_or_label),
-            )
+            "Lookup/label must be a callable or a value of type `str`: got "
+            f"{repr(lookup_or_label)}"
         )
 
     @staticmethod
@@ -464,7 +446,7 @@ class ABIRegistry(Copyable, BaseRegistry):
         self.unregister_encoder(label)
         self.unregister_decoder(label)
 
-    @functools.lru_cache(maxsize=None)
+    @functools.lru_cache(maxsize=None)  # noqa: B019
     def get_encoder(self, type_str):
         return self._get_registration(self._encoders, type_str)
 
@@ -484,7 +466,7 @@ class ABIRegistry(Copyable, BaseRegistry):
 
         return True
 
-    @functools.lru_cache(maxsize=None)
+    @functools.lru_cache(maxsize=None)  # noqa: B019
     def get_decoder(self, type_str, strict=True):
         decoder = self._get_registration(self._decoders, type_str)
 

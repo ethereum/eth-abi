@@ -6,12 +6,10 @@ To start development you should begin by cloning the repo.
 $ git clone git@github.com/ethereum/eth-abi.git
 ```
 
-
 # Cute Animal Pictures
 
 All pull requests need to have a cute animal picture.  This is a very important
 part of the development process.
-
 
 # Pull Requests
 
@@ -25,7 +23,7 @@ It's a good idea to make pull requests early on.  A pull request represents the
 start of a discussion, and doesn't necessarily need to be the final, finished
 submission.
 
-GitHub's documentation for working on pull requests is [available here][pull-requests].
+GitHub's documentation for working on pull requests is \[available here\]\[pull-requests\].
 
 Always run the tests before submitting pull requests, and ideally run `tox` in
 order to check that your modifications don't break anything.

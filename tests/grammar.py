@@ -122,7 +122,7 @@ def test_normalizing_and_parsing_works(type_str, expected_type):
 @example("(int,(address,uint256[][])", 27)
 def test_parsing_invalid_type_str_causes_parse_error(type_str, error_col):
     if error_col is not None:
-        pattern = r"Parse error at .* \(column {}\)".format(error_col)
+        pattern = rf"Parse error at .* \(column {error_col}\)"
     else:
         pattern = r"Parse error at .*"
 
