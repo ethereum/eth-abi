@@ -48,4 +48,4 @@ repos:
     hooks:
     -   id: mypy
         args: [--follow-imports=silent, --disable-error-code=no-untyped-call]
-        exclude: tests\/|eth_abi\/(tools\/|base\.py|registry\.py|grammar\.py|packed\.py|decoding\.py|encoding\.py|exceptions\.py|codec\.py|constants\.py)
+        exclude: tests\/|eth_abi\/(base\.py|registry\.py|grammar\.py|packed\.py|decoding\.py|encoding\.py|exceptions\.py|codec\.py|constants\.py)

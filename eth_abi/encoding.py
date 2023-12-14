@@ -84,11 +84,6 @@ class BaseEncoder(BaseCoder, metaclass=abc.ABCMeta):
         Throws a standard exception for when a value is not encodable by an
         encoder.
         """
-        # msg = "" if msg is None else (": " + repr(msg))
-        # raise exc(
-        #     f"Value `{abbr(value)}` of type {type(value)} cannot be encoded by "
-        #     f"{cls.__name__}{msg}"
-        # )
         raise exc(
             f"Value `{abbr(value)}` of type {type(value)} cannot be encoded by "
             f"{cls.__name__}{'' if msg is None else (': ' + msg)}"
