@@ -9,7 +9,7 @@ extra requirement:
 
 .. code-block:: bash
 
-    pip install eth-abi[tools]
+    python -m pip install "eth-abi[tools]"
 
 
 ABI Type Strategies

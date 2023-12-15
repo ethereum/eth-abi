@@ -1,5 +1,6 @@
 from typing import (
     Callable,
+    Optional,
     Union,
 )
 
@@ -15,6 +16,8 @@ from hypothesis import (
 
 from eth_abi.grammar import (
     ABIType,
+    BasicType,
+    TupleType,
     normalize,
     parse,
 )
@@ -35,11 +38,14 @@ StrategyRegistration = Union[st.SearchStrategy, StrategyFactory]
 
 
 class StrategyRegistry(BaseRegistry):
-    def __init__(self):
+    def __init__(self) -> None:
         self._strategies = PredicateMapping("strategy registry")
 
     def register_strategy(
-        self, lookup: Lookup, registration: StrategyRegistration, label: str = None
+        self,
+        lookup: Lookup,
+        registration: StrategyRegistration,
+        label: Optional[str] = None,
     ) -> None:
         self._register(self._strategies, lookup, registration, label=label)
 
@@ -72,7 +78,7 @@ class StrategyRegistry(BaseRegistry):
 
 
 def get_uint_strategy(
-    abi_type: ABIType, registry: StrategyRegistry
+    abi_type: BasicType, registry: StrategyRegistry
 ) -> st.SearchStrategy:
     bits = abi_type.sub
 
@@ -83,7 +89,7 @@ def get_uint_strategy(
 
 
 def get_int_strategy(
-    abi_type: ABIType, registry: StrategyRegistry
+    abi_type: BasicType, registry: StrategyRegistry
 ) -> st.SearchStrategy:
     bits = abi_type.sub
 
@@ -98,7 +104,7 @@ bool_strategy = st.booleans()
 
 
 def get_ufixed_strategy(
-    abi_type: ABIType, registry: StrategyRegistry
+    abi_type: BasicType, registry: StrategyRegistry
 ) -> st.SearchStrategy:
     bits, places = abi_type.sub
 
@@ -110,7 +116,7 @@ def get_ufixed_strategy(
 
 
 def get_fixed_strategy(
-    abi_type: ABIType, registry: StrategyRegistry
+    abi_type: BasicType, registry: StrategyRegistry
 ) -> st.SearchStrategy:
     bits, places = abi_type.sub
 
@@ -122,7 +128,7 @@ def get_fixed_strategy(
 
 
 def get_bytes_strategy(
-    abi_type: ABIType, registry: StrategyRegistry
+    abi_type: BasicType, registry: StrategyRegistry
 ) -> st.SearchStrategy:
     num_bytes = abi_type.sub
 
@@ -154,7 +160,7 @@ def get_array_strategy(
 
 
 def get_tuple_strategy(
-    abi_type: ABIType, registry: StrategyRegistry
+    abi_type: TupleType, registry: StrategyRegistry
 ) -> st.SearchStrategy:
     component_strategies = [
         registry.get_strategy(comp_abi_type.to_type_str())

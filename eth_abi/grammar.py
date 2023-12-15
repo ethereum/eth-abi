@@ -103,7 +103,7 @@ class NodeVisitor(parsimonious.NodeVisitor):
 
         return tuple(visited_children)
 
-    @functools.lru_cache(maxsize=None)
+    @functools.lru_cache(maxsize=None)  # noqa: B019
     def parse(self, type_str, **kwargs):
         """
         Parses a type string into an appropriate instance of
@@ -115,9 +115,7 @@ class NodeVisitor(parsimonious.NodeVisitor):
             information about the parsed type string.
         """
         if not isinstance(type_str, str):
-            raise TypeError(
-                "Can only parse string values: got {}".format(type(type_str))
-            )
+            raise TypeError(f"Can only parse string values: got {type(type_str)}")
 
         try:
             return super().parse(type_str, **kwargs)
@@ -155,10 +153,7 @@ class ABIType:
         """
 
     def __repr__(self):  # pragma: no cover
-        return "<{} {}>".format(
-            type(self).__qualname__,
-            repr(self.to_type_str()),
-        )
+        return f"<{type(self).__qualname__} {repr(self.to_type_str())}>"
 
     def __eq__(self, other):
         # Two ABI types are equal if their string representations are equal
@@ -196,13 +191,8 @@ class ABIType:
         node = self.node
 
         raise ABITypeError(
-            "For '{comp_str}' type at column {col} "
-            "in '{type_str}': {error_msg}".format(
-                comp_str=node.text,
-                col=node.start + 1,
-                type_str=node.full_text,
-                error_msg=error_msg,
-            ),
+            f"For '{node.text}' type at column {node.start + 1} "
+            f"in '{node.full_text}': {error_msg}"
         )
 
     @property
@@ -250,18 +240,13 @@ class TupleType(ABIType):
         else:
             arrlist = ""
 
-        return "({}){}".format(
-            ",".join(c.to_type_str() for c in self.components),
-            arrlist,
-        )
+        return f"({','.join(c.to_type_str() for c in self.components)}){arrlist}"
 
     @property
     def item_type(self):
         if not self.is_array:
             raise ValueError(
-                "Cannot determine item type for non-array type '{}'".format(
-                    self.to_type_str(),
-                )
+                f"Cannot determine item type for non-array type '{self.to_type_str()}'"
             )
 
         return type(self)(
@@ -324,9 +309,7 @@ class BasicType(ABIType):
     def item_type(self):
         if not self.is_array:
             raise ValueError(
-                "Cannot determine item type for non-array type '{}'".format(
-                    self.to_type_str(),
-                )
+                f"Cannot determine item type for non-array type '{self.to_type_str()}'"
             )
 
         return type(self)(
@@ -396,9 +379,7 @@ class BasicType(ABIType):
 
             if minus_e < 1 or 80 < minus_e:
                 self.invalidate(
-                    "fixed exponent size out of bounds, {} must be in 1-80".format(
-                        minus_e,
-                    ),
+                    f"fixed exponent size out of bounds, {minus_e} must be in 1-80"
                 )
 
         # Check validity of hash type
@@ -422,7 +403,7 @@ TYPE_ALIASES = {
 }
 
 TYPE_ALIAS_RE = re.compile(
-    r"\b({})\b".format("|".join(re.escape(a) for a in TYPE_ALIASES.keys()))
+    rf"\b({'|'.join(re.escape(a) for a in TYPE_ALIASES.keys())})\b"
 )
 
 

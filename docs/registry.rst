@@ -242,7 +242,7 @@ that attempting to encode a malformed string indicates user error.
 
     # verify the original test_string decodes properly
     assert decode(["string"], test_string) == ("cat",)
-    
+
     # default `StringDecoder` will throw an error
     try:
         decode(["string"], bad_string)
@@ -252,7 +252,7 @@ that attempting to encode a malformed string indicates user error.
 
     # If we want to handle un-decodeable strings, we can register multiple string
     # decoders, each with its own `handle_string_errors` option
-    
+
     registry.register(
         "surrogateescape_string",
         TextStringEncoder,
@@ -263,7 +263,7 @@ that attempting to encode a malformed string indicates user error.
         TextStringEncoder,
         StringDecoder(handle_string_errors="backslashreplace"),
     )
-    
+
     assert decode(["surrogateescape_string"], bad_string) == ("c\udcfft",)
     assert decode(["backslashreplace_string"], bad_string) == ("c\\xfft",)
 
@@ -272,5 +272,3 @@ that attempting to encode a malformed string indicates user error.
     from eth_abi.registry import registry
     registry.unregister('surrogateescape_string')
     registry.unregister('backslashreplace_string')
-
-

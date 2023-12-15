@@ -421,7 +421,7 @@ def test_decode_address(address_bytes, padding_size, data_byte_size):
 )
 def test_decode_array_of_unsigned_integers(array_size, array_values):
     size_bytes = zpad32(int_to_big_endian(array_size))
-    values_bytes = b"".join((zpad32(int_to_big_endian(v)) for v in array_values))
+    values_bytes = b"".join(zpad32(int_to_big_endian(v)) for v in array_values)
     stream_bytes = size_bytes + values_bytes
 
     decoder = DynamicArrayDecoder(

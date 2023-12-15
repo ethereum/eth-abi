@@ -6,8 +6,6 @@ class EncodingError(Exception):
     Base exception for any error that occurs during encoding.
     """
 
-    pass
-
 
 class EncodingTypeError(EncodingError):
     """
@@ -15,24 +13,17 @@ class EncodingTypeError(EncodingError):
     the output ABI type.
     """
 
-    pass
-
 
 class IllegalValue(EncodingError):
     """
     Raised when trying to encode a python value with the correct type but with
     a value that is not considered legal for the output ABI type.
 
-    Example:
-    --------
-
     .. code-block:: python
 
         fixed128x19_encoder(Decimal('NaN'))  # cannot encode NaN
 
     """
-
-    pass
 
 
 class ValueOutOfBounds(IllegalValue):
@@ -41,24 +32,17 @@ class ValueOutOfBounds(IllegalValue):
     a value that appears outside the range of valid values for the output ABI
     type.
 
-    Example:
-    --------
-
     .. code-block:: python
 
         ufixed8x1_encoder(Decimal('25.6'))  # out of bounds
 
     """
 
-    pass
-
 
 class DecodingError(Exception):
     """
     Base exception for any error that occurs during decoding.
     """
-
-    pass
 
 
 class InsufficientDataBytes(DecodingError):
@@ -67,15 +51,11 @@ class InsufficientDataBytes(DecodingError):
     type.
     """
 
-    pass
-
 
 class NonEmptyPaddingBytes(DecodingError):
     """
     Raised when the padding bytes of an ABI value are malformed.
     """
-
-    pass
 
 
 class ParseError(parsimonious.ParseError):
@@ -84,10 +64,9 @@ class ParseError(parsimonious.ParseError):
     """
 
     def __str__(self):
-        return "Parse error at '{}' (column {}) in type string '{}'".format(
-            self.text[self.pos : self.pos + 5],
-            self.column(),
-            self.text,
+        return (
+            f"Parse error at '{self.text[self.pos : self.pos + 5]}' "
+            f"(column {self.column()}) in type string '{self.text}'"
         )
 
 
@@ -98,15 +77,11 @@ class ABITypeError(ValueError):
     that is not congruent with zero modulo eight).
     """
 
-    pass
-
 
 class PredicateMappingError(Exception):
     """
     Raised when an error occurs in a registry's internal mapping.
     """
-
-    pass
 
 
 class NoEntriesFound(ValueError, PredicateMappingError):
@@ -119,8 +94,6 @@ class NoEntriesFound(ValueError, PredicateMappingError):
         In a future version of ``eth-abi``, this error class will no longer
         inherit from ``ValueError``.
     """
-
-    pass
 
 
 class MultipleEntriesFound(ValueError, PredicateMappingError):
@@ -135,5 +108,3 @@ class MultipleEntriesFound(ValueError, PredicateMappingError):
         In a future version of ``eth-abi``, this error class will no longer
         inherit from ``ValueError``.
     """
-
-    pass

@@ -43,13 +43,13 @@ bare_type_strs = st.sampled_from(
     ]
 )
 
-fixed_bytes_type_strs = bytes_sizes.map("bytes{}".format)
-uint_type_strs = total_bits.map("uint{}".format)
-int_type_strs = total_bits.map("int{}".format)
+fixed_bytes_type_strs = bytes_sizes.map(lambda x: f"bytes{x}")
+uint_type_strs = total_bits.map(lambda x: f"uint{x}")
+int_type_strs = total_bits.map(lambda x: f"int{x}")
 
 fixed_size_strs = fixed_sizes.map(join_with_x)
-ufixed_type_strs = fixed_size_strs.map("ufixed{}".format)
-fixed_type_strs = fixed_size_strs.map("fixed{}".format)
+ufixed_type_strs = fixed_size_strs.map(lambda x: f"ufixed{x}")
+fixed_type_strs = fixed_size_strs.map(lambda x: f"fixed{x}")
 
 non_array_type_strs = st.one_of(
     bare_type_strs,
@@ -76,7 +76,7 @@ def join_tuple(xs):
     if not isinstance(xs, list):
         return xs
 
-    return "({})".format(",".join(join_tuple(x) for x in xs))
+    return f"({','.join(join_tuple(x) for x in xs)})"
 
 
 tuple_type_strs = st.recursive(
@@ -136,7 +136,7 @@ MIN_LIST_SIZE = 1
 MAX_LIST_SIZE = 8
 
 uint_total_bits = st.shared(total_bits, key="uint_total_bits")
-uint_strs = uint_total_bits.map("uint{}".format)
+uint_strs = uint_total_bits.map(lambda x: f"uint{x}")
 uint_values = uint_total_bits.flatmap(
     lambda n: st.integers(
         min_value=0,
@@ -145,7 +145,7 @@ uint_values = uint_total_bits.flatmap(
 )
 
 int_total_bits = st.shared(total_bits, key="int_total_bits")
-int_strs = int_total_bits.map("int{}".format)
+int_strs = int_total_bits.map(lambda x: f"int{x}")
 int_values = int_total_bits.flatmap(
     lambda n: st.integers(
         min_value=-(2 ** (n - 1)),
@@ -154,7 +154,7 @@ int_values = int_total_bits.flatmap(
 )
 
 ufixed_size_tuples = st.shared(fixed_sizes, key="ufixed_size_tuples")
-ufixed_strs = ufixed_size_tuples.map(join_with_x).map("ufixed{}".format)
+ufixed_strs = ufixed_size_tuples.map(join_with_x).map(lambda x: f"ufixed{x}")
 ufixed_values = ufixed_size_tuples.flatmap(
     lambda sz: st.decimals(
         min_value=0,
@@ -164,7 +164,7 @@ ufixed_values = ufixed_size_tuples.flatmap(
 )
 
 fixed_size_tuples = st.shared(fixed_sizes, key="fixed_size_tuples")
-fixed_strs = fixed_size_tuples.map(join_with_x).map("fixed{}".format)
+fixed_strs = fixed_size_tuples.map(join_with_x).map(lambda x: f"fixed{x}")
 fixed_values = fixed_size_tuples.flatmap(
     lambda sz: st.decimals(
         min_value=-(2 ** (sz[0] - 1)),
@@ -174,7 +174,7 @@ fixed_values = fixed_size_tuples.flatmap(
 )
 
 fixed_bytes_sizes = st.shared(bytes_sizes, key="fixed_bytes_sizes")
-fixed_bytes_strs = fixed_bytes_sizes.map("bytes{}".format)
+fixed_bytes_strs = fixed_bytes_sizes.map(lambda x: f"bytes{x}")
 fixed_bytes_values = fixed_bytes_sizes.flatmap(
     lambda n: st.binary(
         min_size=n,
@@ -208,7 +208,7 @@ unsized_array_strs_values = num_unsized_elements.flatmap(
     lambda n: st.one_of(
         [
             st.tuples(
-                type_strs.map("{}[]".format),
+                type_strs.map(lambda x: f"{x}[]"),
                 st.lists(type_values, min_size=n, max_size=n).map(tuple),
             )
             for type_strs, type_values in non_array
@@ -221,7 +221,7 @@ sized_array_strs_values = num_sized_elements.flatmap(
     lambda n: st.one_of(
         [
             st.tuples(
-                type_strs.map(lambda ts: "{}[{}]".format(ts, n)),
+                type_strs.map(lambda ts: f"{ts}[{n}]"),
                 st.lists(type_values, min_size=n, max_size=n).map(tuple),
             )
             for type_strs, type_values in non_array

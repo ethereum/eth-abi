@@ -64,7 +64,6 @@ class BaseEncoder(BaseCoder, metaclass=abc.ABCMeta):
         Encodes the given value as a sequence of bytes.  Should raise
         :any:`exceptions.EncodingError` if ``value`` cannot be encoded.
         """
-        pass
 
     @abc.abstractmethod
     def validate_value(self, value: Any) -> None:  # pragma: no cover
@@ -73,7 +72,6 @@ class BaseEncoder(BaseCoder, metaclass=abc.ABCMeta):
         If the given value cannot be encoded, must raise
         :any:`exceptions.EncodingError`.
         """
-        pass
 
     @classmethod
     def invalidate_value(
@@ -87,12 +85,8 @@ class BaseEncoder(BaseCoder, metaclass=abc.ABCMeta):
         encoder.
         """
         raise exc(
-            "Value `{rep}` of type {typ} cannot be encoded by {cls}{msg}".format(
-                rep=abbr(value),
-                typ=type(value),
-                cls=cls.__name__,
-                msg="" if msg is None else (": " + msg),
-            )
+            f"Value `{abbr(value)}` of type {type(value)} cannot be encoded by "
+            f"{cls.__name__}{'' if msg is None else (': ' + msg)}"
         )
 
     def __call__(self, value: Any) -> bytes:
@@ -124,10 +118,8 @@ class TupleEncoder(BaseEncoder):
             self.invalidate_value(
                 value,
                 exc=ValueOutOfBounds,
-                msg="value has {} items when {} were expected".format(
-                    len(value),
-                    len(self.encoders),
-                ),
+                msg=f"value has {len(value)} items when {len(self.encoders)} "
+                "were expected",
             )
 
         for item, encoder in zip(value, self.encoders):
@@ -189,9 +181,8 @@ class FixedSizeEncoder(BaseEncoder):
 
         if self.value_bit_size % 8 != 0:
             raise ValueError(
-                "Invalid value bit size: {0}.  Must be a multiple of 8".format(
-                    self.value_bit_size,
-                )
+                f"Invalid value bit size: {self.value_bit_size}. "
+                "Must be a multiple of 8"
             )
 
         if self.value_bit_size > self.data_byte_size * 8:
@@ -272,14 +263,8 @@ class NumberEncoder(Fixed32ByteSizeEncoder):
             self.invalidate_value(
                 value,
                 exc=ValueOutOfBounds,
-                msg=(
-                    "Cannot be encoded in {} bits.  Must be bounded "
-                    "between [{}, {}].".format(
-                        self.value_bit_size,
-                        lower_bound,
-                        upper_bound,
-                    )
-                ),
+                msg=f"Cannot be encoded in {self.value_bit_size} bits. Must be bounded "
+                f"between [{lower_bound}, {upper_bound}].",
             )
 
 
@@ -361,10 +346,8 @@ class BaseFixedEncoder(NumberEncoder):
             self.invalidate_value(
                 value,
                 exc=IllegalValue,
-                msg="residue {} outside allowed fractional precision of {}".format(
-                    repr(residue),
-                    self.frac_places,
-                ),
+                msg=f"residue {repr(residue)} outside allowed fractional precision of "
+                f"{self.frac_places}",
             )
 
     def validate(self):
@@ -493,7 +476,7 @@ class BytesEncoder(Fixed32ByteSizeEncoder):
             self.invalidate_value(
                 value,
                 exc=ValueOutOfBounds,
-                msg="exceeds total byte size for bytes{} encoding".format(byte_size),
+                msg=f"exceeds total byte size for bytes{byte_size} encoding",
             )
 
     @staticmethod
@@ -642,10 +625,8 @@ class PackedArrayEncoder(BaseArrayEncoder):
             self.invalidate_value(
                 value,
                 exc=ValueOutOfBounds,
-                msg="value has {} items when {} were expected".format(
-                    len(value),
-                    self.array_size,
-                ),
+                msg=f"value has {len(value)} items when {self.array_size} were "
+                "expected",
             )
 
     def encode(self, value):
@@ -688,10 +669,8 @@ class SizedArrayEncoder(BaseArrayEncoder):
             self.invalidate_value(
                 value,
                 exc=ValueOutOfBounds,
-                msg="value has {} items when {} were expected".format(
-                    len(value),
-                    self.array_size,
-                ),
+                msg=f"value has {len(value)} items when {self.array_size} were "
+                "expected",
             )
 
     def encode(self, value):
