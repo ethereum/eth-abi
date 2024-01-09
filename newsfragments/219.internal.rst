@@ -1,0 +1,1 @@
+Corrected format of booleans in ``pyproject.toml`` and added a test for the presence of the ``eth_abi.__version__`` attribute
