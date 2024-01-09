@@ -3,6 +3,22 @@ Release Notes
 
 .. towncrier release notes start
 
+eth-abi v5.0.0 (2024-01-09)
+---------------------------
+
+Breaking Changes
+~~~~~~~~~~~~~~~~
+
+- Drop python 3.7 support (`#217 <https://github.com/ethereum/eth-abi/issues/217>`__)
+
+
+Internal Changes - for eth-abi Contributors
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Merge updates from the project template, notably, use ``pre-commit`` for linting and change the name of the ``master`` branch to ``main`` (`#217 <https://github.com/ethereum/eth-abi/issues/217>`__)
+- Corrected format of booleans in ``pyproject.toml`` and added a test for the presence of the ``eth_abi.__version__`` attribute (`#219 <https://github.com/ethereum/eth-abi/issues/219>`__)
+
+
 eth-abi v4.2.1 (2023-09-13)
 ---------------------------
 
