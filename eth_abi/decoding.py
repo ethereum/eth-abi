@@ -17,6 +17,7 @@ from eth_abi.base import (
     parse_type_str,
 )
 from eth_abi.exceptions import (
+    DecodingError,
     InsufficientDataBytes,
     NonEmptyPaddingBytes,
 )
@@ -265,6 +266,8 @@ class DynamicArrayDecoder(BaseArrayDecoder):
     @to_tuple
     def decode(self, stream):
         array_size = decode_uint_256(stream)
+        if array_size == 0:
+            raise DecodingError("Dynamic array must have non-zero length")
         stream.push_frame(32)
         for _ in range(array_size):
             yield self.item_decoder(stream)
