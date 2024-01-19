@@ -267,7 +267,7 @@ class DynamicArrayDecoder(BaseArrayDecoder):
     def decode(self, stream):
         array_size = decode_uint_256(stream)
         if array_size == 0:
-            raise DecodingError("Dynamic array must have non-zero length")
+            raise DecodingError("Dynamic array decodes to zero length")
         stream.push_frame(32)
         for _ in range(array_size):
             yield self.item_decoder(stream)
@@ -510,6 +510,10 @@ class ByteStringDecoder(SingleDecoder):
 
     def read_data_from_stream(self, stream):
         data_length = decode_uint_256(stream)
+
+        if data_length == 0:
+            raise DecodingError("Dynamic type decodes to zero length")
+
         padded_length = ceil32(data_length)
 
         data = stream.read(padded_length)
