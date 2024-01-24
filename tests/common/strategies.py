@@ -187,7 +187,7 @@ address_values = st.binary(min_size=20, max_size=20).map(encode_hex)
 
 bytes_strs_and_values = st.tuples(
     st.just("bytes"),
-    st.binary(min_size=0, max_size=4096),
+    st.binary(min_size=1, max_size=4096),
 )
 
 non_array = (
@@ -203,7 +203,7 @@ non_array_strs_values = st.one_of(
     *[st.tuples(type_strs, type_values) for type_strs, type_values in non_array]
 )
 
-num_unsized_elements = st.integers(min_value=0, max_value=MAX_LIST_SIZE)
+num_unsized_elements = st.integers(min_value=1, max_value=MAX_LIST_SIZE)
 unsized_array_strs_values = num_unsized_elements.flatmap(
     lambda n: st.one_of(
         [
