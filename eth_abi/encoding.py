@@ -193,6 +193,8 @@ class FixedSizeEncoder(BaseEncoder):
 
     def encode(self, value):
         self.validate_value(value)
+        if self.encode_fn is None:
+            raise AssertionError("`encode_fn` is None")
         base_encoded_value = self.encode_fn(value)
 
         if self.is_big_endian:
@@ -249,6 +251,8 @@ class NumberEncoder(Fixed32ByteSizeEncoder):
             raise ValueError("`type_check_fn` cannot be null")
 
     def validate_value(self, value):
+        if self.type_check_fn is None:
+            raise AssertionError("`type_check_fn` is None")
         if not self.type_check_fn(value):
             self.invalidate_value(value)
 
@@ -586,6 +590,8 @@ class BaseArrayEncoder(BaseEncoder):
         self.validate_value(value)
 
         item_encoder = self.item_encoder
+        if item_encoder is None:
+            raise AssertionError("`item_encoder` is None")
         tail_chunks = tuple(item_encoder(i) for i in value)
 
         items_are_dynamic = getattr(item_encoder, "is_dynamic", False)

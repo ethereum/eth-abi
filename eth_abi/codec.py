@@ -2,6 +2,7 @@ from typing import (
     Any,
     Iterable,
     Tuple,
+    cast,
 )
 
 from eth_typing.abi import (
@@ -158,7 +159,7 @@ class ABIDecoder(BaseABICoder):
         decoder = TupleDecoder(decoders=decoders)
         stream = self.stream_class(data)
 
-        return decoder(stream)
+        return cast(Tuple[Any, ...], decoder(stream))
 
 
 class ABICodec(ABIEncoder, ABIDecoder):

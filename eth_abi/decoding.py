@@ -3,6 +3,7 @@ import decimal
 import io
 from typing import (
     Any,
+    Generator,
 )
 
 from eth_utils import (
@@ -144,6 +145,8 @@ class HeadTailDecoder(BaseDecoder):
         start_pos = decode_uint_256(stream)
 
         stream.push_frame(start_pos)
+        if self.tail_decoder is None:
+            raise AssertionError("`tail_decoder` is None")
         value = self.tail_decoder(stream)
         stream.pop_frame()
 
@@ -169,8 +172,8 @@ class TupleDecoder(BaseDecoder):
         if self.decoders is None:
             raise ValueError("No `decoders` set")
 
-    @to_tuple
-    def decode(self, stream):
+    @to_tuple  # type: ignore[misc] # untyped decorator
+    def decode(self, stream: ContextFramesBytesIO) -> Generator[Any, None, None]:
         for decoder in self.decoders:
             yield decoder(stream)
 
@@ -198,6 +201,8 @@ class SingleDecoder(BaseDecoder):
     def decode(self, stream):
         raw_data = self.read_data_from_stream(stream)
         data, padding_bytes = self.split_data_and_padding(raw_data)
+        if self.decoder_fn is None:
+            raise AssertionError("`decoder_fn` is None")
         value = self.decoder_fn(data)
         self.validate_padding_bytes(value, padding_bytes)
 
@@ -254,6 +259,8 @@ class SizedArrayDecoder(BaseArrayDecoder):
 
     @to_tuple
     def decode(self, stream):
+        if self.item_decoder is None:
+            raise AssertionError("`item_decoder` is None")
         for _ in range(self.array_size):
             yield self.item_decoder(stream)
 
@@ -266,6 +273,8 @@ class DynamicArrayDecoder(BaseArrayDecoder):
     def decode(self, stream):
         array_size = decode_uint_256(stream)
         stream.push_frame(32)
+        if self.item_decoder is None:
+            raise AssertionError("`item_decoder` is None")
         for _ in range(array_size):
             yield self.item_decoder(stream)
         stream.pop_frame()

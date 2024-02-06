@@ -38,7 +38,7 @@ grammar = parsimonious.Grammar(
 )
 
 
-class NodeVisitor(parsimonious.NodeVisitor):
+class NodeVisitor(parsimonious.NodeVisitor):  # type: ignore[misc] # subclasses Any
     """
     Parsimonious node visitor which performs both parsing of type strings and
     post-processing of parse trees.  Parsing operations are cached.
