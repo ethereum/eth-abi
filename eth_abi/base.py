@@ -1,9 +1,5 @@
 import functools
 
-from eth_typing.abi import (
-    TypeStr,
-)
-
 from .grammar import (
     BasicType,
     TupleType,
@@ -142,9 +138,7 @@ class BaseCoder:
         pass
 
     @classmethod
-    def from_type_str(
-        cls, type_str: TypeStr, registry
-    ) -> "BaseCoder":  # pragma: no cover
+    def from_type_str(cls, type_str, registry):  # pragma: no cover
         """
         Used by :any:`ABIRegistry` to get an appropriate encoder or decoder
         instance for the given type string and type registry.

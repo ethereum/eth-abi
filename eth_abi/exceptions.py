@@ -58,12 +58,12 @@ class NonEmptyPaddingBytes(DecodingError):
     """
 
 
-class ParseError(parsimonious.ParseError):
+class ParseError(parsimonious.ParseError):  # type: ignore[misc] # subclasses Any
     """
     Raised when an ABI type string cannot be parsed.
     """
 
-    def __str__(self):
+    def __str__(self) -> str:
         return (
             f"Parse error at '{self.text[self.pos : self.pos + 5]}' "
             f"(column {self.column()}) in type string '{self.text}'"

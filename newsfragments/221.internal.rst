@@ -1,0 +1,1 @@
+Clear mypy ``misc``-type errors and add top-level ``py.typed`` file back
