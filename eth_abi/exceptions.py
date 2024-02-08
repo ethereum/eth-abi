@@ -47,14 +47,19 @@ class DecodingError(Exception):
 
 class InsufficientDataBytes(DecodingError):
     """
-    Raised when there are insufficient data to decode a value for a given ABI
-    type.
+    Raised when there are insufficient data to decode a value for a given ABI type.
     """
 
 
 class NonEmptyPaddingBytes(DecodingError):
     """
     Raised when the padding bytes of an ABI value are malformed.
+    """
+
+
+class InvalidPointer(DecodingError):
+    """
+    Raised when the pointer to a value in the ABI encoding is invalid.
     """
 
 

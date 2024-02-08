@@ -19,6 +19,7 @@ from eth_abi.base import (
 )
 from eth_abi.exceptions import (
     InsufficientDataBytes,
+    InvalidPointer,
     NonEmptyPaddingBytes,
 )
 from eth_abi.utils.numeric import (
@@ -78,13 +79,13 @@ class ContextFramesBytesIO(io.BytesIO):
         self._frames = []
         self._total_offset = 0
 
-    def seek_in_frame(self, pos, *args, **kwargs):
+    def seek_in_frame(self, pos: int, *args: Any, **kwargs: Any) -> None:
         """
         Seeks relative to the total offset of the current contextual frames.
         """
         self.seek(self._total_offset + pos, *args, **kwargs)
 
-    def push_frame(self, offset):
+    def push_frame(self, offset: int) -> None:
         """
         Pushes a new contextual frame onto the stack with the given offset and a
         return position at the current cursor position then seeks to the new
@@ -131,6 +132,13 @@ class BaseDecoder(BaseCoder, metaclass=abc.ABCMeta):
 
 
 class HeadTailDecoder(BaseDecoder):
+    """
+    Decoder for a dynamic element of a dynamic container (a dynamic array, or a sized
+    array or tuple that contains dynamic elements). A dynamic element consists of a
+    pointer, aka offset, which is located in the head section of the encoded container,
+    and the actual value, which is located in the tail section of the encoding.
+    """
+
     is_dynamic = True
 
     tail_decoder = None
@@ -141,13 +149,18 @@ class HeadTailDecoder(BaseDecoder):
         if self.tail_decoder is None:
             raise ValueError("No `tail_decoder` set")
 
-    def decode(self, stream):
+    def decode(self, stream: ContextFramesBytesIO) -> Any:
+        # Decode the offset and move the stream cursor forward 32 bytes
         start_pos = decode_uint_256(stream)
-
+        # Jump ahead to the start of the value
         stream.push_frame(start_pos)
+
+        # assertion check for mypy
         if self.tail_decoder is None:
             raise AssertionError("`tail_decoder` is None")
+        # Decode the value
         value = self.tail_decoder(stream)
+        # Return the cursor
         stream.pop_frame()
 
         return value
@@ -172,8 +185,43 @@ class TupleDecoder(BaseDecoder):
         if self.decoders is None:
             raise ValueError("No `decoders` set")
 
+    def validate_pointers(self, stream: ContextFramesBytesIO) -> None:
+        """
+        Verify that all pointers point to a valid location in the stream.
+        """
+        current_location = stream.tell()
+        len_of_head = sum(
+            decoder.array_size if hasattr(decoder, "array_size") else 1
+            for decoder in self.decoders
+        )
+        end_of_offsets = current_location + 32 * len_of_head
+        total_stream_length = len(stream.getbuffer())
+        for decoder in self.decoders:
+            if isinstance(decoder, HeadTailDecoder):
+                # the next 32 bytes are a pointer
+                offset = decode_uint_256(stream)
+                indicated_idx = current_location + offset
+                if (
+                    indicated_idx < end_of_offsets
+                    or indicated_idx >= total_stream_length
+                ):
+                    # the pointer is indicating its data is located either within the
+                    # offsets section of the stream or beyond the end of the stream,
+                    # both of which are invalid
+                    raise InvalidPointer(
+                        "Invalid pointer in tuple at location "
+                        f"{stream.tell() - 32} in payload"
+                    )
+            else:
+                # the next 32 bytes are not a pointer, so progress the stream per
+                # the decoder
+                decoder(stream)
+        # return the stream to its original location for actual decoding
+        stream.seek(current_location)
+
     @to_tuple  # type: ignore[misc] # untyped decorator
     def decode(self, stream: ContextFramesBytesIO) -> Generator[Any, None, None]:
+        self.validate_pointers(stream)
         for decoder in self.decoders:
             yield decoder(stream)
 
@@ -248,6 +296,30 @@ class BaseArrayDecoder(BaseDecoder):
             # If array dimension is dynamic
             return DynamicArrayDecoder(item_decoder=item_decoder)
 
+    def validate_pointers(self, stream: ContextFramesBytesIO, array_size: int) -> None:
+        """
+        Verify that all pointers point to a valid location in the stream.
+        """
+        if isinstance(self.item_decoder, HeadTailDecoder):
+            current_location = stream.tell()
+            end_of_offsets = current_location + 32 * array_size
+            total_stream_length = len(stream.getbuffer())
+            for _ in range(array_size):
+                offset = decode_uint_256(stream)
+                indicated_idx = current_location + offset
+                if (
+                    indicated_idx < end_of_offsets
+                    or indicated_idx >= total_stream_length
+                ):
+                    # the pointer is indicating its data is located either within the
+                    # offsets section of the stream or beyond the end of the stream,
+                    # both of which are invalid
+                    raise InvalidPointer(
+                        "Invalid pointer in array at location "
+                        f"{stream.tell() - 32} in payload"
+                    )
+            stream.seek(current_location)
+
 
 class SizedArrayDecoder(BaseArrayDecoder):
     array_size = None
@@ -261,6 +333,8 @@ class SizedArrayDecoder(BaseArrayDecoder):
     def decode(self, stream):
         if self.item_decoder is None:
             raise AssertionError("`item_decoder` is None")
+
+        self.validate_pointers(stream, self.array_size)
         for _ in range(self.array_size):
             yield self.item_decoder(stream)
 
@@ -275,6 +349,8 @@ class DynamicArrayDecoder(BaseArrayDecoder):
         stream.push_frame(32)
         if self.item_decoder is None:
             raise AssertionError("`item_decoder` is None")
+
+        self.validate_pointers(stream, array_size)
         for _ in range(array_size):
             yield self.item_decoder(stream)
         stream.pop_frame()
