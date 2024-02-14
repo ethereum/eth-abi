@@ -1,0 +1,1 @@
+Add examples to ``test_decoder_properties`` tests for decoding ``bytes`` type.
