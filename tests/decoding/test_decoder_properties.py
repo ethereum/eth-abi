@@ -471,6 +471,96 @@ def test_tuple_decoder(types, data, expected):
     assert actual == expected
 
 
+@pytest.mark.parametrize(
+    "types,data,expected",
+    (
+        (
+            ("uint256", "bytes", "bytes"),
+            (
+                "0x"
+                # uint256 = 22006395804779840873343
+                "0000000000000000000000000000000000000000000004a8f8176590b4e9237f"
+                # bytes value 1 at pos 96
+                "0000000000000000000000000000000000000000000000000000000000000060"
+                # bytes value 2 at pos 128
+                "0000000000000000000000000000000000000000000000000000000000000080"
+                # bytes value 1 = b""
+                "0000000000000000000000000000000000000000000000000000000000000000"
+                # bytes value 2 = b""
+                "0000000000000000000000000000000000000000000000000000000000000000"
+            ),
+            (22006395804779840873343, b"", b""),
+        ),
+        (
+            ("uint256", "address", "bytes", "bytes"),
+            (
+                "0x"
+                # uint256 = 22006395804779840873343
+                "0000000000000000000000000000000000000000000004a8f8176590b4e9237f"
+                # address = 0xabf7d8b5c1322b3e553d2fac90ff006c30f1b875
+                "000000000000000000000000abf7d8b5c1322b3e553d2fac90ff006c30f1b875"
+                # bytes value1 at pos 128
+                "0000000000000000000000000000000000000000000000000000000000000080"
+                # bytes value2 at pos 160
+                "00000000000000000000000000000000000000000000000000000000000000a0"
+                # bytes value1 = b""
+                "0000000000000000000000000000000000000000000000000000000000000000"
+                # bytes value2 = b""
+                "0000000000000000000000000000000000000000000000000000000000000000"
+            ),
+            (
+                22006395804779840873343,
+                "0xabf7d8b5c1322b3e553d2fac90ff006c30f1b875",
+                b"",
+                b"",
+            ),
+        ),
+        (
+            # Decode bytes issue https://github.com/ethereum/eth-abi/issues/222
+            ("address", "address", "address", "uint256", "bytes", "bytes"),
+            (
+                "0x"
+                # address (operator)
+                "000000000000000000000000000000000022d473030f116ddee9f6b43ac78ba3"
+                # address (from)
+                "00000000000000000000000050650a86840e5c4c46641a9435418b7458458747"
+                # address (to)
+                "00000000000000000000000098409d8ca9629fbe01ab1b914ebf304175e384c8"
+                # uint256 = 22006395804779840873343
+                "0000000000000000000000000000000000000000000004a8f8176590b4e9237f"
+                # bytes value 1 at pos 192 in global frame
+                "00000000000000000000000000000000000000000000000000000000000000c0"
+                # bytes value 2 at pos 224 in global frame
+                "00000000000000000000000000000000000000000000000000000000000000e0"
+                # bytes value 1 = b""
+                "0000000000000000000000000000000000000000000000000000000000000000"
+                # bytes value 2 = b""
+                "0000000000000000000000000000000000000000000000000000000000000000"
+            ),
+            (
+                "0x000000000022d473030f116ddee9f6b43ac78ba3",
+                "0x50650a86840e5c4c46641a9435418b7458458747",
+                "0x98409d8ca9629fbe01ab1b914ebf304175e384c8",
+                22006395804779840873343,
+                b"",
+                b"",
+            ),
+        ),
+    ),
+)
+def test_tuple_decoder_with_empty_bytes(types, data, expected):
+    """
+    Decoding uses positional offsets provided in the byte string to
+    find values. Note that values are offset from position zero
+    of the data.
+    """
+    decoders = [registry.get_decoder(t) for t in types]
+    decoder = TupleDecoder(decoders=decoders)
+    stream = ContextFramesBytesIO(decode_hex(data))
+    actual = decoder(stream)
+    assert actual == expected
+
+
 @settings(max_examples=250)
 @given(
     value_bit_size=st.integers(min_value=1, max_value=32).map(lambda v: v * 8),
