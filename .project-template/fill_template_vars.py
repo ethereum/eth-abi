@@ -6,11 +6,11 @@ import re
 from pathlib import Path
 
 
-def _find_files(project_root):
+def _find_files(project_root: str):
     path_exclude_pattern = r"\.git($|\/)|venv|_build"
     file_exclude_pattern = r"fill_template_vars\.py|\.swp$"
     filepaths = []
-    for dir_path, _dir_names, file_names in os.walk(project_root):
+    for dir_path, _, file_names in os.walk(project_root):
         if not re.search(path_exclude_pattern, dir_path):
             for file in file_names:
                 if not re.search(file_exclude_pattern, file):
@@ -19,7 +19,7 @@ def _find_files(project_root):
     return filepaths
 
 
-def _replace(pattern, replacement, project_root):
+def _replace(pattern: str, replacement: str, project_root: str):
     print(f"Replacing values: {pattern}")
     for file in _find_files(project_root):
         try:
