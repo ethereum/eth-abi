@@ -44,6 +44,9 @@ class NodeVisitor(parsimonious.NodeVisitor):  # type: ignore[misc] # subclasses 
     post-processing of parse trees.  Parsing operations are cached.
     """
 
+    def __init__(self):
+        self.parse = functools.lru_cache(maxsize=None)(self._parse_uncached)
+
     grammar = grammar
 
     def visit_non_zero_tuple(self, node, visited_children):
@@ -103,8 +106,7 @@ class NodeVisitor(parsimonious.NodeVisitor):  # type: ignore[misc] # subclasses 
 
         return tuple(visited_children)
 
-    @functools.lru_cache(maxsize=None)  # noqa: B019
-    def parse(self, type_str, **kwargs):
+    def _parse_uncached(self, type_str, **kwargs):
         """
         Parses a type string into an appropriate instance of
         :class:`~eth_abi.grammar.ABIType`.  If a type string cannot be parsed,
