@@ -344,6 +344,8 @@ class ABIRegistry(Copyable, BaseRegistry):
     def __init__(self):
         self._encoders = PredicateMapping("encoder registry")
         self._decoders = PredicateMapping("decoder registry")
+        self.get_encoder = functools.lru_cache(maxsize=None)(self._get_encoder_uncached)
+        self.get_decoder = functools.lru_cache(maxsize=None)(self._get_decoder_uncached)
 
     def _get_registration(self, mapping, type_str):
         coder = super()._get_registration(mapping, type_str)
@@ -451,8 +453,7 @@ class ABIRegistry(Copyable, BaseRegistry):
         self.unregister_encoder(label)
         self.unregister_decoder(label)
 
-    @functools.lru_cache(maxsize=None)  # noqa: B019
-    def get_encoder(self, type_str):
+    def _get_encoder_uncached(self, type_str):
         return self._get_registration(self._encoders, type_str)
 
     def has_encoder(self, type_str: abi.TypeStr) -> bool:
@@ -471,8 +472,7 @@ class ABIRegistry(Copyable, BaseRegistry):
 
         return True
 
-    @functools.lru_cache(maxsize=None)  # noqa: B019
-    def get_decoder(self, type_str, strict=True):
+    def _get_decoder_uncached(self, type_str, strict=True):
         decoder = self._get_registration(self._decoders, type_str)
 
         if hasattr(decoder, "is_dynamic") and decoder.is_dynamic:
