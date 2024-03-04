@@ -3,6 +3,22 @@ Release Notes
 
 .. towncrier release notes start
 
+eth-abi v5.0.1 (2024-03-04)
+---------------------------
+
+Bugfixes
+~~~~~~~~
+
+- During decoding, verify all pointers in arrays and tuples point to a valid location in the payload (`#226 <https://github.com/ethereum/eth-abi/issues/226>`__)
+- Fix memory leak warning in NodeVisitor and ABIRegistry (`#230 <https://github.com/ethereum/eth-abi/issues/230>`__)
+
+
+Internal Changes - for eth-abi Contributors
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Clear mypy ``misc``-type errors and add top-level ``py.typed`` file back (`#221 <https://github.com/ethereum/eth-abi/issues/221>`__)
+
+
 eth-abi v5.0.0 (2024-01-09)
 ---------------------------
 

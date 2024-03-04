@@ -1,1 +1,0 @@
-During decoding, verify all pointers in arrays and tuples point to a valid location in the payload
