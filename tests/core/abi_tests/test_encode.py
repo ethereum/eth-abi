@@ -1,6 +1,5 @@
-import re
-
 import pytest
+import re
 
 from eth_abi import (
     encode,
@@ -8,8 +7,7 @@ from eth_abi import (
 from eth_abi.grammar import (
     parse,
 )
-
-from ..common.unit import (
+from tests.core.common.unit import (
     CORRECT_DYNAMIC_ENCODINGS,
     CORRECT_STATIC_ENCODINGS,
     CORRECT_TUPLE_ENCODINGS,

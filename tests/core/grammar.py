@@ -1,9 +1,10 @@
+import pytest
+
 from hypothesis import (
     example,
     given,
     strategies as st,
 )
-import pytest
 
 from eth_abi.exceptions import (
     ABITypeError,
@@ -16,8 +17,7 @@ from eth_abi.grammar import (
     normalize,
     parse,
 )
-
-from .common.strategies import (
+from tests.core.common.strategies import (
     malformed_type_strs,
     type_strs,
 )
