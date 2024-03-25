@@ -39,11 +39,17 @@ build-docs:
 	$(MAKE) -C docs html
 	$(MAKE) -C docs doctest
 
-validate-docs:
+build-docs-ci:
+	$(MAKE) -C docs latexpdf
+	$(MAKE) -C docs epub
+
+validate-newsfragments:
 	python ./newsfragments/validate_files.py
 	towncrier build --draft --version preview
 
-check-docs: build-docs validate-docs
+check-docs: build-docs validate-newsfragments
+
+check-docs-ci: build-docs build-docs-ci validate-newsfragments
 
 docs: check-docs
 	open docs/_build/html/index.html
@@ -56,7 +62,7 @@ ifndef bump
 	$(error bump must be set, typically: major, minor, patch, or devnum)
 endif
 
-notes: check-bump
+notes: check-bump validate-newsfragments
 	# Let UPCOMING_VERSION be the version that is used for the current bump
 	$(eval UPCOMING_VERSION=$(shell bumpversion $(bump) --dry-run --list | grep new_version= | sed 's/new_version=//g'))
 	# Now generate the release notes to have them included in the release commit
@@ -67,7 +73,7 @@ notes: check-bump
 
 release: check-bump clean
 	# require that upstream is configured for ethereum/eth-abi
-	@git remote -v | grep -E "upstream\tgit@github.com:ethereum/eth-abi.git \(push\)|upstream\thttps://(www.)?github.com/ethereum/eth-abi \(push\)"
+	@git remote -v | grep "upstream[[:space:]]git@github.com:ethereum/eth-abi.git (push)\|upstream[[:space:]]https://github.com/ethereum/eth-abi (push)"
 	# verify that docs build correctly
 	./newsfragments/validate_files.py is-empty
 	make build-docs

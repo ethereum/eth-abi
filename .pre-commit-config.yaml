@@ -49,3 +49,8 @@ repos:
     -   id: mypy
         args: [--follow-imports=silent, --disable-error-code=no-untyped-call]
         exclude: tests/
+-   repo: https://github.com/PrincetonUniversity/blocklint
+    rev: v0.2.4
+    hooks:
+    -   id: blocklint
+        exclude: 'docs/Makefile|docs/release_notes.rst|tox.ini'
