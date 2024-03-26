@@ -93,11 +93,12 @@ class NodeVisitor(parsimonious.NodeVisitor):  # type: ignore[misc] # subclasses 
         return int(node.text)
 
     def generic_visit(self, node, visited_children):
-        if isinstance(node.expr, expressions.OneOf):
+        expr = node.expr
+        if isinstance(expr, expressions.OneOf):
             # Unwrap value chosen from alternatives
             return visited_children[0]
 
-        if isinstance(node.expr, expressions.Optional):
+        if isinstance(expr, expressions.Quantifier) and expr.min == 0 and expr.max == 1:
             # Unwrap optional value or return `None`
             if len(visited_children) != 0:
                 return visited_children[0]
