@@ -1,5 +1,6 @@
 import decimal
 import itertools
+import pytest
 from typing import (
     Iterable,
     Iterator,
@@ -10,7 +11,6 @@ from hypothesis import (
     given,
     strategies as st,
 )
-import pytest
 
 from eth_abi.utils.numeric import (
     ABI_DECIMAL_PREC,

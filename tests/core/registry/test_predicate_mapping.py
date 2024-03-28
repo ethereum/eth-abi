@@ -2,7 +2,6 @@ import copy
 import functools
 import itertools
 import operator
-
 import pytest
 
 from eth_abi.registry import (

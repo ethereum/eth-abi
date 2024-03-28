@@ -13,7 +13,7 @@ from eth_abi.registry import (
     has_arrlist,
     is_base_tuple,
 )
-from tests.common.strategies import (
+from tests.core.common.strategies import (
     malformed_type_strs,
     type_strs,
 )

@@ -3,7 +3,7 @@ import pytest
 from eth_abi import (
     is_encodable_type,
 )
-from tests.common.unit import (
+from tests.core.common.unit import (
     CORRECT_ENCODINGS,
 )
 

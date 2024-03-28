@@ -1,10 +1,11 @@
+import pytest
+
 from hypothesis import (
     example,
     given,
     settings,
     strategies as st,
 )
-import pytest
 
 from eth_abi.exceptions import (
     NoEntriesFound,
@@ -13,8 +14,7 @@ from eth_abi.exceptions import (
 from eth_abi.tools import (
     get_abi_strategy,
 )
-
-from .common.strategies import (
+from tests.core.common.strategies import (
     malformed_type_strs,
     type_strs,
 )

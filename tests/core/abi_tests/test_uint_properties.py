@@ -6,7 +6,7 @@ from eth_abi import (
     decode,
     encode,
 )
-from tests.common.strategies import (
+from tests.core.common.strategies import (
     uint_strs,
     uint_values,
 )

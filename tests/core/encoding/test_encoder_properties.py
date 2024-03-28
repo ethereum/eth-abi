@@ -1,5 +1,6 @@
 import codecs
 import decimal
+import pytest
 
 from eth_utils import (
     decode_hex,
@@ -20,7 +21,6 @@ from hypothesis import (
     settings,
     strategies as st,
 )
-import pytest
 
 from eth_abi.encoding import (
     AddressEncoder,

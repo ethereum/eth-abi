@@ -1,0 +1,1 @@
+Add ``python 3.12`` support, add all-format docs tests and nightly CI runs, reorg tests file structure to match CI grouping
