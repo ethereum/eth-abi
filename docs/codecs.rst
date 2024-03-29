@@ -3,7 +3,7 @@
 Codecs
 ======
 
-Though the default registry can be customized by making additonal coder
+Though the default registry can be customized by making additional coder
 registrations or by unregistering existing coders (see :ref:`registry`),
 sometimes a user might wish to create their own registry entirely.  In that
 case, they can still use the usual API for encoding and decoding values (see
@@ -14,7 +14,7 @@ Using a Custom Registry
 -----------------------
 
 Here's an example of how you might add support for a simple "null" type using a
-custom registry while continuining to use the porcelain encoding and decoding
+custom registry while continuing to use the porcelain encoding and decoding
 API:
 
 .. testcode:: custom-registry-nulltype
