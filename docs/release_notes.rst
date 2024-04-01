@@ -3,6 +3,16 @@ Release Notes
 
 .. towncrier release notes start
 
+eth-abi v5.1.0 (2024-04-01)
+---------------------------
+
+Internal Changes - for eth-abi Contributors
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Upgrade `parsimonious <https://github.com/erikrose/parsimonious>`_ from ``0.9`` to ``0.10``, which is 15% faster (`#231 <https://github.com/ethereum/eth-abi/issues/231>`__)
+- Add ``python 3.12`` support, add all-format docs tests and nightly CI runs, reorg tests file structure to match CI grouping (`#232 <https://github.com/ethereum/eth-abi/issues/232>`__)
+
+
 eth-abi v5.0.1 (2024-03-04)
 ---------------------------
 

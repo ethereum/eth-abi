@@ -1,1 +1,0 @@
-Upgrade `parsimonious <https://github.com/erikrose/parsimonious>`_ from ``0.9`` to ``0.10``, which is 15% faster
