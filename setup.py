@@ -18,6 +18,7 @@ extras_require = {
     ],
     "docs": [
         "sphinx>=6.0.0",
+        "sphinx-autobuild>=2021.3.14",
         "sphinx_rtd_theme>=1.0.0",
         "towncrier>=21,<22",
     ],
@@ -65,7 +66,7 @@ setup(
     license="MIT",
     zip_safe=False,
     keywords="ethereum",
-    packages=find_packages(exclude=["tests", "tests.*"]),
+    packages=find_packages(exclude=["scripts", "scripts.*", "tests", "tests.*"]),
     package_data={"eth_abi": ["py.typed"]},
     classifiers=[
         "Development Status :: 5 - Production/Stable",
