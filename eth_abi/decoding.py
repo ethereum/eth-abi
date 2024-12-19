@@ -386,10 +386,17 @@ class FixedByteSizeDecoder(SingleDecoder):
         data = stream.read(self.data_byte_size)
 
         if len(data) != self.data_byte_size:
-            raise InsufficientDataBytes(
-                f"Tried to read {self.data_byte_size} bytes, "
-                f"only got {len(data)} bytes."
-            )
+            if self.strict:
+                raise InsufficientDataBytes(
+                    f"Tried to read {self.data_byte_size} bytes, "
+                    f"only got {len(data)} bytes."
+                )
+
+            # Pad the value.
+            data_stripped = data.lstrip(b"\x00")
+            num_zeroes = max(0, 32 - len(data_stripped))
+            zeroes = b"\x00" * num_zeroes
+            data = zeroes + data_stripped
 
         return data
 
