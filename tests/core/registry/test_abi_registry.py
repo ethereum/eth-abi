@@ -1,6 +1,6 @@
+import pytest
 import copy
 import itertools
-import pytest
 
 from eth_abi import (
     decoding,
