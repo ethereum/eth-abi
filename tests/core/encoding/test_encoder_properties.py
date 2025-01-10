@@ -1,6 +1,6 @@
+import pytest
 import codecs
 import decimal
-import pytest
 
 from eth_utils import (
     decode_hex,

@@ -29,7 +29,7 @@ given ABI type specified by its canonical string representation:
 
     >>> uint_list_st = get_abi_strategy('uint8[2]')
     >>> uint_list_st
-    lists(elements=integers(min_value=0, max_value=255), min_size=2, max_size=2)
+    lists(integers(min_value=0, max_value=255), min_size=2, max_size=2)
 
     >>> fixed_st = get_abi_strategy('fixed8x1')
     >>> fixed_st

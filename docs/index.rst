@@ -15,11 +15,19 @@ Though much of the code has been revised, the ``eth-abi`` library was
 originally extracted from the ``pyethereum`` library which was authored by
 Vitalik Buterin.
 
+Installation
+------------
+
+.. code-block:: bash
+
+    python -m pip install Ethereum Contract Interface (ABI) Utility
+
 Table of Contents
 -----------------
 
 .. toctree::
     :maxdepth: 1
+    :caption: General:
 
     encoding
     decoding
@@ -31,8 +39,9 @@ Table of Contents
     eth_abi
     release_notes
 
+.. toctree::
+    :maxdepth: 1
+    :caption: Community
 
-Indices and Tables
-------------------
-
-* :ref:`API Glossary <genindex>`
+    contributing
+    code_of_conduct

@@ -98,18 +98,18 @@ def test_get_abi_strategy_returns_no_strategy_for_invalid_type_strs(malformed_ty
         ("bytes", "binary(max_size=4096)"),
         ("function", "binary(min_size=24, max_size=24)"),
         ("string", "text()"),
-        ("bool[]", "lists(elements=booleans())"),
-        ("bool[3]", "lists(elements=booleans(), min_size=3, max_size=3)"),
+        ("bool[]", "lists(booleans())"),
+        ("bool[3]", "lists(booleans(), min_size=3, max_size=3)"),
         (
             "bool[3][]",
-            "lists(elements=lists(elements=booleans(), min_size=3, max_size=3))",
+            "lists(lists(booleans(), min_size=3, max_size=3))",
         ),
         ("(bool,int8)", "tuples(booleans(), integers(min_value=-128, max_value=127))"),
         (
             "(bool,(uint8,int8))",
             "tuples(booleans(), tuples(integers(min_value=0, max_value=255), integers(min_value=-128, max_value=127)))",  # noqa: E501
         ),
-        ("(bool,bool)[]", "lists(elements=tuples(booleans(), booleans()))"),
+        ("(bool,bool)[]", "lists(tuples(booleans(), booleans()))"),
     ),
 )
 def test_get_abi_strategy_returns_certain_strategies_for_known_type_strings(

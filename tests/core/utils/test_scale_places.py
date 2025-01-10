@@ -1,6 +1,6 @@
+import pytest
 import decimal
 import itertools
-import pytest
 from typing import (
     Iterable,
     Iterator,

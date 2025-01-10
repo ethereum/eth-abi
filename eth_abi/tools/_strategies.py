@@ -74,7 +74,7 @@ class StrategyRegistry(BaseRegistry):
             abi_type = parse(normalized_type_str)
             strategy = registration(abi_type, self)
 
-            return strategy
+            return strategy  # type: ignore[no-any-return] # clarify return type
 
 
 def get_uint_strategy(
