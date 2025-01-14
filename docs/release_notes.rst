@@ -3,6 +3,21 @@ Release Notes
 
 .. towncrier release notes start
 
+eth-abi v5.2.0 (2025-01-14)
+---------------------------
+
+Features
+~~~~~~~~
+
+- Merge template, adding ``py313`` support, replace ``bumpversion`` with ``bump-my-version``, raise required ``hypothesis`` versions. (`#241 <https://github.com/ethereum/eth-abi/issues/241>`__)
+
+
+Internal Changes - for eth-abi Contributors
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Merge template, fixing docs CI and other various updates (`#236 <https://github.com/ethereum/eth-abi/issues/236>`__)
+
+
 eth-abi v5.1.0 (2024-04-01)
 ---------------------------
 
