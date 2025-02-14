@@ -20,7 +20,7 @@ Installation
 
 .. code-block:: bash
 
-    python -m pip install Ethereum Contract Interface (ABI) Utility
+    python -m pip install eth-abi
 
 Table of Contents
 -----------------
