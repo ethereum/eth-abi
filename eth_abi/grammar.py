@@ -240,7 +240,7 @@ class TupleType(ABIType):
         """
         The string representation of an ABI type.  Once populated,
         this will be equal to the type string from which it was created.
-        """  # NOTE: wait then why dont we just set it now from the init arg? 
+        """
 
     def to_type_str(self) -> str:
         type_str = self._type_str
@@ -307,7 +307,7 @@ class BasicType(ABIType):
         """
         The string representation of an ABI type.  Once populated,
         this will be equal to the type string from which it was created.
-        """  # NOTE: wait then why dont we just set it now from the init arg? 
+        """
 
     def to_type_str(self):
         type_str = self._type_str
