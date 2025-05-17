@@ -6,7 +6,7 @@ import parsimonious
 from parsimonious import (
     expressions,
 )
-from parsimonius.nodes import (
+from parsimonious.nodes import (
     Node,
 )
 
