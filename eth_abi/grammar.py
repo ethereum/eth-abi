@@ -1,5 +1,6 @@
 import functools
 import re
+from typing import Optional
 
 import parsimonious
 from parsimonious import (
@@ -235,6 +236,12 @@ class TupleType(ABIType):
         tuple type's components.
         """
 
+        self._type_str: Optional[str] = None
+        """
+        The string representation of an ABI type.  Once populated,
+        this will be equal to the type string from which it was created.
+        """  # NOTE: wait then why dont we just set it now from the init arg? 
+
     def to_type_str(self) -> str:
         type_str = self._type_str
         if type_str is None:
@@ -295,6 +302,12 @@ class BasicType(ABIType):
         for "ufixed128x18" etc.  Equal to ``None`` if type string has no sub
         type.
         """
+
+        self._type_str: Optional[str] = None
+        """
+        The string representation of an ABI type.  Once populated,
+        this will be equal to the type string from which it was created.
+        """  # NOTE: wait then why dont we just set it now from the init arg? 
 
     def to_type_str(self):
         type_str = self._type_str
