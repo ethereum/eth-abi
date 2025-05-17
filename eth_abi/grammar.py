@@ -152,12 +152,21 @@ class _ABITypeSingletonMeta(type):
         """A cache that holds the singleton instance for each key."""
 
     def __call__(self, *init_args, **init_kwargs):
-        singleton = init_args, tuple((k, init_kwargs[k]) for k in sorted(init_kwargs))
         singleton = self.__instances__.get(key)
         if singleton is None:
             singleton = super().__call__(*init_args, **init_kwargs)
             self.__instances__[key] = singleton
         return singleton
+
+    def _make_key(self, *init_args, **init_kwargs) -> tuple:
+        kwargs_key = []
+        for k in sorted(init_kwargs):
+            kwargs_key.append(k)
+            v = init_kwargs[k]
+            kwargs_key.append(tuple(v) if isinstance(v, list) else v)
+        # should be quicker to hash if we just make 1 tuple with unpacked values
+        return *init_args, *kwargs_key
+        
 
 
 class ABIType(metaclass=_ABITypeSingletonMeta):
