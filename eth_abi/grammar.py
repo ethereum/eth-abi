@@ -135,7 +135,32 @@ class NodeVisitor(parsimonious.NodeVisitor):  # type: ignore[misc] # subclasses 
 visitor = NodeVisitor()
 
 
-class ABIType:
+class _ABITypeSingletonMeta(type):
+    def __init__(self, name, bases, namespace):
+        """
+        Initialize the metaclass with a name, bases, and namespace.
+
+        Args:
+            name: The name of the class being created.
+            bases: A tuple of base classes.
+            namespace: A dictionary representing the class namespace.
+        """
+
+        super().__init__(name, bases, namespace)
+
+        self.__instances__ = {}
+        """A cache that holds the singleton instance for each key."""
+
+    def __call__(self, *init_args, **init_kwargs):
+        singleton = init_args, tuple((k, init_kwargs[k]) for k in sorted(init_kwargs))
+        singleton = self.__instances__.get(key)
+        if singleton is None:
+            singleton = super().__call__(*init_args, **init_kwargs)
+            self.__instances__[key] = singleton
+        return singleton
+
+
+class ABIType(metaclass=_ABITypeSingletonMeta):
     """
     Base class for results of type string parsing operations.
     """
