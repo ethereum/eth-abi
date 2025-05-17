@@ -1,5 +1,6 @@
 import functools
 import re
+from typing import Any, Dict, 
 
 import parsimonious
 from parsimonious import (
@@ -148,17 +149,20 @@ class _ABITypeSingletonMeta(type):
 
         super().__init__(name, bases, namespace)
 
-        self.__instances__ = {}
+        self.__instances__: Dict[Tuple[Any, ...], Any] = {}
         """A cache that holds the singleton instance for each key."""
 
     def __call__(self, *init_args, **init_kwargs):
+        key = self._make_key(init_args, init_kwargs)
         singleton = self.__instances__.get(key)
         if singleton is None:
             singleton = super().__call__(*init_args, **init_kwargs)
             self.__instances__[key] = singleton
         return singleton
 
-    def _make_key(self, *init_args, **init_kwargs) -> tuple:
+    def _make_key(self, init_args: Tuple[Any, ...], init_kwargs: Dict[str, Any]) -> Tuple[Any, ...]:
+        # TODO: optimize this a bit better, we can know the init args at the time of class
+        # creation so we should use that info since this code is called in tight loops
         kwargs_key = []
         for k in sorted(init_kwargs):
             kwargs_key.append(k)
