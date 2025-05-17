@@ -167,7 +167,13 @@ class _ABITypeSingletonMeta(type):
         for k in sorted(init_kwargs):
             kwargs_key.append(k)
             v = init_kwargs[k]
-            kwargs_key.append(tuple(v) if isinstance(v, list) else v)
+            kwargs_key.append(
+                pickle(v)  # Node isn't hashable but its pickle representation is
+                if isinstance(v, Node)
+                else tuple(v)
+                if isinstance(v, list)
+                else v
+            )
         # should be quicker to hash if we just make 1 tuple with unpacked values
         return *init_args, *kwargs_key
         
