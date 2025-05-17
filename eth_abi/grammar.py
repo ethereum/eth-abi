@@ -1,6 +1,6 @@
 import functools
 import re
-from typing import Any, Dict, 
+from typing import Any, Dict, Tuple
 
 import parsimonious
 from parsimonious import (
