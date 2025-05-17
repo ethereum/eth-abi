@@ -6,6 +6,9 @@ import parsimonious
 from parsimonious import (
     expressions,
 )
+from parsimonius.nodes import (
+    Node,
+)
 
 from eth_abi.exceptions import (
     ABITypeError,
