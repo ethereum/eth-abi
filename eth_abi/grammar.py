@@ -1,5 +1,4 @@
 import functools
-import pickle
 import re
 from typing import Any, Dict, Tuple
 
@@ -172,7 +171,9 @@ class _ABITypeSingletonMeta(type):
             kwargs_key.append(k)
             v = init_kwargs[k]
             kwargs_key.append(
-                repr(v)  # Node isn't hashable but has a special repr method which makes it's repr suitable for use as a key
+                repr(v)
+                # Node isn't hashable but has a special repr method which makes it's repr suitable for use as a key
+                # TODO: PR a hash method to parsimonius, they already describe a Node as immutable
                 if isinstance(v, Node)
                 else tuple(v)
                 if isinstance(v, list)
