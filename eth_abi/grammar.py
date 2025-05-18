@@ -1,5 +1,6 @@
 import functools
 import re
+from pickle import pickle
 from typing import Any, Dict, Tuple
 
 import parsimonious
