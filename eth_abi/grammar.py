@@ -207,6 +207,9 @@ class ABIType(metaclass=_ABITypeSingletonMeta):
     def __repr__(self):  # pragma: no cover
         return f"<{type(self).__qualname__} {repr(self.to_type_str())}>"
 
+    def __hash__(self) -> int:
+        return id(self)
+
     def __eq__(self, other):
         # Two ABI types are equal if their string representations are equal
         return type(self) is type(other) and self.to_type_str() == other.to_type_str()
