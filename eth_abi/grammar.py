@@ -172,7 +172,7 @@ class _ABITypeSingletonMeta(type):
             kwargs_key.append(k)
             v = init_kwargs[k]
             kwargs_key.append(
-                pickle.dumps(v)  # Node isn't hashable but its pickle representation is
+                repr(v)  # Node isn't hashable but has a special repr method which makes it's repr suitable for use as a key
                 if isinstance(v, Node)
                 else tuple(v)
                 if isinstance(v, list)
