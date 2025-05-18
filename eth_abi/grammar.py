@@ -1,6 +1,6 @@
 import functools
+import pickle
 import re
-from pickle import pickle
 from typing import Any, Dict, Tuple
 
 import parsimonious
@@ -172,7 +172,7 @@ class _ABITypeSingletonMeta(type):
             kwargs_key.append(k)
             v = init_kwargs[k]
             kwargs_key.append(
-                pickle(v)  # Node isn't hashable but its pickle representation is
+                pickle.dumps(v)  # Node isn't hashable but its pickle representation is
                 if isinstance(v, Node)
                 else tuple(v)
                 if isinstance(v, list)
