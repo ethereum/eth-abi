@@ -492,7 +492,7 @@ class ABIRegistry(Copyable, BaseRegistry):
 
     def _get_tuple_decoder_uncached(self, *type_strs: abi.TypeStr) -> decoding.TupleDecoder:
         return decoding.TupleDecoder(
-            encoders = [self.get_encoder(type_str) for type_str in type_strs]
+            decoders = [self.get_decoder(type_str) for type_str in type_strs]
         )
 
     def copy(self):
