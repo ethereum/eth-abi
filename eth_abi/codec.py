@@ -150,7 +150,7 @@ class ABIDecoder(BaseABICoder):
         validate_list_like_param(types, "types")
         validate_bytes_param(data, "data")
 
-        decoder = self._registry.get_tuple_decoder(*types)
+        decoder = self._registry.get_tuple_decoder(*types, strict=strict)
         stream = self.stream_class(data)
 
         return cast(Tuple[Any, ...], decoder(stream))
