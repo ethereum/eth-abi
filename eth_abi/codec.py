@@ -12,10 +12,6 @@ from eth_typing.abi import (
 
 from eth_abi.decoding import (
     ContextFramesBytesIO,
-    TupleDecoder,
-)
-from eth_abi.encoding import (
-    TupleEncoder,
 )
 from eth_abi.exceptions import (
     EncodingError,
