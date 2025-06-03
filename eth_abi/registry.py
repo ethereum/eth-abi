@@ -346,8 +346,12 @@ class ABIRegistry(Copyable, BaseRegistry):
         self._decoders = PredicateMapping("decoder registry")
         self.get_encoder = functools.lru_cache(maxsize=None)(self._get_encoder_uncached)
         self.get_decoder = functools.lru_cache(maxsize=None)(self._get_decoder_uncached)
-        self.get_tuple_encoder = functools.lru_cache(maxsize=None)(self._get_tuple_encoder_uncached)
-        self.get_tuple_decoder = functools.lru_cache(maxsize=None)(self._get_tuple_decoder_uncached)
+        self.get_tuple_encoder = functools.lru_cache(maxsize=None)(
+            self._get_tuple_encoder_uncached
+        )
+        self.get_tuple_decoder = functools.lru_cache(maxsize=None)(
+            self._get_tuple_decoder_uncached
+        )
 
     def _get_registration(self, mapping, type_str):
         coder = super()._get_registration(mapping, type_str)
