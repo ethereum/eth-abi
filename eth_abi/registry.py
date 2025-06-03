@@ -458,9 +458,12 @@ class ABIRegistry(Copyable, BaseRegistry):
     def _get_encoder_uncached(self, type_str: abi.TypeStr):
         return self._get_registration(self._encoders, type_str)
 
-    def _get_tuple_encoder_uncached(self, *type_strs: abi.TypeStr) -> encoding.TupleEncoder:
+    def _get_tuple_encoder_uncached(
+        self, 
+        *type_strs: abi.TypeStr,
+    ) -> encoding.TupleEncoder:
         return encoding.TupleEncoder(
-            encoders = [self.get_encoder(type_str) for type_str in type_strs]
+            encoders=[self.get_encoder(type_str) for type_str in type_strs]
         )
 
     def has_encoder(self, type_str: abi.TypeStr) -> bool:
@@ -494,9 +497,9 @@ class ABIRegistry(Copyable, BaseRegistry):
         self, 
         *type_strs: abi.TypeStr, 
         strict: bool = True,
-) -> decoding.TupleDecoder:
+    ) -> decoding.TupleDecoder:
         return decoding.TupleDecoder(
-            decoders = [self.get_decoder(type_str, strict) for type_str in type_strs]
+            decoders=[self.get_decoder(type_str, strict) for type_str in type_strs]
         )
 
     def copy(self):
