@@ -42,15 +42,6 @@ jobs:
             artifact_name: "wheels-ubuntu-latest-musllinux-x64"
 
           # ----------------------------------------------------
-          # musllinux 32-bit
-          # ----------------------------------------------------
-          - os: ubuntu-latest
-            build_type: musllinux-x86
-            cibw_build: "*musllinux*"
-            cibw_archs_linux: i686
-            artifact_name: "wheels-ubuntu-latest-musllinux-x86"
-
-          # ----------------------------------------------------
           # macOS (64-bit only)
           # ----------------------------------------------------
           - os: macos-latest
