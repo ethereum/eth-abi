@@ -4,11 +4,11 @@ PyMODINIT_FUNC
 PyInit_validation(void)
 {
     PyObject *tmp;
-    if (!(tmp = PyImport_ImportModule("5b955ff1c0e1f317068d__mypyc"))) return NULL;
+    if (!(tmp = PyImport_ImportModule("a1f8aa123fabc88e2b56__mypyc"))) return NULL;
     PyObject *capsule = PyObject_GetAttrString(tmp, "init_faster_eth_abi___utils___validation");
     Py_DECREF(tmp);
     if (capsule == NULL) return NULL;
-    void *init_func = PyCapsule_GetPointer(capsule, "5b955ff1c0e1f317068d__mypyc.init_faster_eth_abi___utils___validation");
+    void *init_func = PyCapsule_GetPointer(capsule, "a1f8aa123fabc88e2b56__mypyc.init_faster_eth_abi___utils___validation");
     Py_DECREF(capsule);
     if (!init_func) {
         return NULL;

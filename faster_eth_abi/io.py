@@ -2,6 +2,7 @@ from io import (
     BytesIO,
 )
 from typing import (
+    TYPE_CHECKING,
     Any,
     Final,
     List,
@@ -9,8 +10,18 @@ from typing import (
     final,
 )
 
+from mypy_extensions import (
+    mypyc_attr,
+)
+
+if TYPE_CHECKING:
+    from _typeshed import (
+        ReadableBuffer,
+    )
+
 
 @final
+@mypyc_attr(allow_interpreted_subclasses=True)
 class ContextFramesBytesIO(BytesIO):
     """
     A byte stream which can track a series of contextual frames in a stack. This
@@ -55,8 +66,8 @@ class ContextFramesBytesIO(BytesIO):
     its enclosing object's frame (object A).
     """
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, initial_bytes: "ReadableBuffer"):
+        super().__init__(initial_bytes)
 
         self._frames: Final[List[Tuple[int, int]]] = []
         self._total_offset = 0

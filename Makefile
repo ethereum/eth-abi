@@ -61,7 +61,7 @@ validate-newsfragments:
 check-docs: build-docs validate-newsfragments
 
 build-docs:
-	sphinx-apidoc -o docs/ . setup.py 'eth_abi/utils/*' 'eth_abi/tools/*' 'tests/*'
+	sphinx-apidoc -o docs/ . setup.py 'faster_eth_abi/utils/*' 'faster_eth_abi/tools/*' 'tests/*'
 	$(MAKE) -C docs clean
 	$(MAKE) -C docs html
 	$(MAKE) -C docs doctest

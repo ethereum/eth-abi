@@ -71,5 +71,5 @@ def test_scale_places_neg(size):
 
 
 def test_scale_places_raises_value_error_if_places_not_int():
-    with pytest.raises(ValueError):
+    with pytest.raises(TypeError):
         scale_places(1.0)

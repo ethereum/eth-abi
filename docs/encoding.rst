@@ -11,7 +11,7 @@ follows:
 
 .. doctest::
 
-    >>> from eth_abi import encode
+    >>> from faster_eth_abi import encode
 
     >>> # encode a single ABI type
     >>> encode(['uint256'], [12345])
@@ -26,7 +26,7 @@ follows:
     b'a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00b\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
 
 
-The :py:meth:`eth_abi.encoding.BaseEncoder.encode` function provides an API for
+The :py:meth:`faster_eth_abi.encoding.BaseEncoder.encode` function provides an API for
 encoding python values into binary values for ABI types. It accepts a sequence of ABI
 type strings as the first argument and a sequence of python values to be encoded into
 the respective ABI types as the second argument.
@@ -39,7 +39,7 @@ for a given ABI type using :any:`is_encodable`:
 
 .. doctest::
 
-    >>> from eth_abi import is_encodable
+    >>> from faster_eth_abi import is_encodable
 
     >>> is_encodable('int', 2)
     True
@@ -67,7 +67,7 @@ encoding.  You can encode values in this format like so:
 
 .. doctest::
 
-    >>> from eth_abi.packed import encode_packed
+    >>> from faster_eth_abi.packed import encode_packed
 
     >>> # encode_packed for a single ABI type
     >>> encode_packed(['uint32'], [12345])

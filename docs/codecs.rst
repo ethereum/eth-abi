@@ -19,9 +19,9 @@ API:
 
 .. testcode:: custom-registry-nulltype
 
-    from eth_abi.codec import ABICodec
-    from eth_abi.exceptions import EncodingError, DecodingError
-    from eth_abi.registry import ABIRegistry
+    from faster_eth_abi.codec import ABICodec
+    from faster_eth_abi.exceptions import EncodingError, DecodingError
+    from faster_eth_abi.registry import ABIRegistry
 
     # Define and register the coders
     NULL_ENCODING = b'\x00' * 32
@@ -70,8 +70,8 @@ capability coupled with the use of a custom codec:
 
 .. testcode:: custom-registry-copied
 
-    from eth_abi.codec import ABICodec
-    from eth_abi.registry import registry as default_registry
+    from faster_eth_abi.codec import ABICodec
+    from faster_eth_abi.registry import registry as default_registry
 
     registry = default_registry.copy()
     registry.unregister('address')
@@ -104,8 +104,8 @@ for decoding, they can do the following:
 
 .. testcode:: custom-stream-class
 
-    from eth_abi.codec import ABIEncoder, ABIDecoder
-    from eth_abi.registry import registry
+    from faster_eth_abi.codec import ABIEncoder, ABIDecoder
+    from faster_eth_abi.registry import registry
 
     class MyStream:
         # Custom behavior...

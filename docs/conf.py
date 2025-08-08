@@ -188,7 +188,7 @@ html_theme = "sphinx_rtd_theme"
 # html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = "eth_abidoc"
+htmlhelp_basename = "faster_eth_abidoc"
 
 
 # -- Options for LaTeX output ---------------------------------------------
@@ -210,7 +210,7 @@ latex_elements = {
 latex_documents = [
     (
         "index",
-        "eth_abi.tex",
+        "faster_eth_abi.tex",
         "Ethereum Contract Interface (ABI) Utility Documentation",
         "The Ethereum Foundation",
         "manual",
@@ -245,7 +245,7 @@ latex_documents = [
 man_pages = [
     (
         "index",
-        "eth_abi",
+        "faster_eth_abi",
         "Ethereum Contract Interface (ABI) Utility Documentation",
         ["The Ethereum Foundation"],
         1,

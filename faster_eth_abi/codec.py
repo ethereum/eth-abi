@@ -32,7 +32,7 @@ from faster_eth_abi.utils.validation import (
 class BaseABICoder:
     """
     Base class for porcelain coding APIs.  These are classes which wrap
-    instances of :class:`~eth_abi.registry.ABIRegistry` to provide last-mile
+    instances of :class:`~faster_eth_abi.registry.ABIRegistry` to provide last-mile
     coding functionality.
     """
 

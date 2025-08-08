@@ -1,12 +1,12 @@
-#ifndef MYPYC_NATIVE_INTERNAL_5b955ff1c0e1f317068d_H
-#define MYPYC_NATIVE_INTERNAL_5b955ff1c0e1f317068d_H
+#ifndef MYPYC_NATIVE_INTERNAL_a1f8aa123fabc88e2b56_H
+#define MYPYC_NATIVE_INTERNAL_a1f8aa123fabc88e2b56_H
 #include <Python.h>
 #include <CPy.h>
-#include "__native_5b955ff1c0e1f317068d.h"
+#include "__native_a1f8aa123fabc88e2b56.h"
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[231];
+extern PyObject *CPyStatics[209];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -30,11 +30,6 @@ extern PyObject *CPyStatic_from_type_str___globals;
 extern CPyModule *CPyModule_functools;
 extern CPyModule *CPyModule_eth_typing;
 extern CPyModule *CPyModule_faster_eth_abi___grammar;
-extern CPyModule *CPyModule_faster_eth_abi___io_internal;
-extern CPyModule *CPyModule_faster_eth_abi___io;
-extern PyObject *CPyStatic_io___globals;
-extern CPyModule *CPyModule_io;
-extern CPyModule *CPyModule_mypy_extensions;
 extern CPyModule *CPyModule_faster_eth_abi___packed_internal;
 extern CPyModule *CPyModule_faster_eth_abi___packed;
 extern PyObject *CPyStatic_packed___globals;
@@ -100,25 +95,6 @@ extern PyObject *CPyPy_from_type_str___new_from_type_str_parse_tuple_type_str_ob
 extern PyObject *CPyDef_from_type_str___parse_tuple_type_str(PyObject *cpy_r_old_from_type_str);
 extern PyObject *CPyPy_from_type_str___parse_tuple_type_str(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern char CPyDef_from_type_str_____top_level__(void);
-extern PyTypeObject *CPyType_io___ContextFramesBytesIO;
-extern PyObject *CPyDef_io___ContextFramesBytesIO(PyObject *cpy_r_initial_bytes);
-extern char CPyDef_io___ContextFramesBytesIO_____init__(PyObject *cpy_r_self, PyObject *cpy_r_initial_bytes);
-extern PyObject *CPyPy_io___ContextFramesBytesIO_____init__(PyObject *self, PyObject *args, PyObject *kw);
-extern char CPyDef_io___ContextFramesBytesIO_____init___3__ContextFramesBytesIO_glue(PyObject *cpy_r_self, PyObject *cpy_r_initial_bytes);
-extern PyObject *CPyPy_io___ContextFramesBytesIO_____init___3__ContextFramesBytesIO_glue(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
-extern char CPyDef_io___ContextFramesBytesIO___seek_in_frame(PyObject *cpy_r_self, CPyTagged cpy_r_pos, PyObject *cpy_r_args, PyObject *cpy_r_kwargs);
-extern PyObject *CPyPy_io___ContextFramesBytesIO___seek_in_frame(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
-extern char CPyDef_io___ContextFramesBytesIO___seek_in_frame__ContextFramesBytesIO_glue(PyObject *cpy_r_self, CPyTagged cpy_r_pos, PyObject *cpy_r_args, PyObject *cpy_r_kwargs);
-extern PyObject *CPyPy_io___ContextFramesBytesIO___seek_in_frame__ContextFramesBytesIO_glue(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
-extern char CPyDef_io___ContextFramesBytesIO___push_frame(PyObject *cpy_r_self, CPyTagged cpy_r_offset);
-extern PyObject *CPyPy_io___ContextFramesBytesIO___push_frame(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
-extern char CPyDef_io___ContextFramesBytesIO___push_frame__ContextFramesBytesIO_glue(PyObject *cpy_r_self, CPyTagged cpy_r_offset);
-extern PyObject *CPyPy_io___ContextFramesBytesIO___push_frame__ContextFramesBytesIO_glue(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
-extern PyObject *CPyDef_io___ContextFramesBytesIO___pop_frame(PyObject *cpy_r_self);
-extern PyObject *CPyPy_io___ContextFramesBytesIO___pop_frame(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
-extern PyObject *CPyDef_io___ContextFramesBytesIO___pop_frame__ContextFramesBytesIO_glue(PyObject *cpy_r_self);
-extern PyObject *CPyPy_io___ContextFramesBytesIO___pop_frame__ContextFramesBytesIO_glue(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
-extern char CPyDef_io_____top_level__(void);
 extern PyObject *CPyStatic_packed___default_encoder_packed;
 extern PyObject *CPyStatic_packed___encode_packed;
 extern PyObject *CPyStatic_packed___is_encodable_packed;

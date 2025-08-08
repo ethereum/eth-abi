@@ -57,7 +57,7 @@ else:
             "faster_eth_abi/abi.py",
             "faster_eth_abi/constants.py",
             "faster_eth_abi/from_type_str.py",
-            "faster_eth_abi/io.py",
+            # "faster_eth_abi/io.py",
             "faster_eth_abi/packed.py",
             "faster_eth_abi/tools",
             "faster_eth_abi/utils",
@@ -80,6 +80,7 @@ setup(
     url="https://github.com/BobTheBuidler/eth-abi",
     include_package_data=True,
     install_requires=[
+        "cchecksum>=0.3.1,<0.4",
         "faster-eth-utils>=2.0.0",
         "eth-typing>=3.0.0",
         "mypy_extensions",
