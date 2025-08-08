@@ -36,7 +36,7 @@ Table of Contents
     nested_dynamic_arrays
     grammar
     tools
-    eth_abi
+    faster_eth_abi
     release_notes
 
 .. toctree::

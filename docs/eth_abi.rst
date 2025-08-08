@@ -4,7 +4,7 @@ API
 eth\_abi.abi module
 -------------------
 
-.. automodule:: eth_abi.abi
+.. automodule:: faster_eth_abi.abi
     :members:
     :undoc-members:
     :show-inheritance:
@@ -12,14 +12,14 @@ eth\_abi.abi module
 eth\_abi.base module
 --------------------
 
-.. automodule:: eth_abi.base
+.. automodule:: faster_eth_abi.base
     :members: BaseCoder
     :show-inheritance:
 
 eth\_abi.codec module
 ---------------------
 
-.. automodule:: eth_abi.codec
+.. automodule:: faster_eth_abi.codec
     :members:
     :undoc-members:
     :show-inheritance:
@@ -27,21 +27,21 @@ eth\_abi.codec module
 eth\_abi.decoding module
 ------------------------
 
-.. automodule:: eth_abi.decoding
+.. automodule:: faster_eth_abi.decoding
     :members: BaseDecoder
     :show-inheritance:
 
 eth\_abi.encoding module
 ------------------------
 
-.. automodule:: eth_abi.encoding
+.. automodule:: faster_eth_abi.encoding
     :members: BaseEncoder
     :show-inheritance:
 
 eth\_abi.exceptions module
 --------------------------
 
-.. automodule:: eth_abi.exceptions
+.. automodule:: faster_eth_abi.exceptions
     :members:
     :undoc-members:
     :show-inheritance:
@@ -49,7 +49,7 @@ eth\_abi.exceptions module
 eth\_abi.registry module
 ------------------------
 
-.. automodule:: eth_abi.registry
+.. automodule:: faster_eth_abi.registry
 
     .. autoclass:: ABIRegistry
         :members:
@@ -57,7 +57,7 @@ eth\_abi.registry module
 eth\_abi.grammar module
 -----------------------
 
-.. automodule:: eth_abi.grammar
+.. automodule:: faster_eth_abi.grammar
 
     .. autoclass:: ABIType
         :members:
@@ -71,6 +71,6 @@ eth\_abi.grammar module
 eth\_abi.tools module
 ---------------------
 
-.. automodule:: eth_abi.tools
+.. automodule:: faster_eth_abi.tools
 
     .. autofunction:: get_abi_strategy

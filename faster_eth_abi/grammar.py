@@ -3,9 +3,9 @@ import re
 from typing import (
     Any,
     Final,
-    List,
     NoReturn,
     Optional,
+    Sequence,
     Tuple,
     TypeVar,
     final,
@@ -130,11 +130,11 @@ class NodeVisitor(parsimonious.NodeVisitor):  # type: ignore [misc]
     def _parse_uncached(self, type_str, **kwargs):
         """
         Parses a type string into an appropriate instance of
-        :class:`~eth_abi.grammar.ABIType`.  If a type string cannot be parsed,
-        throws :class:`~eth_abi.exceptions.ParseError`.
+        :class:`~faster_eth_abi.grammar.ABIType`.  If a type string cannot be parsed,
+        throws :class:`~faster_eth_abi.exceptions.ParseError`.
 
         :param type_str: The type string to be parsed.
-        :returns: An instance of :class:`~eth_abi.grammar.ABIType` containing
+        :returns: An instance of :class:`~faster_eth_abi.grammar.ABIType` containing
             information about the parsed type string.
         """
         if not isinstance(type_str, str):
@@ -165,7 +165,7 @@ class ABIType:
     __slots__ = ("arrlist", "node")
 
     def __init__(
-        self, arrlist: Optional[List] = None, node: Optional[Node] = None
+        self, arrlist: Optional[Sequence] = None, node: Optional[Node] = None
     ) -> None:
         self.arrlist: Final = arrlist
         """
@@ -197,7 +197,7 @@ class ABIType:
     def item_type(self) -> Self:
         """
         If this type is an array type, equal to an appropriate
-        :class:`~eth_abi.grammar.ABIType` instance for the array's items.
+        :class:`~faster_eth_abi.grammar.ABIType` instance for the array's items.
         """
         raise NotImplementedError("Must implement `item_type`")
 
@@ -207,7 +207,7 @@ class ABIType:
 
         https://solidity.readthedocs.io/en/develop/abi-spec.html
 
-        Raises :class:`~eth_abi.exceptions.ABITypeError` if validation fails.
+        Raises :class:`~faster_eth_abi.exceptions.ABITypeError` if validation fails.
         """
         raise NotImplementedError("Must implement `validate`")
 
@@ -257,7 +257,7 @@ class TupleType(ABIType):
     def __init__(
         self,
         components: Tuple[TComp, ...],
-        arrlist: Optional[List] = None,
+        arrlist: Optional[Sequence] = None,
         *,
         node: Optional[Node] = None,
     ) -> None:
@@ -265,7 +265,7 @@ class TupleType(ABIType):
 
         self.components: Final = components
         """
-        A tuple of :class:`~eth_abi.grammar.ABIType` instances for each of the
+        A tuple of :class:`~faster_eth_abi.grammar.ABIType` instances for each of the
         tuple type's components.
         """
 
@@ -317,7 +317,7 @@ class BasicType(ABIType):
         self,
         base: str,
         sub: Any = None,
-        arrlist: Optional[List] = None,
+        arrlist: Optional[Sequence] = None,
         *,
         node: Optional[Node] = None,
     ) -> None:
@@ -337,16 +337,16 @@ class BasicType(ABIType):
         sub, arrlist = self.sub, self.arrlist
 
         if isinstance(sub, int):
-            sub = str(sub)
+            substr = str(sub)
         elif isinstance(sub, tuple):
-            sub = "x".join(str(s) for s in sub)
+            substr = "x".join(str(s) for s in sub)
         else:
-            sub = ""
+            substr = ""
 
         if isinstance(arrlist, tuple):
-            return self.base + sub + "".join(repr(list(a)) for a in arrlist)
+            return self.base + substr + "".join(repr(list(a)) for a in arrlist)
         else:
-            return self.base + sub
+            return self.base + substr
 
     @property
     def item_type(self) -> Self:

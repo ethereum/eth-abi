@@ -61,7 +61,7 @@ validate-newsfragments:
 check-docs: build-docs validate-newsfragments
 
 build-docs:
-	sphinx-apidoc -o docs/ . setup.py 'eth_abi/utils/*' 'eth_abi/tools/*' 'tests/*'
+	sphinx-apidoc -o docs/ . setup.py 'faster_eth_abi/utils/*' 'faster_eth_abi/tools/*' 'tests/*'
 	$(MAKE) -C docs clean
 	$(MAKE) -C docs html
 	$(MAKE) -C docs doctest
@@ -111,7 +111,3 @@ check-git:
 		echo "Error: You must have a remote named 'upstream' that points to 'eth-abi'"; \
 		exit 1; \
 	fi
-
-# mypyc eth_abi/codec.py eth_abi/exceptions.py eth_abi/abi.py eth_abi/base.py eth_abi/utils eth_abi/tools --disable-error-code=unused-ignore --disable-error-code=override --disable-error-code=misc --disable-error-code=no-any-return --disable-error-code=no-untyped-def --disable-error-code=return-value
-compile:
-	mypyc eth_abi/constants.py eth_abi/from_type_str.py eth_abi/io.py eth_abi/utils

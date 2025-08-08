@@ -9,4 +9,4 @@ from faster_eth_abi.abi import (
     is_encodable_type,
 )
 
-__version__ = __version("eth-abi")
+__version__ = __version("faster-eth-abi")

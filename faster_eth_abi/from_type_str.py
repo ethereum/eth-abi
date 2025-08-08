@@ -28,13 +28,14 @@ if TYPE_CHECKING:
 
 TType = TypeVar("TType", bound=Type["BaseCoder"])
 OldFromTypeStr = Callable[["BaseCoder", ABIType, Any], TType]
-NewFromTypeStr = classmethod[TType, [TypeStr, Any], TType]
+if TYPE_CHECKING:
+    NewFromTypeStr = classmethod[TType, [TypeStr, Any], TType]
 
 
 def parse_type_str(
     expected_base: Optional[str] = None,
     with_arrlist: bool = False,
-) -> Callable[[OldFromTypeStr[TType]], NewFromTypeStr[TType]]:
+) -> Callable[[OldFromTypeStr[TType]], "NewFromTypeStr[TType]"]:
     """
     Used by BaseCoder subclasses as a convenience for implementing the
     ``from_type_str`` method required by ``ABIRegistry``.  Useful if normalizing
@@ -42,7 +43,7 @@ def parse_type_str(
     that method.
     """
 
-    def decorator(old_from_type_str: OldFromTypeStr[TType]) -> NewFromTypeStr[TType]:
+    def decorator(old_from_type_str: OldFromTypeStr[TType]) -> "NewFromTypeStr[TType]":
         @functools.wraps(old_from_type_str)
         def new_from_type_str(cls: TType, type_str: TypeStr, registry: Any) -> TType:
             normalized_type_str = normalize(type_str)
@@ -101,7 +102,7 @@ def parse_type_str(
 
 def parse_tuple_type_str(
     old_from_type_str: OldFromTypeStr[TType],
-) -> NewFromTypeStr[TType]:
+) -> "NewFromTypeStr[TType]":
     """
     Used by BaseCoder subclasses as a convenience for implementing the
     ``from_type_str`` method required by ``ABIRegistry``.  Useful if normalizing
