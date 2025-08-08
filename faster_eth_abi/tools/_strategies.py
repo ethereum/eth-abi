@@ -75,7 +75,7 @@ class StrategyRegistry(BaseRegistry):
             abi_type = parse(normalized_type_str)
             strategy = registration(abi_type, self)
 
-            return strategy  # type: ignore[no-any-return] # clarify return type
+            return strategy
 
 
 def get_uint_strategy(
@@ -150,7 +150,7 @@ def get_array_strategy(
     item_type_str = item_type.to_type_str()
     item_strategy = registry.get_strategy(item_type_str)
 
-    last_dim = abi_type.arrlist[-1]
+    last_dim = abi_type.arrlist[-1]  # type: ignore [index]
     if len(last_dim) == 0:
         # Is dynamic list.  Don't restrict length.
         return st.lists(item_strategy)

@@ -7,7 +7,9 @@
 *.egg
 *.egg-info
 dist
-build
+build/**/*.py
+build/**/*.o
+build/**/py.typed
 .build
 eggs
 .eggs
