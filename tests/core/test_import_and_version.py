@@ -1,4 +1,4 @@
 def test_import_and_version():
-    import eth_abi
+    import faster_eth_abi
 
-    assert isinstance(eth_abi.__version__, str)
+    assert isinstance(faster_eth_abi.__version__, str)

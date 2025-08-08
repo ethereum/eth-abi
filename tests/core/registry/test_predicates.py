@@ -7,7 +7,7 @@ from hypothesis import (
     strategies as st,
 )
 
-from eth_abi.registry import (
+from faster_eth_abi.registry import (
     BaseEquals,
     Equals,
     has_arrlist,

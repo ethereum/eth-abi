@@ -7,11 +7,11 @@ from hypothesis import (
     strategies as st,
 )
 
-from eth_abi.exceptions import (
+from faster_eth_abi.exceptions import (
     NoEntriesFound,
     ParseError,
 )
-from eth_abi.tools import (
+from faster_eth_abi.tools import (
     get_abi_strategy,
 )
 from tests.core.common.strategies import (

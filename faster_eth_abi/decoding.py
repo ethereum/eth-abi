@@ -12,22 +12,22 @@ from faster_eth_utils import (
     to_tuple,
 )
 
-from eth_abi.base import (
+from faster_eth_abi.base import (
     BaseCoder,
 )
-from eth_abi.exceptions import (
+from faster_eth_abi.exceptions import (
     InsufficientDataBytes,
     InvalidPointer,
     NonEmptyPaddingBytes,
 )
-from eth_abi.from_type_str import (
+from faster_eth_abi.from_type_str import (
     parse_tuple_type_str,
     parse_type_str,
 )
-from eth_abi.io import (
+from faster_eth_abi.io import (
     ContextFramesBytesIO,
 )
-from eth_abi.utils.numeric import (
+from faster_eth_abi.utils.numeric import (
     TEN,
     abi_decimal_context,
     ceil32,

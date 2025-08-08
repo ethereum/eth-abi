@@ -2,7 +2,7 @@ from importlib.metadata import (
     version as __version,
 )
 
-from eth_abi.abi import (
+from faster_eth_abi.abi import (
     decode,
     encode,
     is_encodable,

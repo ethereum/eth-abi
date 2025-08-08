@@ -5,7 +5,7 @@ from faster_eth_utils import (
 )
 import hypothesis.strategies as st
 
-from eth_abi.utils.numeric import (
+from faster_eth_abi.utils.numeric import (
     scale_places,
 )
 

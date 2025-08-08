@@ -2,7 +2,7 @@ from hypothesis import (
     given,
 )
 
-from eth_abi import (
+from faster_eth_abi import (
     decode,
     encode,
 )

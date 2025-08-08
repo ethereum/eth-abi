@@ -22,7 +22,7 @@ from hypothesis import (
     strategies as st,
 )
 
-from eth_abi.encoding import (
+from faster_eth_abi.encoding import (
     AddressEncoder,
     BooleanEncoder,
     BytesEncoder,
@@ -35,12 +35,12 @@ from eth_abi.encoding import (
     UnsignedIntegerEncoder,
     encode_uint_256,
 )
-from eth_abi.exceptions import (
+from faster_eth_abi.exceptions import (
     EncodingTypeError,
     IllegalValue,
     ValueOutOfBounds,
 )
-from eth_abi.utils.numeric import (
+from faster_eth_abi.utils.numeric import (
     TEN,
     abi_decimal_context,
     ceil32,
@@ -49,7 +49,7 @@ from eth_abi.utils.numeric import (
     compute_unsigned_fixed_bounds,
     compute_unsigned_integer_bounds,
 )
-from eth_abi.utils.padding import (
+from faster_eth_abi.utils.padding import (
     fpad,
     zpad,
     zpad_right,

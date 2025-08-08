@@ -1,6 +1,6 @@
 import pytest
 
-from eth_abi.decoding import (
+from faster_eth_abi.decoding import (
     ContextFramesBytesIO,
 )
 

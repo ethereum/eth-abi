@@ -1,9 +1,9 @@
 import pytest
 
-from eth_abi.grammar import (
+from faster_eth_abi.grammar import (
     parse,
 )
-from eth_abi.packed import (
+from faster_eth_abi.packed import (
     encode_packed,
 )
 from tests.core.common.unit import (

@@ -17,14 +17,14 @@ from hypothesis import (
     strategies as st,
 )
 
-from eth_abi import (
+from faster_eth_abi import (
     decode,
     encode,
 )
-from eth_abi.constants import (
+from faster_eth_abi.constants import (
     TT256M1,
 )
-from eth_abi.decoding import (
+from faster_eth_abi.decoding import (
     AddressDecoder,
     BooleanDecoder,
     BytesDecoder,
@@ -38,20 +38,20 @@ from eth_abi.decoding import (
     UnsignedFixedDecoder,
     UnsignedIntegerDecoder,
 )
-from eth_abi.encoding import (
+from faster_eth_abi.encoding import (
     TextStringEncoder,
 )
-from eth_abi.exceptions import (
+from faster_eth_abi.exceptions import (
     InsufficientDataBytes,
     NonEmptyPaddingBytes,
 )
-from eth_abi.registry import (
+from faster_eth_abi.registry import (
     registry,
 )
-from eth_abi.utils.numeric import (
+from faster_eth_abi.utils.numeric import (
     ceil32,
 )
-from eth_abi.utils.padding import (
+from faster_eth_abi.utils.padding import (
     zpad32,
 )
 

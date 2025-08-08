@@ -1,10 +1,10 @@
 import pytest
 import re
 
-from eth_abi import (
+from faster_eth_abi import (
     encode,
 )
-from eth_abi.grammar import (
+from faster_eth_abi.grammar import (
     parse,
 )
 from tests.core.common.unit import (

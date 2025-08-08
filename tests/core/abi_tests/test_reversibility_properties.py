@@ -3,7 +3,7 @@ from hypothesis import (
     settings,
 )
 
-from eth_abi import (
+from faster_eth_abi import (
     decode,
     encode,
 )

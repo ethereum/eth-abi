@@ -5,7 +5,7 @@ from hypothesis import (
     settings,
 )
 
-from eth_abi.packed import (
+from faster_eth_abi.packed import (
     is_encodable_packed,
 )
 from tests.core.common.strategies import (

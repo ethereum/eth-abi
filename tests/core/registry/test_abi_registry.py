@@ -2,12 +2,12 @@ import pytest
 import copy
 import itertools
 
-from eth_abi import (
+from faster_eth_abi import (
     decoding,
     encoding,
     exceptions,
 )
-from eth_abi.registry import (
+from faster_eth_abi.registry import (
     ABIRegistry,
     BaseEquals,
     has_arrlist,

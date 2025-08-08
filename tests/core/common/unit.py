@@ -7,7 +7,7 @@ from faster_eth_utils import (
     decode_hex,
 )
 
-from eth_abi.utils.padding import (
+from faster_eth_abi.utils.padding import (
     zpad32_right,
 )
 

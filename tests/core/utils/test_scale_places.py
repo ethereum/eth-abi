@@ -12,7 +12,7 @@ from hypothesis import (
     strategies as st,
 )
 
-from eth_abi.utils.numeric import (
+from faster_eth_abi.utils.numeric import (
     ABI_DECIMAL_PREC,
     scale_places,
 )

@@ -1,6 +1,6 @@
 import pytest
 
-from eth_abi.utils.validation import (
+from faster_eth_abi.utils.validation import (
     validate_bytes_param,
     validate_list_like_param,
 )

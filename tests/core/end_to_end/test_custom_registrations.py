@@ -1,18 +1,18 @@
-from eth_abi import (
+from faster_eth_abi import (
     decode,
     encode,
 )
-from eth_abi.decoding import (
+from faster_eth_abi.decoding import (
     BaseDecoder,
 )
-from eth_abi.encoding import (
+from faster_eth_abi.encoding import (
     BaseEncoder,
 )
-from eth_abi.exceptions import (
+from faster_eth_abi.exceptions import (
     DecodingError,
     EncodingError,
 )
-from eth_abi.registry import (
+from faster_eth_abi.registry import (
     registry,
 )
 

@@ -1,13 +1,13 @@
 import pytest
 
-from eth_abi.base import (
+from faster_eth_abi.base import (
     BaseCoder,
 )
-from eth_abi.from_type_str import (
+from faster_eth_abi.from_type_str import (
     parse_tuple_type_str,
     parse_type_str,
 )
-from eth_abi.grammar import (
+from faster_eth_abi.grammar import (
     BasicType,
 )
 

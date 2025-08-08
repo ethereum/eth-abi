@@ -1,6 +1,6 @@
 import pytest
 
-from eth_abi.utils.string import (
+from faster_eth_abi.utils.string import (
     abbr,
 )
 

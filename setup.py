@@ -45,16 +45,36 @@ with open("./README.md") as readme:
     long_description = readme.read()
 
 
+try:
+    from mypyc.build import (
+        mypycify,
+    )
+except ImportError:
+    ext_modules = []
+else:
+    ext_modules = mypycify(
+        [
+            "faster_eth_abi/constants.py",
+            "faster_eth_abi/from_type_str.py",
+            "faster_eth_abi/io.py",
+            "faster_eth_abi/utils",
+            "--pretty",
+            "--install-types",
+            "--disable-error-code=override",
+        ],
+    )
+
+
 setup(
-    name="eth_abi",
+    name="faster_eth_abi",
     # *IMPORTANT*: Don't manually change the version here. See Contributing docs for the release process.
     version="5.2.0",
-    description="""eth_abi: Python utilities for working with Ethereum ABI definitions, especially encoding and decoding""",
+    description="""A fork of eth_abi: Python utilities for working with Ethereum ABI definitions, especially encoding and decoding, implemented in C.""",
     long_description=long_description,
     long_description_content_type="text/markdown",
     author="The Ethereum Foundation",
     author_email="snakecharmers@ethereum.org",
-    url="https://github.com/ethereum/eth-abi",
+    url="https://github.com/BobTheBuidler/eth-abi",
     include_package_data=True,
     install_requires=[
         "faster-eth-utils>=2.0.0",
@@ -69,7 +89,8 @@ setup(
     zip_safe=False,
     keywords="ethereum",
     packages=find_packages(exclude=["scripts", "scripts.*", "tests", "tests.*"]),
-    package_data={"eth_abi": ["py.typed"]},
+    ext_modules=ext_modules,
+    package_data={"faster_eth_abi": ["py.typed"]},
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Intended Audience :: Developers",
@@ -82,5 +103,6 @@ setup(
         "Programming Language :: Python :: 3.11",
         "Programming Language :: Python :: 3.12",
         "Programming Language :: Python :: 3.13",
+        "Programming Language :: Python :: Implementation :: CPython",
     ],
 )

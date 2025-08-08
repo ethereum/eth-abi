@@ -10,20 +10,20 @@ from eth_typing.abi import (
     TypeStr,
 )
 
-from eth_abi.decoding import (
+from faster_eth_abi.decoding import (
     ContextFramesBytesIO,
     TupleDecoder,
 )
-from eth_abi.encoding import (
+from faster_eth_abi.encoding import (
     TupleEncoder,
 )
-from eth_abi.exceptions import (
+from faster_eth_abi.exceptions import (
     EncodingError,
 )
-from eth_abi.registry import (
+from faster_eth_abi.registry import (
     ABIRegistry,
 )
-from eth_abi.utils.validation import (
+from faster_eth_abi.utils.validation import (
     validate_bytes_param,
     validate_list_like_param,
 )

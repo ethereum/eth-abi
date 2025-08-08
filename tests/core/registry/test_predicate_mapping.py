@@ -4,7 +4,7 @@ import functools
 import itertools
 import operator
 
-from eth_abi.registry import (
+from faster_eth_abi.registry import (
     Equals,
     PredicateMapping,
 )

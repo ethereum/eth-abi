@@ -25,7 +25,7 @@ from typing_extensions import (
     Self,
 )
 
-from eth_abi.exceptions import (
+from faster_eth_abi.exceptions import (
     ABITypeError,
     ParseError,
 )
@@ -58,7 +58,7 @@ grammar: Final = parsimonious.Grammar(
 
 
 @final
-class NodeVisitor(parsimonious.NodeVisitor):
+class NodeVisitor(parsimonious.NodeVisitor):  # type: ignore [misc]
     """
     Parsimonious node visitor which performs both parsing of type strings and
     post-processing of parse trees.  Parsing operations are cached.
@@ -254,7 +254,13 @@ class TupleType(ABIType):
 
     __slots__ = ("components",)
 
-    def __init__(self, components: Tuple[TComp, ...], arrlist=None, *, node=None):
+    def __init__(
+        self,
+        components: Tuple[TComp, ...],
+        arrlist: Optional[List] = None,
+        *,
+        node: Optional[Node] = None,
+    ) -> None:
         super().__init__(arrlist, node)
 
         self.components: Final = components
@@ -307,7 +313,14 @@ class BasicType(ABIType):
 
     __slots__ = ("base", "sub")
 
-    def __init__(self, base: str, sub=None, arrlist=None, *, node=None) -> None:
+    def __init__(
+        self,
+        base: str,
+        sub: Any = None,
+        arrlist: Optional[List] = None,
+        *,
+        node: Optional[Node] = None,
+    ) -> None:
         super().__init__(arrlist, node)
 
         self.base: Final = base
@@ -345,7 +358,7 @@ class BasicType(ABIType):
         return type(self)(
             self.base,
             self.sub,
-            self.arrlist[:-1] or None,
+            self.arrlist[:-1] or None,  # type: ignore [index]
             node=self.node,
         )
 

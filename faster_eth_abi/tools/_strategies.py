@@ -14,14 +14,14 @@ from hypothesis import (
     strategies as st,
 )
 
-from eth_abi.grammar import (
+from faster_eth_abi.grammar import (
     ABIType,
     BasicType,
     TupleType,
     normalize,
     parse,
 )
-from eth_abi.registry import (
+from faster_eth_abi.registry import (
     BaseEquals,
     BaseRegistry,
     Lookup,
@@ -29,7 +29,7 @@ from eth_abi.registry import (
     has_arrlist,
     is_base_tuple,
 )
-from eth_abi.utils.numeric import (
+from faster_eth_abi.utils.numeric import (
     scale_places,
 )
 
