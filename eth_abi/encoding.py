@@ -24,13 +24,15 @@ from faster_eth_utils import (
 
 from eth_abi.base import (
     BaseCoder,
-    parse_tuple_type_str,
-    parse_type_str,
 )
 from eth_abi.exceptions import (
     EncodingTypeError,
     IllegalValue,
     ValueOutOfBounds,
+)
+from eth_abi.from_type_str import (
+    parse_tuple_type_str,
+    parse_type_str,
 )
 from eth_abi.utils.numeric import (
     TEN,
