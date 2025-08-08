@@ -68,7 +68,7 @@ class ABIEncoder(BaseABICoder):
         validate_list_like_param(types, "types")
         validate_list_like_param(args, "args")
 
-        encoders = [self._registry.get_encoder(type_str) for type_str in types]
+        encoders = tuple(self._registry.get_encoder(type_str) for type_str in types)
 
         encoder = TupleEncoder(encoders=encoders)
 
@@ -152,9 +152,9 @@ class ABIDecoder(BaseABICoder):
         validate_list_like_param(types, "types")
         validate_bytes_param(data, "data")
 
-        decoders = [
+        decoders = tuple(
             self._registry.get_decoder(type_str, strict=strict) for type_str in types
-        ]
+        )
 
         decoder = TupleDecoder(decoders=decoders)
         stream = self.stream_class(data)

@@ -96,10 +96,10 @@ class BaseEncoder(BaseCoder, metaclass=abc.ABCMeta):
 
 
 class TupleEncoder(BaseEncoder):
-    encoders = None
+    encoders: Tuple[BaseEncoder, ...] = ()
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+    def __init__(self, encoders: Tuple[BaseEncoder, ...], **kwargs: Any) -> None:
+        super().__init__(encoders=encoders, **kwargs)
 
         self.is_dynamic = any(getattr(e, "is_dynamic", False) for e in self.encoders)
 

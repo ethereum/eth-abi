@@ -1,9 +1,9 @@
 import abc
 import decimal
-import io
 from typing import (
     Any,
     Generator,
+    Tuple,
 )
 
 from faster_eth_utils import (
@@ -91,14 +91,14 @@ class HeadTailDecoder(BaseDecoder):
 
 
 class TupleDecoder(BaseDecoder):
-    decoders = None
+    decoders: Tuple[BaseDecoder, ...] = ()
 
-    def __init__(self, **kwargs):
+    def __init__(self, decoders: Tuple[BaseDecoder, ...], **kwargs: Any) -> None:
         super().__init__(**kwargs)
 
         self.decoders = tuple(
             HeadTailDecoder(tail_decoder=d) if getattr(d, "is_dynamic", False) else d
-            for d in self.decoders
+            for d in decoders
         )
 
         self.is_dynamic = any(getattr(d, "is_dynamic", False) for d in self.decoders)
@@ -336,7 +336,7 @@ class FixedByteSizeDecoder(SingleDecoder):
 
         if padding_bytes != b"\x00" * padding_size:
             raise NonEmptyPaddingBytes(
-                f"Padding bytes were not empty: {repr(padding_bytes)}"
+                f"Padding bytes were not empty: {padding_bytes!r}"
             )
 
     def _get_value_byte_size(self):
@@ -360,7 +360,7 @@ class BooleanDecoder(Fixed32ByteSizeDecoder):
             return True
         else:
             raise NonEmptyPaddingBytes(
-                f"Boolean must be either 0x0 or 0x1.  Got: {repr(data)}"
+                f"Boolean must be either 0x0 or 0x1.  Got: {data!r}"
             )
 
     @parse_type_str("bool")
@@ -417,7 +417,7 @@ class SignedIntegerDecoder(Fixed32ByteSizeDecoder):
 
         if padding_bytes != expected_padding_bytes:
             raise NonEmptyPaddingBytes(
-                f"Padding bytes were not empty: {repr(padding_bytes)}"
+                f"Padding bytes were not empty: {padding_bytes!r}"
             )
 
     @parse_type_str("int")
@@ -494,7 +494,7 @@ class SignedFixedDecoder(BaseFixedDecoder):
 
         if padding_bytes != expected_padding_bytes:
             raise NonEmptyPaddingBytes(
-                f"Padding bytes were not empty: {repr(padding_bytes)}"
+                f"Padding bytes were not empty: {padding_bytes!r}"
             )
 
     @parse_type_str("fixed")
@@ -529,7 +529,7 @@ class ByteStringDecoder(SingleDecoder):
             padding_bytes = data[data_length:]
             if padding_bytes != b"\x00" * (padded_length - data_length):
                 raise NonEmptyPaddingBytes(
-                    f"Padding bytes were not empty: {repr(padding_bytes)}"
+                    f"Padding bytes were not empty: {padding_bytes!r}"
                 )
 
         return data[:data_length]
