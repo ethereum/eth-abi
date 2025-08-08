@@ -1,13 +1,13 @@
 import pytest
 import sys
 
-from eth_utils import (
+from faster_eth_utils import (
     big_endian_to_int,
     decode_hex,
     int_to_big_endian,
     to_normalized_address,
 )
-from eth_utils.toolz import (
+from faster_eth_utils.toolz import (
     complement,
 )
 from hypothesis import (

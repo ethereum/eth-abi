@@ -6,7 +6,7 @@ from typing import (
     Generator,
 )
 
-from eth_utils import (
+from faster_eth_utils import (
     big_endian_to_int,
     to_normalized_address,
     to_tuple,

@@ -2,7 +2,7 @@ from typing import (
     Any,
 )
 
-from eth_utils import (
+from faster_eth_utils import (
     is_bytes,
 )
 

@@ -1,6 +1,6 @@
 import random
 
-from eth_utils import (
+from faster_eth_utils import (
     encode_hex,
 )
 import hypothesis.strategies as st

@@ -57,7 +57,7 @@ setup(
     url="https://github.com/ethereum/eth-abi",
     include_package_data=True,
     install_requires=[
-        "eth-utils>=2.0.0",
+        "faster-eth-utils>=2.0.0",
         "eth-typing>=3.0.0",
         "parsimonious>=0.10.0,<0.11.0",
     ],

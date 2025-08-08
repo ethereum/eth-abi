@@ -3,7 +3,7 @@ from decimal import (
 )
 import re
 
-from eth_utils import (
+from faster_eth_utils import (
     decode_hex,
 )
 

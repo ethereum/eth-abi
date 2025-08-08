@@ -2,7 +2,7 @@ import pytest
 import codecs
 import decimal
 
-from eth_utils import (
+from faster_eth_utils import (
     decode_hex,
     int_to_big_endian,
     is_address,

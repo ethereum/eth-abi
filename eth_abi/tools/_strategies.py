@@ -4,11 +4,11 @@ from typing import (
     Union,
 )
 
+from cchecksum import (
+    to_checksum_address,
+)
 from eth_typing.abi import (
     TypeStr,
-)
-from eth_utils import (
-    to_checksum_address,
 )
 from hypothesis import (
     strategies as st,
