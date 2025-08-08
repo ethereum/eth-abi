@@ -1,5 +1,6 @@
 from typing import (
     Callable,
+    Final,
     Optional,
     Union,
 )
@@ -99,8 +100,8 @@ def get_int_strategy(
     )
 
 
-address_strategy = st.binary(min_size=20, max_size=20).map(to_checksum_address)
-bool_strategy = st.booleans()
+address_strategy: Final = st.binary(min_size=20, max_size=20).map(to_checksum_address)
+bool_strategy: Final = st.booleans()
 
 
 def get_ufixed_strategy(
@@ -138,8 +139,8 @@ def get_bytes_strategy(
     )
 
 
-bytes_strategy = st.binary(min_size=0, max_size=4096)
-string_strategy = st.text()
+bytes_strategy: Final = st.binary(min_size=0, max_size=4096)
+string_strategy: Final = st.text()
 
 
 def get_array_strategy(
@@ -170,7 +171,7 @@ def get_tuple_strategy(
     return st.tuples(*component_strategies)
 
 
-strategy_registry = StrategyRegistry()
+strategy_registry: Final = StrategyRegistry()
 
 strategy_registry.register_strategy(
     BaseEquals("uint"),
@@ -233,4 +234,4 @@ strategy_registry.register_strategy(
     label="is_base_tuple",
 )
 
-get_abi_strategy = strategy_registry.get_strategy
+get_abi_strategy: Final = strategy_registry.get_strategy
