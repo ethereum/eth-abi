@@ -59,6 +59,7 @@ setup(
     install_requires=[
         "faster-eth-utils>=2.0.0",
         "eth-typing>=3.0.0",
+        "mypy_extensions",
         "parsimonious>=0.10.0,<0.11.0",
     ],
     python_requires=">=3.8, <4",
