@@ -124,6 +124,7 @@ jobs:
 
       - name: Build sdist
         run: |
+          pip install faster-eth-utils
           python setup.py sdist
 
       # ----------------------------------------------------
