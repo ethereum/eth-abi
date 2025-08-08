@@ -25,7 +25,7 @@ from eth_abi.from_type_str import (
     parse_type_str,
 )
 from eth_abi.io import (
-    ContextFramesBytesIO
+    ContextFramesBytesIO,
 )
 from eth_abi.utils.numeric import (
     TEN,

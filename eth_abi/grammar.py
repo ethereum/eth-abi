@@ -11,10 +11,10 @@ from typing import (
     final,
 )
 
-import parsimonious
 from eth_typing import (
     TypeStr,
 )
+import parsimonious
 from parsimonious import (
     expressions,
 )
@@ -147,7 +147,9 @@ class NodeVisitor(parsimonious.NodeVisitor):
             # If this logic grows any bigger, we should abstract it to its own function.
             if "()" in type_str:
                 # validate against zero-sized tuple types
-                raise ValueError('Zero-sized tuple types "()" are not supported.') from None
+                raise ValueError(
+                    'Zero-sized tuple types "()" are not supported.'
+                ) from None
 
             raise ParseError(e.text, e.pos, e.expr) from e
 
@@ -162,7 +164,9 @@ class ABIType:
 
     __slots__ = ("arrlist", "node")
 
-    def __init__(self, arrlist: Optional[List] = None, node: Optional[Node] = None) -> None:
+    def __init__(
+        self, arrlist: Optional[List] = None, node: Optional[Node] = None
+    ) -> None:
         self.arrlist: Final = arrlist
         """
         The list of array dimensions for a parsed type.  Equal to ``None`` if
@@ -239,7 +243,7 @@ class ABIType:
         return self.is_array and any(len(dim) == 0 for dim in self.arrlist)
 
 
-TComp = TypeVar("TComp", ABIType)
+TComp = TypeVar("TComp", bound=ABIType)
 
 
 @final
@@ -278,7 +282,7 @@ class TupleType(ABIType):
 
         return type(self)(
             self.components,
-            self.arrlist[:-1] or None,
+            self.arrlist[:-1] or None,  # type: ignore [index]
             node=self.node,
         )
 
@@ -327,11 +331,9 @@ class BasicType(ABIType):
             sub = ""
 
         if isinstance(arrlist, tuple):
-            arrlist = "".join(repr(list(a)) for a in arrlist)
+            return self.base + sub + "".join(repr(list(a)) for a in arrlist)
         else:
-            arrlist = ""
-
-        return self.base + sub + arrlist
+            return self.base + sub
 
     @property
     def item_type(self) -> Self:

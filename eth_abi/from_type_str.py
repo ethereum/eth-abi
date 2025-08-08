@@ -11,6 +11,7 @@ from typing import (
 from eth_typing import (
     TypeStr,
 )
+
 from .grammar import (
     ABIType,
     BasicType,
@@ -20,7 +21,9 @@ from .grammar import (
 )
 
 if TYPE_CHECKING:
-    from .base import BaseCoder
+    from .base import (
+        BaseCoder,
+    )
 
 
 TType = TypeVar("TType", bound=Type["BaseCoder"])
@@ -47,7 +50,9 @@ def parse_type_str(
 
             type_str_repr = repr(type_str)
             if type_str != normalized_type_str:
-                type_str_repr = f"{type_str_repr} (normalized to {normalized_type_str!r})"
+                type_str_repr = (
+                    f"{type_str_repr} (normalized to {normalized_type_str!r})"
+                )
 
             if expected_base is not None:
                 if not isinstance(abi_type, BasicType):
@@ -94,7 +99,9 @@ def parse_type_str(
     return decorator
 
 
-def parse_tuple_type_str(old_from_type_str: OldFromTypeStr[TType]) -> NewFromTypeStr[TType]:
+def parse_tuple_type_str(
+    old_from_type_str: OldFromTypeStr[TType],
+) -> NewFromTypeStr[TType]:
     """
     Used by BaseCoder subclasses as a convenience for implementing the
     ``from_type_str`` method required by ``ABIRegistry``.  Useful if normalizing

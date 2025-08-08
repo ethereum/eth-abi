@@ -10,7 +10,7 @@ from typing import (
 )
 
 from eth_typing import (
-    abi,
+    TypeStr,
 )
 
 from . import (
@@ -19,9 +19,6 @@ from . import (
     exceptions,
     grammar,
 )
-from .io import (
-    ContextFramesBytesIO
-)
 from .base import (
     BaseCoder,
 )
@@ -29,8 +26,11 @@ from .exceptions import (
     MultipleEntriesFound,
     NoEntriesFound,
 )
+from .io import (
+    ContextFramesBytesIO,
+)
 
-Lookup = Union[abi.TypeStr, Callable[[abi.TypeStr], bool]]
+Lookup = Union[TypeStr, Callable[[TypeStr], bool]]
 
 EncoderCallable = Callable[[Any], bytes]
 DecoderCallable = Callable[[ContextFramesBytesIO], Any]
@@ -65,14 +65,13 @@ class PredicateMapping(Copyable):
 
     def add(self, predicate, value, label=None):
         if predicate in self._values:
-            raise ValueError(
-                f"Matcher {predicate!r} already exists in {self._name}"
-            )
+            raise ValueError(f"Matcher {predicate!r} already exists in {self._name}")
 
         if label is not None:
             if label in self._labeled_predicates:
                 raise ValueError(
-                    f"Matcher {predicate!r} with label '{label}' already exists in {self._name}"
+                    f"Matcher {predicate!r} with label '{label}' "
+                    f"already exists in {self._name}"
                 )
 
             self._labeled_predicates[label] = predicate
@@ -323,7 +322,8 @@ class BaseRegistry:
             return
 
         raise TypeError(
-            f"Lookup/label must be a callable or a value of type `str`: got {lookup_or_label!r}"
+            f"Lookup/label must be a callable or a value of type `str`: "
+            f"got {lookup_or_label!r}"
         )
 
     @staticmethod
@@ -457,7 +457,7 @@ class ABIRegistry(Copyable, BaseRegistry):
     def _get_encoder_uncached(self, type_str):
         return self._get_registration(self._encoders, type_str)
 
-    def has_encoder(self, type_str: abi.TypeStr) -> bool:
+    def has_encoder(self, type_str: TypeStr) -> bool:
         """
         Returns ``True`` if an encoder is found for the given type string
         ``type_str``.  Otherwise, returns ``False``.  Raises
