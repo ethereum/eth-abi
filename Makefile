@@ -114,4 +114,4 @@ check-git:
 
 # mypyc eth_abi/codec.py eth_abi/exceptions.py eth_abi/abi.py eth_abi/base.py eth_abi/utils eth_abi/tools --disable-error-code=unused-ignore --disable-error-code=override --disable-error-code=misc --disable-error-code=no-any-return --disable-error-code=no-untyped-def --disable-error-code=return-value
 compile:
-	mypyc eth_abi/constants.py eth_abi/from_type_str.py eth_abi/io.py 
+	mypyc eth_abi/constants.py eth_abi/from_type_str.py eth_abi/io.py eth_abi/utils

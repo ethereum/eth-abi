@@ -1,15 +1,18 @@
 import decimal
 from typing import (
     Callable,
+    Final,
     Tuple,
 )
 
-ABI_DECIMAL_PREC = 999
+ABI_DECIMAL_PREC: Final = 999
 
-abi_decimal_context = decimal.Context(prec=ABI_DECIMAL_PREC)
+abi_decimal_context: Final = decimal.Context(prec=ABI_DECIMAL_PREC)
 
-ZERO = decimal.Decimal(0)
-TEN = decimal.Decimal(10)
+ZERO: Final = decimal.Decimal(0)
+TEN: Final = decimal.Decimal(10)
+
+Decimal: Final = decimal.Decimal
 
 
 def ceil32(x: int) -> int:
@@ -37,7 +40,7 @@ def compute_unsigned_fixed_bounds(
     int_upper = compute_unsigned_integer_bounds(num_bits)[1]
 
     with decimal.localcontext(abi_decimal_context):
-        upper = decimal.Decimal(int_upper) * TEN**-frac_places
+        upper = Decimal(int_upper) * TEN**-frac_places
 
     return ZERO, upper
 
@@ -50,8 +53,8 @@ def compute_signed_fixed_bounds(
 
     with decimal.localcontext(abi_decimal_context):
         exp = TEN**-frac_places
-        lower = decimal.Decimal(int_lower) * exp
-        upper = decimal.Decimal(int_upper) * exp
+        lower = Decimal(int_lower) * exp
+        upper = Decimal(int_upper) * exp
 
     return lower, upper
 
