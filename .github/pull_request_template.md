@@ -9,7 +9,7 @@ Closes #
 
 - [ ] Clean up commit history
 - [ ] Add or update documentation related to these changes
-- [ ] Add entry to the [release notes](https://github.com/ethereum/eth-abi/blob/main/newsfragments/README.md)
+- [ ] Add entry to the [release notes](https://github.com/ethereum/faster-eth-abi/blob/main/newsfragments/README.md)
 
 #### Cute Animal Picture
 

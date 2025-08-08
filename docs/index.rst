@@ -1,7 +1,7 @@
-Welcome to the eth-abi documentation!
+Welcome to the faster-eth-abi documentation!
 =====================================
 
-The ``eth-abi`` library provides low level utilities for converting python
+The ``faster-eth-abi`` library provides low level utilities for converting python
 values to and from solidity's binary ABI format.
 
 For detailed information on ABI types and their encodings, refer to the
@@ -11,7 +11,7 @@ For detailed information on ABI types and their encodings, refer to the
 Credit
 ------
 
-Though much of the code has been revised, the ``eth-abi`` library was
+Though much of the code has been revised, the ``faster-eth-abi`` library was
 originally extracted from the ``pyethereum`` library which was authored by
 Vitalik Buterin.
 
@@ -20,7 +20,7 @@ Installation
 
 .. code-block:: bash
 
-    python -m pip install eth-abi
+    python -m pip install faster-eth-abi
 
 Table of Contents
 -----------------

@@ -13,14 +13,14 @@ development machine:
 
 .. code:: sh
 
-    git clone git@github.com:your-github-username/eth-abi.git
+    git clone git@github.com:your-github-username/faster-eth-abi.git
 
 Next, install the development dependencies. We recommend using a virtual environment,
 such as `virtualenv <https://virtualenv.pypa.io/en/stable/>`_.
 
 .. code:: sh
 
-    cd eth-abi
+    cd faster-eth-abi
     virtualenv -p python venv
     . venv/bin/activate
     python -m pip install -e ".[dev]"
@@ -77,7 +77,7 @@ do not pass the CI build yet won't get reviewed unless explicitly requested.
 
 If the pull request introduces changes that should be reflected in the release notes,
 please add a `newsfragment` file as explained
-`here <https://github.com/ethereum/eth-abi/blob/main/newsfragments/README.md>`_.
+`here <https://github.com/ethereum/faster-eth-abi/blob/main/newsfragments/README.md>`_.
 
 If possible, the change to the release notes file should be included in the commit that
 introduces the feature or bugfix.

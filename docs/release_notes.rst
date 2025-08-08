@@ -3,151 +3,151 @@ Release Notes
 
 .. towncrier release notes start
 
-eth-abi v5.2.0 (2025-01-14)
+faster-eth-abi v5.2.0 (2025-01-14)
 ---------------------------
 
 Features
 ~~~~~~~~
 
-- Merge template, adding ``py313`` support, replace ``bumpversion`` with ``bump-my-version``, raise required ``hypothesis`` versions. (`#241 <https://github.com/ethereum/eth-abi/issues/241>`__)
+- Merge template, adding ``py313`` support, replace ``bumpversion`` with ``bump-my-version``, raise required ``hypothesis`` versions. (`#241 <https://github.com/ethereum/faster-eth-abi/issues/241>`__)
 
 
-Internal Changes - for eth-abi Contributors
+Internal Changes - for faster-eth-abi Contributors
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-- Merge template, fixing docs CI and other various updates (`#236 <https://github.com/ethereum/eth-abi/issues/236>`__)
+- Merge template, fixing docs CI and other various updates (`#236 <https://github.com/ethereum/faster-eth-abi/issues/236>`__)
 
 
-eth-abi v5.1.0 (2024-04-01)
+faster-eth-abi v5.1.0 (2024-04-01)
 ---------------------------
 
-Internal Changes - for eth-abi Contributors
+Internal Changes - for faster-eth-abi Contributors
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-- Upgrade `parsimonious <https://github.com/erikrose/parsimonious>`_ from ``0.9`` to ``0.10``, which is 15% faster (`#231 <https://github.com/ethereum/eth-abi/issues/231>`__)
-- Add ``python 3.12`` support, add all-format docs tests and nightly CI runs, reorg tests file structure to match CI grouping (`#232 <https://github.com/ethereum/eth-abi/issues/232>`__)
+- Upgrade `parsimonious <https://github.com/erikrose/parsimonious>`_ from ``0.9`` to ``0.10``, which is 15% faster (`#231 <https://github.com/ethereum/faster-eth-abi/issues/231>`__)
+- Add ``python 3.12`` support, add all-format docs tests and nightly CI runs, reorg tests file structure to match CI grouping (`#232 <https://github.com/ethereum/faster-eth-abi/issues/232>`__)
 
 
-eth-abi v5.0.1 (2024-03-04)
+faster-eth-abi v5.0.1 (2024-03-04)
 ---------------------------
 
 Bugfixes
 ~~~~~~~~
 
-- During decoding, verify all pointers in arrays and tuples point to a valid location in the payload (`#226 <https://github.com/ethereum/eth-abi/issues/226>`__)
-- Fix memory leak warning in NodeVisitor and ABIRegistry (`#230 <https://github.com/ethereum/eth-abi/issues/230>`__)
+- During decoding, verify all pointers in arrays and tuples point to a valid location in the payload (`#226 <https://github.com/ethereum/faster-eth-abi/issues/226>`__)
+- Fix memory leak warning in NodeVisitor and ABIRegistry (`#230 <https://github.com/ethereum/faster-eth-abi/issues/230>`__)
 
 
-Internal Changes - for eth-abi Contributors
+Internal Changes - for faster-eth-abi Contributors
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-- Clear mypy ``misc``-type errors and add top-level ``py.typed`` file back (`#221 <https://github.com/ethereum/eth-abi/issues/221>`__)
+- Clear mypy ``misc``-type errors and add top-level ``py.typed`` file back (`#221 <https://github.com/ethereum/faster-eth-abi/issues/221>`__)
 
 
-eth-abi v5.0.0 (2024-01-09)
+faster-eth-abi v5.0.0 (2024-01-09)
 ---------------------------
 
 Breaking Changes
 ~~~~~~~~~~~~~~~~
 
-- Drop python 3.7 support (`#217 <https://github.com/ethereum/eth-abi/issues/217>`__)
+- Drop python 3.7 support (`#217 <https://github.com/ethereum/faster-eth-abi/issues/217>`__)
 
 
-Internal Changes - for eth-abi Contributors
+Internal Changes - for faster-eth-abi Contributors
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-- Merge updates from the project template, notably, use ``pre-commit`` for linting and change the name of the ``master`` branch to ``main`` (`#217 <https://github.com/ethereum/eth-abi/issues/217>`__)
-- Corrected format of booleans in ``pyproject.toml`` and added a test for the presence of the ``eth_abi.__version__`` attribute (`#219 <https://github.com/ethereum/eth-abi/issues/219>`__)
+- Merge updates from the project template, notably, use ``pre-commit`` for linting and change the name of the ``master`` branch to ``main`` (`#217 <https://github.com/ethereum/faster-eth-abi/issues/217>`__)
+- Corrected format of booleans in ``pyproject.toml`` and added a test for the presence of the ``eth_abi.__version__`` attribute (`#219 <https://github.com/ethereum/faster-eth-abi/issues/219>`__)
 
 
-eth-abi v4.2.1 (2023-09-13)
+faster-eth-abi v4.2.1 (2023-09-13)
 ---------------------------
 
-Internal Changes - for eth-abi contributors
+Internal Changes - for faster-eth-abi contributors
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-- Add ``build.os`` section to readthedocs build settings (`#213 <https://github.com/ethereum/eth-abi/issues/213>`__)
+- Add ``build.os`` section to readthedocs build settings (`#213 <https://github.com/ethereum/faster-eth-abi/issues/213>`__)
 
 
 Miscellaneous changes
 ~~~~~~~~~~~~~~~~~~~~~
 
-- `#214 <https://github.com/ethereum/eth-abi/issues/214>`__
+- `#214 <https://github.com/ethereum/faster-eth-abi/issues/214>`__
 
 
-eth-abi v4.2.0 (2023-08-28)
+faster-eth-abi v4.2.0 (2023-08-28)
 ---------------------------
 
 Features
 ~~~~~~~~
 
-- Allow turning off abi decoder "strict mode" when calling ``abi.decode()``. (`#198 <https://github.com/ethereum/eth-abi/issues/198>`__)
+- Allow turning off abi decoder "strict mode" when calling ``abi.decode()``. (`#198 <https://github.com/ethereum/faster-eth-abi/issues/198>`__)
 
 
 Bugfixes
 ~~~~~~~~
 
-- Validate against zero-sized ``tuple`` types / empty Solidity structs. (`#212 <https://github.com/ethereum/eth-abi/issues/212>`__)
+- Validate against zero-sized ``tuple`` types / empty Solidity structs. (`#212 <https://github.com/ethereum/faster-eth-abi/issues/212>`__)
 
 
-eth-abi v4.1.0 (2023-06-08)
+faster-eth-abi v4.1.0 (2023-06-08)
 ---------------------------
 
 Features
 ~~~~~~~~
 
-- updated `StringDecoder` class to allow user-defined handling of malformed strings, handle with `strict` by default (`#187 <https://github.com/ethereum/eth-abi/issues/187>`__)
+- updated `StringDecoder` class to allow user-defined handling of malformed strings, handle with `strict` by default (`#187 <https://github.com/ethereum/faster-eth-abi/issues/187>`__)
 
 
-Internal Changes - for eth-abi contributors
+Internal Changes - for faster-eth-abi contributors
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-- remove unused docs deps, bump version of remaining (`#203 <https://github.com/ethereum/eth-abi/issues/203>`__)
-- Moved requirements-docs.txt info into .readthedocs.yml (`#204 <https://github.com/ethereum/eth-abi/issues/204>`__)
-- pull in updates from the python project template (`#205 <https://github.com/ethereum/eth-abi/issues/205>`__)
-- Updated CI process to handle tox issue caused by `virtualenv` update (`#208 <https://github.com/ethereum/eth-abi/issues/208>`__)
+- remove unused docs deps, bump version of remaining (`#203 <https://github.com/ethereum/faster-eth-abi/issues/203>`__)
+- Moved requirements-docs.txt info into .readthedocs.yml (`#204 <https://github.com/ethereum/faster-eth-abi/issues/204>`__)
+- pull in updates from the python project template (`#205 <https://github.com/ethereum/faster-eth-abi/issues/205>`__)
+- Updated CI process to handle tox issue caused by `virtualenv` update (`#208 <https://github.com/ethereum/faster-eth-abi/issues/208>`__)
 
 
-eth-abi v4.0.0 (2023-03-22)
+faster-eth-abi v4.0.0 (2023-03-22)
 ---------------------------
 
 No significant changes.
 
 
-eth-abi v4.0.0-beta.3 (2023-03-20)
+faster-eth-abi v4.0.0-beta.3 (2023-03-20)
 ----------------------------------
 
 Breaking Changes
 ~~~~~~~~~~~~~~~~
 
 - Upgrade Parsimonious dependency to allow >=0.9,<0.10 (`#201
-  <https://github.com/ethereum/eth-abi/issues/201>`__)
+  <https://github.com/ethereum/faster-eth-abi/issues/201>`__)
 
 
-eth-abi v4.0.0-beta.2 (2022-11-21)
+faster-eth-abi v4.0.0-beta.2 (2022-11-21)
 ----------------------------------
 
 Features
 ~~~~~~~~
 
 - Add support for Python 3.11 (`#194
-  <https://github.com/ethereum/eth-abi/issues/194>`__)
+  <https://github.com/ethereum/faster-eth-abi/issues/194>`__)
 
 Miscellaneous changes
 ~~~~~~~~~~~~~~~~~~~~~
 
-- `#196 <https://github.com/ethereum/eth-abi/issues/196>`__
+- `#196 <https://github.com/ethereum/faster-eth-abi/issues/196>`__
 
 
-eth-abi v4.0.0-beta.1 (2022-09-27)
+faster-eth-abi v4.0.0-beta.1 (2022-09-27)
 ----------------------------------
 
 Bugfixes
 ~~~~~~~~
 
-- Reconcile differences in 32-byte padding between eth-abi encoders for dynamic
+- Reconcile differences in 32-byte padding between faster-eth-abi encoders for dynamic
   types and Solidity's abi.encode() for 0 or empty values (`#158
-  <https://github.com/ethereum/eth-abi/issues/158>`__)
+  <https://github.com/ethereum/faster-eth-abi/issues/158>`__)
 
 
 Breaking Changes
@@ -156,34 +156,34 @@ Breaking Changes
 - Remove ``encode_abi_single()``, ``encode_packed_single()``, and
   ``decode_abi_single()``. Rename ``encode_abi()``, ``encode_abi_packed()``,
   and ``decode_abi()`` to ``encode()``, ``encode_packed()``, and ``decode()``,
-  respectively. (`#161 <https://github.com/ethereum/eth-abi/issues/161>`__)
+  respectively. (`#161 <https://github.com/ethereum/faster-eth-abi/issues/161>`__)
 
 
 Miscellaneous changes
 ~~~~~~~~~~~~~~~~~~~~~
 
-- `#161 <https://github.com/ethereum/eth-abi/issues/161>`__, `#166
-  <https://github.com/ethereum/eth-abi/issues/166>`__, `#167
-  <https://github.com/ethereum/eth-abi/issues/167>`__, `#168
-  <https://github.com/ethereum/eth-abi/issues/168>`__, `#177
-  <https://github.com/ethereum/eth-abi/issues/177>`__, `#183
-  <https://github.com/ethereum/eth-abi/issues/183>`__, `#186
-  <https://github.com/ethereum/eth-abi/issues/186>`__
+- `#161 <https://github.com/ethereum/faster-eth-abi/issues/161>`__, `#166
+  <https://github.com/ethereum/faster-eth-abi/issues/166>`__, `#167
+  <https://github.com/ethereum/faster-eth-abi/issues/167>`__, `#168
+  <https://github.com/ethereum/faster-eth-abi/issues/168>`__, `#177
+  <https://github.com/ethereum/faster-eth-abi/issues/177>`__, `#183
+  <https://github.com/ethereum/faster-eth-abi/issues/183>`__, `#186
+  <https://github.com/ethereum/faster-eth-abi/issues/186>`__
 
 
-eth-abi v3.0.1 (2022-07-18)
+faster-eth-abi v3.0.1 (2022-07-18)
 ---------------------------
 
 Deprecations
 ~~~~~~~~~~~~
 
-- Add ``DeprecationWarning`` for ``encode_abi()``, ``encode_single()``, ``decode_abi()``, and ``decode_single()`` and add temporary versions of ``abi.encode()`` and ``abi.decode()`` so users can start making these changes early. (`#165 <https://github.com/ethereum/eth-abi/issues/165>`__)
+- Add ``DeprecationWarning`` for ``encode_abi()``, ``encode_single()``, ``decode_abi()``, and ``decode_single()`` and add temporary versions of ``abi.encode()`` and ``abi.decode()`` so users can start making these changes early. (`#165 <https://github.com/ethereum/faster-eth-abi/issues/165>`__)
 
 
 Miscellaneous changes
 ~~~~~~~~~~~~~~~~~~~~~
 
-- `#165 <https://github.com/ethereum/eth-abi/issues/165>`__, `#166 <https://github.com/ethereum/eth-abi/issues/166>`__, `#172 <https://github.com/ethereum/eth-abi/issues/172>`__, `#177 <https://github.com/ethereum/eth-abi/issues/177>`__, `#178 <https://github.com/ethereum/eth-abi/issues/178>`__
+- `#165 <https://github.com/ethereum/faster-eth-abi/issues/165>`__, `#166 <https://github.com/ethereum/faster-eth-abi/issues/166>`__, `#172 <https://github.com/ethereum/faster-eth-abi/issues/172>`__, `#177 <https://github.com/ethereum/faster-eth-abi/issues/177>`__, `#178 <https://github.com/ethereum/faster-eth-abi/issues/178>`__
 
 
 eth_abi 3.0.0 (2022-01-19)
@@ -192,43 +192,43 @@ eth_abi 3.0.0 (2022-01-19)
 Features
 ~~~~~~~~
 
-- Add support for python 3.8 (`#145 <https://github.com/ethereum/eth-abi/issues/145>`__)
-- Add support for Python 3.8. Includes updating mypy and flake8 version requirements (`#155 <https://github.com/ethereum/eth-abi/issues/155>`__)
-- Drop Python 3.6 support, add Python 3.9 and 3.10 support. Update any dependencies accordingly (`#156 <https://github.com/ethereum/eth-abi/issues/156>`__)
+- Add support for python 3.8 (`#145 <https://github.com/ethereum/faster-eth-abi/issues/145>`__)
+- Add support for Python 3.8. Includes updating mypy and flake8 version requirements (`#155 <https://github.com/ethereum/faster-eth-abi/issues/155>`__)
+- Drop Python 3.6 support, add Python 3.9 and 3.10 support. Update any dependencies accordingly (`#156 <https://github.com/ethereum/faster-eth-abi/issues/156>`__)
 
 
 Bugfixes
 ~~~~~~~~
 
-- Catch ABITypeError exceptions when checking ``has_encoder`` (`#148 <https://github.com/ethereum/eth-abi/issues/148>`__)
+- Catch ABITypeError exceptions when checking ``has_encoder`` (`#148 <https://github.com/ethereum/faster-eth-abi/issues/148>`__)
 
 
 Improved Documentation
 ~~~~~~~~~~~~~~~~~~~~~~
 
-- Fix broken badges in README (`#144 <https://github.com/ethereum/eth-abi/issues/144>`__)
+- Fix broken badges in README (`#144 <https://github.com/ethereum/faster-eth-abi/issues/144>`__)
 
 
 Miscellaneous changes
 ~~~~~~~~~~~~~~~~~~~~~
 
-- `#123 <https://github.com/ethereum/eth-abi/issues/123>`__, `#154 <https://github.com/ethereum/eth-abi/issues/154>`__
+- `#123 <https://github.com/ethereum/faster-eth-abi/issues/123>`__, `#154 <https://github.com/ethereum/faster-eth-abi/issues/154>`__
 
 
-eth-abi v2.1.1 (2020-02-27)
+faster-eth-abi v2.1.1 (2020-02-27)
 ---------------------------
 
 Bugfixes
 ~~~~~~~~
 
 - If subclassing :meth:`eth_abi.decoding.ContextFramesBytesIO.seek`, the new method was not
-  being used by :meth:`~eth_abi.decoding.ContextFramesBytesIO.seek_in_frame`. Now it will be. (`#139 <https://github.com/ethereum/eth-abi/issues/139>`__)
+  being used by :meth:`~eth_abi.decoding.ContextFramesBytesIO.seek_in_frame`. Now it will be. (`#139 <https://github.com/ethereum/faster-eth-abi/issues/139>`__)
 
 
 Internal Changes - for eth_abi contributors
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-- Merged in project template, for changes in release scripts, docs, release notes, etc. (`#140 <https://github.com/ethereum/eth-abi/issues/140>`__)
+- Merged in project template, for changes in release scripts, docs, release notes, etc. (`#140 <https://github.com/ethereum/faster-eth-abi/issues/140>`__)
 
 
 v2.1.0
@@ -247,7 +247,7 @@ v2.0.0-beta.9
 -------------
 
 - Added ``eth_abi.tools`` submodule with extra requirements installable with
-  ``pip install eth-abi[tools]``.  See :ref:`tools`.
+  ``pip install faster-eth-abi[tools]``.  See :ref:`tools`.
 
 v2.0.0-beta.8
 -------------
@@ -436,7 +436,7 @@ Released Feb 5, 2018
 v0.5.0
 ------
 
-- Rename to ``eth-abi`` for consistency across github/pypi/python-module
+- Rename to ``faster-eth-abi`` for consistency across github/pypi/python-module
 
 v0.4.4
 ------

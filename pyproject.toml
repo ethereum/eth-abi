@@ -84,12 +84,12 @@ log_format = "%(levelname)8s  %(asctime)s  %(filename)20s  %(message)s"
 xfail_strict = true
 
 [tool.towncrier]
-# Read https://github.com/ethereum/eth-abi/blob/main/newsfragments/README.md for instructions
+# Read https://github.com/ethereum/faster-eth-abi/blob/main/newsfragments/README.md for instructions
 directory = "newsfragments"
 filename = "docs/release_notes.rst"
-issue_format = "`#{issue} <https://github.com/ethereum/eth-abi/issues/{issue}>`__"
+issue_format = "`#{issue} <https://github.com/ethereum/faster-eth-abi/issues/{issue}>`__"
 package = "faster_eth_abi"
-title_format = "eth-abi v{version} ({project_date})"
+title_format = "faster-eth-abi v{version} ({project_date})"
 underlines = ["-", "~", "^"]
 
 [[tool.towncrier.type]]
@@ -119,7 +119,7 @@ showcontent = true
 
 [[tool.towncrier.type]]
 directory = "internal"
-name = "Internal Changes - for eth-abi Contributors"
+name = "Internal Changes - for faster-eth-abi Contributors"
 showcontent = true
 
 [[tool.towncrier.type]]

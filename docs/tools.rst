@@ -3,13 +3,13 @@
 Tools
 =====
 
-The ``faster_eth_abi.tools`` module provides extra resources to users of ``eth-abi``
+The ``faster_eth_abi.tools`` module provides extra resources to users of ``faster-eth-abi``
 that are not required for typical use.  It can be installed with ``pip`` as an
 extra requirement:
 
 .. code-block:: bash
 
-    python -m pip install "eth-abi[tools]"
+    python -m pip install "faster-eth-abi[tools]"
 
 
 ABI Type Strategies

@@ -77,7 +77,7 @@ setup(
     long_description_content_type="text/markdown",
     author="The Ethereum Foundation",
     author_email="snakecharmers@ethereum.org",
-    url="https://github.com/BobTheBuidler/eth-abi",
+    url="https://github.com/BobTheBuidler/faster-eth-abi",
     include_package_data=True,
     install_requires=[
         "cchecksum>=0.3.1,<0.4",

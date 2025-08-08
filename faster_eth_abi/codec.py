@@ -143,7 +143,8 @@ class ABIDecoder(BaseABICoder):
         :param strict: If ``False``, dynamic-type decoders will ignore validations such
             as making sure the data is padded to a multiple of 32 bytes or checking that
             padding bytes are zero / empty. ``False`` is how the Solidity ABI decoder
-            currently works. However, ``True`` is the default for the eth-abi library.
+            currently works. However, ``True`` is the default for the faster-eth-abi
+            library.
 
         :returns: A tuple of equivalent python values for the ABI values
             represented in ``data``.

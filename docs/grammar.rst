@@ -3,7 +3,7 @@
 Grammar
 =======
 
-The ``eth-abi`` library exposes its type string parsing and normalization
+The ``faster-eth-abi`` library exposes its type string parsing and normalization
 facilities as part of its public API.
 
 .. _grammar-parsing-a-type-string:
@@ -100,6 +100,6 @@ converting type aliases like ``uint`` to ``uint256`` and so forth:
     >>> normalize('(uint,(ufixed,function))')
     '(uint256,(ufixed128x18,bytes24))'
 
-Internally, ``eth-abi`` will only normalize type strings just before creating
+Internally, ``faster-eth-abi`` will only normalize type strings just before creating
 coders for a type.  This is done automatically such that type strings passed to
-``eth-abi`` do not need to be normalized before hand.
+``faster-eth-abi`` do not need to be normalized before hand.

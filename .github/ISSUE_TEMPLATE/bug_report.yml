@@ -41,8 +41,8 @@ body:
   - type: input
     id: lib-version
     attributes:
-      label: eth-abi Version
-      description: Which version of eth-abi are you using?
+      label: faster-eth-abi Version
+      description: Which version of faster-eth-abi are you using?
       placeholder: x.x.x
     validations:
       required: false

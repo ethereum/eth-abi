@@ -1,5 +1,5 @@
 blank_issues_enabled: true
 contact_links:
-  - name: Questions about using eth-abi?
+  - name: Questions about using faster-eth-abi?
     url: https://discord.gg/GHryRvPB84
     about: You can ask and answer usage questions on the Ethereum Python Community Discord

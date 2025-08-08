@@ -1,6 +1,6 @@
 faster_eth_abi
-eth-abi
-eth-abi
-eth-abi
+faster-eth-abi
+faster-eth-abi
+faster-eth-abi
 Ethereum Contract Interface (ABI) Utility
 Python utilities for working with Ethereum ABI definitions, especially encoding and decoding
