@@ -147,12 +147,6 @@ jobs:
           name: "wheels-ubuntu-latest-musllinux-x64"
           path: wheelhouse/linux-musl-x64
 
-      - name: Download musllinux 32-bit wheels
-        uses: actions/download-artifact@v4
-        with:
-          name: "wheels-ubuntu-latest-musllinux-x86"
-          path: wheelhouse/linux-musl-x86
-
       - name: Download macOS wheels
         uses: actions/download-artifact@v4
         with:
@@ -184,7 +178,6 @@ jobs:
             wheelhouse/linux-many-x64/*.whl \
             wheelhouse/linux-many-x86/*.whl \
             wheelhouse/linux-musl-x64/*.whl \
-            wheelhouse/linux-musl-x86/*.whl \
             wheelhouse/macos/*.whl \
             wheelhouse/windows-x64/*.whl \
             wheelhouse/windows-x86/*.whl
