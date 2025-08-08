@@ -19,6 +19,9 @@ from . import (
     exceptions,
     grammar,
 )
+from .io import (
+    ContextFramesBytesIO
+)
 from .base import (
     BaseCoder,
 )
@@ -30,7 +33,7 @@ from .exceptions import (
 Lookup = Union[abi.TypeStr, Callable[[abi.TypeStr], bool]]
 
 EncoderCallable = Callable[[Any], bytes]
-DecoderCallable = Callable[[decoding.ContextFramesBytesIO], Any]
+DecoderCallable = Callable[[ContextFramesBytesIO], Any]
 
 Encoder = Union[EncoderCallable, Type[encoding.BaseEncoder]]
 Decoder = Union[DecoderCallable, Type[decoding.BaseDecoder]]
@@ -63,14 +66,13 @@ class PredicateMapping(Copyable):
     def add(self, predicate, value, label=None):
         if predicate in self._values:
             raise ValueError(
-                f"Matcher {repr(predicate)} already exists in {self._name}"
+                f"Matcher {predicate!r} already exists in {self._name}"
             )
 
         if label is not None:
             if label in self._labeled_predicates:
                 raise ValueError(
-                    f"Matcher {repr(predicate)} with label '{label}' already exists "
-                    f"in {self._name}"
+                    f"Matcher {predicate!r} with label '{label}' already exists in {self._name}"
                 )
 
             self._labeled_predicates[label] = predicate
@@ -109,7 +111,7 @@ class PredicateMapping(Copyable):
         try:
             del self._values[predicate]
         except KeyError:
-            raise KeyError(f"Matcher {repr(predicate)} not found in {self._name}")
+            raise KeyError(f"Matcher {predicate!r} not found in {self._name}")
 
         # Delete any label which refers to this predicate
         try:
@@ -127,7 +129,7 @@ class PredicateMapping(Copyable):
                 return key
 
         raise ValueError(
-            f"Matcher {repr(predicate)} not referred to by any label in {self._name}"
+            f"Matcher {predicate!r} not referred to by any label in {self._name}"
         )
 
     def remove_by_label(self, label):
@@ -201,7 +203,7 @@ class Equals(Predicate):
         return self.value == other
 
     def __str__(self):
-        return f"(== {repr(self.value)})"
+        return f"(== {self.value!r})"
 
 
 class BaseEquals(Predicate):
@@ -243,7 +245,7 @@ class BaseEquals(Predicate):
 
     def __str__(self):
         return (
-            f"(base == {repr(self.base)}"
+            f"(base == {self.base!r}"
             + (
                 ""
                 if self.with_sub is None
@@ -307,7 +309,7 @@ class BaseRegistry:
             return
 
         raise TypeError(
-            f"Lookup must be a callable or a value of type `str`: got {repr(lookup)}"
+            f"Lookup must be a callable or a value of type `str`: got {lookup!r}"
         )
 
     @staticmethod
@@ -321,8 +323,7 @@ class BaseRegistry:
             return
 
         raise TypeError(
-            "Lookup/label must be a callable or a value of type `str`: got "
-            f"{repr(lookup_or_label)}"
+            f"Lookup/label must be a callable or a value of type `str`: got {lookup_or_label!r}"
         )
 
     @staticmethod
