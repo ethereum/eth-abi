@@ -1,9 +1,28 @@
 import functools
 import re
+from typing import (
+    Any,
+    Final,
+    List,
+    NoReturn,
+    Optional,
+    Tuple,
+    TypeVar,
+    final,
+)
 
 import parsimonious
+from eth_typing import (
+    TypeStr,
+)
 from parsimonious import (
     expressions,
+)
+from parsimonious.nodes import (
+    Node,
+)
+from typing_extensions import (
+    Self,
 )
 
 from eth_abi.exceptions import (
@@ -11,7 +30,7 @@ from eth_abi.exceptions import (
     ParseError,
 )
 
-grammar = parsimonious.Grammar(
+grammar: Final = parsimonious.Grammar(
     r"""
     type = tuple_type / basic_type
 
@@ -38,7 +57,8 @@ grammar = parsimonious.Grammar(
 )
 
 
-class NodeVisitor(parsimonious.NodeVisitor):  # type: ignore[misc] # subclasses Any
+@final
+class NodeVisitor(parsimonious.NodeVisitor):
     """
     Parsimonious node visitor which performs both parsing of type strings and
     post-processing of parse trees.  Parsing operations are cached.
@@ -84,7 +104,7 @@ class NodeVisitor(parsimonious.NodeVisitor):  # type: ignore[misc] # subclasses 
         return (int_value,)
 
     def visit_dynam_arr(self, node, visited_children):
-        return tuple()
+        return ()
 
     def visit_alphas(self, node, visited_children):
         return node.text
@@ -127,12 +147,12 @@ class NodeVisitor(parsimonious.NodeVisitor):  # type: ignore[misc] # subclasses 
             # If this logic grows any bigger, we should abstract it to its own function.
             if "()" in type_str:
                 # validate against zero-sized tuple types
-                raise ValueError('Zero-sized tuple types "()" are not supported.')
+                raise ValueError('Zero-sized tuple types "()" are not supported.') from None
 
-            raise ParseError(e.text, e.pos, e.expr)
+            raise ParseError(e.text, e.pos, e.expr) from e
 
 
-visitor = NodeVisitor()
+visitor: Final = NodeVisitor()
 
 
 class ABIType:
@@ -142,27 +162,27 @@ class ABIType:
 
     __slots__ = ("arrlist", "node")
 
-    def __init__(self, arrlist=None, node=None):
-        self.arrlist = arrlist
+    def __init__(self, arrlist: Optional[List] = None, node: Optional[Node] = None) -> None:
+        self.arrlist: Final = arrlist
         """
         The list of array dimensions for a parsed type.  Equal to ``None`` if
         type string has no array dimensions.
         """
 
-        self.node = node
+        self.node: Final = node
         """
         The parsimonious ``Node`` instance associated with this parsed type.
         Used to generate error messages for invalid types.
         """
 
-    def __repr__(self):  # pragma: no cover
-        return f"<{type(self).__qualname__} {repr(self.to_type_str())}>"
+    def __repr__(self) -> str:  # pragma: no cover
+        return f"<{type(self).__qualname__} {self.to_type_str()!r}>"
 
-    def __eq__(self, other):
+    def __eq__(self, other: Any) -> bool:
         # Two ABI types are equal if their string representations are equal
         return type(self) is type(other) and self.to_type_str() == other.to_type_str()
 
-    def to_type_str(self):  # pragma: no cover
+    def to_type_str(self) -> TypeStr:  # pragma: no cover
         """
         Returns the string representation of an ABI type.  This will be equal to
         the type string from which it was created.
@@ -170,14 +190,14 @@ class ABIType:
         raise NotImplementedError("Must implement `to_type_str`")
 
     @property
-    def item_type(self):
+    def item_type(self) -> Self:
         """
         If this type is an array type, equal to an appropriate
         :class:`~eth_abi.grammar.ABIType` instance for the array's items.
         """
         raise NotImplementedError("Must implement `item_type`")
 
-    def validate(self):  # pragma: no cover
+    def validate(self) -> None:  # pragma: no cover
         """
         Validates the properties of an ABI type against the solidity ABI spec:
 
@@ -187,7 +207,7 @@ class ABIType:
         """
         raise NotImplementedError("Must implement `validate`")
 
-    def invalidate(self, error_msg):
+    def invalidate(self, error_msg: str) -> NoReturn:
         # Invalidates an ABI type with the given error message.  Expects that a
         # parsimonious node was provided from the original parsing operation
         # that yielded this type.
@@ -199,7 +219,7 @@ class ABIType:
         )
 
     @property
-    def is_array(self):
+    def is_array(self) -> bool:
         """
         Equal to ``True`` if a type is an array type (i.e. if it has an array
         dimension list).  Otherwise, equal to ``False``.
@@ -207,7 +227,7 @@ class ABIType:
         return self.arrlist is not None
 
     @property
-    def is_dynamic(self):
+    def is_dynamic(self) -> bool:
         """
         Equal to ``True`` if a type has a dynamically sized encoding.
         Otherwise, equal to ``False``.
@@ -215,10 +235,14 @@ class ABIType:
         raise NotImplementedError("Must implement `is_dynamic`")
 
     @property
-    def _has_dynamic_arrlist(self):
+    def _has_dynamic_arrlist(self) -> bool:
         return self.is_array and any(len(dim) == 0 for dim in self.arrlist)
 
 
+TComp = TypeVar("TComp", ABIType)
+
+
+@final
 class TupleType(ABIType):
     """
     Represents the result of parsing a tuple type string e.g. "(int,bool)".
@@ -226,16 +250,16 @@ class TupleType(ABIType):
 
     __slots__ = ("components",)
 
-    def __init__(self, components, arrlist=None, *, node=None):
+    def __init__(self, components: Tuple[TComp, ...], arrlist=None, *, node=None):
         super().__init__(arrlist, node)
 
-        self.components = components
+        self.components: Final = components
         """
         A tuple of :class:`~eth_abi.grammar.ABIType` instances for each of the
         tuple type's components.
         """
 
-    def to_type_str(self):
+    def to_type_str(self) -> TypeStr:
         arrlist = self.arrlist
 
         if isinstance(arrlist, tuple):
@@ -246,7 +270,7 @@ class TupleType(ABIType):
         return f"({','.join(c.to_type_str() for c in self.components)}){arrlist}"
 
     @property
-    def item_type(self):
+    def item_type(self) -> Self:
         if not self.is_array:
             raise ValueError(
                 f"Cannot determine item type for non-array type '{self.to_type_str()}'"
@@ -258,18 +282,19 @@ class TupleType(ABIType):
             node=self.node,
         )
 
-    def validate(self):
+    def validate(self) -> None:
         for c in self.components:
             c.validate()
 
     @property
-    def is_dynamic(self):
+    def is_dynamic(self) -> bool:
         if self._has_dynamic_arrlist:
             return True
 
         return any(c.is_dynamic for c in self.components)
 
 
+@final
 class BasicType(ABIType):
     """
     Represents the result of parsing a basic type string e.g. "uint", "address",
@@ -278,20 +303,20 @@ class BasicType(ABIType):
 
     __slots__ = ("base", "sub")
 
-    def __init__(self, base, sub=None, arrlist=None, *, node=None):
+    def __init__(self, base: str, sub=None, arrlist=None, *, node=None) -> None:
         super().__init__(arrlist, node)
 
-        self.base = base
+        self.base: Final = base
         """The base of a basic type e.g. "uint" for "uint256" etc."""
 
-        self.sub = sub
+        self.sub: Final = sub
         """
         The sub type of a basic type e.g. ``256`` for "uint256" or ``(128, 18)``
         for "ufixed128x18" etc.  Equal to ``None`` if type string has no sub
         type.
         """
 
-    def to_type_str(self):
+    def to_type_str(self) -> TypeStr:
         sub, arrlist = self.sub, self.arrlist
 
         if isinstance(sub, int):
@@ -309,7 +334,7 @@ class BasicType(ABIType):
         return self.base + sub + arrlist
 
     @property
-    def item_type(self):
+    def item_type(self) -> Self:
         if not self.is_array:
             raise ValueError(
                 f"Cannot determine item type for non-array type '{self.to_type_str()}'"
@@ -323,7 +348,7 @@ class BasicType(ABIType):
         )
 
     @property
-    def is_dynamic(self):
+    def is_dynamic(self) -> bool:
         if self._has_dynamic_arrlist:
             return True
 
@@ -335,7 +360,7 @@ class BasicType(ABIType):
 
         return False
 
-    def validate(self):
+    def validate(self) -> None:
         base, sub = self.base, self.sub
 
         # Check validity of string type
@@ -358,7 +383,7 @@ class BasicType(ABIType):
             if not isinstance(sub, int):
                 self.invalidate("integer type must have numerical suffix")
 
-            if sub < 8 or 256 < sub:
+            if sub < 8 or sub > 256:
                 self.invalidate("integer size out of bounds (max 256 bits)")
 
             if sub % 8 != 0:
@@ -374,13 +399,13 @@ class BasicType(ABIType):
 
             bits, minus_e = sub
 
-            if bits < 8 or 256 < bits:
+            if bits < 8 or bits > 256:
                 self.invalidate("fixed size out of bounds (max 256 bits)")
 
             if bits % 8 != 0:
                 self.invalidate("fixed size must be multiple of 8")
 
-            if minus_e < 1 or 80 < minus_e:
+            if minus_e < 1 or minus_e > 80:
                 self.invalidate(
                     f"fixed exponent size out of bounds, {minus_e} must be in 1-80"
                 )
@@ -396,7 +421,7 @@ class BasicType(ABIType):
                 self.invalidate("address cannot have suffix")
 
 
-TYPE_ALIASES = {
+TYPE_ALIASES: Final = {
     "int": "int256",
     "uint": "uint256",
     "fixed": "fixed128x18",
@@ -405,12 +430,12 @@ TYPE_ALIASES = {
     "byte": "bytes1",
 }
 
-TYPE_ALIAS_RE = re.compile(
+TYPE_ALIAS_RE: Final = re.compile(
     rf"\b({'|'.join(re.escape(a) for a in TYPE_ALIASES.keys())})\b"
 )
 
 
-def normalize(type_str):
+def normalize(type_str: TypeStr) -> TypeStr:
     """
     Normalizes a type string into its canonical version e.g. the type string
     'int' becomes 'int256', etc.
@@ -424,4 +449,4 @@ def normalize(type_str):
     )
 
 
-parse = visitor.parse
+parse: Final = visitor.parse
