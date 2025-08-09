@@ -7,7 +7,9 @@ requires = [
 	"cchecksum>=0.2.6,<0.4",
 	"faster-eth-utils>=2.0.0",
 	"eth-typing>=3.0.0",
-	"parsimonious>=0.10.0,<0.11.0; python_version<'3.14'",
+	"parsimonious>=0.10.0,<0.11.0",
+ 	# pydantic-core (installed with faster-eth-utils) is unable to build on Python3.14
+ 	"pydantic>=2.0.0,<3; python_version<'3.14'",
 ]
 
 [tool.autoflake]
