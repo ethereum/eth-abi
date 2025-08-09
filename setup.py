@@ -64,6 +64,7 @@ else:
             "--pretty",
             "--install-types",
             "--disable-error-code=override",
+            "--disable-error-code=unused-ignore",
         ],
     )
 
