@@ -7,7 +7,7 @@ requires = [
 	"cchecksum>=0.2.6,<0.4",
 	"faster-eth-utils>=2.0.0",
 	"eth-typing>=3.0.0",
-	"parsimonious>=0.10.0,<0.11.0",
+	"parsimonious>=0.10.0,<0.11.0; python_version<'3.14'",
 ]
 
 [tool.autoflake]

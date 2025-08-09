@@ -93,8 +93,6 @@ jobs:
           CIBW_ARCHS_WINDOWS: ${{ matrix.cibw_archs_windows || '' }}
           # Which wheels to build for Linux (manylinux vs. musllinux)
           CIBW_BUILD: ${{ matrix.cibw_build || '' }}
-          # We need this to build pydantic-core (a build dep) on Python3.14
-          CIBW_ENVIRONMENT: "PYO3_USE_ABI3_FORWARD_COMPATIBILITY=1"
         run: |
           python -m cibuildwheel --output-dir wheelhouse
 
