@@ -86,7 +86,7 @@ setup(
         "mypy_extensions",
         "parsimonious>=0.10.0,<0.11.0",
     ],
-    python_requires=">=3.8, <3.14",
+    python_requires=">=3.8, <3.15",
     extras_require=extras_require,
     py_modules=["eth_abi"],
     license="MIT",
