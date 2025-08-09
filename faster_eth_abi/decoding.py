@@ -143,7 +143,7 @@ class TupleDecoder(BaseDecoder):
         # return the stream to its original location for actual decoding
         stream.seek(current_location)
 
-    @to_tuple
+    @to_tuple  # type: ignore [misc]
     def decode(self, stream: ContextFramesBytesIO) -> Generator[Any, None, None]:
         self.validate_pointers(stream)
         for decoder in self.decoders:
