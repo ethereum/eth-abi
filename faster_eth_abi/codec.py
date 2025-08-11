@@ -12,10 +12,6 @@ from eth_typing.abi import (
 
 from faster_eth_abi.decoding import (
     ContextFramesBytesIO,
-    TupleDecoder,
-)
-from faster_eth_abi.encoding import (
-    TupleEncoder,
 )
 from faster_eth_abi.exceptions import (
     EncodingError,
@@ -68,9 +64,7 @@ class ABIEncoder(BaseABICoder):
         validate_list_like_param(types, "types")
         validate_list_like_param(args, "args")
 
-        encoders = tuple(self._registry.get_encoder(type_str) for type_str in types)
-
-        encoder = TupleEncoder(encoders=encoders)
+        encoder = self._registry.get_tuple_encoder(*types)
 
         return encoder(args)
 
@@ -153,11 +147,7 @@ class ABIDecoder(BaseABICoder):
         validate_list_like_param(types, "types")
         validate_bytes_param(data, "data")
 
-        decoders = tuple(
-            self._registry.get_decoder(type_str, strict=strict) for type_str in types
-        )
-
-        decoder = TupleDecoder(decoders=decoders)
+        decoder = self._registry.get_tuple_decoder(*types, strict=strict)
         stream = self.stream_class(data)
 
         return cast(Tuple[Any, ...], decoder(stream))
