@@ -11,7 +11,6 @@ from typing import (
 )
 
 from faster_eth_utils import (
-    int_to_big_endian,
     is_address,
     is_boolean,
     is_bytes,
@@ -28,6 +27,7 @@ from faster_eth_abi._encoding import (
     encode_fixed,
     encode_signed,
     encode_tuple,
+    int_to_big_endian,
 )
 from faster_eth_abi.base import (
     BaseCoder,
