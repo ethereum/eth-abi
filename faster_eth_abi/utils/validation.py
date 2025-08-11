@@ -2,13 +2,9 @@ from typing import (
     Any,
 )
 
-from faster_eth_utils import (
-    is_bytes,
-)
-
 
 def validate_bytes_param(param: Any, param_name: str) -> None:
-    if not is_bytes(param):
+    if not isinstance(param, (bytes, bytearray)):
         raise TypeError(
             f"The `{param_name}` value must be of bytes type. Got {type(param)}"
         )
