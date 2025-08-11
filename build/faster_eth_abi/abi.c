@@ -4,11 +4,11 @@ PyMODINIT_FUNC
 PyInit_abi(void)
 {
     PyObject *tmp;
-    if (!(tmp = PyImport_ImportModule("a1f8aa123fabc88e2b56__mypyc"))) return NULL;
+    if (!(tmp = PyImport_ImportModule("2b51e4786945abd7a9f3__mypyc"))) return NULL;
     PyObject *capsule = PyObject_GetAttrString(tmp, "init_faster_eth_abi___abi");
     Py_DECREF(tmp);
     if (capsule == NULL) return NULL;
-    void *init_func = PyCapsule_GetPointer(capsule, "a1f8aa123fabc88e2b56__mypyc.init_faster_eth_abi___abi");
+    void *init_func = PyCapsule_GetPointer(capsule, "2b51e4786945abd7a9f3__mypyc.init_faster_eth_abi___abi");
     Py_DECREF(capsule);
     if (!init_func) {
         return NULL;

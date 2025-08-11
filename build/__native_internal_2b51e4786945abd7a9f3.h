@@ -1,12 +1,12 @@
-#ifndef MYPYC_NATIVE_INTERNAL_a1f8aa123fabc88e2b56_H
-#define MYPYC_NATIVE_INTERNAL_a1f8aa123fabc88e2b56_H
+#ifndef MYPYC_NATIVE_INTERNAL_2b51e4786945abd7a9f3_H
+#define MYPYC_NATIVE_INTERNAL_2b51e4786945abd7a9f3_H
 #include <Python.h>
 #include <CPy.h>
-#include "__native_a1f8aa123fabc88e2b56.h"
+#include "__native_2b51e4786945abd7a9f3.h"
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[207];
+extern PyObject *CPyStatics[224];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -14,11 +14,17 @@ extern const double CPyLit_Float[];
 extern const double CPyLit_Complex[];
 extern const int CPyLit_Tuple[];
 extern const int CPyLit_FrozenSet[];
+extern CPyModule *CPyModule_faster_eth_abi____codec_internal;
+extern CPyModule *CPyModule_faster_eth_abi____codec;
+extern PyObject *CPyStatic__codec___globals;
+extern CPyModule *CPyModule_builtins;
+extern CPyModule *CPyModule_typing;
+extern CPyModule *CPyModule_eth_typing;
+extern CPyModule *CPyModule_faster_eth_abi___utils___validation_internal;
+extern CPyModule *CPyModule_faster_eth_abi___utils___validation;
 extern CPyModule *CPyModule_faster_eth_abi___abi_internal;
 extern CPyModule *CPyModule_faster_eth_abi___abi;
 extern PyObject *CPyStatic_abi___globals;
-extern CPyModule *CPyModule_builtins;
-extern CPyModule *CPyModule_typing;
 extern CPyModule *CPyModule_faster_eth_abi___codec;
 extern CPyModule *CPyModule_faster_eth_abi___registry;
 extern CPyModule *CPyModule_faster_eth_abi___constants_internal;
@@ -28,7 +34,6 @@ extern CPyModule *CPyModule_faster_eth_abi___from_type_str_internal;
 extern CPyModule *CPyModule_faster_eth_abi___from_type_str;
 extern PyObject *CPyStatic_from_type_str___globals;
 extern CPyModule *CPyModule_functools;
-extern CPyModule *CPyModule_eth_typing;
 extern CPyModule *CPyModule_faster_eth_abi___grammar;
 extern CPyModule *CPyModule_faster_eth_abi___packed_internal;
 extern CPyModule *CPyModule_faster_eth_abi___packed;
@@ -55,9 +60,12 @@ extern PyObject *CPyStatic_padding___globals;
 extern CPyModule *CPyModule_faster_eth_abi___utils___string_internal;
 extern CPyModule *CPyModule_faster_eth_abi___utils___string;
 extern PyObject *CPyStatic_string___globals;
-extern CPyModule *CPyModule_faster_eth_abi___utils___validation_internal;
-extern CPyModule *CPyModule_faster_eth_abi___utils___validation;
 extern PyObject *CPyStatic_validation___globals;
+extern PyObject *CPyDef__codec___encode_c(PyObject *cpy_r_self, PyObject *cpy_r_types, PyObject *cpy_r_args);
+extern PyObject *CPyPy__codec___encode_c(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern PyObject *CPyDef__codec___decode_c(PyObject *cpy_r_self, PyObject *cpy_r_types, PyObject *cpy_r_data, char cpy_r_strict);
+extern PyObject *CPyPy__codec___decode_c(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern char CPyDef__codec_____top_level__(void);
 extern PyObject *CPyStatic_abi___default_codec;
 extern PyObject *CPyStatic_abi___encode;
 extern PyObject *CPyStatic_abi___decode;

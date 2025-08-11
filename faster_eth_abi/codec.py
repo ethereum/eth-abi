@@ -2,7 +2,6 @@ from typing import (
     Any,
     Iterable,
     Tuple,
-    cast,
 )
 
 from eth_typing.abi import (
@@ -10,6 +9,10 @@ from eth_typing.abi import (
     TypeStr,
 )
 
+from faster_eth_abi._codec import (
+    decode_c,
+    encode_c,
+)
 from faster_eth_abi.decoding import (
     ContextFramesBytesIO,
 )
@@ -18,10 +21,6 @@ from faster_eth_abi.exceptions import (
 )
 from faster_eth_abi.registry import (
     ABIRegistry,
-)
-from faster_eth_abi.utils.validation import (
-    validate_bytes_param,
-    validate_list_like_param,
 )
 
 
@@ -60,13 +59,7 @@ class ABIEncoder(BaseABICoder):
         :returns: The head-tail encoded binary representation of the python
             values in ``args`` as values of the ABI types in ``types``.
         """
-        # validate encode types and args
-        validate_list_like_param(types, "types")
-        validate_list_like_param(args, "args")
-
-        encoder = self._registry.get_tuple_encoder(*types)
-
-        return encoder(args)
+        return encode_c(self, types, args)
 
     def is_encodable(self, typ: TypeStr, arg: Any) -> bool:
         """
@@ -143,14 +136,7 @@ class ABIDecoder(BaseABICoder):
         :returns: A tuple of equivalent python values for the ABI values
             represented in ``data``.
         """
-        # validate decode types and data
-        validate_list_like_param(types, "types")
-        validate_bytes_param(data, "data")
-
-        decoder = self._registry.get_tuple_decoder(*types, strict=strict)
-        stream = self.stream_class(data)
-
-        return cast(Tuple[Any, ...], decoder(stream))
+        return decode_c(self, types, data, strict)
 
 
 class ABICodec(ABIEncoder, ABIDecoder):
