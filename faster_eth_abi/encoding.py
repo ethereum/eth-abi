@@ -1,12 +1,11 @@
 import abc
 import codecs
 import decimal
-from itertools import (
-    accumulate,
-)
 from typing import (
     Any,
+    NoReturn,
     Optional,
+    Sequence,
     Tuple,
     Type,
 )
@@ -23,6 +22,13 @@ from faster_eth_utils import (
     to_canonical_address,
 )
 
+from faster_eth_abi._encoding import (
+    encode_elements,
+    encode_elements_dynamic,
+    encode_fixed,
+    encode_signed,
+    encode_tuple,
+)
 from faster_eth_abi.base import (
     BaseCoder,
 )
@@ -45,8 +51,6 @@ from faster_eth_abi.utils.numeric import (
     compute_unsigned_integer_bounds,
 )
 from faster_eth_abi.utils.padding import (
-    fpad,
-    zpad,
     zpad_right,
 )
 from faster_eth_abi.utils.string import (
@@ -82,7 +86,7 @@ class BaseEncoder(BaseCoder, metaclass=abc.ABCMeta):
         value: Any,
         exc: Type[Exception] = EncodingTypeError,
         msg: Optional[str] = None,
-    ) -> None:
+    ) -> NoReturn:
         """
         Throws a standard exception for when a value is not encodable by an
         encoder.
@@ -133,26 +137,7 @@ class TupleEncoder(BaseEncoder):
 
     def encode(self, values):
         self.validate_value(values)
-
-        raw_head_chunks = []
-        tail_chunks = []
-        for value, encoder in zip(values, self.encoders):
-            if getattr(encoder, "is_dynamic", False):
-                raw_head_chunks.append(None)
-                tail_chunks.append(encoder(value))
-            else:
-                raw_head_chunks.append(encoder(value))
-                tail_chunks.append(b"")
-
-        head_length = sum(32 if item is None else len(item) for item in raw_head_chunks)
-        tail_offsets = (0,) + tuple(accumulate(map(len, tail_chunks[:-1])))
-        head_chunks = tuple(
-            encode_uint_256(head_length + offset) if chunk is None else chunk
-            for chunk, offset in zip(raw_head_chunks, tail_offsets)
-        )
-
-        encoded_value = b"".join(head_chunks + tuple(tail_chunks))
-        return encoded_value
+        return encode_tuple(values, self.encoders)
 
     @parse_tuple_type_str
     def from_type_str(cls, abi_type, registry):
@@ -194,18 +179,13 @@ class FixedSizeEncoder(BaseEncoder):
     def validate_value(self, value):
         raise NotImplementedError("Must be implemented by subclasses")
 
-    def encode(self, value):
+    def encode(self, value: Any) -> bytes:
         self.validate_value(value)
         if self.encode_fn is None:
             raise AssertionError("`encode_fn` is None")
-        base_encoded_value = self.encode_fn(value)
-
-        if self.is_big_endian:
-            padded_encoded_value = zpad(base_encoded_value, self.data_byte_size)
-        else:
-            padded_encoded_value = zpad_right(base_encoded_value, self.data_byte_size)
-
-        return padded_encoded_value
+        return encode_fixed(
+            value, self.encode_fn, self.is_big_endian, self.data_byte_size
+        )
 
 
 class Fixed32ByteSizeEncoder(FixedSizeEncoder):
@@ -217,7 +197,7 @@ class BooleanEncoder(Fixed32ByteSizeEncoder):
     is_big_endian = True
 
     @classmethod
-    def validate_value(cls, value):
+    def validate_value(cls, value: Any) -> None:
         if not is_boolean(value):
             cls.invalidate_value(value)
 
@@ -301,19 +281,12 @@ class SignedIntegerEncoder(NumberEncoder):
     bounds_fn = staticmethod(compute_signed_integer_bounds)
     type_check_fn = staticmethod(is_integer)
 
-    def encode_fn(self, value):
+    def encode_fn(self, value: int) -> bytes:
         return int_to_big_endian(value % (2**self.value_bit_size))
 
     def encode(self, value):
         self.validate_value(value)
-        base_encoded_value = self.encode_fn(value)
-
-        if value >= 0:
-            padded_encoded_value = zpad(base_encoded_value, self.data_byte_size)
-        else:
-            padded_encoded_value = fpad(base_encoded_value, self.data_byte_size)
-
-        return padded_encoded_value
+        return encode_signed(value, self.encode_fn, self.data_byte_size)
 
     @parse_type_str("int")
     def from_type_str(cls, abi_type, registry):
@@ -353,7 +326,7 @@ class BaseFixedEncoder(NumberEncoder):
             self.invalidate_value(
                 value,
                 exc=IllegalValue,
-                msg=f"residue {repr(residue)} outside allowed fractional precision of "
+                msg=f"residue {residue!r} outside allowed fractional precision of "
                 f"{self.frac_places}",
             )
 
@@ -415,14 +388,7 @@ class SignedFixedEncoder(BaseFixedEncoder):
 
     def encode(self, value):
         self.validate_value(value)
-        base_encoded_value = self.encode_fn(value)
-
-        if value >= 0:
-            padded_encoded_value = zpad(base_encoded_value, self.data_byte_size)
-        else:
-            padded_encoded_value = fpad(base_encoded_value, self.data_byte_size)
-
-        return padded_encoded_value
+        return encode_signed(value, self.encode_fn, self.data_byte_size)
 
     @parse_type_str("fixed")
     def from_type_str(cls, abi_type, registry):
@@ -452,7 +418,7 @@ class AddressEncoder(Fixed32ByteSizeEncoder):
     is_big_endian = True
 
     @classmethod
-    def validate_value(cls, value):
+    def validate_value(cls, value: Any) -> None:
         if not is_address(value):
             cls.invalidate_value(value)
 
@@ -474,7 +440,7 @@ class PackedAddressEncoder(AddressEncoder):
 class BytesEncoder(Fixed32ByteSizeEncoder):
     is_big_endian = False
 
-    def validate_value(self, value):
+    def validate_value(self, value: Any) -> None:
         if not is_bytes(value):
             self.invalidate_value(value)
 
@@ -508,7 +474,7 @@ class ByteStringEncoder(BaseEncoder):
     is_dynamic = True
 
     @classmethod
-    def validate_value(cls, value):
+    def validate_value(cls, value: Any) -> None:
         if not is_bytes(value):
             cls.invalidate_value(value)
 
@@ -540,7 +506,7 @@ class TextStringEncoder(BaseEncoder):
     is_dynamic = True
 
     @classmethod
-    def validate_value(cls, value):
+    def validate_value(cls, value: Any) -> None:
         if not is_text(value):
             cls.invalidate_value(value)
 
@@ -579,7 +545,7 @@ class BaseArrayEncoder(BaseEncoder):
         if self.item_encoder is None:
             raise ValueError("`item_encoder` may not be none")
 
-    def validate_value(self, value):
+    def validate_value(self, value: Any) -> None:
         if not is_list_like(value):
             self.invalidate_value(
                 value,
@@ -589,24 +555,9 @@ class BaseArrayEncoder(BaseEncoder):
         for item in value:
             self.item_encoder.validate_value(item)
 
-    def encode_elements(self, value):
+    def encode_elements(self, value: Sequence[Any]) -> bytes:
         self.validate_value(value)
-
-        item_encoder = self.item_encoder
-        if item_encoder is None:
-            raise AssertionError("`item_encoder` is None")
-        tail_chunks = tuple(item_encoder(i) for i in value)
-
-        items_are_dynamic = getattr(item_encoder, "is_dynamic", False)
-        if not items_are_dynamic or len(value) == 0:
-            return b"".join(tail_chunks)
-
-        head_length = 32 * len(value)
-        tail_offsets = (0,) + tuple(accumulate(map(len, tail_chunks[:-1])))
-        head_chunks = tuple(
-            encode_uint_256(head_length + offset) for offset in tail_offsets
-        )
-        return b"".join(head_chunks + tail_chunks)
+        return encode_elements(self.item_encoder, value)
 
     @parse_type_str(with_arrlist=True)
     def from_type_str(cls, abi_type, registry):
@@ -627,7 +578,7 @@ class BaseArrayEncoder(BaseEncoder):
 class PackedArrayEncoder(BaseArrayEncoder):
     array_size = None
 
-    def validate_value(self, value):
+    def validate_value(self, value: Any) -> None:
         super().validate_value(value)
 
         if self.array_size is not None and len(value) != self.array_size:
@@ -638,10 +589,8 @@ class PackedArrayEncoder(BaseArrayEncoder):
                 "expected",
             )
 
-    def encode(self, value):
-        encoded_elements = self.encode_elements(value)
-
-        return encoded_elements
+    def encode(self, value: Sequence[Any]) -> bytes:
+        return encode_elements(self.item_encoder, value)
 
     @parse_type_str(with_arrlist=True)
     def from_type_str(cls, abi_type, registry):
@@ -671,7 +620,7 @@ class SizedArrayEncoder(BaseArrayEncoder):
         if self.array_size is None:
             raise ValueError("`array_size` may not be none")
 
-    def validate_value(self, value):
+    def validate_value(self, value: Any) -> None:
         super().validate_value(value)
 
         if len(value) != self.array_size:
@@ -682,18 +631,12 @@ class SizedArrayEncoder(BaseArrayEncoder):
                 "expected",
             )
 
-    def encode(self, value):
-        encoded_elements = self.encode_elements(value)
-
-        return encoded_elements
+    def encode(self, value: Sequence[Any]) -> bytes:
+        return encode_elements(self.item_encoder, value)
 
 
 class DynamicArrayEncoder(BaseArrayEncoder):
     is_dynamic = True
 
-    def encode(self, value):
-        encoded_size = encode_uint_256(len(value))
-        encoded_elements = self.encode_elements(value)
-        encoded_value = encoded_size + encoded_elements
-
-        return encoded_value
+    def encode(self, value: Sequence[Any]) -> bytes:
+        return encode_elements_dynamic(self.item_encoder, value)

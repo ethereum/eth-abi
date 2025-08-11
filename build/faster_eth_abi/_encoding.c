@@ -1,14 +1,14 @@
 #include <Python.h>
 
 PyMODINIT_FUNC
-PyInit_from_type_str(void)
+PyInit__encoding(void)
 {
     PyObject *tmp;
     if (!(tmp = PyImport_ImportModule("c42f5c78bc058f310136__mypyc"))) return NULL;
-    PyObject *capsule = PyObject_GetAttrString(tmp, "init_faster_eth_abi___from_type_str");
+    PyObject *capsule = PyObject_GetAttrString(tmp, "init_faster_eth_abi____encoding");
     Py_DECREF(tmp);
     if (capsule == NULL) return NULL;
-    void *init_func = PyCapsule_GetPointer(capsule, "c42f5c78bc058f310136__mypyc.init_faster_eth_abi___from_type_str");
+    void *init_func = PyCapsule_GetPointer(capsule, "c42f5c78bc058f310136__mypyc.init_faster_eth_abi____encoding");
     Py_DECREF(capsule);
     if (!init_func) {
         return NULL;
@@ -18,4 +18,4 @@ PyInit_from_type_str(void)
 
 // distutils sometimes spuriously tells cl to export CPyInit___init__,
 // so provide that so it chills out
-PyMODINIT_FUNC PyInit___init__(void) { return PyInit_from_type_str(); }
+PyMODINIT_FUNC PyInit___init__(void) { return PyInit__encoding(); }
