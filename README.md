@@ -1,3 +1,6 @@
+[![PyPI](https://img.shields.io/pypi/v/faster-eth-abi.svg?logo=Python&logoColor=white)](https://pypi.org/project/faster-eth-abi/)
+[![Monthly Downloads](https://img.shields.io/pypi/dm/faster-eth-abi)](https://pypistats.org/packages/faster-eth-abi/)
+
 # Ethereum Contract Interface (ABI) Utility
 
 [![Join the conversation on Discord](https://img.shields.io/discord/809793915578089484?color=blue&label=chat&logo=discord&logoColor=white)](https://discord.gg/GHryRvPB84)
