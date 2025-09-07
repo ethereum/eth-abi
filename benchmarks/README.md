@@ -17,11 +17,13 @@ This directory contains a comprehensive suite of benchmarks for both user-facing
 ## Running Benchmarks
 
 Install all dev dependencies:
+
 ```
 pip install .[dev]
 ```
 
 Run all benchmarks with pytest-codspeed or pytest-benchmark:
+
 ```
 pytest benchmarks/ --benchmark-only
 pytest benchmarks/ --codspeed
