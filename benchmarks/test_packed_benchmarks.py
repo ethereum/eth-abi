@@ -19,23 +19,23 @@ import faster_eth_abi.packed
 @pytest.mark.benchmark(group="PackedEncoder")
 @pytest.mark.parametrize("abi_type,value", packed_cases, ids=packed_ids)
 def test_encode_packed(benchmark: BenchmarkFixture, abi_type, value):
-    benchmark(batch, 1000, eth_abi.packed.encode_packed, [abi_type], [value])
+    benchmark(batch, 100, eth_abi.packed.encode_packed, [abi_type], [value])
 
 
 @pytest.mark.benchmark(group="PackedEncoder")
 @pytest.mark.parametrize("abi_type,value", packed_cases, ids=packed_ids)
 def test_faster_encode_packed(benchmark: BenchmarkFixture, abi_type, value):
-    benchmark(batch, 1000, faster_eth_abi.packed.encode_packed, [abi_type], [value])
+    benchmark(batch, 100, faster_eth_abi.packed.encode_packed, [abi_type], [value])
 
 
 # Packed is_encodable
 @pytest.mark.benchmark(group="PackedIsEncodable")
 @pytest.mark.parametrize("abi_type,value", packed_cases, ids=packed_ids)
 def test_is_encodable_packed(benchmark: BenchmarkFixture, abi_type, value):
-    benchmark(batch, 1000, eth_abi.packed.is_encodable_packed, abi_type, value)
+    benchmark(batch, 100, eth_abi.packed.is_encodable_packed, abi_type, value)
 
 
 @pytest.mark.benchmark(group="PackedIsEncodable")
 @pytest.mark.parametrize("abi_type,value", packed_cases, ids=packed_ids)
 def test_faster_is_encodable_packed(benchmark: BenchmarkFixture, abi_type, value):
-    benchmark(batch, 1000, faster_eth_abi.packed.is_encodable_packed, abi_type, value)
+    benchmark(batch, 100, faster_eth_abi.packed.is_encodable_packed, abi_type, value)
