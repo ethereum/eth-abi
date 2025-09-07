@@ -2,373 +2,630 @@
 
 | Function | Reference Mean | Faster Mean | % Change | Speedup (%) | x Faster | Faster |
 |----------|---------------|-------------|----------|-------------|----------|--------|
-| `decode_eth_abi[((uint8,uint8),uint8)-((1, 2), 3)]` |  |  |  |  |  | ➖ |
-| `decode_eth_abi[((uint8[2],(string,bool)),bytes32)-(([1, 2], ('hi',]` |  |  |  |  |  | ➖ |
-| `decode_eth_abi[(address,uint8)-(b'\\x00\\x00\\x00\\]` |  |  |  |  |  | ➖ |
-| `decode_eth_abi[(string,bytes)-('foo', b'bar')]` |  |  |  |  |  | ➖ |
-| `decode_eth_abi[(string[],bytes[])-([''], [b''])]` |  |  |  |  |  | ➖ |
-| `decode_eth_abi[(uint256,bool)-(42, True)]` |  |  |  |  |  | ➖ |
-| `decode_eth_abi[(uint256[2],string)-([1, 2], 'baz')]` |  |  |  |  |  | ➖ |
-| `decode_eth_abi[(uint256[],(string[],bool))-([1, 2, 3], (['a]` |  |  |  |  |  | ➖ |
-| `decode_eth_abi[(uint8,(bool,string))-(7, (False, 'hi']` |  |  |  |  |  | ➖ |
-| `decode_eth_abi[(uint8[2],(string,bool[2]))-([1, 2], ('x', []` |  |  |  |  |  | ➖ |
-| `decode_eth_abi[(uint8[2][2],(string[2],bool[2]))-([[1, 2], [3, 4]]` |  |  |  |  |  | ➖ |
-| `decode_eth_abi[(uint8[],string)-([], '')]` |  |  |  |  |  | ➖ |
-| `decode_eth_abi[address-b'\\x00\\x00\\x00\\x]` |  |  |  |  |  | ➖ |
-| `decode_eth_abi[address-b'\\xff\\xff\\xff\\x]` |  |  |  |  |  | ➖ |
-| `decode_eth_abi[address[2]-[b'\\x00\\x00\\x00\\]` |  |  |  |  |  | ➖ |
-| `decode_eth_abi[bool-False]` |  |  |  |  |  | ➖ |
-| `decode_eth_abi[bool-True]` |  |  |  |  |  | ➖ |
-| `decode_eth_abi[bool[4]-[True, False, Tr]` |  |  |  |  |  | ➖ |
-| `decode_eth_abi[bool[][2]-[[True, False], ]` |  |  |  |  |  | ➖ |
-| `decode_eth_abi[bytes-b'']` |  |  |  |  |  | ➖ |
-| `decode_eth_abi[bytes-b'\\x00\\x00\\x00\\x0]` |  |  |  |  |  | ➖ |
-| `decode_eth_abi[bytes-b'\\x00\\x00\\x00\\x1]` |  |  |  |  |  | ➖ |
-| `decode_eth_abi[bytes-b'hello world']` |  |  |  |  |  | ➖ |
-| `decode_eth_abi[bytes1-b'\\x01']` |  |  |  |  |  | ➖ |
-| `decode_eth_abi[bytes32-b'\\x00\\x00\\x00\\x]` |  |  |  |  |  | ➖ |
-| `decode_eth_abi[bytes32-b'\\xff\\xff\\xff\\x]` |  |  |  |  |  | ➖ |
-| `decode_eth_abi[bytes32[2]-[b'\\x00\\x00\\x00\\]` |  |  |  |  |  | ➖ |
-| `decode_eth_abi[bytes[]-[b'abc', b'def',]` |  |  |  |  |  | ➖ |
-| `decode_eth_abi[fixed128x18-Decimal('1.23456]` |  |  |  |  |  | ➖ |
-| `decode_eth_abi[int256--578960446186580]` |  |  |  |  |  | ➖ |
-| `decode_eth_abi[int256-5789604461865809]` |  |  |  |  |  | ➖ |
-| `decode_eth_abi[int8--128]` |  |  |  |  |  | ➖ |
-| `decode_eth_abi[int8-127]` |  |  |  |  |  | ➖ |
-| `decode_eth_abi[string-'']` |  |  |  |  |  | ➖ |
-| `decode_eth_abi[string-'\U0001d518\U0001d52b\U0001d526\U0001d520\U0001d52c\U0001d521\U0001d522']` |  |  |  |  |  | ➖ |
-| `decode_eth_abi[string-'aaaaaaaaaaaaaaa]` |  |  |  |  |  | ➖ |
-| `decode_eth_abi[string-'hello world']` |  |  |  |  |  | ➖ |
-| `decode_eth_abi[string[2]-['foo', 'bar']]` |  |  |  |  |  | ➖ |
-| `decode_eth_abi[string[]-['a', 'b', 'c']]` |  |  |  |  |  | ➖ |
-| `decode_eth_abi[string[]-[]]` |  |  |  |  |  | ➖ |
-| `decode_eth_abi[ufixed128x18-Decimal('1.23456]` |  |  |  |  |  | ➖ |
-| `decode_eth_abi[uint256-0]` |  |  |  |  |  | ➖ |
-| `decode_eth_abi[uint256-1157920892373161]` |  |  |  |  |  | ➖ |
-| `decode_eth_abi[uint256[2]-[0, 115792089237]` |  |  |  |  |  | ➖ |
-| `decode_eth_abi[uint256[2][2]-[[1, 2], [3, 4]]]` |  |  |  |  |  | ➖ |
-| `decode_eth_abi[uint8-0]` |  |  |  |  |  | ➖ |
-| `decode_eth_abi[uint8-255]` |  |  |  |  |  | ➖ |
-| `decode_eth_abi[uint8[3]-[1, 2, 3]]` |  |  |  |  |  | ➖ |
-| `decode_eth_abi[uint8[]-[1, 2, 3, 4, 5]]` |  |  |  |  |  | ➖ |
-| `decode_eth_abi[uint8[]-[]]` |  |  |  |  |  | ➖ |
-| `decode_faster_eth_abi[((uint8,uint8),uint8)-((1, 2), 3)]` |  |  |  |  |  | ➖ |
-| `decode_faster_eth_abi[((uint8[2],(string,bool)),bytes32)-(([1, 2], ('hi',]` |  |  |  |  |  | ➖ |
-| `decode_faster_eth_abi[(address,uint8)-(b'\\x00\\x00\\x00\\]` |  |  |  |  |  | ➖ |
-| `decode_faster_eth_abi[(string,bytes)-('foo', b'bar')]` |  |  |  |  |  | ➖ |
-| `decode_faster_eth_abi[(string[],bytes[])-([''], [b''])]` |  |  |  |  |  | ➖ |
-| `decode_faster_eth_abi[(uint256,bool)-(42, True)]` |  |  |  |  |  | ➖ |
-| `decode_faster_eth_abi[(uint256[2],string)-([1, 2], 'baz')]` |  |  |  |  |  | ➖ |
-| `decode_faster_eth_abi[(uint256[],(string[],bool))-([1, 2, 3], (['a]` |  |  |  |  |  | ➖ |
-| `decode_faster_eth_abi[(uint8,(bool,string))-(7, (False, 'hi']` |  |  |  |  |  | ➖ |
-| `decode_faster_eth_abi[(uint8[2],(string,bool[2]))-([1, 2], ('x', []` |  |  |  |  |  | ➖ |
-| `decode_faster_eth_abi[(uint8[2][2],(string[2],bool[2]))-([[1, 2], [3, 4]]` |  |  |  |  |  | ➖ |
-| `decode_faster_eth_abi[(uint8[],string)-([], '')]` |  |  |  |  |  | ➖ |
-| `decode_faster_eth_abi[address-b'\\x00\\x00\\x00\\x]` |  |  |  |  |  | ➖ |
-| `decode_faster_eth_abi[address-b'\\xff\\xff\\xff\\x]` |  |  |  |  |  | ➖ |
-| `decode_faster_eth_abi[address[2]-[b'\\x00\\x00\\x00\\]` |  |  |  |  |  | ➖ |
-| `decode_faster_eth_abi[bool-False]` |  |  |  |  |  | ➖ |
-| `decode_faster_eth_abi[bool-True]` |  |  |  |  |  | ➖ |
-| `decode_faster_eth_abi[bool[4]-[True, False, Tr]` |  |  |  |  |  | ➖ |
-| `decode_faster_eth_abi[bool[][2]-[[True, False], ]` |  |  |  |  |  | ➖ |
-| `decode_faster_eth_abi[bytes-b'']` |  |  |  |  |  | ➖ |
-| `decode_faster_eth_abi[bytes-b'\\x00\\x00\\x00\\x0]` |  |  |  |  |  | ➖ |
-| `decode_faster_eth_abi[bytes-b'\\x00\\x00\\x00\\x1]` |  |  |  |  |  | ➖ |
-| `decode_faster_eth_abi[bytes-b'hello world']` |  |  |  |  |  | ➖ |
-| `decode_faster_eth_abi[bytes1-b'\\x01']` |  |  |  |  |  | ➖ |
-| `decode_faster_eth_abi[bytes32-b'\\x00\\x00\\x00\\x]` |  |  |  |  |  | ➖ |
-| `decode_faster_eth_abi[bytes32-b'\\xff\\xff\\xff\\x]` |  |  |  |  |  | ➖ |
-| `decode_faster_eth_abi[bytes32[2]-[b'\\x00\\x00\\x00\\]` |  |  |  |  |  | ➖ |
-| `decode_faster_eth_abi[bytes[]-[b'abc', b'def',]` |  |  |  |  |  | ➖ |
-| `decode_faster_eth_abi[fixed128x18-Decimal('1.23456]` |  |  |  |  |  | ➖ |
-| `decode_faster_eth_abi[int256--578960446186580]` |  |  |  |  |  | ➖ |
-| `decode_faster_eth_abi[int256-5789604461865809]` |  |  |  |  |  | ➖ |
-| `decode_faster_eth_abi[int8--128]` |  |  |  |  |  | ➖ |
-| `decode_faster_eth_abi[int8-127]` |  |  |  |  |  | ➖ |
-| `decode_faster_eth_abi[string-'']` |  |  |  |  |  | ➖ |
-| `decode_faster_eth_abi[string-'\U0001d518\U0001d52b\U0001d526\U0001d520\U0001d52c\U0001d521\U0001d522']` |  |  |  |  |  | ➖ |
-| `decode_faster_eth_abi[string-'aaaaaaaaaaaaaaa]` |  |  |  |  |  | ➖ |
-| `decode_faster_eth_abi[string-'hello world']` |  |  |  |  |  | ➖ |
-| `decode_faster_eth_abi[string[2]-['foo', 'bar']]` |  |  |  |  |  | ➖ |
-| `decode_faster_eth_abi[string[]-['a', 'b', 'c']]` |  |  |  |  |  | ➖ |
-| `decode_faster_eth_abi[string[]-[]]` |  |  |  |  |  | ➖ |
-| `decode_faster_eth_abi[ufixed128x18-Decimal('1.23456]` |  |  |  |  |  | ➖ |
-| `decode_faster_eth_abi[uint256-0]` |  |  |  |  |  | ➖ |
-| `decode_faster_eth_abi[uint256-1157920892373161]` |  |  |  |  |  | ➖ |
-| `decode_faster_eth_abi[uint256[2]-[0, 115792089237]` |  |  |  |  |  | ➖ |
-| `decode_faster_eth_abi[uint256[2][2]-[[1, 2], [3, 4]]]` |  |  |  |  |  | ➖ |
-| `decode_faster_eth_abi[uint8-0]` |  |  |  |  |  | ➖ |
-| `decode_faster_eth_abi[uint8-255]` |  |  |  |  |  | ➖ |
-| `decode_faster_eth_abi[uint8[3]-[1, 2, 3]]` |  |  |  |  |  | ➖ |
-| `decode_faster_eth_abi[uint8[]-[1, 2, 3, 4, 5]]` |  |  |  |  |  | ➖ |
-| `decode_faster_eth_abi[uint8[]-[]]` |  |  |  |  |  | ➖ |
-| `encode_eth_abi[((uint8,uint8),uint8)-((1, 2), 3)]` |  |  |  |  |  | ➖ |
-| `encode_eth_abi[((uint8[2],(string,bool)),bytes32)-(([1, 2], ('hi',]` |  |  |  |  |  | ➖ |
-| `encode_eth_abi[(address,uint8)-(b'\\x00\\x00\\x00\\]` |  |  |  |  |  | ➖ |
-| `encode_eth_abi[(string,bytes)-('foo', b'bar')]` |  |  |  |  |  | ➖ |
-| `encode_eth_abi[(string[],bytes[])-([''], [b''])]` |  |  |  |  |  | ➖ |
-| `encode_eth_abi[(uint256,bool)-(42, True)]` |  |  |  |  |  | ➖ |
-| `encode_eth_abi[(uint256[2],string)-([1, 2], 'baz')]` |  |  |  |  |  | ➖ |
-| `encode_eth_abi[(uint256[],(string[],bool))-([1, 2, 3], (['a]` |  |  |  |  |  | ➖ |
-| `encode_eth_abi[(uint8,(bool,string))-(7, (False, 'hi']` |  |  |  |  |  | ➖ |
-| `encode_eth_abi[(uint8[2],(string,bool[2]))-([1, 2], ('x', []` |  |  |  |  |  | ➖ |
-| `encode_eth_abi[(uint8[2][2],(string[2],bool[2]))-([[1, 2], [3, 4]]` |  |  |  |  |  | ➖ |
-| `encode_eth_abi[(uint8[],string)-([], '')]` |  |  |  |  |  | ➖ |
-| `encode_eth_abi[address-b'\\x00\\x00\\x00\\x]` |  |  |  |  |  | ➖ |
-| `encode_eth_abi[address-b'\\xff\\xff\\xff\\x]` |  |  |  |  |  | ➖ |
-| `encode_eth_abi[address[2]-[b'\\x00\\x00\\x00\\]` |  |  |  |  |  | ➖ |
-| `encode_eth_abi[bool-False]` |  |  |  |  |  | ➖ |
-| `encode_eth_abi[bool-True]` |  |  |  |  |  | ➖ |
-| `encode_eth_abi[bool[4]-[True, False, Tr]` |  |  |  |  |  | ➖ |
-| `encode_eth_abi[bool[][2]-[[True, False], ]` |  |  |  |  |  | ➖ |
-| `encode_eth_abi[bytes-b'']` |  |  |  |  |  | ➖ |
-| `encode_eth_abi[bytes-b'\\x00\\x00\\x00\\x0]` |  |  |  |  |  | ➖ |
-| `encode_eth_abi[bytes-b'\\x00\\x00\\x00\\x1]` |  |  |  |  |  | ➖ |
-| `encode_eth_abi[bytes-b'hello world']` |  |  |  |  |  | ➖ |
-| `encode_eth_abi[bytes1-b'\\x01']` |  |  |  |  |  | ➖ |
-| `encode_eth_abi[bytes32-b'\\x00\\x00\\x00\\x]` |  |  |  |  |  | ➖ |
-| `encode_eth_abi[bytes32-b'\\xff\\xff\\xff\\x]` |  |  |  |  |  | ➖ |
-| `encode_eth_abi[bytes32[2]-[b'\\x00\\x00\\x00\\]` |  |  |  |  |  | ➖ |
-| `encode_eth_abi[bytes[]-[b'abc', b'def',]` |  |  |  |  |  | ➖ |
-| `encode_eth_abi[fixed128x18-Decimal('1.23456]` |  |  |  |  |  | ➖ |
-| `encode_eth_abi[int256--578960446186580]` |  |  |  |  |  | ➖ |
-| `encode_eth_abi[int256-5789604461865809]` |  |  |  |  |  | ➖ |
-| `encode_eth_abi[int8--128]` |  |  |  |  |  | ➖ |
-| `encode_eth_abi[int8-127]` |  |  |  |  |  | ➖ |
-| `encode_eth_abi[string-'']` |  |  |  |  |  | ➖ |
-| `encode_eth_abi[string-'\U0001d518\U0001d52b\U0001d526\U0001d520\U0001d52c\U0001d521\U0001d522']` |  |  |  |  |  | ➖ |
-| `encode_eth_abi[string-'aaaaaaaaaaaaaaa]` |  |  |  |  |  | ➖ |
-| `encode_eth_abi[string-'hello world']` |  |  |  |  |  | ➖ |
-| `encode_eth_abi[string[2]-['foo', 'bar']]` |  |  |  |  |  | ➖ |
-| `encode_eth_abi[string[]-['a', 'b', 'c']]` |  |  |  |  |  | ➖ |
-| `encode_eth_abi[string[]-[]]` |  |  |  |  |  | ➖ |
-| `encode_eth_abi[ufixed128x18-Decimal('1.23456]` |  |  |  |  |  | ➖ |
-| `encode_eth_abi[uint256-0]` |  |  |  |  |  | ➖ |
-| `encode_eth_abi[uint256-1157920892373161]` |  |  |  |  |  | ➖ |
-| `encode_eth_abi[uint256[2]-[0, 115792089237]` |  |  |  |  |  | ➖ |
-| `encode_eth_abi[uint256[2][2]-[[1, 2], [3, 4]]]` |  |  |  |  |  | ➖ |
-| `encode_eth_abi[uint8-0]` |  |  |  |  |  | ➖ |
-| `encode_eth_abi[uint8-255]` |  |  |  |  |  | ➖ |
-| `encode_eth_abi[uint8[3]-[1, 2, 3]]` |  |  |  |  |  | ➖ |
-| `encode_eth_abi[uint8[]-[1, 2, 3, 4, 5]]` |  |  |  |  |  | ➖ |
-| `encode_eth_abi[uint8[]-[]]` |  |  |  |  |  | ➖ |
-| `encode_faster_eth_abi[((uint8,uint8),uint8)-((1, 2), 3)]` |  |  |  |  |  | ➖ |
-| `encode_faster_eth_abi[((uint8[2],(string,bool)),bytes32)-(([1, 2], ('hi',]` |  |  |  |  |  | ➖ |
-| `encode_faster_eth_abi[(address,uint8)-(b'\\x00\\x00\\x00\\]` |  |  |  |  |  | ➖ |
-| `encode_faster_eth_abi[(string,bytes)-('foo', b'bar')]` |  |  |  |  |  | ➖ |
-| `encode_faster_eth_abi[(string[],bytes[])-([''], [b''])]` |  |  |  |  |  | ➖ |
-| `encode_faster_eth_abi[(uint256,bool)-(42, True)]` |  |  |  |  |  | ➖ |
-| `encode_faster_eth_abi[(uint256[2],string)-([1, 2], 'baz')]` |  |  |  |  |  | ➖ |
-| `encode_faster_eth_abi[(uint256[],(string[],bool))-([1, 2, 3], (['a]` |  |  |  |  |  | ➖ |
-| `encode_faster_eth_abi[(uint8,(bool,string))-(7, (False, 'hi']` |  |  |  |  |  | ➖ |
-| `encode_faster_eth_abi[(uint8[2],(string,bool[2]))-([1, 2], ('x', []` |  |  |  |  |  | ➖ |
-| `encode_faster_eth_abi[(uint8[2][2],(string[2],bool[2]))-([[1, 2], [3, 4]]` |  |  |  |  |  | ➖ |
-| `encode_faster_eth_abi[(uint8[],string)-([], '')]` |  |  |  |  |  | ➖ |
-| `encode_faster_eth_abi[address-b'\\x00\\x00\\x00\\x]` |  |  |  |  |  | ➖ |
-| `encode_faster_eth_abi[address-b'\\xff\\xff\\xff\\x]` |  |  |  |  |  | ➖ |
-| `encode_faster_eth_abi[address[2]-[b'\\x00\\x00\\x00\\]` |  |  |  |  |  | ➖ |
-| `encode_faster_eth_abi[bool-False]` |  |  |  |  |  | ➖ |
-| `encode_faster_eth_abi[bool-True]` |  |  |  |  |  | ➖ |
-| `encode_faster_eth_abi[bool[4]-[True, False, Tr]` |  |  |  |  |  | ➖ |
-| `encode_faster_eth_abi[bool[][2]-[[True, False], ]` |  |  |  |  |  | ➖ |
-| `encode_faster_eth_abi[bytes-b'']` |  |  |  |  |  | ➖ |
-| `encode_faster_eth_abi[bytes-b'\\x00\\x00\\x00\\x0]` |  |  |  |  |  | ➖ |
-| `encode_faster_eth_abi[bytes-b'\\x00\\x00\\x00\\x1]` |  |  |  |  |  | ➖ |
-| `encode_faster_eth_abi[bytes-b'hello world']` |  |  |  |  |  | ➖ |
-| `encode_faster_eth_abi[bytes1-b'\\x01']` |  |  |  |  |  | ➖ |
-| `encode_faster_eth_abi[bytes32-b'\\x00\\x00\\x00\\x]` |  |  |  |  |  | ➖ |
-| `encode_faster_eth_abi[bytes32-b'\\xff\\xff\\xff\\x]` |  |  |  |  |  | ➖ |
-| `encode_faster_eth_abi[bytes32[2]-[b'\\x00\\x00\\x00\\]` |  |  |  |  |  | ➖ |
-| `encode_faster_eth_abi[bytes[]-[b'abc', b'def',]` |  |  |  |  |  | ➖ |
-| `encode_faster_eth_abi[fixed128x18-Decimal('1.23456]` |  |  |  |  |  | ➖ |
-| `encode_faster_eth_abi[int256--578960446186580]` |  |  |  |  |  | ➖ |
-| `encode_faster_eth_abi[int256-5789604461865809]` |  |  |  |  |  | ➖ |
-| `encode_faster_eth_abi[int8--128]` |  |  |  |  |  | ➖ |
-| `encode_faster_eth_abi[int8-127]` |  |  |  |  |  | ➖ |
-| `encode_faster_eth_abi[string-'']` |  |  |  |  |  | ➖ |
-| `encode_faster_eth_abi[string-'\U0001d518\U0001d52b\U0001d526\U0001d520\U0001d52c\U0001d521\U0001d522']` |  |  |  |  |  | ➖ |
-| `encode_faster_eth_abi[string-'aaaaaaaaaaaaaaa]` |  |  |  |  |  | ➖ |
-| `encode_faster_eth_abi[string-'hello world']` |  |  |  |  |  | ➖ |
-| `encode_faster_eth_abi[string[2]-['foo', 'bar']]` |  |  |  |  |  | ➖ |
-| `encode_faster_eth_abi[string[]-['a', 'b', 'c']]` |  |  |  |  |  | ➖ |
-| `encode_faster_eth_abi[string[]-[]]` |  |  |  |  |  | ➖ |
-| `encode_faster_eth_abi[ufixed128x18-Decimal('1.23456]` |  |  |  |  |  | ➖ |
-| `encode_faster_eth_abi[uint256-0]` |  |  |  |  |  | ➖ |
-| `encode_faster_eth_abi[uint256-1157920892373161]` |  |  |  |  |  | ➖ |
-| `encode_faster_eth_abi[uint256[2]-[0, 115792089237]` |  |  |  |  |  | ➖ |
-| `encode_faster_eth_abi[uint256[2][2]-[[1, 2], [3, 4]]]` |  |  |  |  |  | ➖ |
-| `encode_faster_eth_abi[uint8-0]` |  |  |  |  |  | ➖ |
-| `encode_faster_eth_abi[uint8-255]` |  |  |  |  |  | ➖ |
-| `encode_faster_eth_abi[uint8[3]-[1, 2, 3]]` |  |  |  |  |  | ➖ |
-| `encode_faster_eth_abi[uint8[]-[1, 2, 3, 4, 5]]` |  |  |  |  |  | ➖ |
-| `encode_faster_eth_abi[uint8[]-[]]` |  |  |  |  |  | ➖ |
-| `is_encodable_eth_abi[((uint8,uint8),uint8)-((1, 2), 3)]` |  |  |  |  |  | ➖ |
-| `is_encodable_eth_abi[((uint8[2],(string,bool)),bytes32)-(([1, 2], ('hi',]` |  |  |  |  |  | ➖ |
-| `is_encodable_eth_abi[(address,uint8)-(b'\\x00\\x00\\x00\\]` |  |  |  |  |  | ➖ |
-| `is_encodable_eth_abi[(string,bytes)-('foo', b'bar')]` |  |  |  |  |  | ➖ |
-| `is_encodable_eth_abi[(string[],bytes[])-([''], [b''])]` |  |  |  |  |  | ➖ |
-| `is_encodable_eth_abi[(uint256,bool)-(42, True)]` |  |  |  |  |  | ➖ |
-| `is_encodable_eth_abi[(uint256[2],string)-([1, 2], 'baz')]` |  |  |  |  |  | ➖ |
-| `is_encodable_eth_abi[(uint256[],(string[],bool))-([1, 2, 3], (['a]` |  |  |  |  |  | ➖ |
-| `is_encodable_eth_abi[(uint8,(bool,string))-(7, (False, 'hi']` |  |  |  |  |  | ➖ |
-| `is_encodable_eth_abi[(uint8[2],(string,bool[2]))-([1, 2], ('x', []` |  |  |  |  |  | ➖ |
-| `is_encodable_eth_abi[(uint8[2][2],(string[2],bool[2]))-([[1, 2], [3, 4]]` |  |  |  |  |  | ➖ |
-| `is_encodable_eth_abi[(uint8[],string)-([], '')]` |  |  |  |  |  | ➖ |
-| `is_encodable_eth_abi[address-b'\\x00\\x00\\x00\\x]` |  |  |  |  |  | ➖ |
-| `is_encodable_eth_abi[address-b'\\xff\\xff\\xff\\x]` |  |  |  |  |  | ➖ |
-| `is_encodable_eth_abi[address[2]-[b'\\x00\\x00\\x00\\]` |  |  |  |  |  | ➖ |
-| `is_encodable_eth_abi[bool-False]` |  |  |  |  |  | ➖ |
-| `is_encodable_eth_abi[bool-True]` |  |  |  |  |  | ➖ |
-| `is_encodable_eth_abi[bool[4]-[True, False, Tr]` |  |  |  |  |  | ➖ |
-| `is_encodable_eth_abi[bool[][2]-[[True, False], ]` |  |  |  |  |  | ➖ |
-| `is_encodable_eth_abi[bytes-b'']` |  |  |  |  |  | ➖ |
-| `is_encodable_eth_abi[bytes-b'\\x00\\x00\\x00\\x0]` |  |  |  |  |  | ➖ |
-| `is_encodable_eth_abi[bytes-b'\\x00\\x00\\x00\\x1]` |  |  |  |  |  | ➖ |
-| `is_encodable_eth_abi[bytes-b'hello world']` |  |  |  |  |  | ➖ |
-| `is_encodable_eth_abi[bytes1-b'\\x01']` |  |  |  |  |  | ➖ |
-| `is_encodable_eth_abi[bytes32-b'\\x00\\x00\\x00\\x]` |  |  |  |  |  | ➖ |
-| `is_encodable_eth_abi[bytes32-b'\\xff\\xff\\xff\\x]` |  |  |  |  |  | ➖ |
-| `is_encodable_eth_abi[bytes32[2]-[b'\\x00\\x00\\x00\\]` |  |  |  |  |  | ➖ |
-| `is_encodable_eth_abi[bytes[]-[b'abc', b'def',]` |  |  |  |  |  | ➖ |
-| `is_encodable_eth_abi[fixed128x18-Decimal('1.23456]` |  |  |  |  |  | ➖ |
-| `is_encodable_eth_abi[int256--578960446186580]` |  |  |  |  |  | ➖ |
-| `is_encodable_eth_abi[int256-5789604461865809]` |  |  |  |  |  | ➖ |
-| `is_encodable_eth_abi[int8--128]` |  |  |  |  |  | ➖ |
-| `is_encodable_eth_abi[int8-127]` |  |  |  |  |  | ➖ |
-| `is_encodable_eth_abi[string-'']` |  |  |  |  |  | ➖ |
-| `is_encodable_eth_abi[string-'\U0001d518\U0001d52b\U0001d526\U0001d520\U0001d52c\U0001d521\U0001d522']` |  |  |  |  |  | ➖ |
-| `is_encodable_eth_abi[string-'aaaaaaaaaaaaaaa]` |  |  |  |  |  | ➖ |
-| `is_encodable_eth_abi[string-'hello world']` |  |  |  |  |  | ➖ |
-| `is_encodable_eth_abi[string[2]-['foo', 'bar']]` |  |  |  |  |  | ➖ |
-| `is_encodable_eth_abi[string[]-['a', 'b', 'c']]` |  |  |  |  |  | ➖ |
-| `is_encodable_eth_abi[string[]-[]]` |  |  |  |  |  | ➖ |
-| `is_encodable_eth_abi[ufixed128x18-Decimal('1.23456]` |  |  |  |  |  | ➖ |
-| `is_encodable_eth_abi[uint256-0]` |  |  |  |  |  | ➖ |
-| `is_encodable_eth_abi[uint256-1157920892373161]` |  |  |  |  |  | ➖ |
-| `is_encodable_eth_abi[uint256[2]-[0, 115792089237]` |  |  |  |  |  | ➖ |
-| `is_encodable_eth_abi[uint256[2][2]-[[1, 2], [3, 4]]]` |  |  |  |  |  | ➖ |
-| `is_encodable_eth_abi[uint8-0]` |  |  |  |  |  | ➖ |
-| `is_encodable_eth_abi[uint8-255]` |  |  |  |  |  | ➖ |
-| `is_encodable_eth_abi[uint8[3]-[1, 2, 3]]` |  |  |  |  |  | ➖ |
-| `is_encodable_eth_abi[uint8[]-[1, 2, 3, 4, 5]]` |  |  |  |  |  | ➖ |
-| `is_encodable_eth_abi[uint8[]-[]]` |  |  |  |  |  | ➖ |
-| `is_encodable_faster_eth_abi[((uint8,uint8),uint8)-((1, 2), 3)]` |  |  |  |  |  | ➖ |
-| `is_encodable_faster_eth_abi[((uint8[2],(string,bool)),bytes32)-(([1, 2], ('hi',]` |  |  |  |  |  | ➖ |
-| `is_encodable_faster_eth_abi[(address,uint8)-(b'\\x00\\x00\\x00\\]` |  |  |  |  |  | ➖ |
-| `is_encodable_faster_eth_abi[(string,bytes)-('foo', b'bar')]` |  |  |  |  |  | ➖ |
-| `is_encodable_faster_eth_abi[(string[],bytes[])-([''], [b''])]` |  |  |  |  |  | ➖ |
-| `is_encodable_faster_eth_abi[(uint256,bool)-(42, True)]` |  |  |  |  |  | ➖ |
-| `is_encodable_faster_eth_abi[(uint256[2],string)-([1, 2], 'baz')]` |  |  |  |  |  | ➖ |
-| `is_encodable_faster_eth_abi[(uint256[],(string[],bool))-([1, 2, 3], (['a]` |  |  |  |  |  | ➖ |
-| `is_encodable_faster_eth_abi[(uint8,(bool,string))-(7, (False, 'hi']` |  |  |  |  |  | ➖ |
-| `is_encodable_faster_eth_abi[(uint8[2],(string,bool[2]))-([1, 2], ('x', []` |  |  |  |  |  | ➖ |
-| `is_encodable_faster_eth_abi[(uint8[2][2],(string[2],bool[2]))-([[1, 2], [3, 4]]` |  |  |  |  |  | ➖ |
-| `is_encodable_faster_eth_abi[(uint8[],string)-([], '')]` |  |  |  |  |  | ➖ |
-| `is_encodable_faster_eth_abi[address-b'\\x00\\x00\\x00\\x]` |  |  |  |  |  | ➖ |
-| `is_encodable_faster_eth_abi[address-b'\\xff\\xff\\xff\\x]` |  |  |  |  |  | ➖ |
-| `is_encodable_faster_eth_abi[address[2]-[b'\\x00\\x00\\x00\\]` |  |  |  |  |  | ➖ |
-| `is_encodable_faster_eth_abi[bool-False]` |  |  |  |  |  | ➖ |
-| `is_encodable_faster_eth_abi[bool-True]` |  |  |  |  |  | ➖ |
-| `is_encodable_faster_eth_abi[bool[4]-[True, False, Tr]` |  |  |  |  |  | ➖ |
-| `is_encodable_faster_eth_abi[bool[][2]-[[True, False], ]` |  |  |  |  |  | ➖ |
-| `is_encodable_faster_eth_abi[bytes-b'']` |  |  |  |  |  | ➖ |
-| `is_encodable_faster_eth_abi[bytes-b'\\x00\\x00\\x00\\x0]` |  |  |  |  |  | ➖ |
-| `is_encodable_faster_eth_abi[bytes-b'\\x00\\x00\\x00\\x1]` |  |  |  |  |  | ➖ |
-| `is_encodable_faster_eth_abi[bytes-b'hello world']` |  |  |  |  |  | ➖ |
-| `is_encodable_faster_eth_abi[bytes1-b'\\x01']` |  |  |  |  |  | ➖ |
-| `is_encodable_faster_eth_abi[bytes32-b'\\x00\\x00\\x00\\x]` |  |  |  |  |  | ➖ |
-| `is_encodable_faster_eth_abi[bytes32-b'\\xff\\xff\\xff\\x]` |  |  |  |  |  | ➖ |
-| `is_encodable_faster_eth_abi[bytes32[2]-[b'\\x00\\x00\\x00\\]` |  |  |  |  |  | ➖ |
-| `is_encodable_faster_eth_abi[bytes[]-[b'abc', b'def',]` |  |  |  |  |  | ➖ |
-| `is_encodable_faster_eth_abi[fixed128x18-Decimal('1.23456]` |  |  |  |  |  | ➖ |
-| `is_encodable_faster_eth_abi[int256--578960446186580]` |  |  |  |  |  | ➖ |
-| `is_encodable_faster_eth_abi[int256-5789604461865809]` |  |  |  |  |  | ➖ |
-| `is_encodable_faster_eth_abi[int8--128]` |  |  |  |  |  | ➖ |
-| `is_encodable_faster_eth_abi[int8-127]` |  |  |  |  |  | ➖ |
-| `is_encodable_faster_eth_abi[string-'']` |  |  |  |  |  | ➖ |
-| `is_encodable_faster_eth_abi[string-'\U0001d518\U0001d52b\U0001d526\U0001d520\U0001d52c\U0001d521\U0001d522']` |  |  |  |  |  | ➖ |
-| `is_encodable_faster_eth_abi[string-'aaaaaaaaaaaaaaa]` |  |  |  |  |  | ➖ |
-| `is_encodable_faster_eth_abi[string-'hello world']` |  |  |  |  |  | ➖ |
-| `is_encodable_faster_eth_abi[string[2]-['foo', 'bar']]` |  |  |  |  |  | ➖ |
-| `is_encodable_faster_eth_abi[string[]-['a', 'b', 'c']]` |  |  |  |  |  | ➖ |
-| `is_encodable_faster_eth_abi[string[]-[]]` |  |  |  |  |  | ➖ |
-| `is_encodable_faster_eth_abi[ufixed128x18-Decimal('1.23456]` |  |  |  |  |  | ➖ |
-| `is_encodable_faster_eth_abi[uint256-0]` |  |  |  |  |  | ➖ |
-| `is_encodable_faster_eth_abi[uint256-1157920892373161]` |  |  |  |  |  | ➖ |
-| `is_encodable_faster_eth_abi[uint256[2]-[0, 115792089237]` |  |  |  |  |  | ➖ |
-| `is_encodable_faster_eth_abi[uint256[2][2]-[[1, 2], [3, 4]]]` |  |  |  |  |  | ➖ |
-| `is_encodable_faster_eth_abi[uint8-0]` |  |  |  |  |  | ➖ |
-| `is_encodable_faster_eth_abi[uint8-255]` |  |  |  |  |  | ➖ |
-| `is_encodable_faster_eth_abi[uint8[3]-[1, 2, 3]]` |  |  |  |  |  | ➖ |
-| `is_encodable_faster_eth_abi[uint8[]-[1, 2, 3, 4, 5]]` |  |  |  |  |  | ➖ |
-| `is_encodable_faster_eth_abi[uint8[]-[]]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_eth_abi[((uint8,uint8),uint8)]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_eth_abi[((uint8[2],(string,bool)),bytes32)]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_eth_abi[(address,uint8)]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_eth_abi[(string,bytes)]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_eth_abi[(string[],bytes[])]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_eth_abi[(uint256,bool)]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_eth_abi[(uint256[2],string)]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_eth_abi[(uint256[],(string[],bool))]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_eth_abi[(uint8,(bool,string))]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_eth_abi[(uint8[2],(string,bool[2]))]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_eth_abi[(uint8[2][2],(string[2],bool[2]))]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_eth_abi[(uint8[],string)]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_eth_abi[address[2]]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_eth_abi[address]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_eth_abi[bool[4]]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_eth_abi[bool[][2]]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_eth_abi[bool]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_eth_abi[bytes1]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_eth_abi[bytes32[2]]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_eth_abi[bytes32]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_eth_abi[bytes[]]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_eth_abi[bytes]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_eth_abi[fixed128x18]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_eth_abi[int256]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_eth_abi[int8]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_eth_abi[string[2]]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_eth_abi[string[]]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_eth_abi[string]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_eth_abi[ufixed128x18]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_eth_abi[uint256[2][2]]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_eth_abi[uint256[2]]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_eth_abi[uint256]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_eth_abi[uint8[3]]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_eth_abi[uint8[]]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_eth_abi[uint8]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_faster_eth_abi[((uint8,uint8),uint8)]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_faster_eth_abi[((uint8[2],(string,bool)),bytes32)]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_faster_eth_abi[(address,uint8)]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_faster_eth_abi[(string,bytes)]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_faster_eth_abi[(string[],bytes[])]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_faster_eth_abi[(uint256,bool)]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_faster_eth_abi[(uint256[2],string)]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_faster_eth_abi[(uint256[],(string[],bool))]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_faster_eth_abi[(uint8,(bool,string))]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_faster_eth_abi[(uint8[2],(string,bool[2]))]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_faster_eth_abi[(uint8[2][2],(string[2],bool[2]))]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_faster_eth_abi[(uint8[],string)]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_faster_eth_abi[address[2]]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_faster_eth_abi[address]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_faster_eth_abi[bool[4]]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_faster_eth_abi[bool[][2]]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_faster_eth_abi[bool]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_faster_eth_abi[bytes1]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_faster_eth_abi[bytes32[2]]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_faster_eth_abi[bytes32]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_faster_eth_abi[bytes[]]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_faster_eth_abi[bytes]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_faster_eth_abi[fixed128x18]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_faster_eth_abi[int256]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_faster_eth_abi[int8]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_faster_eth_abi[string[2]]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_faster_eth_abi[string[]]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_faster_eth_abi[string]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_faster_eth_abi[ufixed128x18]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_faster_eth_abi[uint256[2][2]]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_faster_eth_abi[uint256[2]]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_faster_eth_abi[uint256]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_faster_eth_abi[uint8[3]]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_faster_eth_abi[uint8[]]` |  |  |  |  |  | ➖ |
-| `is_encodable_type_faster_eth_abi[uint8]` |  |  |  |  |  | ➖ |
+| `decode[((uint8,uint8),uint8)-((1, 2), 3)]` | 0.004751431253809762 | 0.00462781711426682 | 2.60% | 2.67% | 1.03x | ✅ |
+| `decode[((uint8[2],(string,bool)),bytes32)-(([1, 2], ('hi',]` | 0.005016731486936582 | 0.0046139314375007135 | 8.03% | 8.73% | 1.09x | ✅ |
+| `decode[((uint8[2][2],(string[2],bool[2])),bytes32[2])-(([[1, 2], [3, 4]` | 0.008711137669727519 | 0.008494072095638093 | 2.49% | 2.56% | 1.03x | ✅ |
+| `decode[(address,uint8)-(b'\\x00\\x00\\x00\\]` | 0.00389919840867665 | 0.0026796529215744793 | 31.28% | 45.51% | 1.46x | ✅ |
+| `decode[(bytes1,bytes2,bytes3,bytes4)-(b'\\x01', b'\\x01]` | 0.0030617949677508153 | 0.002883741350609764 | 5.82% | 6.17% | 1.06x | ✅ |
+| `decode[(bytes32[],string[])-([b'\\x00\\x00\\x00]` | 0.004901163687172345 | 0.004350480207384473 | 11.24% | 12.66% | 1.13x | ✅ |
+| `decode[(bytes[],string[])-([], [])]` | 0.0031120174025823137 | 0.0026705678913744816 | 14.19% | 16.53% | 1.17x | ✅ |
+| `decode[(fixed32x2,uint8)-(Decimal('3.14')]` | 0.0035494597852010444 | 0.003308093121106272 | 6.80% | 7.30% | 1.07x | ✅ |
+| `decode[(function,uint256)-(b'\\x01\\x01\\x01\\]` | 0.0022283311572745515 | 0.0020254574945692207 | 9.10% | 10.02% | 1.10x | ✅ |
+| `decode[(string,bytes)-('foo', b'bar')]` | 0.0028371306109427315 | 0.0023372367259161153 | 17.62% | 21.39% | 1.21x | ✅ |
+| `decode[(string[],bytes[])-([''], [b''])]` | 0.00448914811163694 | 0.0039755117695246325 | 11.44% | 12.92% | 1.13x | ✅ |
+| `decode[(string[],bytes[])-([], [])]` | 0.003110957122177994 | 0.002670066312512755 | 14.17% | 16.51% | 1.17x | ✅ |
+| `decode[(uint256,bool)-(42, True)]` | 0.0022602067024475154 | 0.0020150428229760435 | 10.85% | 12.17% | 1.12x | ✅ |
+| `decode[(uint256[2],string)-([1, 2], 'baz')]` | 0.003024554528689753 | 0.0025836127896336175 | 14.58% | 17.07% | 1.17x | ✅ |
+| `decode[(uint256[],(string[],bool))-([1, 2, 3], (['a]` | 0.006097984331225547 | 0.005499800954294187 | 9.81% | 10.88% | 1.11x | ✅ |
+| `decode[(uint8,(bool,string))-(7, (False, 'hi']` | 0.0034311100866549885 | 0.002949464307437281 | 14.04% | 16.33% | 1.16x | ✅ |
+| `decode[(uint8[2],(string,bool[2]))-([1, 2], ('x', []` | 0.004605838903369544 | 0.004189829738910768 | 9.03% | 9.93% | 1.10x | ✅ |
+| `decode[(uint8[2][2],(string[2],bool[2]))-([[1, 2], [3, 4]]` | 0.007131925274074159 | 0.006686106006819333 | 6.25% | 6.67% | 1.07x | ✅ |
+| `decode[(uint8[2][2][2],string)-([[[1, 2], [3, 4]` | 0.006240391716144058 | 0.006057793283016165 | 2.93% | 3.01% | 1.03x | ✅ |
+| `decode[(uint8[2][2][2][2],string[2])-([[[[1, 2], [3, ]` | 0.011921001783145792 | 0.01178712672289984 | 1.12% | 1.14% | 1.01x | ✅ |
+| `decode[(uint8[2][2][2][2][2],string[2][2])-([[[[[1, 2], [3,]` | 0.022624666386367277 | 0.023404101651183652 | -3.45% | -3.33% | 0.97x | ❌ |
+| `decode[(uint8[2][2][2][2][],string[])-([], [])]` | 0.0031091091611795277 | 0.0026741538366275588 | 13.99% | 16.27% | 1.16x | ✅ |
+| `decode[(uint8[2][2][],string[])-([], [])]` | 0.003121361321306916 | 0.0026807883549351996 | 14.11% | 16.43% | 1.16x | ✅ |
+| `decode[(uint8[2][],string[])-([], [])]` | 0.0031104129117736543 | 0.00267870440793378 | 13.88% | 16.12% | 1.16x | ✅ |
+| `decode[(uint8[3],(string[2],bool[2]))-([1, 2, 3], (['a]` | 0.0062433957581995055 | 0.005759269319272 | 7.75% | 8.41% | 1.08x | ✅ |
+| `decode[(uint8[],string)-([], '')]` | 0.0029891172610021946 | 0.002496824673688168 | 16.47% | 19.72% | 1.20x | ✅ |
+| `decode[(uint8[][],string)-([[]], '')]` | 0.0038579806882550294 | 0.0033718894912278317 | 12.60% | 14.42% | 1.14x | ✅ |
+| `decode[address-b'\\x00\\x00\\x00\\x]` | 0.0017081264572550523 | 0.0009607542911254664 | 43.75% | 77.79% | 1.78x | ✅ |
+| `decode[address-b'\\xff\\xff\\xff\\x]` | 0.0017278945716770325 | 0.0009615615543151564 | 44.35% | 79.70% | 1.80x | ✅ |
+| `decode[address[2]-[b'\\x00\\x00\\x00\\]` | 0.002994290252780074 | 0.0018568689268201664 | 37.99% | 61.25% | 1.61x | ✅ |
+| `decode[bool-False]` | 0.0008950876074675626 | 0.0006376053788124987 | 28.77% | 40.38% | 1.40x | ✅ |
+| `decode[bool-True]` | 0.0008976725453701789 | 0.0006423211763042475 | 28.45% | 39.75% | 1.40x | ✅ |
+| `decode[bool[4]-[True, False, Tr]` | 0.0018591900770798559 | 0.0016429473497248377 | 11.63% | 13.16% | 1.13x | ✅ |
+| `decode[bool[][2]-[[True, False], ]` | 0.0036541350152674568 | 0.003209049923089121 | 12.18% | 13.87% | 1.14x | ✅ |
+| `decode[bytes-b'']` | 0.001536445549911609 | 0.0010637918367247083 | 30.76% | 44.43% | 1.44x | ✅ |
+| `decode[bytes-b'\\x00\\x00\\x00\\x0]` | 0.0015399499205762262 | 0.0010741013888355207 | 30.25% | 43.37% | 1.43x | ✅ |
+| `decode[bytes-b'\\x00\\x00\\x00\\x1]` | 0.0016075579732962725 | 0.00109850193597313 | 31.67% | 46.34% | 1.46x | ✅ |
+| `decode[bytes-b'aaaaaaaaaaaaaa]` | 0.001527992078731045 | 0.0010734772855560532 | 29.75% | 42.34% | 1.42x | ✅ |
+| `decode[bytes-b'hello world']` | 0.0015495823117934596 | 0.001078451394490862 | 30.40% | 43.69% | 1.44x | ✅ |
+| `decode[bytes1-b'\\x01']` | 0.0008920342485101957 | 0.0006480171860807837 | 27.36% | 37.66% | 1.38x | ✅ |
+| `decode[bytes10-b'\\x01\\x01\\x01\\x]` | 0.0009082732544530558 | 0.0006507682523079629 | 28.35% | 39.57% | 1.40x | ✅ |
+| `decode[bytes11-b'\\x01\\x01\\x01\\x]` | 0.0009124374423925552 | 0.0006496457008835295 | 28.80% | 40.45% | 1.40x | ✅ |
+| `decode[bytes12-b'\\x01\\x01\\x01\\x]` | 0.0009096085417862809 | 0.0006572410820986994 | 27.74% | 38.40% | 1.38x | ✅ |
+| `decode[bytes13-b'\\x01\\x01\\x01\\x]` | 0.0009076491782453878 | 0.00064982692527957 | 28.41% | 39.68% | 1.40x | ✅ |
+| `decode[bytes14-b'\\x01\\x01\\x01\\x]` | 0.0009053555554526641 | 0.0006569691487236322 | 27.44% | 37.81% | 1.38x | ✅ |
+| `decode[bytes15-b'\\x01\\x01\\x01\\x]` | 0.0009106605662081751 | 0.0006532017829985328 | 28.27% | 39.41% | 1.39x | ✅ |
+| `decode[bytes16-b'\\x01\\x01\\x01\\x]` | 0.0009110654643530207 | 0.000653869897013988 | 28.23% | 39.33% | 1.39x | ✅ |
+| `decode[bytes16[3]-[b'\\x01\\x01\\x01\\]` | 0.0016205383567658733 | 0.001425387642632822 | 12.04% | 13.69% | 1.14x | ✅ |
+| `decode[bytes17-b'\\x01\\x01\\x01\\x]` | 0.0009073126326509683 | 0.0006601943468329251 | 27.24% | 37.43% | 1.37x | ✅ |
+| `decode[bytes18-b'\\x01\\x01\\x01\\x]` | 0.0009094924852074233 | 0.0006567920886240355 | 27.78% | 38.47% | 1.38x | ✅ |
+| `decode[bytes19-b'\\x01\\x01\\x01\\x]` | 0.0009049927179564833 | 0.0006548850252249431 | 27.64% | 38.19% | 1.38x | ✅ |
+| `decode[bytes2-b'\\x01\\x01']` | 0.0008977337084918004 | 0.0006552802203158962 | 27.01% | 37.00% | 1.37x | ✅ |
+| `decode[bytes20-b'\\x01\\x01\\x01\\x]` | 0.0009111321156576041 | 0.0006575357520399842 | 27.83% | 38.57% | 1.39x | ✅ |
+| `decode[bytes21-b'\\x01\\x01\\x01\\x]` | 0.0009072404897762225 | 0.0006621214366063096 | 27.02% | 37.02% | 1.37x | ✅ |
+| `decode[bytes22-b'\\x01\\x01\\x01\\x]` | 0.0009044155062375144 | 0.0006525400930566635 | 27.85% | 38.60% | 1.39x | ✅ |
+| `decode[bytes23-b'\\x01\\x01\\x01\\x]` | 0.0009004422999906347 | 0.0006522454703364403 | 27.56% | 38.05% | 1.38x | ✅ |
+| `decode[bytes24-b'\\x01\\x01\\x01\\x]` | 0.0009053461984171196 | 0.0006520606868985376 | 27.98% | 38.84% | 1.39x | ✅ |
+| `decode[bytes25-b'\\x01\\x01\\x01\\x]` | 0.000914142252968629 | 0.0006558940266077573 | 28.25% | 39.37% | 1.39x | ✅ |
+| `decode[bytes26-b'\\x01\\x01\\x01\\x]` | 0.0009109970469193996 | 0.0006640894028775961 | 27.10% | 37.18% | 1.37x | ✅ |
+| `decode[bytes27-b'\\x01\\x01\\x01\\x]` | 0.0009105392553416643 | 0.0006513071893637796 | 28.47% | 39.80% | 1.40x | ✅ |
+| `decode[bytes28-b'\\x01\\x01\\x01\\x]` | 0.0009105635456362073 | 0.0006519927677409116 | 28.40% | 39.66% | 1.40x | ✅ |
+| `decode[bytes29-b'\\x01\\x01\\x01\\x]` | 0.000906211868106415 | 0.0006603769300155528 | 27.13% | 37.23% | 1.37x | ✅ |
+| `decode[bytes3-b'\\x01\\x01\\x01']` | 0.0008992869932184963 | 0.0006510986733413436 | 27.60% | 38.12% | 1.38x | ✅ |
+| `decode[bytes30-b'\\x01\\x01\\x01\\x]` | 0.000907699742661513 | 0.0006549459524182556 | 27.85% | 38.59% | 1.39x | ✅ |
+| `decode[bytes31-b'\\x01\\x01\\x01\\x]` | 0.000894918469632485 | 0.0006419751290111375 | 28.26% | 39.40% | 1.39x | ✅ |
+| `decode[bytes32-b'\\x01\\x01\\x01\\x]` | 0.0008921504095639373 | 0.0006382433217132293 | 28.46% | 39.78% | 1.40x | ✅ |
+| `decode[bytes32[2]-[b'\\x00\\x00\\x00\\]` | 0.0013779919599349042 | 0.0011919819434213328 | 13.50% | 15.61% | 1.16x | ✅ |
+| `decode[bytes4-b'\\x01\\x01\\x01\\x]` | 0.0008954740357841282 | 0.0006501058179748005 | 27.40% | 37.74% | 1.38x | ✅ |
+| `decode[bytes5-b'\\x01\\x01\\x01\\x]` | 0.0008984208727929444 | 0.0006500439290745126 | 27.65% | 38.21% | 1.38x | ✅ |
+| `decode[bytes6-b'\\x01\\x01\\x01\\x]` | 0.0009083163549948984 | 0.0006509636205638825 | 28.33% | 39.53% | 1.40x | ✅ |
+| `decode[bytes7-b'\\x01\\x01\\x01\\x]` | 0.0009080954474940401 | 0.0006536543049414095 | 28.02% | 38.93% | 1.39x | ✅ |
+| `decode[bytes8-b'\\x01\\x01\\x01\\x]` | 0.000905325983260948 | 0.000651140013399358 | 28.08% | 39.04% | 1.39x | ✅ |
+| `decode[bytes8[4]-[b'\\x01\\x01\\x01\\]` | 0.001837811175091029 | 0.0016697766749656279 | 9.14% | 10.06% | 1.10x | ✅ |
+| `decode[bytes9-b'\\x01\\x01\\x01\\x]` | 0.0009075688902859697 | 0.0006531136152734689 | 28.04% | 38.96% | 1.39x | ✅ |
+| `decode[bytes[100]-[b'\\x00\\x00\\x00\\]` | 0.06646669613331445 | 0.0642744401250468 | 3.30% | 3.41% | 1.03x | ✅ |
+| `decode[bytes[10]-[b'\\x00\\x00\\x00\\]` | 0.008208587823538291 | 0.007505320744205037 | 8.57% | 9.37% | 1.09x | ✅ |
+| `decode[bytes[]-[]0]` | 0.001676601695658262 | 0.0012410555064614232 | 25.98% | 35.09% | 1.35x | ✅ |
+| `decode[bytes[]-[]1]` | 0.0016736394309442625 | 0.0012364064871783344 | 26.12% | 35.36% | 1.35x | ✅ |
+| `decode[bytes[]-[b'abc', b'def',]` | 0.003759201968368367 | 0.0032263077114080352 | 14.18% | 16.52% | 1.17x | ✅ |
+| `decode[fixed128x1-Decimal('1.2')]` | 0.0015986475660442693 | 0.00131022918274264 | 18.04% | 22.01% | 1.22x | ✅ |
+| `decode[fixed128x10-Decimal('1.20000]` | 0.0016318514863273847 | 0.0013429061624772973 | 17.71% | 21.52% | 1.22x | ✅ |
+| `decode[fixed128x18-Decimal('1.20000]` | 0.0016315847748835373 | 0.0013360521601337976 | 18.11% | 22.12% | 1.22x | ✅ |
+| `decode[fixed128x2-Decimal('1.20')]` | 0.0015998613018895706 | 0.0013092760098750759 | 18.16% | 22.19% | 1.22x | ✅ |
+| `decode[fixed16x1-Decimal('1.2')]` | 0.0015144315270949793 | 0.0012412361428507867 | 18.04% | 22.01% | 1.22x | ✅ |
+| `decode[fixed16x2-Decimal('1.20')]` | 0.0015191195990294178 | 0.0012552069713486177 | 17.37% | 21.03% | 1.21x | ✅ |
+| `decode[fixed256x1-Decimal('1.2')]` | 0.0015981522845001156 | 0.00132062177221332 | 17.37% | 21.02% | 1.21x | ✅ |
+| `decode[fixed256x10-Decimal('1.20000]` | 0.0016490648480622077 | 0.001348871972052567 | 18.20% | 22.26% | 1.22x | ✅ |
+| `decode[fixed256x18-Decimal('1.20000]` | 0.001636242741599028 | 0.001356016264011283 | 17.13% | 20.67% | 1.21x | ✅ |
+| `decode[fixed256x2-Decimal('1.20')]` | 0.0016039191917026577 | 0.0013207547577791573 | 17.65% | 21.44% | 1.21x | ✅ |
+| `decode[fixed32x1-Decimal('1.2')]` | 0.001547296412922495 | 0.0012718778535489637 | 17.80% | 21.65% | 1.22x | ✅ |
+| `decode[fixed32x2-Decimal('1.20')]` | 0.0015602862123832101 | 0.0012801908449726692 | 17.95% | 21.88% | 1.22x | ✅ |
+| `decode[fixed32x2[2]-[Decimal('3.14')]` | 0.002674008687324498 | 0.0024310719109945853 | 9.09% | 9.99% | 1.10x | ✅ |
+| `decode[fixed32x2[]-[]0]` | 0.0016842723327399375 | 0.0012386104350795163 | 26.46% | 35.98% | 1.36x | ✅ |
+| `decode[fixed32x2[]-[]1]` | 0.0016661969156381124 | 0.0012330486871697315 | 26.00% | 35.13% | 1.35x | ✅ |
+| `decode[fixed64x1-Decimal('1.2')]` | 0.0015695009666804557 | 0.0012935082677853582 | 17.58% | 21.34% | 1.21x | ✅ |
+| `decode[fixed64x10-Decimal('1.20000]` | 0.0016107788639391136 | 0.0013212252532591757 | 17.98% | 21.92% | 1.22x | ✅ |
+| `decode[fixed64x18-Decimal('1.20000]` | 0.0016057799240101719 | 0.0013206590968088754 | 17.76% | 21.59% | 1.22x | ✅ |
+| `decode[fixed64x2-Decimal('1.20')]` | 0.0015762569915387463 | 0.0012959316580806088 | 17.78% | 21.63% | 1.22x | ✅ |
+| `decode[fixed8x1-Decimal('1.2')]` | 0.0015151184749254718 | 0.0012436425930489904 | 17.92% | 21.83% | 1.22x | ✅ |
+| `decode[fixed8x2-Decimal('1.20')]` | 0.0015043166909393289 | 0.001237025948786334 | 17.77% | 21.61% | 1.22x | ✅ |
+| `decode[function-b'\\x00\\x00\\x00\\x]` | 0.0009052884028499518 | 0.0006557952285613258 | 27.56% | 38.04% | 1.38x | ✅ |
+| `decode[function-b'\\x01\\x01\\x01\\x]` | 0.0009062596603576908 | 0.0006549800415754993 | 27.73% | 38.36% | 1.38x | ✅ |
+| `decode[function-b'\\xff\\xff\\xff\\x]` | 0.0009068323342719929 | 0.0006546670694264153 | 27.81% | 38.52% | 1.39x | ✅ |
+| `decode[int128--170141183460469]` | 0.0011086027168405951 | 0.0008440640339676117 | 23.86% | 31.34% | 1.31x | ✅ |
+| `decode[int128-1701411834604692]` | 0.0010561052057518024 | 0.0007939984692452752 | 24.82% | 33.01% | 1.33x | ✅ |
+| `decode[int16--32768]` | 0.0010190102175369608 | 0.0007535076702906089 | 26.05% | 35.24% | 1.35x | ✅ |
+| `decode[int16-32767]` | 0.00099767573913886 | 0.0007338810248017066 | 26.44% | 35.95% | 1.36x | ✅ |
+| `decode[int256--578960446186580]` | 0.0011456754957466047 | 0.0008915040079258171 | 22.19% | 28.51% | 1.29x | ✅ |
+| `decode[int256-5789604461865809]` | 0.0010735656142744582 | 0.0008098847550861075 | 24.56% | 32.56% | 1.33x | ✅ |
+| `decode[int32--2147483648]` | 0.0010548700606429328 | 0.0007982180397884901 | 24.33% | 32.15% | 1.32x | ✅ |
+| `decode[int32-2147483647]` | 0.001023165040956836 | 0.0007650276457308129 | 25.23% | 33.74% | 1.34x | ✅ |
+| `decode[int64--922337203685477]` | 0.001083122567903635 | 0.0008168942353503196 | 24.58% | 32.59% | 1.33x | ✅ |
+| `decode[int64-9223372036854775]` | 0.0010387684845405024 | 0.0007754581460316594 | 25.35% | 33.96% | 1.34x | ✅ |
+| `decode[int8--128]` | 0.0010019054002308857 | 0.0007308676134216559 | 27.05% | 37.08% | 1.37x | ✅ |
+| `decode[int8-127]` | 0.0009763678985632209 | 0.000731673371504425 | 25.06% | 33.44% | 1.33x | ✅ |
+| `decode[string-'']` | 0.0015385924718666442 | 0.0010506724884548164 | 31.71% | 46.44% | 1.46x | ✅ |
+| `decode[string-'\U0001d518\U0001d52b\U0001d526\U0001d520\U0001d52c\U0001d521\U0001d522']` | 0.0015652630016617433 | 0.001094559534795775 | 30.07% | 43.00% | 1.43x | ✅ |
+| `decode[string-'aaaaaaaaaaaaaaa0]` | 0.0015457614003335967 | 0.0010720194624874847 | 30.65% | 44.19% | 1.44x | ✅ |
+| `decode[string-'aaaaaaaaaaaaaaa1]` | 0.0016128697211734765 | 0.0011278451151068001 | 30.07% | 43.00% | 1.43x | ✅ |
+| `decode[string-'bbbbbbbbbbbbbbb]` | 0.001603301936755352 | 0.0011204773532820672 | 30.11% | 43.09% | 1.43x | ✅ |
+| `decode[string-'hello world']` | 0.0015695400339025415 | 0.001074322921440388 | 31.55% | 46.10% | 1.46x | ✅ |
+| `decode[string[10]-['0', '1', '2', ]` | 0.008208418588237844 | 0.007479870259541837 | 8.88% | 9.74% | 1.10x | ✅ |
+| `decode[string[2]-['foo', 'bar']]` | 0.0028331601124536253 | 0.002311270762962567 | 18.42% | 22.58% | 1.23x | ✅ |
+| `decode[string[5]-['a', 'b', 'c', ]` | 0.004870722867313556 | 0.004266713521919005 | 12.40% | 14.16% | 1.14x | ✅ |
+| `decode[string[]-['a', 'b', 'c']]` | 0.0037453235866193187 | 0.0032030044833360684 | 14.48% | 16.93% | 1.17x | ✅ |
+| `decode[string[]-[]0]` | 0.0016928231752239605 | 0.001237382041501674 | 26.90% | 36.81% | 1.37x | ✅ |
+| `decode[string[]-[]1]` | 0.0016843912056799986 | 0.0012374232332402562 | 26.54% | 36.12% | 1.36x | ✅ |
+| `decode[ufixed128x1-Decimal('1.2')]` | 0.0014656814359419457 | 0.0011796822180727875 | 19.51% | 24.24% | 1.24x | ✅ |
+| `decode[ufixed128x10-Decimal('1.20000]` | 0.001488712538213375 | 0.001219391682632694 | 18.09% | 22.09% | 1.22x | ✅ |
+| `decode[ufixed128x18-Decimal('1.20000]` | 0.0014953195584123022 | 0.001209893198682422 | 19.09% | 23.59% | 1.24x | ✅ |
+| `decode[ufixed128x2-Decimal('1.20')]` | 0.0014697601952291966 | 0.0011799873271542648 | 19.72% | 24.56% | 1.25x | ✅ |
+| `decode[ufixed16x1-Decimal('1.2')]` | 0.0014578650930253184 | 0.0011850956984557175 | 18.71% | 23.02% | 1.23x | ✅ |
+| `decode[ufixed16x2-Decimal('1.20')]` | 0.0014465293820720595 | 0.0011868206387213919 | 17.95% | 21.88% | 1.22x | ✅ |
+| `decode[ufixed256x1-Decimal('1.2')]` | 0.0014464208822610831 | 0.001169183994886651 | 19.17% | 23.71% | 1.24x | ✅ |
+| `decode[ufixed256x10-Decimal('1.20000]` | 0.0014725162047276301 | 0.001193180601042204 | 18.97% | 23.41% | 1.23x | ✅ |
+| `decode[ufixed256x18-Decimal('1.20000]` | 0.0014753291602566593 | 0.0012023584880686074 | 18.50% | 22.70% | 1.23x | ✅ |
+| `decode[ufixed256x2-Decimal('1.20')]` | 0.001454213639616556 | 0.0011511100382639765 | 20.84% | 26.33% | 1.26x | ✅ |
+| `decode[ufixed32x1-Decimal('1.2')]` | 0.0014626464654331197 | 0.0011832594348432453 | 19.10% | 23.61% | 1.24x | ✅ |
+| `decode[ufixed32x2-Decimal('1.20')]` | 0.0014648724199704949 | 0.0011771294793393504 | 19.64% | 24.44% | 1.24x | ✅ |
+| `decode[ufixed64x1-Decimal('1.2')]` | 0.0014575552840963243 | 0.001181396878674903 | 18.95% | 23.38% | 1.23x | ✅ |
+| `decode[ufixed64x10-Decimal('1.20000]` | 0.0014755042041884922 | 0.0012129232853367285 | 17.80% | 21.65% | 1.22x | ✅ |
+| `decode[ufixed64x18-Decimal('1.20000]` | 0.0014941102848009904 | 0.0012109055125609403 | 18.95% | 23.39% | 1.23x | ✅ |
+| `decode[ufixed64x2-Decimal('1.20')]` | 0.0014722133769677162 | 0.0011758318580697609 | 20.13% | 25.21% | 1.25x | ✅ |
+| `decode[ufixed8x1-Decimal('1.2')]` | 0.0014602020109577296 | 0.0011845461741487417 | 18.88% | 23.27% | 1.23x | ✅ |
+| `decode[ufixed8x2-Decimal('1.20')]` | 0.0014607319921189743 | 0.0011903004107552224 | 18.51% | 22.72% | 1.23x | ✅ |
+| `decode[uint128-3402823669209384]` | 0.0009816781296986708 | 0.0006923245358807215 | 29.48% | 41.79% | 1.42x | ✅ |
+| `decode[uint16-65535]` | 0.0009731306539679907 | 0.0006984388634803523 | 28.23% | 39.33% | 1.39x | ✅ |
+| `decode[uint256-0]` | 0.0009700963868604774 | 0.0006725203194172074 | 30.67% | 44.25% | 1.44x | ✅ |
+| `decode[uint256-1157920892373161]` | 0.0009724078367858694 | 0.0006804642307677751 | 30.02% | 42.90% | 1.43x | ✅ |
+| `decode[uint256[2]-[0, 115792089237]` | 0.0015118824362705746 | 0.0012790266671492206 | 15.40% | 18.21% | 1.18x | ✅ |
+| `decode[uint256[2][2]-[[1, 2], [3, 4]]]` | 0.002507086189488243 | 0.0023716136209445257 | 5.40% | 5.71% | 1.06x | ✅ |
+| `decode[uint32-4294967295]` | 0.000975620950581607 | 0.000697240880976924 | 28.53% | 39.93% | 1.40x | ✅ |
+| `decode[uint64-1844674407370955]` | 0.000975832139383812 | 0.0006921612974471945 | 29.07% | 40.98% | 1.41x | ✅ |
+| `decode[uint8-0]` | 0.0009665802175299052 | 0.0006870598044721325 | 28.92% | 40.68% | 1.41x | ✅ |
+| `decode[uint8-255]` | 0.0009662513828304943 | 0.0006837070325788564 | 29.24% | 41.33% | 1.41x | ✅ |
+| `decode[uint8[100]-[0, 1, 2, 3, 4, ]` | 0.026429846210571907 | 0.026322797526314678 | 0.41% | 0.41% | 1.00x | ✅ |
+| `decode[uint8[10]-[0, 1, 2, 3, 4, ]` | 0.0035505924202761494 | 0.003344734582752012 | 5.80% | 6.15% | 1.06x | ✅ |
+| `decode[uint8[2][2][]-[]]` | 0.0016768160785988976 | 0.0012225765448433726 | 27.09% | 37.15% | 1.37x | ✅ |
+| `decode[uint8[2][]-[]]` | 0.0016799430564673745 | 0.001228087674886767 | 26.90% | 36.79% | 1.37x | ✅ |
+| `decode[uint8[3]-[1, 2, 3]]` | 0.0017681652285217453 | 0.0015425813824995718 | 12.76% | 14.62% | 1.15x | ✅ |
+| `decode[uint8[]-[1, 2, 3, 4, 5]]` | 0.002367865769418442 | 0.0018981972084083406 | 19.84% | 24.74% | 1.25x | ✅ |
+| `decode[uint8[]-[]0]` | 0.0016755818924652445 | 0.0012325499176488676 | 26.44% | 35.94% | 1.36x | ✅ |
+| `decode[uint8[]-[]1]` | 0.0016749915865665484 | 0.0012324918692445117 | 26.42% | 35.90% | 1.36x | ✅ |
+| `decode[uint8[][]-[[]]]` | 0.002502550785718408 | 0.0020536407505649438 | 17.94% | 21.86% | 1.22x | ✅ |
+| `encode[((uint8,uint8),uint8)-((1, 2), 3)]` | 0.0027045683490600336 | 0.0022650654999973644 | 16.25% | 19.40% | 1.19x | ✅ |
+| `encode[((uint8[2],(string,bool)),bytes32)-(([1, 2], ('hi',]` | 0.005658162246758566 | 0.004058575088978522 | 28.27% | 39.41% | 1.39x | ✅ |
+| `encode[((uint8[2][2],(string[2],bool[2])),bytes32[2])-(([[1, 2], [3, 4]` | 0.010486102755541854 | 0.006949861093518665 | 33.72% | 50.88% | 1.51x | ✅ |
+| `encode[(address,uint8)-(b'\\x00\\x00\\x00\\]` | 0.0021988928205789876 | 0.0015210619983820862 | 30.83% | 44.56% | 1.45x | ✅ |
+| `encode[(bytes1,bytes2,bytes3,bytes4)-(b'\\x01', b'\\x01]` | 0.0017033953298397984 | 0.0014008796957837592 | 17.76% | 21.59% | 1.22x | ✅ |
+| `encode[(bytes32[],string[])-([b'\\x00\\x00\\x00]` | 0.004351850497610313 | 0.0025801225725856107 | 40.71% | 68.67% | 1.69x | ✅ |
+| `encode[(bytes[],string[])-([], [])]` | 0.002684282011985428 | 0.001483984990575134 | 44.72% | 80.88% | 1.81x | ✅ |
+| `encode[(fixed32x2,uint8)-(Decimal('3.14')]` | 0.0038869822307893067 | 0.0034683323309414034 | 10.77% | 12.07% | 1.12x | ✅ |
+| `encode[(function,uint256)-(b'\\x01\\x01\\x01\\]` | 0.0017228130967743456 | 0.0013975413740884028 | 18.88% | 23.27% | 1.23x | ✅ |
+| `encode[(string,bytes)-('foo', b'bar')]` | 0.002445892100897081 | 0.0015924860673484527 | 34.89% | 53.59% | 1.54x | ✅ |
+| `encode[(string[],bytes[])-([''], [b''])]` | 0.003970767723207099 | 0.0024167124177093004 | 39.14% | 64.30% | 1.64x | ✅ |
+| `encode[(string[],bytes[])-([], [])]` | 0.0026752636016697676 | 0.0014892285376099837 | 44.33% | 79.64% | 1.80x | ✅ |
+| `encode[(uint256,bool)-(42, True)]` | 0.0017021465979847894 | 0.0013845474020583882 | 18.66% | 22.94% | 1.23x | ✅ |
+| `encode[(uint256[2],string)-([1, 2], 'baz')]` | 0.003179577755323659 | 0.0021422069486659112 | 32.63% | 48.43% | 1.48x | ✅ |
+| `encode[(uint256[],(string[],bool))-([1, 2, 3], (['a]` | 0.00647388807858046 | 0.004203666774382017 | 35.07% | 54.01% | 1.54x | ✅ |
+| `encode[(uint8,(bool,string))-(7, (False, 'hi']` | 0.003357937362605 | 0.0023998316984941525 | 28.53% | 39.92% | 1.40x | ✅ |
+| `encode[(uint8[2],(string,bool[2]))-([1, 2], ('x', []` | 0.004816145663039359 | 0.0032816791770910766 | 31.86% | 46.76% | 1.47x | ✅ |
+| `encode[(uint8[2][2],(string[2],bool[2]))-([[1, 2], [3, 4]]` | 0.007747017471080826 | 0.005008359410250052 | 35.35% | 54.68% | 1.55x | ✅ |
+| `encode[(uint8[2][2][2],string)-([[[1, 2], [3, 4]` | 0.008197026095653516 | 0.004430453639283416 | 45.95% | 85.02% | 1.85x | ✅ |
+| `encode[(uint8[2][2][2][2],string[2])-([[[[1, 2], [3, ]` | 0.017408786142868036 | 0.008354644644040784 | 52.01% | 108.37% | 2.08x | ✅ |
+| `encode[(uint8[2][2][2][2][2],string[2][2])-([[[[[1, 2], [3,]` | 0.03782446788462634 | 0.016318780590161803 | 56.86% | 131.78% | 2.32x | ✅ |
+| `encode[(uint8[2][2][2][2][],string[])-([], [])]` | 0.002662685181809587 | 0.0014879975366601742 | 44.12% | 78.94% | 1.79x | ✅ |
+| `encode[(uint8[2][2][],string[])-([], [])]` | 0.002699259154542233 | 0.001482581566313303 | 45.07% | 82.06% | 1.82x | ✅ |
+| `encode[(uint8[2][],string[])-([], [])]` | 0.0026683477327313428 | 0.0014946018687503227 | 43.99% | 78.53% | 1.79x | ✅ |
+| `encode[(uint8[3],(string[2],bool[2]))-([1, 2, 3], (['a]` | 0.006414492070418842 | 0.00438178891031364 | 31.69% | 46.39% | 1.46x | ✅ |
+| `encode[(uint8[],string)-([], '')]` | 0.002593371733916008 | 0.0016037749811892775 | 38.16% | 61.70% | 1.62x | ✅ |
+| `encode[(uint8[][],string)-([[]], '')]` | 0.003424210314400191 | 0.002011666546473234 | 41.25% | 70.22% | 1.70x | ✅ |
+| `encode[address-b'\\x00\\x00\\x00\\x]` | 0.0012358324155618944 | 0.0007008446327787341 | 43.29% | 76.33% | 1.76x | ✅ |
+| `encode[address-b'\\xff\\xff\\xff\\x]` | 0.0012453099222646017 | 0.0007038776691649169 | 43.48% | 76.92% | 1.77x | ✅ |
+| `encode[address[2]-[b'\\x00\\x00\\x00\\]` | 0.002201889640197848 | 0.0011604670629769376 | 47.30% | 89.74% | 1.90x | ✅ |
+| `encode[bool-False]` | 0.0007087995836496328 | 0.0004888713561731943 | 31.03% | 44.99% | 1.45x | ✅ |
+| `encode[bool-True]` | 0.000701589714772732 | 0.00048553865844195356 | 30.79% | 44.50% | 1.44x | ✅ |
+| `encode[bool[4]-[True, False, Tr]` | 0.0013314159753106674 | 0.000875836336114676 | 34.22% | 52.02% | 1.52x | ✅ |
+| `encode[bool[][2]-[[True, False], ]` | 0.003087323629261648 | 0.0014934387885671046 | 51.63% | 106.73% | 2.07x | ✅ |
+| `encode[bytes-b'']` | 0.0011182712135386907 | 0.0006676095563616032 | 40.30% | 67.50% | 1.68x | ✅ |
+| `encode[bytes-b'\\x00\\x00\\x00\\x0]` | 0.0011204182713419485 | 0.0006722218987968917 | 40.00% | 66.67% | 1.67x | ✅ |
+| `encode[bytes-b'\\x00\\x00\\x00\\x1]` | 0.0011390891965157015 | 0.0006901618834152532 | 39.41% | 65.05% | 1.65x | ✅ |
+| `encode[bytes-b'aaaaaaaaaaaaaa]` | 0.0011153187199514246 | 0.0006664066579381948 | 40.25% | 67.36% | 1.67x | ✅ |
+| `encode[bytes-b'hello world']` | 0.0011225800658824965 | 0.0006699272045560464 | 40.32% | 67.57% | 1.68x | ✅ |
+| `encode[bytes1-b'\\x01']` | 0.0007035236401716804 | 0.000494113001554243 | 29.77% | 42.38% | 1.42x | ✅ |
+| `encode[bytes10-b'\\x01\\x01\\x01\\x]` | 0.0007058858718211262 | 0.000494530844369577 | 29.94% | 42.74% | 1.43x | ✅ |
+| `encode[bytes11-b'\\x01\\x01\\x01\\x]` | 0.0007041077442053794 | 0.0004959807674338838 | 29.56% | 41.96% | 1.42x | ✅ |
+| `encode[bytes12-b'\\x01\\x01\\x01\\x]` | 0.0007123051432315745 | 0.0004928440472949932 | 30.81% | 44.53% | 1.45x | ✅ |
+| `encode[bytes13-b'\\x01\\x01\\x01\\x]` | 0.0007030350277327245 | 0.0004932472298397597 | 29.84% | 42.53% | 1.43x | ✅ |
+| `encode[bytes14-b'\\x01\\x01\\x01\\x]` | 0.0007142404248745563 | 0.0004929730504991862 | 30.98% | 44.88% | 1.45x | ✅ |
+| `encode[bytes15-b'\\x01\\x01\\x01\\x]` | 0.0007025156803332194 | 0.0004922872170266845 | 29.93% | 42.70% | 1.43x | ✅ |
+| `encode[bytes16-b'\\x01\\x01\\x01\\x]` | 0.0007054018867142095 | 0.0004929190010428412 | 30.12% | 43.11% | 1.43x | ✅ |
+| `encode[bytes16[3]-[b'\\x01\\x01\\x01\\]` | 0.001202162694865689 | 0.0008049655500787825 | 33.04% | 49.34% | 1.49x | ✅ |
+| `encode[bytes17-b'\\x01\\x01\\x01\\x]` | 0.0007114635900967167 | 0.0004927979638334422 | 30.73% | 44.37% | 1.44x | ✅ |
+| `encode[bytes18-b'\\x01\\x01\\x01\\x]` | 0.0007025206640989694 | 0.0004922126313649219 | 29.94% | 42.73% | 1.43x | ✅ |
+| `encode[bytes19-b'\\x01\\x01\\x01\\x]` | 0.0007058236777476279 | 0.0004931094387252216 | 30.14% | 43.14% | 1.43x | ✅ |
+| `encode[bytes2-b'\\x01\\x01']` | 0.0007020744408811274 | 0.0004896621398799154 | 30.25% | 43.38% | 1.43x | ✅ |
+| `encode[bytes20-b'\\x01\\x01\\x01\\x]` | 0.0007065957322642153 | 0.0004957338386564788 | 29.84% | 42.54% | 1.43x | ✅ |
+| `encode[bytes21-b'\\x01\\x01\\x01\\x]` | 0.0007092973820526356 | 0.0004938664760453184 | 30.37% | 43.62% | 1.44x | ✅ |
+| `encode[bytes22-b'\\x01\\x01\\x01\\x]` | 0.0007061086605743223 | 0.0004894710860315015 | 30.68% | 44.26% | 1.44x | ✅ |
+| `encode[bytes23-b'\\x01\\x01\\x01\\x]` | 0.0007020154318584526 | 0.0004915700714285908 | 29.98% | 42.81% | 1.43x | ✅ |
+| `encode[bytes24-b'\\x01\\x01\\x01\\x]` | 0.0007072638068880274 | 0.0004916161823855842 | 30.49% | 43.87% | 1.44x | ✅ |
+| `encode[bytes25-b'\\x01\\x01\\x01\\x]` | 0.0007014713097965342 | 0.000491315849677627 | 29.96% | 42.77% | 1.43x | ✅ |
+| `encode[bytes26-b'\\x01\\x01\\x01\\x]` | 0.0007029443421272936 | 0.0004910723671538957 | 30.14% | 43.14% | 1.43x | ✅ |
+| `encode[bytes27-b'\\x01\\x01\\x01\\x]` | 0.0007029970266337988 | 0.0004932997263739643 | 29.83% | 42.51% | 1.43x | ✅ |
+| `encode[bytes28-b'\\x01\\x01\\x01\\x]` | 0.0006994138344337576 | 0.000497763280905605 | 28.83% | 40.51% | 1.41x | ✅ |
+| `encode[bytes29-b'\\x01\\x01\\x01\\x]` | 0.0007097619818668826 | 0.0004940425080925682 | 30.39% | 43.66% | 1.44x | ✅ |
+| `encode[bytes3-b'\\x01\\x01\\x01']` | 0.0007007304871766069 | 0.0004946074441507487 | 29.42% | 41.67% | 1.42x | ✅ |
+| `encode[bytes30-b'\\x01\\x01\\x01\\x]` | 0.0007017726027783376 | 0.0004917736064992622 | 29.92% | 42.70% | 1.43x | ✅ |
+| `encode[bytes31-b'\\x01\\x01\\x01\\x]` | 0.0007035923769480883 | 0.00049175378199012 | 30.11% | 43.08% | 1.43x | ✅ |
+| `encode[bytes32-b'\\x01\\x01\\x01\\x]` | 0.0007008626237022443 | 0.0004916513058412494 | 29.85% | 42.55% | 1.43x | ✅ |
+| `encode[bytes32[2]-[b'\\x00\\x00\\x00\\]` | 0.0010940082121232895 | 0.0007313405854790418 | 33.15% | 49.59% | 1.50x | ✅ |
+| `encode[bytes4-b'\\x01\\x01\\x01\\x]` | 0.000703523453611074 | 0.0004915659615043112 | 30.13% | 43.12% | 1.43x | ✅ |
+| `encode[bytes5-b'\\x01\\x01\\x01\\x]` | 0.0007028622003415756 | 0.0004935088575362544 | 29.79% | 42.42% | 1.42x | ✅ |
+| `encode[bytes6-b'\\x01\\x01\\x01\\x]` | 0.0007021330962832483 | 0.0004936753896578077 | 29.69% | 42.23% | 1.42x | ✅ |
+| `encode[bytes7-b'\\x01\\x01\\x01\\x]` | 0.0007040419054101529 | 0.0004974111253272859 | 29.35% | 41.54% | 1.42x | ✅ |
+| `encode[bytes8-b'\\x01\\x01\\x01\\x]` | 0.0007020653684242605 | 0.0004963476464944001 | 29.30% | 41.45% | 1.41x | ✅ |
+| `encode[bytes8[4]-[b'\\x01\\x01\\x01\\]` | 0.0012986643313323031 | 0.0008778526379897996 | 32.40% | 47.94% | 1.48x | ✅ |
+| `encode[bytes9-b'\\x01\\x01\\x01\\x]` | 0.0007025871613408328 | 0.0004949697552112073 | 29.55% | 41.95% | 1.42x | ✅ |
+| `encode[bytes[100]-[b'\\x00\\x00\\x00\\]` | 0.04298913774996057 | 0.02399268259521358 | 44.19% | 79.18% | 1.79x | ✅ |
+| `encode[bytes[10]-[b'\\x00\\x00\\x00\\]` | 0.005621115540684726 | 0.003194549911768263 | 43.17% | 75.96% | 1.76x | ✅ |
+| `encode[bytes[]-[]0]` | 0.0012523552565773188 | 0.0006078543958701899 | 51.46% | 106.03% | 2.06x | ✅ |
+| `encode[bytes[]-[]1]` | 0.0012587058533707436 | 0.0006091444259515238 | 51.61% | 106.64% | 2.07x | ✅ |
+| `encode[bytes[]-[b'abc', b'def',]` | 0.0027459253827865544 | 0.0015484945654256454 | 43.61% | 77.33% | 1.77x | ✅ |
+| `encode[fixed128x1-Decimal('1.2')]` | 0.002306884475949487 | 0.0020657684574358582 | 10.45% | 11.67% | 1.12x | ✅ |
+| `encode[fixed128x10-Decimal('1.20000]` | 0.002356327219066555 | 0.002113416486922029 | 10.31% | 11.49% | 1.11x | ✅ |
+| `encode[fixed128x18-Decimal('1.20000]` | 0.002368448855297635 | 0.0021362352432987564 | 9.80% | 10.87% | 1.11x | ✅ |
+| `encode[fixed128x2-Decimal('1.20')]` | 0.0023269840749315534 | 0.0020721534752816315 | 10.95% | 12.30% | 1.12x | ✅ |
+| `encode[fixed16x1-Decimal('1.2')]` | 0.0021280370094346698 | 0.0019161349841047292 | 9.96% | 11.06% | 1.11x | ✅ |
+| `encode[fixed16x2-Decimal('1.20')]` | 0.002136381697183219 | 0.0019125255119033248 | 10.48% | 11.70% | 1.12x | ✅ |
+| `encode[fixed256x1-Decimal('1.2')]` | 0.0024479698048170658 | 0.0021838028891501405 | 10.79% | 12.10% | 1.12x | ✅ |
+| `encode[fixed256x10-Decimal('1.20000]` | 0.0024765888709553305 | 0.0022273852900368315 | 10.06% | 11.19% | 1.11x | ✅ |
+| `encode[fixed256x18-Decimal('1.20000]` | 0.0024975287177985343 | 0.002231010790705494 | 10.67% | 11.95% | 1.12x | ✅ |
+| `encode[fixed256x2-Decimal('1.20')]` | 0.002442227908840379 | 0.0021824413094136737 | 10.64% | 11.90% | 1.12x | ✅ |
+| `encode[fixed32x1-Decimal('1.2')]` | 0.002202432836985456 | 0.0019719528920525494 | 10.46% | 11.69% | 1.12x | ✅ |
+| `encode[fixed32x2-Decimal('1.20')]` | 0.0022077868321174433 | 0.001970921783228857 | 10.73% | 12.02% | 1.12x | ✅ |
+| `encode[fixed32x2[2]-[Decimal('3.14')]` | 0.005357043649707834 | 0.0036442859511304476 | 31.97% | 47.00% | 1.47x | ✅ |
+| `encode[fixed32x2[]-[]0]` | 0.001246788283426046 | 0.0006053057917950549 | 51.45% | 105.98% | 2.06x | ✅ |
+| `encode[fixed32x2[]-[]1]` | 0.0012685118711803273 | 0.0005974727039142311 | 52.90% | 112.31% | 2.12x | ✅ |
+| `encode[fixed64x1-Decimal('1.2')]` | 0.0022538646502453766 | 0.002019494714883268 | 10.40% | 11.61% | 1.12x | ✅ |
+| `encode[fixed64x10-Decimal('1.20000]` | 0.002309870119171453 | 0.00205273172571916 | 11.13% | 12.53% | 1.13x | ✅ |
+| `encode[fixed64x18-Decimal('1.20000]` | 0.0023230503184311084 | 0.0020614891407173355 | 11.26% | 12.69% | 1.13x | ✅ |
+| `encode[fixed64x2-Decimal('1.20')]` | 0.002268111674294156 | 0.0020084396008385494 | 11.45% | 12.93% | 1.13x | ✅ |
+| `encode[fixed8x1-Decimal('1.2')]` | 0.0021190136192798087 | 0.001886010573138764 | 11.00% | 12.35% | 1.12x | ✅ |
+| `encode[fixed8x2-Decimal('1.20')]` | 0.0021122439135557412 | 0.0018898666621147697 | 10.53% | 11.77% | 1.12x | ✅ |
+| `encode[function-b'\\x00\\x00\\x00\\x]` | 0.0007079462737349918 | 0.0004911746861338157 | 30.62% | 44.13% | 1.44x | ✅ |
+| `encode[function-b'\\x01\\x01\\x01\\x]` | 0.0007107913741331936 | 0.0004888809688880636 | 31.22% | 45.39% | 1.45x | ✅ |
+| `encode[function-b'\\xff\\xff\\xff\\x]` | 0.0007016504528996518 | 0.0004906830233723029 | 30.07% | 42.99% | 1.43x | ✅ |
+| `encode[int128--170141183460469]` | 0.0009755458274665817 | 0.0007326214318817094 | 24.90% | 33.16% | 1.33x | ✅ |
+| `encode[int128-1701411834604692]` | 0.0009905776505664534 | 0.000728270470857811 | 26.48% | 36.02% | 1.36x | ✅ |
+| `encode[int16--32768]` | 0.0008311923243245417 | 0.0006079047697261602 | 26.86% | 36.73% | 1.37x | ✅ |
+| `encode[int16-32767]` | 0.0008369044363972895 | 0.0006084648482218069 | 27.30% | 37.54% | 1.38x | ✅ |
+| `encode[int256--578960446186580]` | 0.0010355346863785446 | 0.0007875831290085224 | 23.94% | 31.48% | 1.31x | ✅ |
+| `encode[int256-5789604461865809]` | 0.00103162876242683 | 0.0007828215251893881 | 24.12% | 31.78% | 1.32x | ✅ |
+| `encode[int32--2147483648]` | 0.000910174864595873 | 0.0006626578801077168 | 27.19% | 37.35% | 1.37x | ✅ |
+| `encode[int32-2147483647]` | 0.0008995428183659425 | 0.0006596149242681374 | 26.67% | 36.37% | 1.36x | ✅ |
+| `encode[int64--922337203685477]` | 0.0009458953600874607 | 0.0007016164117215986 | 25.83% | 34.82% | 1.35x | ✅ |
+| `encode[int64-9223372036854775]` | 0.0009278276752494625 | 0.0006889315826023647 | 25.75% | 34.68% | 1.35x | ✅ |
+| `encode[int8--128]` | 0.0008055280406057912 | 0.0005814437123379623 | 27.82% | 38.54% | 1.39x | ✅ |
+| `encode[int8-127]` | 0.0007985564338357779 | 0.0005809610174194955 | 27.25% | 37.45% | 1.37x | ✅ |
+| `encode[string-'']` | 0.0011658093783395809 | 0.0007024792055477114 | 39.74% | 65.96% | 1.66x | ✅ |
+| `encode[string-'\U0001d518\U0001d52b\U0001d526\U0001d520\U0001d52c\U0001d521\U0001d522']` | 0.0011749164913231838 | 0.0007122271864844835 | 39.38% | 64.96% | 1.65x | ✅ |
+| `encode[string-'aaaaaaaaaaaaaaa0]` | 0.0011776797260271352 | 0.0007063802251662208 | 40.02% | 66.72% | 1.67x | ✅ |
+| `encode[string-'aaaaaaaaaaaaaaa1]` | 0.0012128115638008197 | 0.0007359121906311527 | 39.32% | 64.80% | 1.65x | ✅ |
+| `encode[string-'bbbbbbbbbbbbbbb]` | 0.0012090020776274533 | 0.0007458938556618966 | 38.30% | 62.09% | 1.62x | ✅ |
+| `encode[string-'hello world']` | 0.0011770891887267101 | 0.0007073255894418542 | 39.91% | 66.41% | 1.66x | ✅ |
+| `encode[string[10]-['0', '1', '2', ]` | 0.0059953831645489005 | 0.003509418402168062 | 41.46% | 70.84% | 1.71x | ✅ |
+| `encode[string[2]-['foo', 'bar']]` | 0.002278177494971413 | 0.0013459874057174862 | 40.92% | 69.26% | 1.69x | ✅ |
+| `encode[string[5]-['a', 'b', 'c', ]` | 0.003682067402443745 | 0.0021671353747088782 | 41.14% | 69.90% | 1.70x | ✅ |
+| `encode[string[]-['a', 'b', 'c']]` | 0.0028822769556961273 | 0.001633174680633033 | 43.34% | 76.48% | 1.76x | ✅ |
+| `encode[string[]-[]0]` | 0.0012552420119507123 | 0.0006068486027410221 | 51.65% | 106.85% | 2.07x | ✅ |
+| `encode[string[]-[]1]` | 0.001252500147570087 | 0.00060942698771732 | 51.34% | 105.52% | 2.06x | ✅ |
+| `encode[ufixed128x1-Decimal('1.2')]` | 0.0021210235874211864 | 0.0018809792077713742 | 11.32% | 12.76% | 1.13x | ✅ |
+| `encode[ufixed128x10-Decimal('1.20000]` | 0.0021843962529830415 | 0.0019479556733824298 | 10.82% | 12.14% | 1.12x | ✅ |
+| `encode[ufixed128x18-Decimal('1.20000]` | 0.0021863063589102924 | 0.0019518060989688934 | 10.73% | 12.01% | 1.12x | ✅ |
+| `encode[ufixed128x2-Decimal('1.20')]` | 0.002128757552949109 | 0.0018837305812094076 | 11.51% | 13.01% | 1.13x | ✅ |
+| `encode[ufixed16x1-Decimal('1.2')]` | 0.0020516269571072203 | 0.001824127633084185 | 11.09% | 12.47% | 1.12x | ✅ |
+| `encode[ufixed16x2-Decimal('1.20')]` | 0.002060169130336771 | 0.0018326552633546806 | 11.04% | 12.41% | 1.12x | ✅ |
+| `encode[ufixed256x1-Decimal('1.2')]` | 0.0021959083205718376 | 0.0019392746741136863 | 11.69% | 13.23% | 1.13x | ✅ |
+| `encode[ufixed256x10-Decimal('1.20000]` | 0.0022427854181794877 | 0.0019798977546060382 | 11.72% | 13.28% | 1.13x | ✅ |
+| `encode[ufixed256x18-Decimal('1.20000]` | 0.002250373671573386 | 0.0019900785473126407 | 11.57% | 13.08% | 1.13x | ✅ |
+| `encode[ufixed256x2-Decimal('1.20')]` | 0.0021900950619028877 | 0.0019348969634954889 | 11.65% | 13.19% | 1.13x | ✅ |
+| `encode[ufixed32x1-Decimal('1.2')]` | 0.002062449054176777 | 0.0018487096450451451 | 10.36% | 11.56% | 1.12x | ✅ |
+| `encode[ufixed32x2-Decimal('1.20')]` | 0.0020865792654472747 | 0.0018623849882429817 | 10.74% | 12.04% | 1.12x | ✅ |
+| `encode[ufixed64x1-Decimal('1.2')]` | 0.002118422321755828 | 0.001853261488639129 | 12.52% | 14.31% | 1.14x | ✅ |
+| `encode[ufixed64x10-Decimal('1.20000]` | 0.0021924662830190944 | 0.0019050858693079513 | 13.11% | 15.08% | 1.15x | ✅ |
+| `encode[ufixed64x18-Decimal('1.20000]` | 0.002159478768503624 | 0.001920159208010773 | 11.08% | 12.46% | 1.12x | ✅ |
+| `encode[ufixed64x2-Decimal('1.20')]` | 0.0021187163255802282 | 0.001864560566134594 | 12.00% | 13.63% | 1.14x | ✅ |
+| `encode[ufixed8x1-Decimal('1.2')]` | 0.0020423848789912417 | 0.001812926461526296 | 11.23% | 12.66% | 1.13x | ✅ |
+| `encode[ufixed8x2-Decimal('1.20')]` | 0.0020441374765500825 | 0.0018189727735742327 | 11.02% | 12.38% | 1.12x | ✅ |
+| `encode[uint128-3402823669209384]` | 0.0008467412151519672 | 0.0006155227212681013 | 27.31% | 37.56% | 1.38x | ✅ |
+| `encode[uint16-65535]` | 0.0007945015028976468 | 0.0005704001085802261 | 28.21% | 39.29% | 1.39x | ✅ |
+| `encode[uint256-0]` | 0.0008667014136849842 | 0.0006297588893348803 | 27.34% | 37.62% | 1.38x | ✅ |
+| `encode[uint256-1157920892373161]` | 0.0008666833475731658 | 0.000632079158147719 | 27.07% | 37.12% | 1.37x | ✅ |
+| `encode[uint256[2]-[0, 115792089237]` | 0.0015387260613022912 | 0.0010037640468018505 | 34.77% | 53.30% | 1.53x | ✅ |
+| `encode[uint256[2][2]-[[1, 2], [3, 4]]]` | 0.003103904688956287 | 0.0017059487256691063 | 45.04% | 81.95% | 1.82x | ✅ |
+| `encode[uint32-4294967295]` | 0.0008086633287599627 | 0.0005835551546748676 | 27.84% | 38.58% | 1.39x | ✅ |
+| `encode[uint64-1844674407370955]` | 0.0008263873941844941 | 0.0006014971822699368 | 27.21% | 37.39% | 1.37x | ✅ |
+| `encode[uint8-0]` | 0.0008016979374995495 | 0.0005530469444796834 | 31.02% | 44.96% | 1.45x | ✅ |
+| `encode[uint8-255]` | 0.0007829409400839186 | 0.0005586348216655056 | 28.65% | 40.15% | 1.40x | ✅ |
+| `encode[uint8[100]-[0, 1, 2, 3, 4, ]` | 0.02062060102083289 | 0.013209903253367277 | 35.94% | 56.10% | 1.56x | ✅ |
+| `encode[uint8[10]-[0, 1, 2, 3, 4, ]` | 0.00291143507187428 | 0.0018684874514832753 | 35.82% | 55.82% | 1.56x | ✅ |
+| `encode[uint8[2][2][]-[]]` | 0.0012765126099798245 | 0.0006150755931673828 | 51.82% | 107.54% | 2.08x | ✅ |
+| `encode[uint8[2][]-[]]` | 0.0012563776671870375 | 0.0006049384256450067 | 51.85% | 107.69% | 2.08x | ✅ |
+| `encode[uint8[3]-[1, 2, 3]]` | 0.0015078128805726821 | 0.0009757835095860308 | 35.28% | 54.52% | 1.55x | ✅ |
+| `encode[uint8[]-[1, 2, 3, 4, 5]]` | 0.0023068965979656025 | 0.001299427734983817 | 43.67% | 77.53% | 1.78x | ✅ |
+| `encode[uint8[]-[]0]` | 0.001246366720582053 | 0.0006062749787255807 | 51.36% | 105.58% | 2.06x | ✅ |
+| `encode[uint8[]-[]1]` | 0.0012484733373309307 | 0.0006082313660034123 | 51.28% | 105.26% | 2.05x | ✅ |
+| `encode[uint8[][]-[[]]]` | 0.0020010177199997594 | 0.0009500865415432785 | 52.52% | 110.61% | 2.11x | ✅ |
+| `is_encodable[((uint8,uint8),uint8)-((1, 2), 3)]` | 0.0004301909269996605 | 0.00039648396987424476 | 7.84% | 8.50% | 1.09x | ✅ |
+| `is_encodable[((uint8[2],(string,bool)),bytes32)-(([1, 2], ('hi',]` | 0.0006434785614243432 | 0.0006025432543401942 | 6.36% | 6.79% | 1.07x | ✅ |
+| `is_encodable[((uint8[2][2],(string[2],bool[2])),bytes32[2])-(([[1, 2], [3, 4]` | 0.0011612977844373757 | 0.001071321138867022 | 7.75% | 8.40% | 1.08x | ✅ |
+| `is_encodable[(address,uint8)-(b'\\x00\\x00\\x00\\]` | 0.0002517158195583763 | 0.00022998384743427367 | 8.63% | 9.45% | 1.09x | ✅ |
+| `is_encodable[(bytes1,bytes2,bytes3,bytes4)-(b'\\x01', b'\\x01]` | 0.00023031917717098086 | 0.00022520973258336455 | 2.22% | 2.27% | 1.02x | ✅ |
+| `is_encodable[(bytes32[],string[])-([b'\\x00\\x00\\x00]` | 0.0003505479769907381 | 0.00032647685168653767 | 6.87% | 7.37% | 1.07x | ✅ |
+| `is_encodable[(bytes[],string[])-([], [])]` | 0.0002661296634302028 | 0.00024546426405622587 | 7.77% | 8.42% | 1.08x | ✅ |
+| `is_encodable[(fixed32x2,uint8)-(Decimal('3.14')]` | 0.0008572977119704117 | 0.0008383730297578511 | 2.21% | 2.26% | 1.02x | ✅ |
+| `is_encodable[(function,uint256)-(b'\\x01\\x01\\x01\\]` | 0.0002670714274850563 | 0.0002581159271494533 | 3.35% | 3.47% | 1.03x | ✅ |
+| `is_encodable[(string,bytes)-('foo', b'bar')]` | 0.0001980651383380309 | 0.00019073103599624017 | 3.70% | 3.85% | 1.04x | ✅ |
+| `is_encodable[(string[],bytes[])-([''], [b''])]` | 0.0003053854283412163 | 0.00029420524345932406 | 3.66% | 3.80% | 1.04x | ✅ |
+| `is_encodable[(string[],bytes[])-([], [])]` | 0.0002670963363666375 | 0.0002442481825727689 | 8.55% | 9.35% | 1.09x | ✅ |
+| `is_encodable[(uint256,bool)-(42, True)]` | 0.00026703123488323134 | 0.00025561629549803296 | 4.27% | 4.47% | 1.04x | ✅ |
+| `is_encodable[(uint256[2],string)-([1, 2], 'baz')]` | 0.0004112383288691933 | 0.00038083134220048983 | 7.39% | 7.98% | 1.08x | ✅ |
+| `is_encodable[(uint256[],(string[],bool))-([1, 2, 3], (['a]` | 0.0006873808306167331 | 0.0006447030147856695 | 6.21% | 6.62% | 1.07x | ✅ |
+| `is_encodable[(uint8,(bool,string))-(7, (False, 'hi']` | 0.00038190440190389175 | 0.00035857863835156754 | 6.11% | 6.51% | 1.07x | ✅ |
+| `is_encodable[(uint8[2],(string,bool[2]))-([1, 2], ('x', []` | 0.0005954376755664905 | 0.000550615329690292 | 7.53% | 8.14% | 1.08x | ✅ |
+| `is_encodable[(uint8[2][2],(string[2],bool[2]))-([[1, 2], [3, 4]]` | 0.000923328684668882 | 0.0008502939507051496 | 7.91% | 8.59% | 1.09x | ✅ |
+| `is_encodable[(uint8[2][2][2],string)-([[[1, 2], [3, 4]` | 0.001052734609114392 | 0.0009589083330115499 | 8.91% | 9.78% | 1.10x | ✅ |
+| `is_encodable[(uint8[2][2][2][2],string[2])-([[[[1, 2], [3, ]` | 0.0020643354915943343 | 0.0018677408927269914 | 9.52% | 10.53% | 1.11x | ✅ |
+| `is_encodable[(uint8[2][2][2][2][2],string[2][2])-([[[[[1, 2], [3,]` | 0.004083578260340515 | 0.0036906824264234567 | 9.62% | 10.65% | 1.11x | ✅ |
+| `is_encodable[(uint8[2][2][2][2][],string[])-([], [])]` | 0.0002619709008671041 | 0.0002468368537653527 | 5.78% | 6.13% | 1.06x | ✅ |
+| `is_encodable[(uint8[2][2][],string[])-([], [])]` | 0.0002672882709861539 | 0.00024621544071868023 | 7.88% | 8.56% | 1.09x | ✅ |
+| `is_encodable[(uint8[2][],string[])-([], [])]` | 0.0002664127142050053 | 0.0002469250857897789 | 7.31% | 7.89% | 1.08x | ✅ |
+| `is_encodable[(uint8[3],(string[2],bool[2]))-([1, 2, 3], (['a]` | 0.0007331125781640834 | 0.0006476884292845041 | 11.65% | 13.19% | 1.13x | ✅ |
+| `is_encodable[(uint8[],string)-([], '')]` | 0.0002336039089547174 | 0.0002185362067004862 | 6.45% | 6.89% | 1.07x | ✅ |
+| `is_encodable[(uint8[][],string)-([[]], '')]` | 0.0002892015628064538 | 0.00026568845730474033 | 8.13% | 8.85% | 1.09x | ✅ |
+| `is_encodable[address-b'\\x00\\x00\\x00\\x]` | 6.711423184674957e-05 | 5.61756434232048e-05 | 16.30% | 19.47% | 1.19x | ✅ |
+| `is_encodable[address-b'\\xff\\xff\\xff\\x]` | 6.731257782708237e-05 | 5.668665911095617e-05 | 15.79% | 18.75% | 1.19x | ✅ |
+| `is_encodable[address[2]-[b'\\x00\\x00\\x00\\]` | 0.00016993991372736292 | 0.00014883674834505512 | 12.42% | 14.18% | 1.14x | ✅ |
+| `is_encodable[bool-False]` | 4.69528424944194e-05 | 4.475032095138907e-05 | 4.69% | 4.92% | 1.05x | ✅ |
+| `is_encodable[bool-True]` | 4.7347533980234296e-05 | 4.4869907784751687e-05 | 5.23% | 5.52% | 1.06x | ✅ |
+| `is_encodable[bool[4]-[True, False, Tr]` | 0.00016515588778950424 | 0.00014706214613022445 | 10.96% | 12.30% | 1.12x | ✅ |
+| `is_encodable[bool[][2]-[[True, False], ]` | 0.0002805351497206023 | 0.00024752349883412666 | 11.77% | 13.34% | 1.13x | ✅ |
+| `is_encodable[bytes-b'']` | 4.818180751797361e-05 | 4.92686045806388e-05 | -2.26% | -2.21% | 0.98x | ❌ |
+| `is_encodable[bytes-b'\\x00\\x00\\x00\\x0]` | 4.807387299308988e-05 | 4.8869679285875524e-05 | -1.66% | -1.63% | 0.98x | ❌ |
+| `is_encodable[bytes-b'\\x00\\x00\\x00\\x1]` | 4.7904583394077195e-05 | 4.911082078612109e-05 | -2.52% | -2.46% | 0.98x | ❌ |
+| `is_encodable[bytes-b'aaaaaaaaaaaaaa]` | 4.798459800064012e-05 | 4.908419721787088e-05 | -2.29% | -2.24% | 0.98x | ❌ |
+| `is_encodable[bytes-b'hello world']` | 4.815516585232247e-05 | 4.9057267585769164e-05 | -1.87% | -1.84% | 0.98x | ❌ |
+| `is_encodable[bytes1-b'\\x01']` | 4.61988316994674e-05 | 4.837389097259995e-05 | -4.71% | -4.50% | 0.96x | ❌ |
+| `is_encodable[bytes10-b'\\x01\\x01\\x01\\x]` | 4.659838126687047e-05 | 4.85724531318219e-05 | -4.24% | -4.06% | 0.96x | ❌ |
+| `is_encodable[bytes11-b'\\x01\\x01\\x01\\x]` | 4.722894517546114e-05 | 4.890017934940902e-05 | -3.54% | -3.42% | 0.97x | ❌ |
+| `is_encodable[bytes12-b'\\x01\\x01\\x01\\x]` | 4.7387621819229576e-05 | 4.895531359387825e-05 | -3.31% | -3.20% | 0.97x | ❌ |
+| `is_encodable[bytes13-b'\\x01\\x01\\x01\\x]` | 4.770244405245209e-05 | 4.877462613548426e-05 | -2.25% | -2.20% | 0.98x | ❌ |
+| `is_encodable[bytes14-b'\\x01\\x01\\x01\\x]` | 4.6792097337317475e-05 | 4.904467370590492e-05 | -4.81% | -4.59% | 0.95x | ❌ |
+| `is_encodable[bytes15-b'\\x01\\x01\\x01\\x]` | 4.6957329632823164e-05 | 4.904398328361481e-05 | -4.44% | -4.25% | 0.96x | ❌ |
+| `is_encodable[bytes16-b'\\x01\\x01\\x01\\x]` | 4.670769818123578e-05 | 4.86232717850413e-05 | -4.10% | -3.94% | 0.96x | ❌ |
+| `is_encodable[bytes16[3]-[b'\\x01\\x01\\x01\\]` | 0.00014798544507083603 | 0.0001506651572929494 | -1.81% | -1.78% | 0.98x | ❌ |
+| `is_encodable[bytes17-b'\\x01\\x01\\x01\\x]` | 4.7390906619879884e-05 | 4.9359873532260604e-05 | -4.15% | -3.99% | 0.96x | ❌ |
+| `is_encodable[bytes18-b'\\x01\\x01\\x01\\x]` | 4.712534522257453e-05 | 4.946787480952444e-05 | -4.97% | -4.74% | 0.95x | ❌ |
+| `is_encodable[bytes19-b'\\x01\\x01\\x01\\x]` | 4.774210982008728e-05 | 4.942202250463734e-05 | -3.52% | -3.40% | 0.97x | ❌ |
+| `is_encodable[bytes2-b'\\x01\\x01']` | 4.704834129295425e-05 | 4.9274335370118716e-05 | -4.73% | -4.52% | 0.95x | ❌ |
+| `is_encodable[bytes20-b'\\x01\\x01\\x01\\x]` | 4.7766180518931586e-05 | 4.9894012548049724e-05 | -4.45% | -4.26% | 0.96x | ❌ |
+| `is_encodable[bytes21-b'\\x01\\x01\\x01\\x]` | 4.6850124753941797e-05 | 4.947519306960733e-05 | -5.60% | -5.31% | 0.95x | ❌ |
+| `is_encodable[bytes22-b'\\x01\\x01\\x01\\x]` | 4.71362511128034e-05 | 4.916128695239248e-05 | -4.30% | -4.12% | 0.96x | ❌ |
+| `is_encodable[bytes23-b'\\x01\\x01\\x01\\x]` | 4.614057543332212e-05 | 4.9156744669188836e-05 | -6.54% | -6.14% | 0.94x | ❌ |
+| `is_encodable[bytes24-b'\\x01\\x01\\x01\\x]` | 4.662695859866577e-05 | 4.92059733379804e-05 | -5.53% | -5.24% | 0.95x | ❌ |
+| `is_encodable[bytes25-b'\\x01\\x01\\x01\\x]` | 4.6926380245938764e-05 | 4.9759349215870904e-05 | -6.04% | -5.69% | 0.94x | ❌ |
+| `is_encodable[bytes26-b'\\x01\\x01\\x01\\x]` | 4.635774411675743e-05 | 4.924178019463745e-05 | -6.22% | -5.86% | 0.94x | ❌ |
+| `is_encodable[bytes27-b'\\x01\\x01\\x01\\x]` | 4.6364030177097134e-05 | 4.904711969743284e-05 | -5.79% | -5.47% | 0.95x | ❌ |
+| `is_encodable[bytes28-b'\\x01\\x01\\x01\\x]` | 4.7725701017505466e-05 | 4.9485386119394905e-05 | -3.69% | -3.56% | 0.96x | ❌ |
+| `is_encodable[bytes29-b'\\x01\\x01\\x01\\x]` | 4.6684258157302734e-05 | 4.965675791366125e-05 | -6.37% | -5.99% | 0.94x | ❌ |
+| `is_encodable[bytes3-b'\\x01\\x01\\x01']` | 4.688851934855731e-05 | 4.943547132239447e-05 | -5.43% | -5.15% | 0.95x | ❌ |
+| `is_encodable[bytes30-b'\\x01\\x01\\x01\\x]` | 4.736036803620213e-05 | 4.927898399109361e-05 | -4.05% | -3.89% | 0.96x | ❌ |
+| `is_encodable[bytes31-b'\\x01\\x01\\x01\\x]` | 4.700645890723068e-05 | 4.911876824220315e-05 | -4.49% | -4.30% | 0.96x | ❌ |
+| `is_encodable[bytes32-b'\\x01\\x01\\x01\\x]` | 4.700987636925622e-05 | 4.95121492882122e-05 | -5.32% | -5.05% | 0.95x | ❌ |
+| `is_encodable[bytes32[2]-[b'\\x00\\x00\\x00\\]` | 0.0001364293853852018 | 0.00013581162233918494 | 0.45% | 0.45% | 1.00x | ✅ |
+| `is_encodable[bytes4-b'\\x01\\x01\\x01\\x]` | 4.602899845808477e-05 | 4.943380170629549e-05 | -7.40% | -6.89% | 0.93x | ❌ |
+| `is_encodable[bytes5-b'\\x01\\x01\\x01\\x]` | 4.688813675377182e-05 | 4.8876416757035475e-05 | -4.24% | -4.07% | 0.96x | ❌ |
+| `is_encodable[bytes6-b'\\x01\\x01\\x01\\x]` | 4.679563431193145e-05 | 4.805768229128955e-05 | -2.70% | -2.63% | 0.97x | ❌ |
+| `is_encodable[bytes7-b'\\x01\\x01\\x01\\x]` | 4.7054701695246586e-05 | 4.8160862988825176e-05 | -2.35% | -2.30% | 0.98x | ❌ |
+| `is_encodable[bytes8-b'\\x01\\x01\\x01\\x]` | 4.677823603151654e-05 | 4.8522636000215106e-05 | -3.73% | -3.60% | 0.96x | ❌ |
+| `is_encodable[bytes8[4]-[b'\\x01\\x01\\x01\\]` | 0.00016348721966240556 | 0.0001646586694120657 | -0.72% | -0.71% | 0.99x | ❌ |
+| `is_encodable[bytes9-b'\\x01\\x01\\x01\\x]` | 4.671071727629565e-05 | 4.801749103489527e-05 | -2.80% | -2.72% | 0.97x | ❌ |
+| `is_encodable[bytes[100]-[b'\\x00\\x00\\x00\\]` | 0.0016627073754179231 | 0.0017623240530840315 | -5.99% | -5.65% | 0.94x | ❌ |
+| `is_encodable[bytes[10]-[b'\\x00\\x00\\x00\\]` | 0.00025988352464456833 | 0.0002674661502471873 | -2.92% | -2.83% | 0.97x | ❌ |
+| `is_encodable[bytes[]-[]0]` | 8.590132155263467e-05 | 8.080657941143905e-05 | 5.93% | 6.30% | 1.06x | ✅ |
+| `is_encodable[bytes[]-[]1]` | 8.540461962003944e-05 | 8.180908402159785e-05 | 4.21% | 4.40% | 1.04x | ✅ |
+| `is_encodable[bytes[]-[b'abc', b'def',]` | 0.00013784952624099815 | 0.0001391447024194374 | -0.94% | -0.93% | 0.99x | ❌ |
+| `is_encodable[fixed128x1-Decimal('1.2')]` | 0.0006813746231273399 | 0.0006779452175202554 | 0.50% | 0.51% | 1.01x | ✅ |
+| `is_encodable[fixed128x10-Decimal('1.20000]` | 0.0006905590014651846 | 0.0006972598607208002 | -0.97% | -0.96% | 0.99x | ❌ |
+| `is_encodable[fixed128x18-Decimal('1.20000]` | 0.0006949147907110793 | 0.0006960178043151526 | -0.16% | -0.16% | 1.00x | ❌ |
+| `is_encodable[fixed128x2-Decimal('1.20')]` | 0.0006829008172605277 | 0.0006825139162925485 | 0.06% | 0.06% | 1.00x | ✅ |
+| `is_encodable[fixed16x1-Decimal('1.2')]` | 0.0006128157779972358 | 0.0006119917155903348 | 0.13% | 0.13% | 1.00x | ✅ |
+| `is_encodable[fixed16x2-Decimal('1.20')]` | 0.0006133885417526868 | 0.0006129241077938226 | 0.08% | 0.08% | 1.00x | ✅ |
+| `is_encodable[fixed256x1-Decimal('1.2')]` | 0.0007312873374593012 | 0.0007290643853919112 | 0.30% | 0.30% | 1.00x | ✅ |
+| `is_encodable[fixed256x10-Decimal('1.20000]` | 0.0007418523351611232 | 0.0007425158281750892 | -0.09% | -0.09% | 1.00x | ❌ |
+| `is_encodable[fixed256x18-Decimal('1.20000]` | 0.0007514004948540748 | 0.0007443052110158049 | 0.94% | 0.95% | 1.01x | ✅ |
+| `is_encodable[fixed256x2-Decimal('1.20')]` | 0.0007360718498398244 | 0.00073014485076573 | 0.81% | 0.81% | 1.01x | ✅ |
+| `is_encodable[fixed32x1-Decimal('1.2')]` | 0.0006409510116103864 | 0.0006381019841294575 | 0.44% | 0.45% | 1.00x | ✅ |
+| `is_encodable[fixed32x2-Decimal('1.20')]` | 0.0006431344933626506 | 0.000641609735575912 | 0.24% | 0.24% | 1.00x | ✅ |
+| `is_encodable[fixed32x2[2]-[Decimal('3.14')]` | 0.0013293138531480508 | 0.0013316399106884091 | -0.17% | -0.17% | 1.00x | ❌ |
+| `is_encodable[fixed32x2[]-[]0]` | 8.567718080790924e-05 | 7.966771565122888e-05 | 7.01% | 7.54% | 1.08x | ✅ |
+| `is_encodable[fixed32x2[]-[]1]` | 8.635563108937134e-05 | 8.087586103121302e-05 | 6.35% | 6.78% | 1.07x | ✅ |
+| `is_encodable[fixed64x1-Decimal('1.2')]` | 0.0006547133490622033 | 0.0006584065494296881 | -0.56% | -0.56% | 0.99x | ❌ |
+| `is_encodable[fixed64x10-Decimal('1.20000]` | 0.0006712599611006535 | 0.0006800186787259438 | -1.30% | -1.29% | 0.99x | ❌ |
+| `is_encodable[fixed64x18-Decimal('1.20000]` | 0.000671554508268414 | 0.0006724218676815286 | -0.13% | -0.13% | 1.00x | ❌ |
+| `is_encodable[fixed64x2-Decimal('1.20')]` | 0.0006601836138121676 | 0.0006587043801575189 | 0.22% | 0.22% | 1.00x | ✅ |
+| `is_encodable[fixed8x1-Decimal('1.2')]` | 0.0005993831951227387 | 0.0005999767655727426 | -0.10% | -0.10% | 1.00x | ❌ |
+| `is_encodable[fixed8x2-Decimal('1.20')]` | 0.0006021796108994916 | 0.000603335407734171 | -0.19% | -0.19% | 1.00x | ❌ |
+| `is_encodable[function-b'\\x00\\x00\\x00\\x]` | 4.5548543654188635e-05 | 4.820429168867655e-05 | -5.83% | -5.51% | 0.94x | ❌ |
+| `is_encodable[function-b'\\x01\\x01\\x01\\x]` | 4.691269565562797e-05 | 4.799344594773827e-05 | -2.30% | -2.25% | 0.98x | ❌ |
+| `is_encodable[function-b'\\xff\\xff\\xff\\x]` | 4.631690784899039e-05 | 4.7742561057464124e-05 | -3.08% | -2.99% | 0.97x | ❌ |
+| `is_encodable[int128--170141183460469]` | 0.00014840925519663236 | 0.00014272397790139304 | 3.83% | 3.98% | 1.04x | ✅ |
+| `is_encodable[int128-1701411834604692]` | 0.00014808916520413736 | 0.00014157228778470117 | 4.40% | 4.60% | 1.05x | ✅ |
+| `is_encodable[int16--32768]` | 9.616244021162525e-05 | 8.96832390691142e-05 | 6.74% | 7.22% | 1.07x | ✅ |
+| `is_encodable[int16-32767]` | 9.56546732796875e-05 | 8.969604028476977e-05 | 6.23% | 6.64% | 1.07x | ✅ |
+| `is_encodable[int256--578960446186580]` | 0.00017044472397917035 | 0.00016516300540943808 | 3.10% | 3.20% | 1.03x | ✅ |
+| `is_encodable[int256-5789604461865809]` | 0.00017052173332211278 | 0.00016413674744743576 | 3.74% | 3.89% | 1.04x | ✅ |
+| `is_encodable[int32--2147483648]` | 0.00011595907158993037 | 0.00010939391516273894 | 5.66% | 6.00% | 1.06x | ✅ |
+| `is_encodable[int32-2147483647]` | 0.00011583379214614801 | 0.00010908931016764977 | 5.82% | 6.18% | 1.06x | ✅ |
+| `is_encodable[int64--922337203685477]` | 0.00013135285193955474 | 0.00012501493107068464 | 4.83% | 5.07% | 1.05x | ✅ |
+| `is_encodable[int64-9223372036854775]` | 0.00013047692773425295 | 0.00012609616339617012 | 3.36% | 3.47% | 1.03x | ✅ |
+| `is_encodable[int8--128]` | 8.459601057756622e-05 | 7.900896799858664e-05 | 6.60% | 7.07% | 1.07x | ✅ |
+| `is_encodable[int8-127]` | 8.513638923415235e-05 | 7.93222978561042e-05 | 6.83% | 7.33% | 1.07x | ✅ |
+| `is_encodable[string-'']` | 4.8642142862298285e-05 | 4.597742412835231e-05 | 5.48% | 5.80% | 1.06x | ✅ |
+| `is_encodable[string-'\U0001d518\U0001d52b\U0001d526\U0001d520\U0001d52c\U0001d521\U0001d522']` | 4.795563461962088e-05 | 4.537603916833418e-05 | 5.38% | 5.68% | 1.06x | ✅ |
+| `is_encodable[string-'aaaaaaaaaaaaaaa0]` | 4.829439269900657e-05 | 4.5192295320266854e-05 | 6.42% | 6.86% | 1.07x | ✅ |
+| `is_encodable[string-'aaaaaaaaaaaaaaa1]` | 4.814040022360182e-05 | 4.5009762311039226e-05 | 6.50% | 6.96% | 1.07x | ✅ |
+| `is_encodable[string-'bbbbbbbbbbbbbbb]` | 4.837719246061786e-05 | 4.5637820603630786e-05 | 5.66% | 6.00% | 1.06x | ✅ |
+| `is_encodable[string-'hello world']` | 4.7772879265760105e-05 | 4.534894890303089e-05 | 5.07% | 5.35% | 1.05x | ✅ |
+| `is_encodable[string[10]-['0', '1', '2', ]` | 0.000263799986256754 | 0.00022021638305848697 | 16.52% | 19.79% | 1.20x | ✅ |
+| `is_encodable[string[2]-['foo', 'bar']]` | 0.00013453293480904024 | 0.0001256433060718466 | 6.61% | 7.08% | 1.07x | ✅ |
+| `is_encodable[string[5]-['a', 'b', 'c', ]` | 0.00017903387592638616 | 0.00015953991267627182 | 10.89% | 12.22% | 1.12x | ✅ |
+| `is_encodable[string[]-['a', 'b', 'c']]` | 0.0001363280120754842 | 0.00012196191844947008 | 10.54% | 11.78% | 1.12x | ✅ |
+| `is_encodable[string[]-[]0]` | 8.505912653532504e-05 | 7.98409880184495e-05 | 6.13% | 6.54% | 1.07x | ✅ |
+| `is_encodable[string[]-[]1]` | 8.371684378229154e-05 | 8.02264303002246e-05 | 4.17% | 4.35% | 1.04x | ✅ |
+| `is_encodable[ufixed128x1-Decimal('1.2')]` | 0.0006037370204967636 | 0.0006152125653617697 | -1.90% | -1.87% | 0.98x | ❌ |
+| `is_encodable[ufixed128x10-Decimal('1.20000]` | 0.000619070206520428 | 0.0006226223450408934 | -0.57% | -0.57% | 0.99x | ❌ |
+| `is_encodable[ufixed128x18-Decimal('1.20000]` | 0.0006200262730307852 | 0.000620171957787577 | -0.02% | -0.02% | 1.00x | ❌ |
+| `is_encodable[ufixed128x2-Decimal('1.20')]` | 0.0006053189170362699 | 0.0006099520499020204 | -0.77% | -0.76% | 0.99x | ❌ |
+| `is_encodable[ufixed16x1-Decimal('1.2')]` | 0.0005892108472907074 | 0.0005767798741442926 | 2.11% | 2.16% | 1.02x | ✅ |
+| `is_encodable[ufixed16x2-Decimal('1.20')]` | 0.0005789070143011701 | 0.0005812238290173462 | -0.40% | -0.40% | 1.00x | ❌ |
+| `is_encodable[ufixed256x1-Decimal('1.2')]` | 0.0006290483264575275 | 0.0006271354069195439 | 0.30% | 0.31% | 1.00x | ✅ |
+| `is_encodable[ufixed256x10-Decimal('1.20000]` | 0.0006406872310213453 | 0.0006418357000086804 | -0.18% | -0.18% | 1.00x | ❌ |
+| `is_encodable[ufixed256x18-Decimal('1.20000]` | 0.00066031517520329 | 0.000640446897516298 | 3.01% | 3.10% | 1.03x | ✅ |
+| `is_encodable[ufixed256x2-Decimal('1.20')]` | 0.0006304205556418877 | 0.0006272491176980324 | 0.50% | 0.51% | 1.01x | ✅ |
+| `is_encodable[ufixed32x1-Decimal('1.2')]` | 0.0005865361281266515 | 0.0005871788764842241 | -0.11% | -0.11% | 1.00x | ❌ |
+| `is_encodable[ufixed32x2-Decimal('1.20')]` | 0.0005921225618907693 | 0.0005889478277777264 | 0.54% | 0.54% | 1.01x | ✅ |
+| `is_encodable[ufixed64x1-Decimal('1.2')]` | 0.0005933785908870651 | 0.0005937614409039806 | -0.06% | -0.06% | 1.00x | ❌ |
+| `is_encodable[ufixed64x10-Decimal('1.20000]` | 0.0006126799015773567 | 0.0006084842862717692 | 0.68% | 0.69% | 1.01x | ✅ |
+| `is_encodable[ufixed64x18-Decimal('1.20000]` | 0.0006106683587886806 | 0.0006076558334422093 | 0.49% | 0.50% | 1.00x | ✅ |
+| `is_encodable[ufixed64x2-Decimal('1.20')]` | 0.0005951587086792204 | 0.0005968688247605211 | -0.29% | -0.29% | 1.00x | ❌ |
+| `is_encodable[ufixed8x1-Decimal('1.2')]` | 0.0005744853280040387 | 0.0005711137794785757 | 0.59% | 0.59% | 1.01x | ✅ |
+| `is_encodable[ufixed8x2-Decimal('1.20')]` | 0.000573337268337314 | 0.0005745614594957462 | -0.21% | -0.21% | 1.00x | ❌ |
+| `is_encodable[uint128-3402823669209384]` | 9.970584888047131e-05 | 9.371807607211775e-05 | 6.01% | 6.39% | 1.06x | ✅ |
+| `is_encodable[uint16-65535]` | 8.1800313451145e-05 | 7.671017643782735e-05 | 6.22% | 6.64% | 1.07x | ✅ |
+| `is_encodable[uint256-0]` | 0.00010627146747764558 | 0.00010347052172343622 | 2.64% | 2.71% | 1.03x | ✅ |
+| `is_encodable[uint256-1157920892373161]` | 0.00010799947884304778 | 0.00010251018532855172 | 5.08% | 5.35% | 1.05x | ✅ |
+| `is_encodable[uint256[2]-[0, 115792089237]` | 0.00025575481719028215 | 0.00024008223494965822 | 6.13% | 6.53% | 1.07x | ✅ |
+| `is_encodable[uint256[2][2]-[[1, 2], [3, 4]]]` | 0.0005482508219505722 | 0.0005091471073604049 | 7.13% | 7.68% | 1.08x | ✅ |
+| `is_encodable[uint32-4294967295]` | 8.79008935962599e-05 | 8.140118641852764e-05 | 7.39% | 7.98% | 1.08x | ✅ |
+| `is_encodable[uint64-1844674407370955]` | 9.527103293515921e-05 | 8.911768688941321e-05 | 6.46% | 6.90% | 1.07x | ✅ |
+| `is_encodable[uint8-0]` | 7.700228179643243e-05 | 7.092272479210441e-05 | 7.90% | 8.57% | 1.09x | ✅ |
+| `is_encodable[uint8-255]` | 7.749802160915156e-05 | 7.147054622894957e-05 | 7.78% | 8.43% | 1.08x | ✅ |
+| `is_encodable[uint8[100]-[0, 1, 2, 3, 4, ]` | 0.004183466296586954 | 0.003644048803707173 | 12.89% | 14.80% | 1.15x | ✅ |
+| `is_encodable[uint8[10]-[0, 1, 2, 3, 4, ]` | 0.0005225127160281561 | 0.0004641740458318177 | 11.17% | 12.57% | 1.13x | ✅ |
+| `is_encodable[uint8[2][2][]-[]]` | 8.562341267945916e-05 | 8.025022320722023e-05 | 6.28% | 6.70% | 1.07x | ✅ |
+| `is_encodable[uint8[2][]-[]]` | 8.62531188032321e-05 | 8.130024004994139e-05 | 5.74% | 6.09% | 1.06x | ✅ |
+| `is_encodable[uint8[3]-[1, 2, 3]]` | 0.00023692713474669623 | 0.0002130294580033299 | 10.09% | 11.22% | 1.11x | ✅ |
+| `is_encodable[uint8[]-[1, 2, 3, 4, 5]]` | 0.0003028748375967019 | 0.0002729424621960317 | 9.88% | 10.97% | 1.11x | ✅ |
+| `is_encodable[uint8[]-[]0]` | 8.511599815654508e-05 | 7.98087756301185e-05 | 6.24% | 6.65% | 1.07x | ✅ |
+| `is_encodable[uint8[]-[]1]` | 8.394998200524533e-05 | 7.992933196949286e-05 | 4.79% | 5.03% | 1.05x | ✅ |
+| `is_encodable[uint8[][]-[[]]]` | 0.0001378787190965342 | 0.0001280435555389086 | 7.13% | 7.68% | 1.08x | ✅ |
+| `is_encodable_type[((uint8,uint8),uint8)]` | 2.1992291731730172e-05 | 2.1397939488738943e-05 | 2.70% | 2.78% | 1.03x | ✅ |
+| `is_encodable_type[((uint8[2],(string,bool)),bytes32)]` | 2.1859802096518272e-05 | 2.155664368426404e-05 | 1.39% | 1.41% | 1.01x | ✅ |
+| `is_encodable_type[((uint8[2][2],(string[2],bool[2])),bytes32[2])]` | 2.2053200260921206e-05 | 2.190508657194313e-05 | 0.67% | 0.68% | 1.01x | ✅ |
+| `is_encodable_type[(address,uint8)]` | 2.1974857587523043e-05 | 2.1793727342304325e-05 | 0.82% | 0.83% | 1.01x | ✅ |
+| `is_encodable_type[(bytes1,bytes2,bytes3,bytes4)]` | 2.2555650809769442e-05 | 2.2714542931735025e-05 | -0.70% | -0.70% | 0.99x | ❌ |
+| `is_encodable_type[(bytes32[],string[])]` | 2.169221699630027e-05 | 2.1806759568953542e-05 | -0.53% | -0.53% | 0.99x | ❌ |
+| `is_encodable_type[(bytes[],string[])]` | 2.1682277457088168e-05 | 2.1561412474222206e-05 | 0.56% | 0.56% | 1.01x | ✅ |
+| `is_encodable_type[(fixed32x2,uint8)]` | 2.203301452233772e-05 | 2.220790792024827e-05 | -0.79% | -0.79% | 0.99x | ❌ |
+| `is_encodable_type[(function,uint256)]` | 2.2152876226369583e-05 | 2.20280593009952e-05 | 0.56% | 0.57% | 1.01x | ✅ |
+| `is_encodable_type[(string,bytes)]` | 2.2103782673833247e-05 | 2.205920496911597e-05 | 0.20% | 0.20% | 1.00x | ✅ |
+| `is_encodable_type[(string[],bytes[])]` | 2.208944148684875e-05 | 2.202609006856986e-05 | 0.29% | 0.29% | 1.00x | ✅ |
+| `is_encodable_type[(uint256,bool)]` | 2.2760548550858432e-05 | 2.2415181853333127e-05 | 1.52% | 1.54% | 1.02x | ✅ |
+| `is_encodable_type[(uint256[2],string)]` | 2.1406536490465464e-05 | 2.1494573468967396e-05 | -0.41% | -0.41% | 1.00x | ❌ |
+| `is_encodable_type[(uint256[],(string[],bool))]` | 2.1776117292835668e-05 | 2.1577994076978974e-05 | 0.91% | 0.92% | 1.01x | ✅ |
+| `is_encodable_type[(uint8,(bool,string))]` | 2.1882706981396184e-05 | 2.2064800570121928e-05 | -0.83% | -0.83% | 0.99x | ❌ |
+| `is_encodable_type[(uint8[2],(string,bool[2]))]` | 2.2185708019722907e-05 | 2.2297387829052178e-05 | -0.50% | -0.50% | 0.99x | ❌ |
+| `is_encodable_type[(uint8[2][2],(string[2],bool[2]))]` | 2.230034839426705e-05 | 2.2079302164826248e-05 | 0.99% | 1.00% | 1.01x | ✅ |
+| `is_encodable_type[(uint8[2][2][2],string)]` | 2.246408244866183e-05 | 2.2953740248666948e-05 | -2.18% | -2.13% | 0.98x | ❌ |
+| `is_encodable_type[(uint8[2][2][2][2],string[2])]` | 2.1784962004873284e-05 | 2.1699677882548136e-05 | 0.39% | 0.39% | 1.00x | ✅ |
+| `is_encodable_type[(uint8[2][2][2][2][2],string[2][2])]` | 2.2172098990273136e-05 | 2.206524489022578e-05 | 0.48% | 0.48% | 1.00x | ✅ |
+| `is_encodable_type[(uint8[2][2][2][2][],string[])]` | 2.197830761736113e-05 | 2.2002577812002913e-05 | -0.11% | -0.11% | 1.00x | ❌ |
+| `is_encodable_type[(uint8[2][2][],string[])]` | 2.1785218908262e-05 | 2.1924129217853416e-05 | -0.64% | -0.63% | 0.99x | ❌ |
+| `is_encodable_type[(uint8[2][],string[])]` | 2.1794387118764794e-05 | 2.1800833638242084e-05 | -0.03% | -0.03% | 1.00x | ❌ |
+| `is_encodable_type[(uint8[3],(string[2],bool[2]))]` | 2.2314720005339238e-05 | 2.1949518884687956e-05 | 1.64% | 1.66% | 1.02x | ✅ |
+| `is_encodable_type[(uint8[],string)]` | 2.1889539346837452e-05 | 2.1789578477189037e-05 | 0.46% | 0.46% | 1.00x | ✅ |
+| `is_encodable_type[(uint8[][],string)]` | 2.214776456747771e-05 | 2.1808339755530688e-05 | 1.53% | 1.56% | 1.02x | ✅ |
+| `is_encodable_type[address[2]]` | 2.2153865733082614e-05 | 2.202433349354135e-05 | 0.58% | 0.59% | 1.01x | ✅ |
+| `is_encodable_type[address]` | 2.1860107534509964e-05 | 2.1843401515498483e-05 | 0.08% | 0.08% | 1.00x | ✅ |
+| `is_encodable_type[bool[4]]` | 2.2310155742916473e-05 | 2.24999295992641e-05 | -0.85% | -0.84% | 0.99x | ❌ |
+| `is_encodable_type[bool[][2]]` | 2.1905521392745616e-05 | 2.1531083517860712e-05 | 1.71% | 1.74% | 1.02x | ✅ |
+| `is_encodable_type[bool]` | 2.1979563759561966e-05 | 2.194263148824643e-05 | 0.17% | 0.17% | 1.00x | ✅ |
+| `is_encodable_type[bytes10]` | 2.1929887183554556e-05 | 2.164706728151097e-05 | 1.29% | 1.31% | 1.01x | ✅ |
+| `is_encodable_type[bytes11]` | 2.1740294913305672e-05 | 2.162890958711853e-05 | 0.51% | 0.51% | 1.01x | ✅ |
+| `is_encodable_type[bytes12]` | 2.196268233015155e-05 | 2.1659163633290207e-05 | 1.38% | 1.40% | 1.01x | ✅ |
+| `is_encodable_type[bytes13]` | 2.178566576726324e-05 | 2.1838575500966205e-05 | -0.24% | -0.24% | 1.00x | ❌ |
+| `is_encodable_type[bytes14]` | 2.1716447640842047e-05 | 2.172457110765568e-05 | -0.04% | -0.04% | 1.00x | ❌ |
+| `is_encodable_type[bytes15]` | 2.235816795036815e-05 | 2.1461407822487735e-05 | 4.01% | 4.18% | 1.04x | ✅ |
+| `is_encodable_type[bytes16[3]]` | 2.2112249980660918e-05 | 2.2132893186547216e-05 | -0.09% | -0.09% | 1.00x | ❌ |
+| `is_encodable_type[bytes16]` | 2.1627743439873948e-05 | 2.196866645560658e-05 | -1.58% | -1.55% | 0.98x | ❌ |
+| `is_encodable_type[bytes17]` | 2.1740090658345345e-05 | 2.1716702762206864e-05 | 0.11% | 0.11% | 1.00x | ✅ |
+| `is_encodable_type[bytes18]` | 2.1954276742040315e-05 | 2.1845462414051076e-05 | 0.50% | 0.50% | 1.00x | ✅ |
+| `is_encodable_type[bytes19]` | 2.1514333134939137e-05 | 2.172162469378131e-05 | -0.96% | -0.95% | 0.99x | ❌ |
+| `is_encodable_type[bytes1]` | 2.177052937039684e-05 | 2.188622597897463e-05 | -0.53% | -0.53% | 0.99x | ❌ |
+| `is_encodable_type[bytes20]` | 2.2138086465213435e-05 | 2.2031713411693022e-05 | 0.48% | 0.48% | 1.00x | ✅ |
+| `is_encodable_type[bytes21]` | 2.2093113040981954e-05 | 2.169233534957433e-05 | 1.81% | 1.85% | 1.02x | ✅ |
+| `is_encodable_type[bytes22]` | 2.1990914176177715e-05 | 2.1976064370921287e-05 | 0.07% | 0.07% | 1.00x | ✅ |
+| `is_encodable_type[bytes23]` | 2.2117977676931856e-05 | 2.1600479965451067e-05 | 2.34% | 2.40% | 1.02x | ✅ |
+| `is_encodable_type[bytes24]` | 2.1429527007304246e-05 | 2.1872166915952553e-05 | -2.07% | -2.02% | 0.98x | ❌ |
+| `is_encodable_type[bytes25]` | 2.160845022387508e-05 | 2.1874749043644308e-05 | -1.23% | -1.22% | 0.99x | ❌ |
+| `is_encodable_type[bytes26]` | 2.193579630111059e-05 | 2.161046849169138e-05 | 1.48% | 1.51% | 1.02x | ✅ |
+| `is_encodable_type[bytes27]` | 2.1773320186500136e-05 | 2.1781225036711874e-05 | -0.04% | -0.04% | 1.00x | ❌ |
+| `is_encodable_type[bytes28]` | 2.2044582539017334e-05 | 2.216671465457867e-05 | -0.55% | -0.55% | 0.99x | ❌ |
+| `is_encodable_type[bytes29]` | 2.179815553743174e-05 | 2.1879618706865883e-05 | -0.37% | -0.37% | 1.00x | ❌ |
+| `is_encodable_type[bytes2]` | 2.2032368633625373e-05 | 2.1766246139327153e-05 | 1.21% | 1.22% | 1.01x | ✅ |
+| `is_encodable_type[bytes30]` | 2.166999142320623e-05 | 2.172958595536637e-05 | -0.28% | -0.27% | 1.00x | ❌ |
+| `is_encodable_type[bytes31]` | 2.147023591930147e-05 | 2.1996313093911133e-05 | -2.45% | -2.39% | 0.98x | ❌ |
+| `is_encodable_type[bytes32[2]]` | 2.2412845960354483e-05 | 2.2555526063706258e-05 | -0.64% | -0.63% | 0.99x | ❌ |
+| `is_encodable_type[bytes32]` | 2.1672598465024494e-05 | 2.1482553776689736e-05 | 0.88% | 0.88% | 1.01x | ✅ |
+| `is_encodable_type[bytes3]` | 2.1718983217074182e-05 | 2.1761692324797992e-05 | -0.20% | -0.20% | 1.00x | ❌ |
+| `is_encodable_type[bytes4]` | 2.1777821940693776e-05 | 2.1748690682402207e-05 | 0.13% | 0.13% | 1.00x | ✅ |
+| `is_encodable_type[bytes5]` | 2.2157195873290082e-05 | 2.1726679843649483e-05 | 1.94% | 1.98% | 1.02x | ✅ |
+| `is_encodable_type[bytes6]` | 2.1793646789366358e-05 | 2.1704413538095712e-05 | 0.41% | 0.41% | 1.00x | ✅ |
+| `is_encodable_type[bytes7]` | 2.195497171904133e-05 | 2.1695225940429877e-05 | 1.18% | 1.20% | 1.01x | ✅ |
+| `is_encodable_type[bytes8[4]]` | 2.173608996192018e-05 | 2.2396063921369744e-05 | -3.04% | -2.95% | 0.97x | ❌ |
+| `is_encodable_type[bytes8]` | 2.181130316703969e-05 | 2.150048853205576e-05 | 1.43% | 1.45% | 1.01x | ✅ |
+| `is_encodable_type[bytes9]` | 2.2114905909926937e-05 | 2.1833774578961337e-05 | 1.27% | 1.29% | 1.01x | ✅ |
+| `is_encodable_type[bytes[100]]` | 2.1877667685254142e-05 | 2.1807493381953585e-05 | 0.32% | 0.32% | 1.00x | ✅ |
+| `is_encodable_type[bytes[10]]` | 2.1945118791123382e-05 | 2.149408692686344e-05 | 2.06% | 2.10% | 1.02x | ✅ |
+| `is_encodable_type[bytes[]]` | 2.2418805791569575e-05 | 2.2318706443314236e-05 | 0.45% | 0.45% | 1.00x | ✅ |
+| `is_encodable_type[bytes]` | 2.175900398745536e-05 | 2.1324803139926256e-05 | 2.00% | 2.04% | 1.02x | ✅ |
+| `is_encodable_type[fixed128x10]` | 2.210604767842492e-05 | 2.2168728500361535e-05 | -0.28% | -0.28% | 1.00x | ❌ |
+| `is_encodable_type[fixed128x18]` | 2.1897891347086886e-05 | 2.15765371837184e-05 | 1.47% | 1.49% | 1.01x | ✅ |
+| `is_encodable_type[fixed128x1]` | 2.136219418560139e-05 | 2.2161108706513717e-05 | -3.74% | -3.61% | 0.96x | ❌ |
+| `is_encodable_type[fixed128x2]` | 2.209784681987764e-05 | 2.202471577824258e-05 | 0.33% | 0.33% | 1.00x | ✅ |
+| `is_encodable_type[fixed16x1]` | 2.1339750257727835e-05 | 2.1619634339845985e-05 | -1.31% | -1.29% | 0.99x | ❌ |
+| `is_encodable_type[fixed16x2]` | 2.2036248765038666e-05 | 2.227841759679684e-05 | -1.10% | -1.09% | 0.99x | ❌ |
+| `is_encodable_type[fixed256x10]` | 2.172364181904302e-05 | 2.1553685276750952e-05 | 0.78% | 0.79% | 1.01x | ✅ |
+| `is_encodable_type[fixed256x18]` | 2.1874386576699536e-05 | 2.2184723366462612e-05 | -1.42% | -1.40% | 0.99x | ❌ |
+| `is_encodable_type[fixed256x1]` | 2.2098173514606604e-05 | 2.2284282227985406e-05 | -0.84% | -0.84% | 0.99x | ❌ |
+| `is_encodable_type[fixed256x2]` | 2.177225667120961e-05 | 2.161246598229715e-05 | 0.73% | 0.74% | 1.01x | ✅ |
+| `is_encodable_type[fixed32x1]` | 2.1901478094162105e-05 | 2.1890670621652318e-05 | 0.05% | 0.05% | 1.00x | ✅ |
+| `is_encodable_type[fixed32x2[2]]` | 2.2128194096660567e-05 | 2.187770359245757e-05 | 1.13% | 1.14% | 1.01x | ✅ |
+| `is_encodable_type[fixed32x2[]]` | 2.177922946041259e-05 | 2.223683064349897e-05 | -2.10% | -2.06% | 0.98x | ❌ |
+| `is_encodable_type[fixed32x2]` | 2.166935948807317e-05 | 2.167799507282479e-05 | -0.04% | -0.04% | 1.00x | ❌ |
+| `is_encodable_type[fixed64x10]` | 2.1976481977007192e-05 | 2.1959165771097527e-05 | 0.08% | 0.08% | 1.00x | ✅ |
+| `is_encodable_type[fixed64x18]` | 2.2155609224365292e-05 | 2.1878093490849647e-05 | 1.25% | 1.27% | 1.01x | ✅ |
+| `is_encodable_type[fixed64x1]` | 2.1842248322949018e-05 | 2.132538554562315e-05 | 2.37% | 2.42% | 1.02x | ✅ |
+| `is_encodable_type[fixed64x2]` | 2.200755718339576e-05 | 2.238363304085172e-05 | -1.71% | -1.68% | 0.98x | ❌ |
+| `is_encodable_type[fixed8x1]` | 2.2049789245014038e-05 | 2.1789911420393287e-05 | 1.18% | 1.19% | 1.01x | ✅ |
+| `is_encodable_type[fixed8x2]` | 2.2193423519241347e-05 | 2.1956062893391248e-05 | 1.07% | 1.08% | 1.01x | ✅ |
+| `is_encodable_type[function]` | 2.2155440414427438e-05 | 2.1161361345217548e-05 | 4.49% | 4.70% | 1.05x | ✅ |
+| `is_encodable_type[int128]` | 2.1292292866357412e-05 | 2.1669367198130435e-05 | -1.77% | -1.74% | 0.98x | ❌ |
+| `is_encodable_type[int16]` | 2.1805620035847717e-05 | 2.1692312469067173e-05 | 0.52% | 0.52% | 1.01x | ✅ |
+| `is_encodable_type[int256]` | 2.1776881097866417e-05 | 2.1930969335774203e-05 | -0.71% | -0.70% | 0.99x | ❌ |
+| `is_encodable_type[int32]` | 2.218188475250988e-05 | 2.167454547181743e-05 | 2.29% | 2.34% | 1.02x | ✅ |
+| `is_encodable_type[int64]` | 2.1896368467295156e-05 | 2.21323450476801e-05 | -1.08% | -1.07% | 0.99x | ❌ |
+| `is_encodable_type[int8]` | 2.1759603454389794e-05 | 2.186094877500907e-05 | -0.47% | -0.46% | 1.00x | ❌ |
+| `is_encodable_type[string[10]]` | 2.1528673849350533e-05 | 2.236481944932855e-05 | -3.88% | -3.74% | 0.96x | ❌ |
+| `is_encodable_type[string[2]]` | 2.2093433290018282e-05 | 2.1912030020575933e-05 | 0.82% | 0.83% | 1.01x | ✅ |
+| `is_encodable_type[string[5]]` | 2.18369693417025e-05 | 2.1816770338659184e-05 | 0.09% | 0.09% | 1.00x | ✅ |
+| `is_encodable_type[string[]]` | 2.1514339270879244e-05 | 2.1492998428876356e-05 | 0.10% | 0.10% | 1.00x | ✅ |
+| `is_encodable_type[string]` | 2.1550663978993612e-05 | 2.172372265144718e-05 | -0.80% | -0.80% | 0.99x | ❌ |
+| `is_encodable_type[ufixed128x10]` | 2.1506536024409646e-05 | 2.1970653181071406e-05 | -2.16% | -2.11% | 0.98x | ❌ |
+| `is_encodable_type[ufixed128x18]` | 2.2352262755986042e-05 | 2.2121534137173406e-05 | 1.03% | 1.04% | 1.01x | ✅ |
+| `is_encodable_type[ufixed128x1]` | 2.1962337397773254e-05 | 2.1686019681577984e-05 | 1.26% | 1.27% | 1.01x | ✅ |
+| `is_encodable_type[ufixed128x2]` | 2.1748179288047566e-05 | 2.1848880890560163e-05 | -0.46% | -0.46% | 1.00x | ❌ |
+| `is_encodable_type[ufixed16x1]` | 2.150774677281031e-05 | 2.2035605689949417e-05 | -2.45% | -2.40% | 0.98x | ❌ |
+| `is_encodable_type[ufixed16x2]` | 2.2047054344661825e-05 | 2.1969155277778085e-05 | 0.35% | 0.35% | 1.00x | ✅ |
+| `is_encodable_type[ufixed256x10]` | 2.16758437804271e-05 | 2.1821160713392786e-05 | -0.67% | -0.67% | 0.99x | ❌ |
+| `is_encodable_type[ufixed256x18]` | 2.153976233649334e-05 | 2.1659039702045776e-05 | -0.55% | -0.55% | 0.99x | ❌ |
+| `is_encodable_type[ufixed256x1]` | 2.1899324018270468e-05 | 2.230384962781953e-05 | -1.85% | -1.81% | 0.98x | ❌ |
+| `is_encodable_type[ufixed256x2]` | 2.191347646416904e-05 | 2.1555184166214982e-05 | 1.64% | 1.66% | 1.02x | ✅ |
+| `is_encodable_type[ufixed32x1]` | 2.1719118369596836e-05 | 2.209103466278746e-05 | -1.71% | -1.68% | 0.98x | ❌ |
+| `is_encodable_type[ufixed32x2]` | 2.1763376653229895e-05 | 2.186127799478457e-05 | -0.45% | -0.45% | 1.00x | ❌ |
+| `is_encodable_type[ufixed64x10]` | 2.1924082416902498e-05 | 2.211427804226713e-05 | -0.87% | -0.86% | 0.99x | ❌ |
+| `is_encodable_type[ufixed64x18]` | 2.2059845148055916e-05 | 2.1848832460084334e-05 | 0.96% | 0.97% | 1.01x | ✅ |
+| `is_encodable_type[ufixed64x1]` | 2.17314700011622e-05 | 2.155539206942839e-05 | 0.81% | 0.82% | 1.01x | ✅ |
+| `is_encodable_type[ufixed64x2]` | 2.1824696251882618e-05 | 2.21437743503007e-05 | -1.46% | -1.44% | 0.99x | ❌ |
+| `is_encodable_type[ufixed8x1]` | 2.1659403827872055e-05 | 2.1515678545621407e-05 | 0.66% | 0.67% | 1.01x | ✅ |
+| `is_encodable_type[ufixed8x2]` | 2.179958700155923e-05 | 2.170278757116246e-05 | 0.44% | 0.45% | 1.00x | ✅ |
+| `is_encodable_type[uint128]` | 2.12849359010248e-05 | 2.1363937890040342e-05 | -0.37% | -0.37% | 1.00x | ❌ |
+| `is_encodable_type[uint16]` | 2.171638596941881e-05 | 2.1743990338747635e-05 | -0.13% | -0.13% | 1.00x | ❌ |
+| `is_encodable_type[uint256[2][2]]` | 2.1750016337968942e-05 | 2.2037620492929315e-05 | -1.32% | -1.31% | 0.99x | ❌ |
+| `is_encodable_type[uint256[2]]` | 2.1753252811258368e-05 | 2.178037031331786e-05 | -0.12% | -0.12% | 1.00x | ❌ |
+| `is_encodable_type[uint256]` | 2.1962136867646486e-05 | 2.1615533750636e-05 | 1.58% | 1.60% | 1.02x | ✅ |
+| `is_encodable_type[uint32]` | 2.1776916372148915e-05 | 2.1637024661975458e-05 | 0.64% | 0.65% | 1.01x | ✅ |
+| `is_encodable_type[uint64]` | 2.1771911930977772e-05 | 2.173707441448849e-05 | 0.16% | 0.16% | 1.00x | ✅ |
+| `is_encodable_type[uint8[100]]` | 2.184509274763155e-05 | 2.1860578864585894e-05 | -0.07% | -0.07% | 1.00x | ❌ |
+| `is_encodable_type[uint8[10]]` | 2.2196208258630368e-05 | 2.1921346889208885e-05 | 1.24% | 1.25% | 1.01x | ✅ |
+| `is_encodable_type[uint8[2][2][]]` | 2.1951476503523617e-05 | 2.1644471696563785e-05 | 1.40% | 1.42% | 1.01x | ✅ |
+| `is_encodable_type[uint8[2][]]` | 2.2018699001106374e-05 | 2.2121687800840808e-05 | -0.47% | -0.47% | 1.00x | ❌ |
+| `is_encodable_type[uint8[3]]` | 2.1906087145530653e-05 | 2.193477662455693e-05 | -0.13% | -0.13% | 1.00x | ❌ |
+| `is_encodable_type[uint8[][]]` | 2.171903474651312e-05 | 2.1582581793911195e-05 | 0.63% | 0.63% | 1.01x | ✅ |
+| `is_encodable_type[uint8[]]` | 2.204296711111017e-05 | 2.170049693827922e-05 | 1.55% | 1.58% | 1.02x | ✅ |
+| `is_encodable_type[uint8]` | 2.1334756340037732e-05 | 2.1947562246392305e-05 | -2.87% | -2.79% | 0.97x | ❌ |
