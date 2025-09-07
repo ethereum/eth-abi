@@ -16,6 +16,8 @@ extras_require = {
         "tox>=4.0.0",
         "twine",
         "wheel",
+        "pytest-codspeed",
+        "pytest-benchmark",
     ],
     "docs": [
         "sphinx>=6.0.0",
