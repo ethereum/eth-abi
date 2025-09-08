@@ -1,6 +1,16 @@
+### I forked eth-abi and compiled it to C. It does the same stuff, now faster
+
 [![PyPI](https://img.shields.io/pypi/v/faster-eth-abi.svg?logo=Python&logoColor=white)](https://pypi.org/project/faster-eth-abi/)
 [![Monthly Downloads](https://img.shields.io/pypi/dm/faster-eth-abi)](https://pypistats.org/packages/faster-eth-abi)
 [![Codspeed.io Status](https://img.shields.io/endpoint?url=https://codspeed.io/badge.json)](https://codspeed.io/BobTheBuidler/faster-eth-abi)
+
+##### This fork will be kept up-to-date with [eth-abi](https://github.com/ethereum/eth-abi). I will pull updates as they are released and push new [faster-eth-abi](https://github.com/BobTheBuidler/faster-eth-abi) releases to [PyPI](https://pypi.org/project/faster-eth-abi/).
+
+##### You can find the compiled C code on faster-eth-abi [master](https://github.com/BobTheBuidler/eth-abi/tree/master) branch.
+
+##### We benchmark `faster-eth-abi` against the original `eth-abi` for your convenience. [See results](https://github.com/BobTheBuidler/faster-eth-abi/tree/master/benchmarks/results).
+
+##### The original eth-abi readme is below:
 
 # Ethereum Contract Interface (ABI) Utility
 
