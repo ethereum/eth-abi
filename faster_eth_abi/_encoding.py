@@ -72,7 +72,7 @@ def encode_signed(
 def encode_elements(item_encoder: "BaseEncoder", value: Sequence[Any]) -> bytes:
     tail_chunks = tuple(item_encoder(i) for i in value)
 
-    items_are_dynamic = getattr(item_encoder, "is_dynamic", False)
+    items_are_dynamic: bool = getattr(item_encoder, "is_dynamic", False)
     if not items_are_dynamic or len(value) == 0:
         return b"".join(tail_chunks)
 
@@ -91,8 +91,9 @@ def encode_elements_dynamic(item_encoder: "BaseEncoder", value: Sequence[Any]) -
 
 
 def encode_uint_256(i: int) -> bytes:
-    # An optimized version of the `encode_uint_256` in `encoding.py` which does not perform any validation.
-    # We should not have any issues here unless you're encoding really really massive iterables.
+    # An optimized version of the `encode_uint_256` in `encoding.py` which
+    # does not perform any validation. We should not have any issues here
+    # unless you're encoding really really massive iterables.
     big_endian = int_to_big_endian(i)
     return big_endian.rjust(32, b"\x00")
 
