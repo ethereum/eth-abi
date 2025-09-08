@@ -1,5 +1,6 @@
 [![PyPI](https://img.shields.io/pypi/v/faster-eth-abi.svg?logo=Python&logoColor=white)](https://pypi.org/project/faster-eth-abi/)
 [![Monthly Downloads](https://img.shields.io/pypi/dm/faster-eth-abi)](https://pypistats.org/packages/faster-eth-abi)
+[![Codspeed.io Status](https://img.shields.io/endpoint?url=https://codspeed.io/badge.json)](https://codspeed.io/BobTheBuidler/faster-eth-abi)
 
 # Ethereum Contract Interface (ABI) Utility
 
