@@ -1,3 +1,456 @@
+def __top_level__():
+    r0, r1 :: object
+    r2 :: bit
+    r3 :: str
+    r4, r5 :: object
+    r6 :: str
+    r7 :: dict
+    r8 :: object
+    r9 :: int
+    r10 :: dict
+    r11 :: str
+    r12 :: object
+    r13 :: i32
+    r14 :: bit
+    r15 :: int
+    r16 :: dict
+    r17 :: str
+    r18 :: object
+    r19 :: i32
+    r20 :: bit
+    r21 :: int
+    r22 :: dict
+    r23 :: str
+    r24 :: object
+    r25 :: i32
+    r26 :: bit
+    r27 :: None
+L0:
+    r0 = builtins :: module
+    r1 = load_address _Py_NoneStruct
+    r2 = r0 != r1
+    if r2 goto L3 else goto L1 :: bool
+L1:
+    r3 = 'builtins'
+    r4 = PyImport_Import(r3)
+    if is_error(r4) goto L8 (error at <module>:-1) else goto L2
+L2:
+    builtins = r4 :: module
+    dec_ref r4
+L3:
+    r5 = ('Final',)
+    r6 = 'typing'
+    r7 = faster_eth_abi.constants.globals :: static
+    r8 = CPyImport_ImportFromMany(r6, r5, r5, r7)
+    if is_error(r8) goto L8 (error at <module>:1) else goto L4
+L4:
+    typing = r8 :: module
+    dec_ref r8
+    r9 = object 115792089237316195423570985008687907853269984665640564039457584007913129639936
+    r10 = faster_eth_abi.constants.globals :: static
+    r11 = 'TT256'
+    inc_ref r9 :: int
+    r12 = box(int, r9)
+    r13 = CPyDict_SetItem(r10, r11, r12)
+    dec_ref r12
+    r14 = r13 >= 0 :: signed
+    if not r14 goto L8 (error at <module>:5) else goto L5 :: bool
+L5:
+    r15 = object 115792089237316195423570985008687907853269984665640564039457584007913129639935
+    r16 = faster_eth_abi.constants.globals :: static
+    r17 = 'TT256M1'
+    inc_ref r15 :: int
+    r18 = box(int, r15)
+    r19 = CPyDict_SetItem(r16, r17, r18)
+    dec_ref r18
+    r20 = r19 >= 0 :: signed
+    if not r20 goto L8 (error at <module>:6) else goto L6 :: bool
+L6:
+    r21 = object 57896044618658097711785492504343953926634992332820282019728792003956564819968
+    r22 = faster_eth_abi.constants.globals :: static
+    r23 = 'TT255'
+    inc_ref r21 :: int
+    r24 = box(int, r21)
+    r25 = CPyDict_SetItem(r22, r23, r24)
+    dec_ref r24
+    r26 = r25 >= 0 :: signed
+    if not r26 goto L8 (error at <module>:7) else goto L7 :: bool
+L7:
+    return 1
+L8:
+    r27 = <error> :: None
+    return r27
+
+def zpad(value, length):
+    value :: bytes
+    length :: int
+    r0 :: bytes
+    r1 :: str
+    r2 :: object
+    r3 :: object[3]
+    r4 :: object_ptr
+    r5 :: object
+    r6, r7 :: bytes
+L0:
+    r0 = b'\x00'
+    r1 = 'rjust'
+    inc_ref length :: int
+    r2 = box(int, length)
+    r3 = [value, r2, r0]
+    r4 = load_address r3
+    r5 = PyObject_VectorcallMethod(r1, r4, 9223372036854775811, 0)
+    if is_error(r5) goto L4 (error at zpad:2) else goto L1
+L1:
+    dec_ref r2
+    r6 = cast(bytes, r5)
+    if is_error(r6) goto L3 (error at zpad:2) else goto L2
+L2:
+    return r6
+L3:
+    r7 = <error> :: bytes
+    return r7
+L4:
+    dec_ref r2
+    goto L3
+
+def zpad32(value):
+    value, r0, r1 :: bytes
+L0:
+    r0 = zpad(value, 64)
+    if is_error(r0) goto L2 (error at zpad32:6) else goto L1
+L1:
+    return r0
+L2:
+    r1 = <error> :: bytes
+    return r1
+
+def zpad_right(value, length):
+    value :: bytes
+    length :: int
+    r0 :: bytes
+    r1 :: str
+    r2 :: object
+    r3 :: object[3]
+    r4 :: object_ptr
+    r5 :: object
+    r6, r7 :: bytes
+L0:
+    r0 = b'\x00'
+    r1 = 'ljust'
+    inc_ref length :: int
+    r2 = box(int, length)
+    r3 = [value, r2, r0]
+    r4 = load_address r3
+    r5 = PyObject_VectorcallMethod(r1, r4, 9223372036854775811, 0)
+    if is_error(r5) goto L4 (error at zpad_right:10) else goto L1
+L1:
+    dec_ref r2
+    r6 = cast(bytes, r5)
+    if is_error(r6) goto L3 (error at zpad_right:10) else goto L2
+L2:
+    return r6
+L3:
+    r7 = <error> :: bytes
+    return r7
+L4:
+    dec_ref r2
+    goto L3
+
+def zpad32_right(value):
+    value, r0, r1 :: bytes
+L0:
+    r0 = zpad_right(value, 64)
+    if is_error(r0) goto L2 (error at zpad32_right:14) else goto L1
+L1:
+    return r0
+L2:
+    r1 = <error> :: bytes
+    return r1
+
+def fpad(value, length):
+    value :: bytes
+    length :: int
+    r0 :: bytes
+    r1 :: str
+    r2 :: object
+    r3 :: object[3]
+    r4 :: object_ptr
+    r5 :: object
+    r6, r7 :: bytes
+L0:
+    r0 = b'\xff'
+    r1 = 'rjust'
+    inc_ref length :: int
+    r2 = box(int, length)
+    r3 = [value, r2, r0]
+    r4 = load_address r3
+    r5 = PyObject_VectorcallMethod(r1, r4, 9223372036854775811, 0)
+    if is_error(r5) goto L4 (error at fpad:18) else goto L1
+L1:
+    dec_ref r2
+    r6 = cast(bytes, r5)
+    if is_error(r6) goto L3 (error at fpad:18) else goto L2
+L2:
+    return r6
+L3:
+    r7 = <error> :: bytes
+    return r7
+L4:
+    dec_ref r2
+    goto L3
+
+def fpad32(value):
+    value, r0, r1 :: bytes
+L0:
+    r0 = fpad(value, 64)
+    if is_error(r0) goto L2 (error at fpad32:22) else goto L1
+L1:
+    return r0
+L2:
+    r1 = <error> :: bytes
+    return r1
+
+def __top_level__():
+    r0, r1 :: object
+    r2 :: bit
+    r3 :: str
+    r4 :: object
+    r5 :: None
+L0:
+    r0 = builtins :: module
+    r1 = load_address _Py_NoneStruct
+    r2 = r0 != r1
+    if r2 goto L3 else goto L1 :: bool
+L1:
+    r3 = 'builtins'
+    r4 = PyImport_Import(r3)
+    if is_error(r4) goto L4 (error at <module>:-1) else goto L2
+L2:
+    builtins = r4 :: module
+    dec_ref r4
+L3:
+    return 1
+L4:
+    r5 = <error> :: None
+    return r5
+
+def validate_bytes_param(param, param_name):
+    param :: object
+    param_name :: str
+    r0, r1 :: object
+    r2 :: str
+    r3 :: object
+    r4 :: tuple[object, object]
+    r5 :: object
+    r6 :: i32
+    r7 :: bit
+    r8 :: bool
+    r9, r10 :: str
+    r11 :: object
+    r12, r13 :: str
+    r14 :: object
+    r15 :: str
+    r16 :: object
+    r17 :: object[1]
+    r18 :: object_ptr
+    r19 :: object
+    r20 :: None
+L0:
+    r0 = load_address PyBytes_Type
+    r1 = builtins :: module
+    r2 = 'bytearray'
+    r3 = CPyObject_GetAttr(r1, r2)
+    if is_error(r3) goto L10 (error at validate_bytes_param:7) else goto L1
+L1:
+    inc_ref r0
+    r4 = (r0, r3)
+    r5 = box(tuple[object, object], r4)
+    r6 = PyObject_IsInstance(param, r5)
+    dec_ref r5
+    r7 = r6 >= 0 :: signed
+    if not r7 goto L10 (error at validate_bytes_param:7) else goto L2 :: bool
+L2:
+    r8 = truncate r6: i32 to builtins.bool
+    if r8 goto L9 else goto L3 :: bool
+L3:
+    r9 = 'The `'
+    r10 = '` value must be of bytes type. Got '
+    r11 = PyObject_Type(param)
+    r12 = PyObject_Str(r11)
+    dec_ref r11
+    if is_error(r12) goto L10 (error at validate_bytes_param:9) else goto L4
+L4:
+    r13 = CPyStr_Build(4, r9, param_name, r10, r12)
+    dec_ref r12
+    if is_error(r13) goto L10 (error at validate_bytes_param:9) else goto L5
+L5:
+    r14 = builtins :: module
+    r15 = 'TypeError'
+    r16 = CPyObject_GetAttr(r14, r15)
+    if is_error(r16) goto L11 (error at validate_bytes_param:8) else goto L6
+L6:
+    r17 = [r13]
+    r18 = load_address r17
+    r19 = PyObject_Vectorcall(r16, r18, 1, 0)
+    dec_ref r16
+    if is_error(r19) goto L11 (error at validate_bytes_param:8) else goto L7
+L7:
+    dec_ref r13
+    CPy_Raise(r19)
+    dec_ref r19
+    if not 0 goto L10 (error at validate_bytes_param:8) else goto L8 :: bool
+L8:
+    unreachable
+L9:
+    return 1
+L10:
+    r20 = <error> :: None
+    return r20
+L11:
+    dec_ref r13
+    goto L10
+
+def validate_list_like_param(param, param_name):
+    param :: object
+    param_name :: str
+    r0, r1 :: object
+    r2 :: tuple[object, object]
+    r3 :: object
+    r4 :: i32
+    r5 :: bit
+    r6 :: bool
+    r7, r8 :: str
+    r9 :: object
+    r10, r11 :: str
+    r12 :: object
+    r13 :: str
+    r14 :: object
+    r15 :: object[1]
+    r16 :: object_ptr
+    r17 :: object
+    r18 :: None
+L0:
+    r0 = load_address PyList_Type
+    r1 = load_address PyTuple_Type
+    inc_ref r0
+    inc_ref r1
+    r2 = (r0, r1)
+    r3 = box(tuple[object, object], r2)
+    r4 = PyObject_IsInstance(param, r3)
+    dec_ref r3
+    r5 = r4 >= 0 :: signed
+    if not r5 goto L9 (error at validate_list_like_param:14) else goto L1 :: bool
+L1:
+    r6 = truncate r4: i32 to builtins.bool
+    if r6 goto L8 else goto L2 :: bool
+L2:
+    r7 = 'The `'
+    r8 = '` value type must be one of list or tuple. Got '
+    r9 = PyObject_Type(param)
+    r10 = PyObject_Str(r9)
+    dec_ref r9
+    if is_error(r10) goto L9 (error at validate_list_like_param:16) else goto L3
+L3:
+    r11 = CPyStr_Build(4, r7, param_name, r8, r10)
+    dec_ref r10
+    if is_error(r11) goto L9 (error at validate_list_like_param:16) else goto L4
+L4:
+    r12 = builtins :: module
+    r13 = 'TypeError'
+    r14 = CPyObject_GetAttr(r12, r13)
+    if is_error(r14) goto L10 (error at validate_list_like_param:15) else goto L5
+L5:
+    r15 = [r11]
+    r16 = load_address r15
+    r17 = PyObject_Vectorcall(r14, r16, 1, 0)
+    dec_ref r14
+    if is_error(r17) goto L10 (error at validate_list_like_param:15) else goto L6
+L6:
+    dec_ref r11
+    CPy_Raise(r17)
+    dec_ref r17
+    if not 0 goto L9 (error at validate_list_like_param:15) else goto L7 :: bool
+L7:
+    unreachable
+L8:
+    return 1
+L9:
+    r18 = <error> :: None
+    return r18
+L10:
+    dec_ref r11
+    goto L9
+
+def __top_level__():
+    r0, r1 :: object
+    r2 :: bit
+    r3 :: str
+    r4, r5 :: object
+    r6 :: str
+    r7 :: dict
+    r8 :: object
+    r9 :: None
+L0:
+    r0 = builtins :: module
+    r1 = load_address _Py_NoneStruct
+    r2 = r0 != r1
+    if r2 goto L3 else goto L1 :: bool
+L1:
+    r3 = 'builtins'
+    r4 = PyImport_Import(r3)
+    if is_error(r4) goto L5 (error at <module>:-1) else goto L2
+L2:
+    builtins = r4 :: module
+    dec_ref r4
+L3:
+    r5 = ('Any',)
+    r6 = 'typing'
+    r7 = faster_eth_abi.utils.validation.globals :: static
+    r8 = CPyImport_ImportFromMany(r6, r5, r5, r7)
+    if is_error(r8) goto L5 (error at <module>:1) else goto L4
+L4:
+    typing = r8 :: module
+    dec_ref r8
+    return 1
+L5:
+    r9 = <error> :: None
+    return r9
+
+def __top_level__():
+    r0, r1 :: object
+    r2 :: bit
+    r3 :: str
+    r4, r5 :: object
+    r6 :: str
+    r7 :: dict
+    r8 :: object
+    r9 :: None
+L0:
+    r0 = builtins :: module
+    r1 = load_address _Py_NoneStruct
+    r2 = r0 != r1
+    if r2 goto L3 else goto L1 :: bool
+L1:
+    r3 = 'builtins'
+    r4 = PyImport_Import(r3)
+    if is_error(r4) goto L5 (error at <module>:-1) else goto L2
+L2:
+    builtins = r4 :: module
+    dec_ref r4
+L3:
+    r5 = ('get_abi_strategy',)
+    r6 = 'faster_eth_abi.tools._strategies'
+    r7 = faster_eth_abi.tools.globals :: static
+    r8 = CPyImport_ImportFromMany(r6, r5, r5, r7)
+    if is_error(r8) goto L5 (error at <module>:1) else goto L4
+L4:
+    faster_eth_abi.tools._strategies = r8 :: module
+    dec_ref r8
+    return 1
+L5:
+    r9 = <error> :: None
+    return r9
+
 def encode_tuple(values, encoders):
     values, encoders :: object
     r0, r1 :: list
@@ -1216,1182 +1669,21 @@ L10:
     r24 = <error> :: None
     return r24
 
-def __top_level__():
-    r0, r1 :: object
+def abbr(value, limit):
+    value :: object
+    limit :: int
+    r0, rep :: str
+    r1 :: native_int
     r2 :: bit
-    r3 :: str
-    r4, r5 :: object
-    r6 :: str
-    r7 :: dict
-    r8, r9 :: object
-    r10 :: str
-    r11 :: dict
-    r12, r13 :: object
-    r14 :: str
-    r15 :: dict
-    r16 :: object
-    r17 :: dict
-    r18 :: str
-    r19 :: object
-    r20 :: dict
-    r21 :: str
-    r22 :: object
-    r23 :: object[1]
-    r24 :: object_ptr
-    r25 :: object
-    r26 :: dict
-    r27 :: str
-    r28 :: i32
-    r29 :: bit
-    r30 :: object
-    r31 :: bool
-    r32 :: str
-    r33 :: object
-    r34 :: dict
-    r35 :: str
-    r36 :: i32
-    r37 :: bit
-    r38 :: object
-    r39 :: bool
-    r40 :: str
-    r41 :: object
-    r42 :: dict
-    r43 :: str
-    r44 :: i32
-    r45 :: bit
-    r46 :: None
-L0:
-    r0 = builtins :: module
-    r1 = load_address _Py_NoneStruct
-    r2 = r0 != r1
-    if r2 goto L3 else goto L1 :: bool
-L1:
-    r3 = 'builtins'
-    r4 = PyImport_Import(r3)
-    if is_error(r4) goto L21 (error at <module>:-1) else goto L2
-L2:
-    builtins = r4 :: module
-    dec_ref r4
-L3:
-    r5 = ('Final',)
-    r6 = 'typing'
-    r7 = faster_eth_abi.packed.globals :: static
-    r8 = CPyImport_ImportFromMany(r6, r5, r5, r7)
-    if is_error(r8) goto L21 (error at <module>:1) else goto L4
-L4:
-    typing = r8 :: module
-    dec_ref r8
-    r9 = ('ABIEncoder',)
-    r10 = 'faster_eth_abi.codec'
-    r11 = faster_eth_abi.packed.globals :: static
-    r12 = CPyImport_ImportFromMany(r10, r9, r9, r11)
-    if is_error(r12) goto L21 (error at <module>:5) else goto L5
-L5:
-    faster_eth_abi.codec = r12 :: module
-    dec_ref r12
-    r13 = ('registry_packed',)
-    r14 = 'faster_eth_abi.registry'
-    r15 = faster_eth_abi.packed.globals :: static
-    r16 = CPyImport_ImportFromMany(r14, r13, r13, r15)
-    if is_error(r16) goto L21 (error at <module>:8) else goto L6
-L6:
-    faster_eth_abi.registry = r16 :: module
-    dec_ref r16
-    r17 = faster_eth_abi.packed.globals :: static
-    r18 = 'registry_packed'
-    r19 = CPyDict_GetItem(r17, r18)
-    if is_error(r19) goto L21 (error at <module>:12) else goto L7
-L7:
-    r20 = faster_eth_abi.packed.globals :: static
-    r21 = 'ABIEncoder'
-    r22 = CPyDict_GetItem(r20, r21)
-    if is_error(r22) goto L22 (error at <module>:12) else goto L8
-L8:
-    r23 = [r19]
-    r24 = load_address r23
-    r25 = PyObject_Vectorcall(r22, r24, 1, 0)
-    dec_ref r22
-    if is_error(r25) goto L22 (error at <module>:12) else goto L9
-L9:
-    dec_ref r19
-    faster_eth_abi.packed.default_encoder_packed = r25 :: static
-    r26 = faster_eth_abi.packed.globals :: static
-    r27 = 'default_encoder_packed'
-    r28 = CPyDict_SetItem(r26, r27, r25)
-    dec_ref r25
-    r29 = r28 >= 0 :: signed
-    if not r29 goto L21 (error at <module>:12) else goto L10 :: bool
-L10:
-    r30 = faster_eth_abi.packed.default_encoder_packed :: static
-    if is_error(r30) goto L11 else goto L13
-L11:
-    r31 = raise NameError('value for final name "default_encoder_packed" was not set')
-    if not r31 goto L21 (error at <module>:14) else goto L12 :: bool
-L12:
-    unreachable
-L13:
-    r32 = 'encode'
-    r33 = CPyObject_GetAttr(r30, r32)
-    if is_error(r33) goto L21 (error at <module>:14) else goto L14
-L14:
-    faster_eth_abi.packed.encode_packed = r33 :: static
-    r34 = faster_eth_abi.packed.globals :: static
-    r35 = 'encode_packed'
-    r36 = CPyDict_SetItem(r34, r35, r33)
-    dec_ref r33
-    r37 = r36 >= 0 :: signed
-    if not r37 goto L21 (error at <module>:14) else goto L15 :: bool
-L15:
-    r38 = faster_eth_abi.packed.default_encoder_packed :: static
-    if is_error(r38) goto L16 else goto L18
-L16:
-    r39 = raise NameError('value for final name "default_encoder_packed" was not set')
-    if not r39 goto L21 (error at <module>:15) else goto L17 :: bool
-L17:
-    unreachable
-L18:
-    r40 = 'is_encodable'
-    r41 = CPyObject_GetAttr(r38, r40)
-    if is_error(r41) goto L21 (error at <module>:15) else goto L19
-L19:
-    faster_eth_abi.packed.is_encodable_packed = r41 :: static
-    r42 = faster_eth_abi.packed.globals :: static
-    r43 = 'is_encodable_packed'
-    r44 = CPyDict_SetItem(r42, r43, r41)
-    dec_ref r41
-    r45 = r44 >= 0 :: signed
-    if not r45 goto L21 (error at <module>:15) else goto L20 :: bool
-L20:
-    return 1
-L21:
-    r46 = <error> :: None
-    return r46
-L22:
-    dec_ref r19
-    goto L21
-
-def __top_level__():
-    r0, r1 :: object
-    r2 :: bit
-    r3 :: str
-    r4, r5 :: object
-    r6 :: str
-    r7 :: dict
-    r8 :: object
-    r9 :: int
-    r10 :: dict
-    r11 :: str
-    r12 :: object
-    r13 :: i32
-    r14 :: bit
-    r15 :: int
-    r16 :: dict
-    r17 :: str
-    r18 :: object
-    r19 :: i32
-    r20 :: bit
-    r21 :: int
-    r22 :: dict
-    r23 :: str
-    r24 :: object
-    r25 :: i32
-    r26 :: bit
-    r27 :: None
-L0:
-    r0 = builtins :: module
-    r1 = load_address _Py_NoneStruct
-    r2 = r0 != r1
-    if r2 goto L3 else goto L1 :: bool
-L1:
-    r3 = 'builtins'
-    r4 = PyImport_Import(r3)
-    if is_error(r4) goto L8 (error at <module>:-1) else goto L2
-L2:
-    builtins = r4 :: module
-    dec_ref r4
-L3:
-    r5 = ('Final',)
-    r6 = 'typing'
-    r7 = faster_eth_abi.constants.globals :: static
-    r8 = CPyImport_ImportFromMany(r6, r5, r5, r7)
-    if is_error(r8) goto L8 (error at <module>:1) else goto L4
-L4:
-    typing = r8 :: module
-    dec_ref r8
-    r9 = object 115792089237316195423570985008687907853269984665640564039457584007913129639936
-    r10 = faster_eth_abi.constants.globals :: static
-    r11 = 'TT256'
-    inc_ref r9 :: int
-    r12 = box(int, r9)
-    r13 = CPyDict_SetItem(r10, r11, r12)
-    dec_ref r12
-    r14 = r13 >= 0 :: signed
-    if not r14 goto L8 (error at <module>:5) else goto L5 :: bool
-L5:
-    r15 = object 115792089237316195423570985008687907853269984665640564039457584007913129639935
-    r16 = faster_eth_abi.constants.globals :: static
-    r17 = 'TT256M1'
-    inc_ref r15 :: int
-    r18 = box(int, r15)
-    r19 = CPyDict_SetItem(r16, r17, r18)
-    dec_ref r18
-    r20 = r19 >= 0 :: signed
-    if not r20 goto L8 (error at <module>:6) else goto L6 :: bool
-L6:
-    r21 = object 57896044618658097711785492504343953926634992332820282019728792003956564819968
-    r22 = faster_eth_abi.constants.globals :: static
-    r23 = 'TT255'
-    inc_ref r21 :: int
-    r24 = box(int, r21)
-    r25 = CPyDict_SetItem(r22, r23, r24)
-    dec_ref r24
-    r26 = r25 >= 0 :: signed
-    if not r26 goto L8 (error at <module>:7) else goto L7 :: bool
-L7:
-    return 1
-L8:
-    r27 = <error> :: None
-    return r27
-
-def __top_level__():
-    r0, r1 :: object
-    r2 :: bit
-    r3 :: str
-    r4, r5 :: object
-    r6 :: str
-    r7 :: dict
-    r8, r9 :: object
-    r10 :: str
-    r11 :: dict
-    r12, r13 :: object
-    r14 :: str
-    r15 :: dict
-    r16 :: object
-    r17 :: dict
-    r18 :: str
-    r19 :: object
-    r20 :: dict
-    r21 :: str
-    r22 :: object
-    r23 :: object[1]
-    r24 :: object_ptr
-    r25 :: object
-    r26 :: dict
-    r27 :: str
-    r28 :: i32
-    r29 :: bit
-    r30 :: object
-    r31 :: bool
-    r32 :: str
-    r33 :: object
-    r34 :: dict
-    r35 :: str
-    r36 :: i32
-    r37 :: bit
-    r38 :: object
-    r39 :: bool
-    r40 :: str
-    r41 :: object
-    r42 :: dict
-    r43 :: str
-    r44 :: i32
-    r45 :: bit
-    r46 :: object
-    r47 :: bool
-    r48 :: str
-    r49 :: object
-    r50 :: dict
-    r51 :: str
-    r52 :: i32
-    r53 :: bit
-    r54 :: object
-    r55 :: bool
-    r56 :: str
-    r57 :: object
-    r58 :: dict
-    r59 :: str
-    r60 :: i32
-    r61 :: bit
-    r62 :: None
-L0:
-    r0 = builtins :: module
-    r1 = load_address _Py_NoneStruct
-    r2 = r0 != r1
-    if r2 goto L3 else goto L1 :: bool
-L1:
-    r3 = 'builtins'
-    r4 = PyImport_Import(r3)
-    if is_error(r4) goto L31 (error at <module>:-1) else goto L2
-L2:
-    builtins = r4 :: module
-    dec_ref r4
-L3:
-    r5 = ('Final',)
-    r6 = 'typing'
-    r7 = faster_eth_abi.abi.globals :: static
-    r8 = CPyImport_ImportFromMany(r6, r5, r5, r7)
-    if is_error(r8) goto L31 (error at <module>:1) else goto L4
-L4:
-    typing = r8 :: module
-    dec_ref r8
-    r9 = ('ABICodec',)
-    r10 = 'faster_eth_abi.codec'
-    r11 = faster_eth_abi.abi.globals :: static
-    r12 = CPyImport_ImportFromMany(r10, r9, r9, r11)
-    if is_error(r12) goto L31 (error at <module>:5) else goto L5
-L5:
-    faster_eth_abi.codec = r12 :: module
-    dec_ref r12
-    r13 = ('registry',)
-    r14 = 'faster_eth_abi.registry'
-    r15 = faster_eth_abi.abi.globals :: static
-    r16 = CPyImport_ImportFromMany(r14, r13, r13, r15)
-    if is_error(r16) goto L31 (error at <module>:8) else goto L6
-L6:
-    faster_eth_abi.registry = r16 :: module
-    dec_ref r16
-    r17 = faster_eth_abi.abi.globals :: static
-    r18 = 'registry'
-    r19 = CPyDict_GetItem(r17, r18)
-    if is_error(r19) goto L31 (error at <module>:12) else goto L7
-L7:
-    r20 = faster_eth_abi.abi.globals :: static
-    r21 = 'ABICodec'
-    r22 = CPyDict_GetItem(r20, r21)
-    if is_error(r22) goto L32 (error at <module>:12) else goto L8
-L8:
-    r23 = [r19]
-    r24 = load_address r23
-    r25 = PyObject_Vectorcall(r22, r24, 1, 0)
-    dec_ref r22
-    if is_error(r25) goto L32 (error at <module>:12) else goto L9
-L9:
-    dec_ref r19
-    faster_eth_abi.abi.default_codec = r25 :: static
-    r26 = faster_eth_abi.abi.globals :: static
-    r27 = 'default_codec'
-    r28 = CPyDict_SetItem(r26, r27, r25)
-    dec_ref r25
-    r29 = r28 >= 0 :: signed
-    if not r29 goto L31 (error at <module>:12) else goto L10 :: bool
-L10:
-    r30 = faster_eth_abi.abi.default_codec :: static
-    if is_error(r30) goto L11 else goto L13
-L11:
-    r31 = raise NameError('value for final name "default_codec" was not set')
-    if not r31 goto L31 (error at <module>:14) else goto L12 :: bool
-L12:
-    unreachable
-L13:
-    r32 = 'encode'
-    r33 = CPyObject_GetAttr(r30, r32)
-    if is_error(r33) goto L31 (error at <module>:14) else goto L14
-L14:
-    faster_eth_abi.abi.encode = r33 :: static
-    r34 = faster_eth_abi.abi.globals :: static
-    r35 = 'encode'
-    r36 = CPyDict_SetItem(r34, r35, r33)
-    dec_ref r33
-    r37 = r36 >= 0 :: signed
-    if not r37 goto L31 (error at <module>:14) else goto L15 :: bool
-L15:
-    r38 = faster_eth_abi.abi.default_codec :: static
-    if is_error(r38) goto L16 else goto L18
-L16:
-    r39 = raise NameError('value for final name "default_codec" was not set')
-    if not r39 goto L31 (error at <module>:15) else goto L17 :: bool
-L17:
-    unreachable
-L18:
-    r40 = 'decode'
-    r41 = CPyObject_GetAttr(r38, r40)
-    if is_error(r41) goto L31 (error at <module>:15) else goto L19
-L19:
-    faster_eth_abi.abi.decode = r41 :: static
-    r42 = faster_eth_abi.abi.globals :: static
-    r43 = 'decode'
-    r44 = CPyDict_SetItem(r42, r43, r41)
-    dec_ref r41
-    r45 = r44 >= 0 :: signed
-    if not r45 goto L31 (error at <module>:15) else goto L20 :: bool
-L20:
-    r46 = faster_eth_abi.abi.default_codec :: static
-    if is_error(r46) goto L21 else goto L23
-L21:
-    r47 = raise NameError('value for final name "default_codec" was not set')
-    if not r47 goto L31 (error at <module>:16) else goto L22 :: bool
-L22:
-    unreachable
-L23:
-    r48 = 'is_encodable'
-    r49 = CPyObject_GetAttr(r46, r48)
-    if is_error(r49) goto L31 (error at <module>:16) else goto L24
-L24:
-    faster_eth_abi.abi.is_encodable = r49 :: static
-    r50 = faster_eth_abi.abi.globals :: static
-    r51 = 'is_encodable'
-    r52 = CPyDict_SetItem(r50, r51, r49)
-    dec_ref r49
-    r53 = r52 >= 0 :: signed
-    if not r53 goto L31 (error at <module>:16) else goto L25 :: bool
-L25:
-    r54 = faster_eth_abi.abi.default_codec :: static
-    if is_error(r54) goto L26 else goto L28
-L26:
-    r55 = raise NameError('value for final name "default_codec" was not set')
-    if not r55 goto L31 (error at <module>:17) else goto L27 :: bool
-L27:
-    unreachable
-L28:
-    r56 = 'is_encodable_type'
-    r57 = CPyObject_GetAttr(r54, r56)
-    if is_error(r57) goto L31 (error at <module>:17) else goto L29
-L29:
-    faster_eth_abi.abi.is_encodable_type = r57 :: static
-    r58 = faster_eth_abi.abi.globals :: static
-    r59 = 'is_encodable_type'
-    r60 = CPyDict_SetItem(r58, r59, r57)
-    dec_ref r57
-    r61 = r60 >= 0 :: signed
-    if not r61 goto L31 (error at <module>:17) else goto L30 :: bool
-L30:
-    return 1
-L31:
-    r62 = <error> :: None
-    return r62
-L32:
-    dec_ref r19
-    goto L31
-
-def __top_level__():
-    r0, r1 :: object
-    r2 :: bit
-    r3 :: str
-    r4 :: object
-    r5 :: None
-L0:
-    r0 = builtins :: module
-    r1 = load_address _Py_NoneStruct
-    r2 = r0 != r1
-    if r2 goto L3 else goto L1 :: bool
-L1:
-    r3 = 'builtins'
-    r4 = PyImport_Import(r3)
-    if is_error(r4) goto L4 (error at <module>:-1) else goto L2
-L2:
-    builtins = r4 :: module
-    dec_ref r4
-L3:
-    return 1
-L4:
-    r5 = <error> :: None
-    return r5
-
-def encode_c(self, types, args):
-    self, types, args :: object
-    r0 :: str
-    r1 :: None
-    r2 :: str
-    r3 :: None
-    r4 :: str
-    r5 :: object
-    r6 :: str
-    r7 :: object
-    r8 :: list
-    r9 :: object
-    r10 :: tuple
-    r11 :: dict
-    r12 :: object
-    r13 :: object[1]
-    r14 :: object_ptr
-    r15 :: object
-    r16, r17 :: bytes
-L0:
-    r0 = 'types'
-    r1 = validate_list_like_param(types, r0)
-    if is_error(r1) goto L12 (error at encode_c:44) else goto L1
-L1:
-    r2 = 'args'
-    r3 = validate_list_like_param(args, r2)
-    if is_error(r3) goto L12 (error at encode_c:45) else goto L2
-L2:
-    r4 = '_registry'
-    r5 = CPyObject_GetAttr(self, r4)
-    if is_error(r5) goto L12 (error at encode_c:47) else goto L3
-L3:
-    r6 = 'get_tuple_encoder'
-    r7 = CPyObject_GetAttr(r5, r6)
-    dec_ref r5
-    if is_error(r7) goto L12 (error at encode_c:47) else goto L4
-L4:
-    r8 = PyList_New(0)
-    if is_error(r8) goto L13 (error at encode_c:47) else goto L5
-L5:
-    r9 = CPyList_Extend(r8, types)
-    if is_error(r9) goto L14 (error at encode_c:47) else goto L15
-L6:
-    r10 = PyList_AsTuple(r8)
-    dec_ref r8
-    if is_error(r10) goto L13 (error at encode_c:47) else goto L7
-L7:
-    r11 = PyDict_New()
-    if is_error(r11) goto L16 (error at encode_c:47) else goto L8
-L8:
-    r12 = PyObject_Call(r7, r10, r11)
-    dec_ref r7
-    dec_ref r10
-    dec_ref r11
-    if is_error(r12) goto L12 (error at encode_c:47) else goto L9
-L9:
-    r13 = [args]
-    r14 = load_address r13
-    r15 = PyObject_Vectorcall(r12, r14, 1, 0)
-    dec_ref r12
-    if is_error(r15) goto L12 (error at encode_c:49) else goto L10
-L10:
-    r16 = cast(bytes, r15)
-    if is_error(r16) goto L12 (error at encode_c:49) else goto L11
-L11:
-    return r16
-L12:
-    r17 = <error> :: bytes
-    return r17
-L13:
-    dec_ref r7
-    goto L12
-L14:
-    dec_ref r7
-    dec_ref r8
-    goto L12
-L15:
-    dec_ref r9
-    goto L6
-L16:
-    dec_ref r7
-    dec_ref r10
-    goto L12
-
-def decode_c(self, types, data, strict):
-    self, types :: object
-    data :: union[bytes, object]
-    strict :: bool
-    r0 :: str
-    r1 :: None
-    r2 :: str
-    r3 :: None
-    r4 :: str
-    r5 :: object
-    r6 :: str
-    r7 :: object
-    r8 :: list
-    r9 :: object
-    r10 :: str
-    r11 :: tuple
-    r12 :: object
-    r13 :: dict
-    r14 :: object
-    r15 :: str
-    r16 :: object[2]
-    r17 :: object_ptr
-    r18 :: object
-    r19 :: object[1]
-    r20 :: object_ptr
-    r21 :: object
-    r22, r23 :: tuple
-L0:
-    if is_error(strict) goto L1 else goto L2
-L1:
-    strict = 1
-L2:
-    r0 = 'types'
-    r1 = validate_list_like_param(types, r0)
-    if is_error(r1) goto L15 (error at decode_c:76) else goto L3
-L3:
-    r2 = 'data'
-    r3 = validate_bytes_param(data, r2)
-    if is_error(r3) goto L15 (error at decode_c:77) else goto L4
-L4:
-    r4 = '_registry'
-    r5 = CPyObject_GetAttr(self, r4)
-    if is_error(r5) goto L15 (error at decode_c:79) else goto L5
-L5:
-    r6 = 'get_tuple_decoder'
-    r7 = CPyObject_GetAttr(r5, r6)
-    dec_ref r5
-    if is_error(r7) goto L15 (error at decode_c:79) else goto L6
-L6:
-    r8 = PyList_New(0)
-    if is_error(r8) goto L16 (error at decode_c:79) else goto L7
-L7:
-    r9 = CPyList_Extend(r8, types)
-    if is_error(r9) goto L17 (error at decode_c:79) else goto L18
-L8:
-    r10 = 'strict'
-    r11 = PyList_AsTuple(r8)
-    dec_ref r8
-    if is_error(r11) goto L16 (error at decode_c:79) else goto L9
-L9:
-    r12 = box(bool, strict)
-    r13 = CPyDict_Build(1, r10, r12)
-    if is_error(r13) goto L19 (error at decode_c:79) else goto L10
-L10:
-    r14 = PyObject_Call(r7, r11, r13)
-    dec_ref r7
-    dec_ref r11
-    dec_ref r13
-    if is_error(r14) goto L15 (error at decode_c:79) else goto L11
-L11:
-    r15 = 'stream_class'
-    r16 = [self, data]
-    r17 = load_address r16
-    r18 = PyObject_VectorcallMethod(r15, r17, 9223372036854775810, 0)
-    if is_error(r18) goto L20 (error at decode_c:80) else goto L12
-L12:
-    r19 = [r18]
-    r20 = load_address r19
-    r21 = PyObject_Vectorcall(r14, r20, 1, 0)
-    dec_ref r14
-    if is_error(r21) goto L21 (error at decode_c:82) else goto L13
-L13:
-    dec_ref r18
-    r22 = cast(tuple, r21)
-    if is_error(r22) goto L15 (error at decode_c:82) else goto L14
-L14:
-    return r22
-L15:
-    r23 = <error> :: tuple
-    return r23
-L16:
-    dec_ref r7
-    goto L15
-L17:
-    dec_ref r7
-    dec_ref r8
-    goto L15
-L18:
-    dec_ref r9
-    goto L8
-L19:
-    dec_ref r7
-    dec_ref r11
-    goto L15
-L20:
-    dec_ref r14
-    goto L15
-L21:
-    dec_ref r18
-    goto L15
-
-def __top_level__():
-    r0, r1 :: object
-    r2 :: bit
-    r3 :: str
-    r4, r5 :: object
-    r6 :: str
-    r7 :: dict
-    r8, r9 :: object
-    r10 :: str
-    r11 :: dict
-    r12, r13 :: object
-    r14 :: str
-    r15 :: dict
-    r16 :: object
-    r17 :: None
-L0:
-    r0 = builtins :: module
-    r1 = load_address _Py_NoneStruct
-    r2 = r0 != r1
-    if r2 goto L3 else goto L1 :: bool
-L1:
-    r3 = 'builtins'
-    r4 = PyImport_Import(r3)
-    if is_error(r4) goto L8 (error at <module>:-1) else goto L2
-L2:
-    builtins = r4 :: module
-    dec_ref r4
-L3:
-    r5 = ('TYPE_CHECKING', 'Any', 'Iterable', 'Tuple', 'cast')
-    r6 = 'typing'
-    r7 = faster_eth_abi._codec.globals :: static
-    r8 = CPyImport_ImportFromMany(r6, r5, r5, r7)
-    if is_error(r8) goto L8 (error at <module>:1) else goto L4
-L4:
-    typing = r8 :: module
-    dec_ref r8
-    r9 = ('Decodable', 'TypeStr')
-    r10 = 'eth_typing'
-    r11 = faster_eth_abi._codec.globals :: static
-    r12 = CPyImport_ImportFromMany(r10, r9, r9, r11)
-    if is_error(r12) goto L8 (error at <module>:9) else goto L5
-L5:
-    eth_typing = r12 :: module
-    dec_ref r12
-    r13 = ('validate_bytes_param', 'validate_list_like_param')
-    r14 = 'faster_eth_abi.utils.validation'
-    r15 = faster_eth_abi._codec.globals :: static
-    r16 = CPyImport_ImportFromMany(r14, r13, r13, r15)
-    if is_error(r16) goto L8 (error at <module>:14) else goto L6
-L6:
-    faster_eth_abi.utils.validation = r16 :: module
-    dec_ref r16
-    if 0 goto L7 else goto L7 :: bool
-L7:
-    return 1
-L8:
-    r17 = <error> :: None
-    return r17
-
-def ceil32(x):
-    x, r0 :: int
-    r1 :: bit
-    r2, r3, r4, r5, r6 :: int
-L0:
-    r0 = CPyTagged_Remainder(x, 64)
-    if is_error(r0) goto L6 (error at ceil32:19) else goto L1
-L1:
-    r1 = r0 == 0
-    dec_ref r0 :: int
-    if r1 goto L2 else goto L3 :: bool
-L2:
-    inc_ref x :: int
-    r2 = x
-    goto L5
-L3:
-    r3 = CPyTagged_Add(x, 64)
-    r4 = CPyTagged_Remainder(x, 64)
-    if is_error(r4) goto L7 (error at ceil32:19) else goto L4
-L4:
-    r5 = CPyTagged_Subtract(r3, r4)
-    dec_ref r3 :: int
-    dec_ref r4 :: int
-    r2 = r5
-L5:
-    return r2
-L6:
-    r6 = <error> :: int
-    return r6
-L7:
-    dec_ref r3 :: int
-    goto L6
-
-def compute_unsigned_integer_bounds(num_bits):
-    num_bits :: int
-    r0, r1, r2, r3, r4 :: object
-    r5 :: tuple[int, object]
-    r6 :: int
-    r7, r8 :: tuple[int, int]
-L0:
-    r0 = object 2
-    inc_ref num_bits :: int
-    r1 = box(int, num_bits)
-    r2 = CPyNumber_Power(r0, r1)
-    dec_ref r1
-    if is_error(r2) goto L4 (error at compute_unsigned_integer_bounds:25) else goto L1
-L1:
-    r3 = object 1
-    r4 = PyNumber_Subtract(r2, r3)
-    dec_ref r2
-    if is_error(r4) goto L4 (error at compute_unsigned_integer_bounds:25) else goto L2
-L2:
-    inc_ref r4
-    r5 = (0, r4)
-    dec_ref r5
-    r6 = unbox(int, r4)
-    dec_ref r4
-    if is_error(r6) goto L4 (error at compute_unsigned_integer_bounds:23) else goto L3
-L3:
-    r7 = (0, r6)
-    return r7
-L4:
-    r8 = <error> :: tuple[int, int]
-    return r8
-
-def compute_signed_integer_bounds(num_bits):
-    num_bits, r0 :: int
-    r1, r2, r3, r4, r5 :: object
-    r6 :: int
-    r7, r8, r9, r10, r11 :: object
-    r12 :: tuple[object, object]
-    r13, r14 :: int
-    r15, r16 :: tuple[int, int]
-L0:
-    r0 = CPyTagged_Subtract(num_bits, 2)
-    r1 = object 2
-    r2 = box(int, r0)
-    r3 = CPyNumber_Power(r1, r2)
-    dec_ref r2
-    if is_error(r3) goto L7 (error at compute_signed_integer_bounds:31) else goto L1
-L1:
-    r4 = object -1
-    r5 = PyNumber_Multiply(r4, r3)
-    dec_ref r3
-    if is_error(r5) goto L7 (error at compute_signed_integer_bounds:31) else goto L2
-L2:
-    r6 = CPyTagged_Subtract(num_bits, 2)
-    r7 = object 2
-    r8 = box(int, r6)
-    r9 = CPyNumber_Power(r7, r8)
-    dec_ref r8
-    if is_error(r9) goto L8 (error at compute_signed_integer_bounds:32) else goto L3
-L3:
-    r10 = object 1
-    r11 = PyNumber_Subtract(r9, r10)
-    dec_ref r9
-    if is_error(r11) goto L8 (error at compute_signed_integer_bounds:32) else goto L4
-L4:
-    inc_ref r5
-    inc_ref r11
-    r12 = (r5, r11)
-    dec_ref r12
-    r13 = unbox(int, r5)
-    dec_ref r5
-    if is_error(r13) goto L9 (error at compute_signed_integer_bounds:30) else goto L5
-L5:
-    r14 = unbox(int, r11)
-    dec_ref r11
-    if is_error(r14) goto L10 (error at compute_signed_integer_bounds:30) else goto L6
-L6:
-    r15 = (r13, r14)
-    return r15
-L7:
-    r16 = <error> :: tuple[int, int]
-    return r16
-L8:
-    dec_ref r5
-    goto L7
-L9:
-    dec_ref r11
-    goto L7
-L10:
-    dec_ref r13 :: int
-    goto L7
-
-def compute_unsigned_fixed_bounds(num_bits, frac_places):
-    num_bits, frac_places :: int
-    r0, upper :: object
-    r1 :: tuple[int, int]
-    r2 :: int
-    r3 :: object
-    r4 :: bool
-    r5 :: object
-    r6 :: str
-    r7 :: object
-    r8 :: object[1]
-    r9 :: object_ptr
-    r10, r11 :: object
-    r12 :: str
-    r13 :: object
-    r14 :: str
-    r15 :: object
-    r16 :: object[1]
-    r17 :: object_ptr
-    r18 :: object
-    r19 :: bool
-    r20 :: object
-    r21 :: bool
-    r22 :: object
-    r23 :: object[1]
-    r24 :: object_ptr
-    r25, r26 :: object
-    r27 :: bool
-    r28 :: int
-    r29, r30, r31 :: object
-    r32, r33 :: tuple[object, object, object]
-    r34, r35, r36 :: object
-    r37 :: object[4]
-    r38 :: object_ptr
-    r39 :: object
-    r40 :: i32
-    r41 :: bit
-    r42 :: bool
-    r43 :: bit
-    r44, r45, r46 :: tuple[object, object, object]
-    r47 :: object
-    r48 :: object[4]
-    r49 :: object_ptr
-    r50 :: object
-    r51 :: bit
-    r52 :: object
-    r53, r54 :: bool
-    r55, r56 :: tuple[object, object]
-L0:
-    r0 = <error> :: object
-    upper = r0
-    r1 = compute_unsigned_integer_bounds(num_bits)
-    if is_error(r1) goto L48 (error at compute_unsigned_fixed_bounds:40) else goto L1
-L1:
-    r2 = r1[1]
-    dec_ref r1
-    r3 = faster_eth_abi.utils.numeric.abi_decimal_context :: static
-    if is_error(r3) goto L49 else goto L4
-L2:
-    r4 = raise NameError('value for final name "abi_decimal_context" was not set')
-    if not r4 goto L47 (error at compute_unsigned_fixed_bounds:42) else goto L3 :: bool
-L3:
-    unreachable
-L4:
-    r5 = decimal :: module
-    r6 = 'localcontext'
-    r7 = CPyObject_GetAttr(r5, r6)
-    if is_error(r7) goto L50 (error at compute_unsigned_fixed_bounds:42) else goto L5
-L5:
-    r8 = [r3]
-    r9 = load_address r8
-    r10 = PyObject_Vectorcall(r7, r9, 1, 0)
-    dec_ref r7
-    if is_error(r10) goto L50 (error at compute_unsigned_fixed_bounds:42) else goto L6
-L6:
-    r11 = PyObject_Type(r10)
-    r12 = '__exit__'
-    r13 = CPyObject_GetAttr(r11, r12)
-    if is_error(r13) goto L51 (error at compute_unsigned_fixed_bounds:42) else goto L7
-L7:
-    r14 = '__enter__'
-    r15 = CPyObject_GetAttr(r11, r14)
-    dec_ref r11
-    if is_error(r15) goto L52 (error at compute_unsigned_fixed_bounds:42) else goto L8
-L8:
-    r16 = [r10]
-    r17 = load_address r16
-    r18 = PyObject_Vectorcall(r15, r17, 1, 0)
-    dec_ref r15
-    if is_error(r18) goto L52 (error at compute_unsigned_fixed_bounds:42) else goto L53
-L9:
-    r19 = 1
-L10:
-    r20 = faster_eth_abi.utils.numeric.Decimal :: static
-    if is_error(r20) goto L54 else goto L13
-L11:
-    r21 = raise NameError('value for final name "Decimal" was not set')
-    if not r21 goto L20 (error at compute_unsigned_fixed_bounds:43) else goto L55 :: bool
-L12:
-    unreachable
-L13:
-    r22 = box(int, r2)
-    r23 = [r22]
-    r24 = load_address r23
-    r25 = PyObject_Vectorcall(r20, r24, 1, 0)
-    if is_error(r25) goto L56 (error at compute_unsigned_fixed_bounds:43) else goto L14
-L14:
-    dec_ref r22
-    r26 = faster_eth_abi.utils.numeric.TEN :: static
-    if is_error(r26) goto L57 else goto L17
-L15:
-    r27 = raise NameError('value for final name "TEN" was not set')
-    if not r27 goto L20 (error at compute_unsigned_fixed_bounds:43) else goto L58 :: bool
-L16:
-    unreachable
-L17:
-    r28 = CPyTagged_Negate(frac_places)
-    r29 = box(int, r28)
-    r30 = CPyNumber_Power(r26, r29)
-    dec_ref r29
-    if is_error(r30) goto L59 (error at compute_unsigned_fixed_bounds:43) else goto L18
-L18:
-    r31 = PyNumber_Multiply(r25, r30)
-    dec_ref r25
-    dec_ref r30
-    if is_error(r31) goto L20 (error at compute_unsigned_fixed_bounds:43) else goto L60
-L19:
-    upper = r31
-    goto L28
-L20:
-    r32 = CPy_CatchError()
-    r19 = 0
-    r33 = CPy_GetExcInfo()
-    r34 = r33[0]
-    r35 = r33[1]
-    r36 = r33[2]
-    dec_ref r33
-    r37 = [r10, r34, r35, r36]
-    r38 = load_address r37
-    r39 = PyObject_Vectorcall(r13, r38, 4, 0)
-    if is_error(r39) goto L61 (error at compute_unsigned_fixed_bounds:42) else goto L21
-L21:
-    dec_ref r34
-    dec_ref r35
-    dec_ref r36
-    r40 = PyObject_IsTrue(r39)
-    dec_ref r39
-    r41 = r40 >= 0 :: signed
-    if not r41 goto L26 (error at compute_unsigned_fixed_bounds:42) else goto L22 :: bool
-L22:
-    r42 = truncate r40: i32 to builtins.bool
-    if r42 goto L25 else goto L23 :: bool
-L23:
-    CPy_Reraise()
-    if not 0 goto L26 else goto L62 :: bool
-L24:
-    unreachable
-L25:
-    CPy_RestoreExcInfo(r32)
-    dec_ref r32
-    goto L28
-L26:
-    CPy_RestoreExcInfo(r32)
-    dec_ref r32
-    r43 = CPy_KeepPropagating()
-    if not r43 goto L29 else goto L63 :: bool
-L27:
-    unreachable
-L28:
-    r44 = <error> :: tuple[object, object, object]
-    r45 = r44
-    goto L30
-L29:
-    r46 = CPy_CatchError()
-    r45 = r46
-L30:
-    if r19 goto L31 else goto L64 :: bool
-L31:
-    r47 = load_address _Py_NoneStruct
-    r48 = [r10, r47, r47, r47]
-    r49 = load_address r48
-    r50 = PyObject_Vectorcall(r13, r49, 4, 0)
-    dec_ref r13
-    if is_error(r50) goto L65 (error at compute_unsigned_fixed_bounds:42) else goto L66
-L32:
-    dec_ref r10
-L33:
-    if is_error(r45) goto L40 else goto L67
-L34:
-    CPy_Reraise()
-    if not 0 goto L36 else goto L68 :: bool
-L35:
-    unreachable
-L36:
-    if is_error(r45) goto L38 else goto L37
-L37:
-    CPy_RestoreExcInfo(r45)
-    xdec_ref r45
-L38:
-    r51 = CPy_KeepPropagating()
-    if not r51 goto L47 else goto L39 :: bool
-L39:
-    unreachable
-L40:
-    r52 = faster_eth_abi.utils.numeric.ZERO :: static
-    if is_error(r52) goto L69 else goto L43
-L41:
-    r53 = raise NameError('value for final name "ZERO" was not set')
-    if not r53 goto L47 (error at compute_unsigned_fixed_bounds:45) else goto L42 :: bool
-L42:
-    unreachable
-L43:
-    if is_error(upper) goto L44 else goto L46
-L44:
-    r54 = raise UnboundLocalError('local variable "upper" referenced before assignment')
-    if not r54 goto L47 (error at compute_unsigned_fixed_bounds:45) else goto L45 :: bool
-L45:
-    unreachable
-L46:
-    inc_ref r52
-    r55 = (r52, upper)
-    return r55
-L47:
-    r56 = <error> :: tuple[object, object]
-    return r56
-L48:
-    xdec_ref upper
-    goto L47
-L49:
-    xdec_ref upper
-    dec_ref r2 :: int
-    goto L2
-L50:
-    xdec_ref upper
-    dec_ref r2 :: int
-    goto L47
-L51:
-    xdec_ref upper
-    dec_ref r2 :: int
-    dec_ref r10
-    dec_ref r11
-    goto L47
-L52:
-    xdec_ref upper
-    dec_ref r2 :: int
-    dec_ref r10
-    dec_ref r13
-    goto L47
-L53:
-    dec_ref r18
-    goto L9
-L54:
-    dec_ref r2 :: int
-    goto L11
-L55:
-    xdec_ref upper
-    dec_ref r10
-    dec_ref r13
-    goto L12
-L56:
-    dec_ref r22
-    goto L20
-L57:
-    dec_ref r25
-    goto L15
-L58:
-    xdec_ref upper
-    dec_ref r10
-    dec_ref r13
-    goto L16
-L59:
-    dec_ref r25
-    goto L20
-L60:
-    xdec_ref upper
-    goto L19
-L61:
-    dec_ref r34
-    dec_ref r35
-    dec_ref r36
-    goto L26
-L62:
-    xdec_ref upper
-    dec_ref r10
-    dec_ref r13
-    dec_ref r32
-    goto L24
-L63:
-    xdec_ref upper
-    dec_ref r10
-    dec_ref r13
-    goto L27
-L64:
-    dec_ref r10
-    dec_ref r13
-    goto L33
-L65:
-    xdec_ref upper
-    dec_ref r10
-    goto L36
-L66:
-    dec_ref r50
-    goto L32
-L67:
-    xdec_ref upper
-    goto L34
-L68:
-    xdec_ref r45
-    goto L35
-L69:
-    xdec_ref upper
-    goto L41
-
-def compute_signed_fixed_bounds(num_bits, frac_places):
-    num_bits, frac_places :: int
-    r0, lower, r1, upper :: object
-    r2 :: tuple[int, int]
-    r3, r4, r5, r6 :: int
-    r7 :: object
-    r8 :: bool
-    r9 :: object
-    r10 :: str
-    r11 :: object
-    r12 :: object[1]
-    r13 :: object_ptr
-    r14, r15 :: object
+    r3 :: short_int
+    r4 :: native_int
+    r5 :: bit
+    r6 :: native_int
+    r7, r8, r9 :: bit
+    r10 :: native_int
+    r11 :: bit
+    r12 :: native_int
+    r13, r14, r15 :: bit
     r16 :: str
     r17 :: object
     r18 :: str
@@ -2399,1241 +1691,107 @@ def compute_signed_fixed_bounds(num_bits, frac_places):
     r20 :: object[1]
     r21 :: object_ptr
     r22 :: object
-    r23 :: bool
+    r23 :: int
     r24 :: object
-    r25 :: bool
-    r26 :: int
-    r27, r28, r29 :: object
-    r30 :: bool
-    r31 :: object
-    r32 :: object[1]
-    r33 :: object_ptr
-    r34, r35, r36 :: object
-    r37 :: bool
-    r38 :: object
-    r39 :: object[1]
-    r40 :: object_ptr
-    r41, r42 :: object
-    r43, r44 :: tuple[object, object, object]
-    r45, r46, r47 :: object
-    r48 :: object[4]
-    r49 :: object_ptr
-    r50 :: object
-    r51 :: i32
-    r52 :: bit
-    r53 :: bool
-    r54 :: bit
-    r55, r56, r57 :: tuple[object, object, object]
-    r58 :: object
-    r59 :: object[4]
-    r60 :: object_ptr
-    r61 :: object
-    r62 :: bit
-    r63, r64 :: bool
-    r65, r66 :: tuple[object, object]
+    r25, r26, r27, r28 :: str
 L0:
-    r0 = <error> :: object
-    lower = r0
-    r1 = <error> :: object
-    upper = r1
-    r2 = compute_signed_integer_bounds(num_bits)
-    if is_error(r2) goto L53 (error at compute_signed_fixed_bounds:52) else goto L1
+    if is_error(limit) goto L1 else goto L22
 L1:
-    r3 = borrow r2[0]
-    r4 = borrow r2[1]
-    r5 = unborrow r3
-    r6 = unborrow r4
-    r7 = faster_eth_abi.utils.numeric.abi_decimal_context :: static
-    if is_error(r7) goto L54 else goto L4
+    limit = 158
 L2:
-    r8 = raise NameError('value for final name "abi_decimal_context" was not set')
-    if not r8 goto L52 (error at compute_signed_fixed_bounds:54) else goto L3 :: bool
+    r0 = PyObject_Repr(value)
+    if is_error(r0) goto L23 (error at abbr:11) else goto L3
 L3:
-    unreachable
+    rep = r0
+    r1 = CPyStr_Size_size_t(rep)
+    r2 = r1 >= 0 :: signed
+    if not r2 goto L24 (error at abbr:13) else goto L4 :: bool
 L4:
-    r9 = decimal :: module
-    r10 = 'localcontext'
-    r11 = CPyObject_GetAttr(r9, r10)
-    if is_error(r11) goto L55 (error at compute_signed_fixed_bounds:54) else goto L5
+    r3 = r1 << 1
+    r4 = r3 & 1
+    r5 = r4 != 0
+    if r5 goto L6 else goto L5 :: bool
 L5:
-    r12 = [r7]
-    r13 = load_address r12
-    r14 = PyObject_Vectorcall(r11, r13, 1, 0)
-    dec_ref r11
-    if is_error(r14) goto L55 (error at compute_signed_fixed_bounds:54) else goto L6
+    r6 = limit & 1
+    r7 = r6 != 0
+    if r7 goto L6 else goto L7 :: bool
 L6:
-    r15 = PyObject_Type(r14)
-    r16 = '__exit__'
-    r17 = CPyObject_GetAttr(r15, r16)
-    if is_error(r17) goto L56 (error at compute_signed_fixed_bounds:54) else goto L7
+    r8 = CPyTagged_IsLt_(limit, r3)
+    if r8 goto L8 else goto L25 :: bool
 L7:
-    r18 = '__enter__'
-    r19 = CPyObject_GetAttr(r15, r18)
-    dec_ref r15
-    if is_error(r19) goto L57 (error at compute_signed_fixed_bounds:54) else goto L8
+    r9 = r3 > limit :: signed
+    if r9 goto L8 else goto L25 :: bool
 L8:
-    r20 = [r14]
+    r10 = limit & 1
+    r11 = r10 != 0
+    if r11 goto L10 else goto L9 :: bool
+L9:
+    r12 = 6 & 1
+    r13 = r12 != 0
+    if r13 goto L10 else goto L11 :: bool
+L10:
+    r14 = CPyTagged_IsLt_(limit, 6)
+    if r14 goto L26 else goto L16 :: bool
+L11:
+    r15 = limit < 6 :: signed
+    if r15 goto L26 else goto L16 :: bool
+L12:
+    r16 = 'Abbreviation limit may not be less than 3'
+    r17 = builtins :: module
+    r18 = 'ValueError'
+    r19 = CPyObject_GetAttr(r17, r18)
+    if is_error(r19) goto L21 (error at abbr:15) else goto L13
+L13:
+    r20 = [r16]
     r21 = load_address r20
     r22 = PyObject_Vectorcall(r19, r21, 1, 0)
     dec_ref r19
-    if is_error(r22) goto L57 (error at compute_signed_fixed_bounds:54) else goto L58
-L9:
-    r23 = 1
-L10:
-    r24 = faster_eth_abi.utils.numeric.TEN :: static
-    if is_error(r24) goto L59 else goto L13
-L11:
-    r25 = raise NameError('value for final name "TEN" was not set')
-    if not r25 goto L25 (error at compute_signed_fixed_bounds:55) else goto L60 :: bool
-L12:
-    unreachable
-L13:
-    r26 = CPyTagged_Negate(frac_places)
-    r27 = box(int, r26)
-    r28 = CPyNumber_Power(r24, r27)
-    dec_ref r27
-    if is_error(r28) goto L61 (error at compute_signed_fixed_bounds:55) else goto L14
+    if is_error(r22) goto L21 (error at abbr:15) else goto L14
 L14:
-    r29 = faster_eth_abi.utils.numeric.Decimal :: static
-    if is_error(r29) goto L62 else goto L17
-L15:
-    r30 = raise NameError('value for final name "Decimal" was not set')
-    if not r30 goto L25 (error at compute_signed_fixed_bounds:56) else goto L63 :: bool
-L16:
-    unreachable
-L17:
-    r31 = box(int, r5)
-    r32 = [r31]
-    r33 = load_address r32
-    r34 = PyObject_Vectorcall(r29, r33, 1, 0)
-    if is_error(r34) goto L64 (error at compute_signed_fixed_bounds:56) else goto L18
-L18:
-    dec_ref r31
-    r35 = PyNumber_Multiply(r34, r28)
-    dec_ref r34
-    if is_error(r35) goto L65 (error at compute_signed_fixed_bounds:56) else goto L66
-L19:
-    lower = r35
-    r36 = faster_eth_abi.utils.numeric.Decimal :: static
-    if is_error(r36) goto L67 else goto L22
-L20:
-    r37 = raise NameError('value for final name "Decimal" was not set')
-    if not r37 goto L25 (error at compute_signed_fixed_bounds:57) else goto L68 :: bool
-L21:
-    unreachable
-L22:
-    r38 = box(int, r6)
-    r39 = [r38]
-    r40 = load_address r39
-    r41 = PyObject_Vectorcall(r36, r40, 1, 0)
-    if is_error(r41) goto L69 (error at compute_signed_fixed_bounds:57) else goto L23
-L23:
-    dec_ref r38
-    r42 = PyNumber_Multiply(r41, r28)
-    dec_ref r41
-    dec_ref r28
-    if is_error(r42) goto L25 (error at compute_signed_fixed_bounds:57) else goto L70
-L24:
-    upper = r42
-    goto L33
-L25:
-    r43 = CPy_CatchError()
-    r23 = 0
-    r44 = CPy_GetExcInfo()
-    r45 = r44[0]
-    r46 = r44[1]
-    r47 = r44[2]
-    dec_ref r44
-    r48 = [r14, r45, r46, r47]
-    r49 = load_address r48
-    r50 = PyObject_Vectorcall(r17, r49, 4, 0)
-    if is_error(r50) goto L71 (error at compute_signed_fixed_bounds:54) else goto L26
-L26:
-    dec_ref r45
-    dec_ref r46
-    dec_ref r47
-    r51 = PyObject_IsTrue(r50)
-    dec_ref r50
-    r52 = r51 >= 0 :: signed
-    if not r52 goto L31 (error at compute_signed_fixed_bounds:54) else goto L27 :: bool
-L27:
-    r53 = truncate r51: i32 to builtins.bool
-    if r53 goto L30 else goto L28 :: bool
-L28:
-    CPy_Reraise()
-    if not 0 goto L31 else goto L72 :: bool
-L29:
-    unreachable
-L30:
-    CPy_RestoreExcInfo(r43)
-    dec_ref r43
-    goto L33
-L31:
-    CPy_RestoreExcInfo(r43)
-    dec_ref r43
-    r54 = CPy_KeepPropagating()
-    if not r54 goto L34 else goto L73 :: bool
-L32:
-    unreachable
-L33:
-    r55 = <error> :: tuple[object, object, object]
-    r56 = r55
-    goto L35
-L34:
-    r57 = CPy_CatchError()
-    r56 = r57
-L35:
-    if r23 goto L36 else goto L74 :: bool
-L36:
-    r58 = load_address _Py_NoneStruct
-    r59 = [r14, r58, r58, r58]
-    r60 = load_address r59
-    r61 = PyObject_Vectorcall(r17, r60, 4, 0)
-    dec_ref r17
-    if is_error(r61) goto L75 (error at compute_signed_fixed_bounds:54) else goto L76
-L37:
-    dec_ref r14
-L38:
-    if is_error(r56) goto L45 else goto L77
-L39:
-    CPy_Reraise()
-    if not 0 goto L41 else goto L78 :: bool
-L40:
-    unreachable
-L41:
-    if is_error(r56) goto L43 else goto L42
-L42:
-    CPy_RestoreExcInfo(r56)
-    xdec_ref r56
-L43:
-    r62 = CPy_KeepPropagating()
-    if not r62 goto L52 else goto L44 :: bool
-L44:
-    unreachable
-L45:
-    if is_error(lower) goto L79 else goto L48
-L46:
-    r63 = raise UnboundLocalError('local variable "lower" referenced before assignment')
-    if not r63 goto L52 (error at compute_signed_fixed_bounds:59) else goto L47 :: bool
-L47:
-    unreachable
-L48:
-    if is_error(upper) goto L80 else goto L51
-L49:
-    r64 = raise UnboundLocalError('local variable "upper" referenced before assignment')
-    if not r64 goto L52 (error at compute_signed_fixed_bounds:59) else goto L50 :: bool
-L50:
-    unreachable
-L51:
-    r65 = (lower, upper)
-    return r65
-L52:
-    r66 = <error> :: tuple[object, object]
-    return r66
-L53:
-    xdec_ref lower
-    xdec_ref upper
-    goto L52
-L54:
-    xdec_ref lower
-    xdec_ref upper
-    dec_ref r5 :: int
-    dec_ref r6 :: int
-    goto L2
-L55:
-    xdec_ref lower
-    xdec_ref upper
-    dec_ref r5 :: int
-    dec_ref r6 :: int
-    goto L52
-L56:
-    xdec_ref lower
-    xdec_ref upper
-    dec_ref r5 :: int
-    dec_ref r6 :: int
-    dec_ref r14
-    dec_ref r15
-    goto L52
-L57:
-    xdec_ref lower
-    xdec_ref upper
-    dec_ref r5 :: int
-    dec_ref r6 :: int
-    dec_ref r14
-    dec_ref r17
-    goto L52
-L58:
+    CPy_Raise(r22)
     dec_ref r22
-    goto L9
-L59:
-    dec_ref r5 :: int
-    dec_ref r6 :: int
-    goto L11
-L60:
-    xdec_ref lower
-    xdec_ref upper
-    dec_ref r14
-    dec_ref r17
-    goto L12
-L61:
-    dec_ref r5 :: int
-    dec_ref r6 :: int
-    goto L25
-L62:
-    dec_ref r5 :: int
-    dec_ref r6 :: int
-    dec_ref r28
-    goto L15
-L63:
-    xdec_ref lower
-    xdec_ref upper
-    dec_ref r14
-    dec_ref r17
-    goto L16
-L64:
-    dec_ref r6 :: int
-    dec_ref r28
-    dec_ref r31
-    goto L25
-L65:
-    dec_ref r6 :: int
-    dec_ref r28
-    goto L25
-L66:
-    xdec_ref lower
-    goto L19
-L67:
-    dec_ref r6 :: int
-    dec_ref r28
-    goto L20
-L68:
-    dec_ref lower
-    xdec_ref upper
-    dec_ref r14
-    dec_ref r17
-    goto L21
-L69:
-    dec_ref r28
-    dec_ref r38
-    goto L25
-L70:
-    xdec_ref upper
-    goto L24
-L71:
-    dec_ref r45
-    dec_ref r46
-    dec_ref r47
-    goto L31
-L72:
-    xdec_ref lower
-    xdec_ref upper
-    dec_ref r14
-    dec_ref r17
-    dec_ref r43
-    goto L29
-L73:
-    xdec_ref lower
-    xdec_ref upper
-    dec_ref r14
-    dec_ref r17
-    goto L32
-L74:
-    dec_ref r14
-    dec_ref r17
-    goto L38
-L75:
-    xdec_ref lower
-    xdec_ref upper
-    dec_ref r14
-    goto L41
-L76:
-    dec_ref r61
-    goto L37
-L77:
-    xdec_ref lower
-    xdec_ref upper
-    goto L39
-L78:
-    xdec_ref r56
-    goto L40
-L79:
-    xdec_ref upper
-    goto L46
-L80:
-    xdec_ref lower
-    goto L49
-
-def f_scale_places_obj.__get__(__mypyc_self__, instance, owner):
-    __mypyc_self__, instance, owner, r0 :: object
-    r1 :: bit
-    r2, r3 :: object
-L0:
-    r0 = load_address _Py_NoneStruct
-    r1 = instance == r0
-    if r1 goto L1 else goto L2 :: bool
-L1:
-    inc_ref __mypyc_self__
-    return __mypyc_self__
-L2:
-    r2 = PyMethod_New(__mypyc_self__, instance)
-    if is_error(r2) goto L4 else goto L3
-L3:
-    return r2
-L4:
-    r3 = <error> :: object
-    return r3
-
-def f_scale_places_obj.__call__(__mypyc_self__, x):
-    __mypyc_self__ :: faster_eth_abi.utils.numeric.f_scale_places_obj
-    x :: object
-    r0 :: faster_eth_abi.utils.numeric.scale_places_env
-    r1 :: object
-    r2 :: bool
-    r3 :: object
-    r4 :: str
-    r5 :: object
-    r6 :: object[1]
-    r7 :: object_ptr
-    r8, r9 :: object
-    r10 :: str
-    r11 :: object
-    r12 :: str
-    r13 :: object
-    r14 :: object[1]
-    r15 :: object_ptr
-    r16 :: object
-    r17 :: bool
-    r18, r19, r20 :: object
-    r21, r22 :: tuple[object, object, object]
-    r23, r24, r25 :: object
-    r26 :: object[4]
-    r27 :: object_ptr
-    r28 :: object
-    r29 :: i32
-    r30 :: bit
-    r31 :: bool
-    r32 :: bit
-    r33 :: object
-    r34, r35 :: tuple[object, object, object]
-    r36 :: object
-    r37 :: tuple[object, object, object]
-    r38 :: object
-    r39 :: object[4]
-    r40 :: object_ptr
-    r41 :: object
-    r42 :: bit
-    r43, r44 :: object
-L0:
-    r0 = __mypyc_self__.__mypyc_env__
-    if is_error(r0) goto L37 (error at f:76) else goto L1
-L1:
-    r1 = faster_eth_abi.utils.numeric.abi_decimal_context :: static
-    if is_error(r1) goto L38 else goto L4
-L2:
-    r2 = raise NameError('value for final name "abi_decimal_context" was not set')
-    if not r2 goto L37 (error at f:77) else goto L3 :: bool
-L3:
-    unreachable
-L4:
-    r3 = decimal :: module
-    r4 = 'localcontext'
-    r5 = CPyObject_GetAttr(r3, r4)
-    if is_error(r5) goto L39 (error at f:77) else goto L5
-L5:
-    r6 = [r1]
-    r7 = load_address r6
-    r8 = PyObject_Vectorcall(r5, r7, 1, 0)
-    dec_ref r5
-    if is_error(r8) goto L39 (error at f:77) else goto L6
-L6:
-    r9 = PyObject_Type(r8)
-    r10 = '__exit__'
-    r11 = CPyObject_GetAttr(r9, r10)
-    if is_error(r11) goto L40 (error at f:77) else goto L7
-L7:
-    r12 = '__enter__'
-    r13 = CPyObject_GetAttr(r9, r12)
-    dec_ref r9
-    if is_error(r13) goto L41 (error at f:77) else goto L8
-L8:
-    r14 = [r8]
-    r15 = load_address r14
-    r16 = PyObject_Vectorcall(r13, r15, 1, 0)
-    dec_ref r13
-    if is_error(r16) goto L41 (error at f:77) else goto L42
-L9:
-    r17 = 1
-L10:
-    r18 = r0.scaling_factor
-    dec_ref r0
-    if is_error(r18) goto L13 (error at f:78) else goto L11
-L11:
-    r19 = PyNumber_Multiply(x, r18)
-    dec_ref r18
-    if is_error(r19) goto L13 (error at f:78) else goto L12
-L12:
-    r20 = r19
-    goto L22
-L13:
-    r21 = CPy_CatchError()
-    r17 = 0
-    r22 = CPy_GetExcInfo()
-    r23 = r22[0]
-    r24 = r22[1]
-    r25 = r22[2]
-    dec_ref r22
-    r26 = [r8, r23, r24, r25]
-    r27 = load_address r26
-    r28 = PyObject_Vectorcall(r11, r27, 4, 0)
-    if is_error(r28) goto L43 (error at f:77) else goto L14
-L14:
-    dec_ref r23
-    dec_ref r24
-    dec_ref r25
-    r29 = PyObject_IsTrue(r28)
-    dec_ref r28
-    r30 = r29 >= 0 :: signed
-    if not r30 goto L19 (error at f:77) else goto L15 :: bool
+    if not 0 goto L21 (error at abbr:15) else goto L15 :: bool
 L15:
-    r31 = truncate r29: i32 to builtins.bool
-    if r31 goto L18 else goto L16 :: bool
+    unreachable
 L16:
-    CPy_Reraise()
-    if not 0 goto L19 else goto L44 :: bool
+    r23 = CPyTagged_Subtract(limit, 6)
+    dec_ref limit :: int
+    r24 = CPyStr_GetSlice(rep, 0, r23)
+    dec_ref rep
+    dec_ref r23 :: int
+    if is_error(r24) goto L21 (error at abbr:17) else goto L17
 L17:
-    unreachable
+    r25 = cast(str, r24)
+    if is_error(r25) goto L21 (error at abbr:17) else goto L18
 L18:
-    CPy_RestoreExcInfo(r21)
-    dec_ref r21
-    goto L21
+    r26 = '...'
+    r27 = PyUnicode_Concat(r25, r26)
+    dec_ref r25
+    if is_error(r27) goto L21 (error at abbr:17) else goto L19
 L19:
-    CPy_RestoreExcInfo(r21)
-    dec_ref r21
-    r32 = CPy_KeepPropagating()
-    if not r32 goto L23 else goto L45 :: bool
+    rep = r27
 L20:
-    unreachable
+    return rep
 L21:
-    r33 = <error> :: object
-    r20 = r33
+    r28 = <error> :: str
+    return r28
 L22:
-    r34 = <error> :: tuple[object, object, object]
-    r35 = r34
-    goto L24
-L23:
-    r36 = <error> :: object
-    r20 = r36
-    r37 = CPy_CatchError()
-    r35 = r37
-L24:
-    if r17 goto L25 else goto L46 :: bool
-L25:
-    r38 = load_address _Py_NoneStruct
-    r39 = [r8, r38, r38, r38]
-    r40 = load_address r39
-    r41 = PyObject_Vectorcall(r11, r40, 4, 0)
-    dec_ref r11
-    if is_error(r41) goto L47 (error at f:77) else goto L48
-L26:
-    dec_ref r8
-L27:
-    if is_error(r35) goto L30 else goto L49
-L28:
-    CPy_Reraise()
-    if not 0 goto L32 else goto L50 :: bool
-L29:
-    unreachable
-L30:
-    if is_error(r20) goto L36 else goto L31
-L31:
-    return r20
-L32:
-    if is_error(r35) goto L34 else goto L33
-L33:
-    CPy_RestoreExcInfo(r35)
-    xdec_ref r35
-L34:
-    r42 = CPy_KeepPropagating()
-    if not r42 goto L37 else goto L35 :: bool
-L35:
-    unreachable
-L36:
-    r43 = box(None, 1)
-    inc_ref r43
-    return r43
-L37:
-    r44 = <error> :: object
-    return r44
-L38:
-    dec_ref r0
+    inc_ref limit :: int
     goto L2
-L39:
-    dec_ref r0
-    goto L37
-L40:
-    dec_ref r0
-    dec_ref r8
-    dec_ref r9
-    goto L37
-L41:
-    dec_ref r0
-    dec_ref r8
-    dec_ref r11
-    goto L37
-L42:
-    dec_ref r16
-    goto L9
-L43:
-    dec_ref r23
-    dec_ref r24
-    dec_ref r25
-    goto L19
-L44:
-    dec_ref r8
-    dec_ref r11
-    dec_ref r21
-    goto L17
-L45:
-    dec_ref r8
-    dec_ref r11
-    goto L20
-L46:
-    dec_ref r8
-    dec_ref r11
-    goto L27
-L47:
-    dec_ref r8
-    xdec_ref r20
-    goto L32
-L48:
-    dec_ref r41
-    goto L26
-L49:
-    xdec_ref r20
-    goto L28
-L50:
-    xdec_ref r35
-    goto L29
-
-def scale_places(places):
-    places :: int
-    r0 :: faster_eth_abi.utils.numeric.scale_places_env
-    r1, r2 :: object
-    r3 :: i32
-    r4 :: bit
-    r5 :: bool
-    r6, r7, r8 :: str
-    r9 :: object
-    r10, r11 :: str
-    r12 :: object[3]
-    r13 :: object_ptr
-    r14 :: object
-    r15, r16 :: str
-    r17, r18 :: object
-    r19, r20 :: str
-    r21 :: object[3]
-    r22 :: object_ptr
-    r23 :: object
-    r24 :: str
-    r25 :: list
-    r26, r27, r28, r29, r30, r31 :: ptr
-    r32 :: str
-    r33 :: object
-    r34 :: str
-    r35 :: object
-    r36 :: object[1]
-    r37 :: object_ptr
-    r38, r39 :: object
-    r40 :: bool
-    r41 :: object
-    r42 :: str
-    r43 :: object
-    r44 :: object[1]
-    r45 :: object_ptr
-    r46, r47 :: object
-    r48 :: str
-    r49 :: object
-    r50 :: str
-    r51 :: object
-    r52 :: object[1]
-    r53 :: object_ptr
-    r54 :: object
-    r55 :: bool
-    r56 :: object
-    r57 :: bool
-    r58 :: int
-    r59, r60 :: object
-    r61 :: bool
-    r62, r63 :: tuple[object, object, object]
-    r64, r65, r66 :: object
-    r67 :: object[4]
-    r68 :: object_ptr
-    r69 :: object
-    r70 :: i32
-    r71 :: bit
-    r72 :: bool
-    r73 :: bit
-    r74, r75, r76 :: tuple[object, object, object]
-    r77 :: object
-    r78 :: object[4]
-    r79 :: object_ptr
-    r80 :: object
-    r81 :: bit
-    r82 :: faster_eth_abi.utils.numeric.f_scale_places_obj
-    r83 :: bool
-    f :: object
-    r84 :: native_int
-    r85 :: bit
-    r86 :: native_int
-    r87, r88, r89 :: bit
-    r90, r91, r92, r93, r94 :: str
-    r95 :: int
-    r96, r97, places_repr, r98, r99, r100 :: str
-    r101 :: i32
-    r102 :: bit
-    r103 :: str
-    r104 :: i32
-    r105 :: bit
-    r106 :: object
-L0:
-    r0 = scale_places_env()
-    if is_error(r0) goto L61 (error at scale_places:62) else goto L1
-L1:
-    inc_ref places :: int
-    r1 = box(int, places)
-    r2 = load_address PyLong_Type
-    r3 = PyObject_IsInstance(r1, r2)
-    dec_ref r1
-    r4 = r3 >= 0 :: signed
-    if not r4 goto L62 (error at scale_places:67) else goto L2 :: bool
-L2:
-    r5 = truncate r3: i32 to builtins.bool
-    if r5 goto L11 else goto L63 :: bool
-L3:
-    r6 = ''
-    r7 = 'Argument `places` must be int.  Got value '
-    r8 = '{:{}}'
-    inc_ref places :: int
-    r9 = box(int, places)
-    r10 = ''
-    r11 = 'format'
-    r12 = [r8, r9, r10]
-    r13 = load_address r12
-    r14 = PyObject_VectorcallMethod(r11, r13, 9223372036854775811, 0)
-    if is_error(r14) goto L64 (error at scale_places:69) else goto L4
-L4:
-    dec_ref r9
-    r15 = ' of type '
-    r16 = '{:{}}'
-    inc_ref places :: int
-    r17 = box(int, places)
-    r18 = PyObject_Type(r17)
-    dec_ref r17
-    r19 = ''
-    r20 = 'format'
-    r21 = [r16, r18, r19]
-    r22 = load_address r21
-    r23 = PyObject_VectorcallMethod(r20, r22, 9223372036854775811, 0)
-    if is_error(r23) goto L65 (error at scale_places:70) else goto L5
-L5:
-    dec_ref r18
-    r24 = '.'
-    r25 = PyList_New(5)
-    if is_error(r25) goto L66 (error at scale_places:69) else goto L6
-L6:
-    r26 = get_element_ptr r25 ob_item :: PyListObject
-    r27 = load_mem r26 :: ptr*
-    inc_ref r7
-    set_mem r27, r7 :: builtins.object*
-    r28 = r27 + 8
-    set_mem r28, r14 :: builtins.object*
-    inc_ref r15
-    r29 = r27 + 16
-    set_mem r29, r15 :: builtins.object*
-    r30 = r27 + 24
-    set_mem r30, r23 :: builtins.object*
-    inc_ref r24
-    r31 = r27 + 32
-    set_mem r31, r24 :: builtins.object*
-    r32 = PyUnicode_Join(r6, r25)
-    dec_ref r25
-    if is_error(r32) goto L61 (error at scale_places:69) else goto L7
-L7:
-    r33 = builtins :: module
-    r34 = 'ValueError'
-    r35 = CPyObject_GetAttr(r33, r34)
-    if is_error(r35) goto L67 (error at scale_places:68) else goto L8
-L8:
-    r36 = [r32]
-    r37 = load_address r36
-    r38 = PyObject_Vectorcall(r35, r37, 1, 0)
-    dec_ref r35
-    if is_error(r38) goto L67 (error at scale_places:68) else goto L9
-L9:
-    dec_ref r32
-    CPy_Raise(r38)
-    dec_ref r38
-    if not 0 goto L61 (error at scale_places:68) else goto L10 :: bool
-L10:
-    unreachable
-L11:
-    r39 = faster_eth_abi.utils.numeric.abi_decimal_context :: static
-    if is_error(r39) goto L68 else goto L14
-L12:
-    r40 = raise NameError('value for final name "abi_decimal_context" was not set')
-    if not r40 goto L61 (error at scale_places:73) else goto L13 :: bool
-L13:
-    unreachable
-L14:
-    r41 = decimal :: module
-    r42 = 'localcontext'
-    r43 = CPyObject_GetAttr(r41, r42)
-    if is_error(r43) goto L62 (error at scale_places:73) else goto L15
-L15:
-    r44 = [r39]
-    r45 = load_address r44
-    r46 = PyObject_Vectorcall(r43, r45, 1, 0)
-    dec_ref r43
-    if is_error(r46) goto L62 (error at scale_places:73) else goto L16
-L16:
-    r47 = PyObject_Type(r46)
-    r48 = '__exit__'
-    r49 = CPyObject_GetAttr(r47, r48)
-    if is_error(r49) goto L69 (error at scale_places:73) else goto L17
-L17:
-    r50 = '__enter__'
-    r51 = CPyObject_GetAttr(r47, r50)
-    dec_ref r47
-    if is_error(r51) goto L70 (error at scale_places:73) else goto L18
-L18:
-    r52 = [r46]
-    r53 = load_address r52
-    r54 = PyObject_Vectorcall(r51, r53, 1, 0)
-    dec_ref r51
-    if is_error(r54) goto L70 (error at scale_places:73) else goto L71
-L19:
-    r55 = 1
-L20:
-    r56 = faster_eth_abi.utils.numeric.TEN :: static
-    if is_error(r56) goto L21 else goto L23
-L21:
-    r57 = raise NameError('value for final name "TEN" was not set')
-    if not r57 goto L25 (error at scale_places:74) else goto L72 :: bool
-L22:
-    unreachable
 L23:
-    r58 = CPyTagged_Negate(places)
-    r59 = box(int, r58)
-    r60 = CPyNumber_Power(r56, r59)
-    dec_ref r59
-    if is_error(r60) goto L25 (error at scale_places:74) else goto L24
+    dec_ref limit :: int
+    goto L21
 L24:
-    r0.scaling_factor = r60; r61 = is_error
-    if not r61 goto L25 (error at scale_places:74) else goto L33 :: bool
+    dec_ref limit :: int
+    dec_ref rep
+    goto L21
 L25:
-    r62 = CPy_CatchError()
-    r55 = 0
-    r63 = CPy_GetExcInfo()
-    r64 = r63[0]
-    r65 = r63[1]
-    r66 = r63[2]
-    dec_ref r63
-    r67 = [r46, r64, r65, r66]
-    r68 = load_address r67
-    r69 = PyObject_Vectorcall(r49, r68, 4, 0)
-    if is_error(r69) goto L73 (error at scale_places:73) else goto L26
+    dec_ref limit :: int
+    goto L20
 L26:
-    dec_ref r64
-    dec_ref r65
-    dec_ref r66
-    r70 = PyObject_IsTrue(r69)
-    dec_ref r69
-    r71 = r70 >= 0 :: signed
-    if not r71 goto L31 (error at scale_places:73) else goto L27 :: bool
-L27:
-    r72 = truncate r70: i32 to builtins.bool
-    if r72 goto L30 else goto L28 :: bool
-L28:
-    CPy_Reraise()
-    if not 0 goto L31 else goto L74 :: bool
-L29:
-    unreachable
-L30:
-    CPy_RestoreExcInfo(r62)
-    dec_ref r62
-    goto L33
-L31:
-    CPy_RestoreExcInfo(r62)
-    dec_ref r62
-    r73 = CPy_KeepPropagating()
-    if not r73 goto L34 else goto L75 :: bool
-L32:
-    unreachable
-L33:
-    r74 = <error> :: tuple[object, object, object]
-    r75 = r74
-    goto L35
-L34:
-    r76 = CPy_CatchError()
-    r75 = r76
-L35:
-    if r55 goto L36 else goto L76 :: bool
-L36:
-    r77 = load_address _Py_NoneStruct
-    r78 = [r46, r77, r77, r77]
-    r79 = load_address r78
-    r80 = PyObject_Vectorcall(r49, r79, 4, 0)
-    dec_ref r49
-    if is_error(r80) goto L77 (error at scale_places:73) else goto L78
-L37:
-    dec_ref r46
-L38:
-    if is_error(r75) goto L45 else goto L79
-L39:
-    CPy_Reraise()
-    if not 0 goto L41 else goto L80 :: bool
-L40:
-    unreachable
-L41:
-    if is_error(r75) goto L43 else goto L42
-L42:
-    CPy_RestoreExcInfo(r75)
-    xdec_ref r75
-L43:
-    r81 = CPy_KeepPropagating()
-    if not r81 goto L61 else goto L44 :: bool
-L44:
-    unreachable
-L45:
-    r82 = f_scale_places_obj()
-    if is_error(r82) goto L62 (error at scale_places:76) else goto L46
-L46:
-    r82.__mypyc_env__ = r0; r83 = is_error
-    if not r83 goto L81 (error at scale_places:76) else goto L47 :: bool
-L47:
-    f = r82
-    r84 = places & 1
-    r85 = r84 != 0
-    if r85 goto L49 else goto L48 :: bool
-L48:
-    r86 = 0 & 1
-    r87 = r86 != 0
-    if r87 goto L49 else goto L50 :: bool
-L49:
-    r88 = CPyTagged_IsLt_(0, places)
-    if r88 goto L51 else goto L54 :: bool
-L50:
-    r89 = places > 0 :: signed
-    if r89 goto L51 else goto L54 :: bool
-L51:
-    r90 = 'Eneg'
-    r91 = CPyTagged_Str(places)
-    if is_error(r91) goto L82 (error at scale_places:80) else goto L52
-L52:
-    r92 = CPyStr_Build(2, r90, r91)
-    dec_ref r91
-    if is_error(r92) goto L82 (error at scale_places:80) else goto L53
-L53:
-    r93 = r92
-    goto L57
-L54:
-    r94 = 'Epos'
-    r95 = CPyTagged_Negate(places)
-    r96 = CPyTagged_Str(r95)
-    dec_ref r95 :: int
-    if is_error(r96) goto L82 (error at scale_places:80) else goto L55
-L55:
-    r97 = CPyStr_Build(2, r94, r96)
-    dec_ref r96
-    if is_error(r97) goto L82 (error at scale_places:80) else goto L56
-L56:
-    r93 = r97
-L57:
-    places_repr = r93
-    r98 = 'scale_by_'
-    r99 = CPyStr_Build(2, r98, places_repr)
-    dec_ref places_repr
-    if is_error(r99) goto L82 (error at scale_places:81) else goto L58
-L58:
-    r100 = '__name__'
-    r101 = PyObject_SetAttr(f, r100, r99)
-    r102 = r101 >= 0 :: signed
-    if not r102 goto L83 (error at scale_places:83) else goto L59 :: bool
-L59:
-    r103 = '__qualname__'
-    r104 = PyObject_SetAttr(f, r103, r99)
-    dec_ref r99
-    r105 = r104 >= 0 :: signed
-    if not r105 goto L82 (error at scale_places:84) else goto L60 :: bool
-L60:
-    return f
-L61:
-    r106 = <error> :: object
-    return r106
-L62:
-    dec_ref r0
-    goto L61
-L63:
-    dec_ref r0
-    goto L3
-L64:
-    dec_ref r9
-    goto L61
-L65:
-    dec_ref r14
-    dec_ref r18
-    goto L61
-L66:
-    dec_ref r14
-    dec_ref r23
-    goto L61
-L67:
-    dec_ref r32
-    goto L61
-L68:
-    dec_ref r0
+    dec_ref limit :: int
+    dec_ref rep
     goto L12
-L69:
-    dec_ref r0
-    dec_ref r46
-    dec_ref r47
-    goto L61
-L70:
-    dec_ref r0
-    dec_ref r46
-    dec_ref r49
-    goto L61
-L71:
-    dec_ref r54
-    goto L19
-L72:
-    dec_ref r0
-    dec_ref r46
-    dec_ref r49
-    goto L22
-L73:
-    dec_ref r64
-    dec_ref r65
-    dec_ref r66
-    goto L31
-L74:
-    dec_ref r0
-    dec_ref r46
-    dec_ref r49
-    dec_ref r62
-    goto L29
-L75:
-    dec_ref r0
-    dec_ref r46
-    dec_ref r49
-    goto L32
-L76:
-    dec_ref r46
-    dec_ref r49
-    goto L38
-L77:
-    dec_ref r0
-    dec_ref r46
-    goto L41
-L78:
-    dec_ref r80
-    goto L37
-L79:
-    dec_ref r0
-    goto L39
-L80:
-    xdec_ref r75
-    goto L40
-L81:
-    dec_ref r82
-    goto L61
-L82:
-    dec_ref f
-    goto L61
-L83:
-    dec_ref f
-    dec_ref r99
-    goto L61
-
-def __top_level__():
-    r0, r1 :: object
-    r2 :: bit
-    r3 :: str
-    r4 :: object
-    r5 :: object_ptr
-    r6 :: object_ptr[1]
-    r7 :: c_ptr
-    r8 :: native_int[1]
-    r9 :: c_ptr
-    r10 :: object
-    r11 :: dict
-    r12, r13 :: str
-    r14 :: bit
-    r15 :: object
-    r16 :: str
-    r17 :: dict
-    r18 :: object
-    r19 :: dict
-    r20 :: str
-    r21 :: object
-    r22 :: i32
-    r23 :: bit
-    r24 :: object
-    r25 :: str
-    r26, r27 :: object
-    r28 :: object[1]
-    r29 :: object_ptr
-    r30, r31 :: object
-    r32 :: dict
-    r33 :: str
-    r34 :: i32
-    r35 :: bit
-    r36 :: object
-    r37 :: str
-    r38, r39 :: object
-    r40 :: object[1]
-    r41 :: object_ptr
-    r42 :: object
-    r43 :: dict
-    r44 :: str
-    r45 :: i32
-    r46 :: bit
-    r47 :: object
-    r48 :: str
-    r49, r50 :: object
-    r51 :: object[1]
-    r52 :: object_ptr
-    r53 :: object
-    r54 :: dict
-    r55 :: str
-    r56 :: i32
-    r57 :: bit
-    r58 :: object
-    r59 :: str
-    r60 :: object
-    r61 :: dict
-    r62 :: str
-    r63 :: i32
-    r64 :: bit
-    r65 :: None
-L0:
-    r0 = builtins :: module
-    r1 = load_address _Py_NoneStruct
-    r2 = r0 != r1
-    if r2 goto L3 else goto L1 :: bool
-L1:
-    r3 = 'builtins'
-    r4 = PyImport_Import(r3)
-    if is_error(r4) goto L18 (error at <module>:-1) else goto L2
-L2:
-    builtins = r4 :: module
-    dec_ref r4
-L3:
-    r5 = load_address decimal :: module
-    r6 = [r5]
-    r7 = load_address r6
-    r8 = [1]
-    r9 = load_address r8
-    r10 = (('decimal', 'decimal', 'decimal'),)
-    r11 = faster_eth_abi.utils.numeric.globals :: static
-    r12 = 'faster_eth_abi/utils/numeric.py'
-    r13 = '<module>'
-    r14 = CPyImport_ImportMany(r10, r7, r11, r12, r13, r9)
-    if not r14 goto L18 else goto L4 :: bool
-L4:
-    r15 = ('Callable', 'Final', 'Tuple')
-    r16 = 'typing'
-    r17 = faster_eth_abi.utils.numeric.globals :: static
-    r18 = CPyImport_ImportFromMany(r16, r15, r15, r17)
-    if is_error(r18) goto L18 (error at <module>:2) else goto L5
-L5:
-    typing = r18 :: module
-    dec_ref r18
-    r19 = faster_eth_abi.utils.numeric.globals :: static
-    r20 = 'ABI_DECIMAL_PREC'
-    r21 = object 999
-    r22 = CPyDict_SetItem(r19, r20, r21)
-    r23 = r22 >= 0 :: signed
-    if not r23 goto L18 (error at <module>:8) else goto L6 :: bool
-L6:
-    r24 = decimal :: module
-    r25 = 'Context'
-    r26 = CPyObject_GetAttr(r24, r25)
-    if is_error(r26) goto L18 (error at <module>:10) else goto L7
-L7:
-    r27 = object 999
-    r28 = [r27]
-    r29 = load_address r28
-    r30 = ('prec',)
-    r31 = PyObject_Vectorcall(r26, r29, 0, r30)
-    dec_ref r26
-    if is_error(r31) goto L18 (error at <module>:10) else goto L8
-L8:
-    faster_eth_abi.utils.numeric.abi_decimal_context = r31 :: static
-    r32 = faster_eth_abi.utils.numeric.globals :: static
-    r33 = 'abi_decimal_context'
-    r34 = CPyDict_SetItem(r32, r33, r31)
-    dec_ref r31
-    r35 = r34 >= 0 :: signed
-    if not r35 goto L18 (error at <module>:10) else goto L9 :: bool
-L9:
-    r36 = decimal :: module
-    r37 = 'Decimal'
-    r38 = CPyObject_GetAttr(r36, r37)
-    if is_error(r38) goto L18 (error at <module>:12) else goto L10
-L10:
-    r39 = object 0
-    r40 = [r39]
-    r41 = load_address r40
-    r42 = PyObject_Vectorcall(r38, r41, 1, 0)
-    dec_ref r38
-    if is_error(r42) goto L18 (error at <module>:12) else goto L11
-L11:
-    faster_eth_abi.utils.numeric.ZERO = r42 :: static
-    r43 = faster_eth_abi.utils.numeric.globals :: static
-    r44 = 'ZERO'
-    r45 = CPyDict_SetItem(r43, r44, r42)
-    dec_ref r42
-    r46 = r45 >= 0 :: signed
-    if not r46 goto L18 (error at <module>:12) else goto L12 :: bool
-L12:
-    r47 = decimal :: module
-    r48 = 'Decimal'
-    r49 = CPyObject_GetAttr(r47, r48)
-    if is_error(r49) goto L18 (error at <module>:13) else goto L13
-L13:
-    r50 = object 10
-    r51 = [r50]
-    r52 = load_address r51
-    r53 = PyObject_Vectorcall(r49, r52, 1, 0)
-    dec_ref r49
-    if is_error(r53) goto L18 (error at <module>:13) else goto L14
-L14:
-    faster_eth_abi.utils.numeric.TEN = r53 :: static
-    r54 = faster_eth_abi.utils.numeric.globals :: static
-    r55 = 'TEN'
-    r56 = CPyDict_SetItem(r54, r55, r53)
-    dec_ref r53
-    r57 = r56 >= 0 :: signed
-    if not r57 goto L18 (error at <module>:13) else goto L15 :: bool
-L15:
-    r58 = decimal :: module
-    r59 = 'Decimal'
-    r60 = CPyObject_GetAttr(r58, r59)
-    if is_error(r60) goto L18 (error at <module>:15) else goto L16
-L16:
-    faster_eth_abi.utils.numeric.Decimal = r60 :: static
-    r61 = faster_eth_abi.utils.numeric.globals :: static
-    r62 = 'Decimal'
-    r63 = CPyDict_SetItem(r61, r62, r60)
-    dec_ref r60
-    r64 = r63 >= 0 :: signed
-    if not r64 goto L18 (error at <module>:15) else goto L17 :: bool
-L17:
-    return 1
-L18:
-    r65 = <error> :: None
-    return r65
 
 def __top_level__():
     r0, r1 :: object
@@ -3657,13 +1815,13 @@ L2:
     builtins = r4 :: module
     dec_ref r4
 L3:
-    r5 = ('get_abi_strategy',)
-    r6 = 'faster_eth_abi.tools._strategies'
-    r7 = faster_eth_abi.tools.globals :: static
+    r5 = ('Any',)
+    r6 = 'typing'
+    r7 = faster_eth_abi.utils.string.globals :: static
     r8 = CPyImport_ImportFromMany(r6, r5, r5, r7)
     if is_error(r8) goto L5 (error at <module>:1) else goto L4
 L4:
-    faster_eth_abi.tools._strategies = r8 :: module
+    typing = r8 :: module
     dec_ref r8
     return 1
 L5:
@@ -5726,129 +3884,200 @@ L166:
     dec_ref r317
     goto L142
 
-def abbr(value, limit):
-    value :: object
-    limit :: int
-    r0, rep :: str
-    r1 :: native_int
-    r2 :: bit
-    r3 :: short_int
-    r4 :: native_int
-    r5 :: bit
-    r6 :: native_int
-    r7, r8, r9 :: bit
-    r10 :: native_int
-    r11 :: bit
-    r12 :: native_int
-    r13, r14, r15 :: bit
-    r16 :: str
-    r17 :: object
-    r18 :: str
-    r19 :: object
-    r20 :: object[1]
-    r21 :: object_ptr
-    r22 :: object
-    r23 :: int
-    r24 :: object
-    r25, r26, r27, r28 :: str
+def encode_c(self, types, args):
+    self, types, args :: object
+    r0 :: str
+    r1 :: None
+    r2 :: str
+    r3 :: None
+    r4 :: str
+    r5 :: object
+    r6 :: str
+    r7 :: object
+    r8 :: list
+    r9 :: object
+    r10 :: tuple
+    r11 :: dict
+    r12 :: object
+    r13 :: object[1]
+    r14 :: object_ptr
+    r15 :: object
+    r16, r17 :: bytes
 L0:
-    if is_error(limit) goto L1 else goto L22
+    r0 = 'types'
+    r1 = validate_list_like_param(types, r0)
+    if is_error(r1) goto L12 (error at encode_c:44) else goto L1
 L1:
-    limit = 158
+    r2 = 'args'
+    r3 = validate_list_like_param(args, r2)
+    if is_error(r3) goto L12 (error at encode_c:45) else goto L2
 L2:
-    r0 = PyObject_Repr(value)
-    if is_error(r0) goto L23 (error at abbr:11) else goto L3
+    r4 = '_registry'
+    r5 = CPyObject_GetAttr(self, r4)
+    if is_error(r5) goto L12 (error at encode_c:47) else goto L3
 L3:
-    rep = r0
-    r1 = CPyStr_Size_size_t(rep)
-    r2 = r1 >= 0 :: signed
-    if not r2 goto L24 (error at abbr:13) else goto L4 :: bool
+    r6 = 'get_tuple_encoder'
+    r7 = CPyObject_GetAttr(r5, r6)
+    dec_ref r5
+    if is_error(r7) goto L12 (error at encode_c:47) else goto L4
 L4:
-    r3 = r1 << 1
-    r4 = r3 & 1
-    r5 = r4 != 0
-    if r5 goto L6 else goto L5 :: bool
+    r8 = PyList_New(0)
+    if is_error(r8) goto L13 (error at encode_c:47) else goto L5
 L5:
-    r6 = limit & 1
-    r7 = r6 != 0
-    if r7 goto L6 else goto L7 :: bool
+    r9 = CPyList_Extend(r8, types)
+    if is_error(r9) goto L14 (error at encode_c:47) else goto L15
 L6:
-    r8 = CPyTagged_IsLt_(limit, r3)
-    if r8 goto L8 else goto L25 :: bool
+    r10 = PyList_AsTuple(r8)
+    dec_ref r8
+    if is_error(r10) goto L13 (error at encode_c:47) else goto L7
 L7:
-    r9 = r3 > limit :: signed
-    if r9 goto L8 else goto L25 :: bool
+    r11 = PyDict_New()
+    if is_error(r11) goto L16 (error at encode_c:47) else goto L8
 L8:
-    r10 = limit & 1
-    r11 = r10 != 0
-    if r11 goto L10 else goto L9 :: bool
+    r12 = PyObject_Call(r7, r10, r11)
+    dec_ref r7
+    dec_ref r10
+    dec_ref r11
+    if is_error(r12) goto L12 (error at encode_c:47) else goto L9
 L9:
-    r12 = 6 & 1
-    r13 = r12 != 0
-    if r13 goto L10 else goto L11 :: bool
+    r13 = [args]
+    r14 = load_address r13
+    r15 = PyObject_Vectorcall(r12, r14, 1, 0)
+    dec_ref r12
+    if is_error(r15) goto L12 (error at encode_c:49) else goto L10
 L10:
-    r14 = CPyTagged_IsLt_(limit, 6)
-    if r14 goto L26 else goto L16 :: bool
+    r16 = cast(bytes, r15)
+    if is_error(r16) goto L12 (error at encode_c:49) else goto L11
 L11:
-    r15 = limit < 6 :: signed
-    if r15 goto L26 else goto L16 :: bool
+    return r16
 L12:
-    r16 = 'Abbreviation limit may not be less than 3'
-    r17 = builtins :: module
-    r18 = 'ValueError'
-    r19 = CPyObject_GetAttr(r17, r18)
-    if is_error(r19) goto L21 (error at abbr:15) else goto L13
+    r17 = <error> :: bytes
+    return r17
 L13:
-    r20 = [r16]
-    r21 = load_address r20
-    r22 = PyObject_Vectorcall(r19, r21, 1, 0)
-    dec_ref r19
-    if is_error(r22) goto L21 (error at abbr:15) else goto L14
-L14:
-    CPy_Raise(r22)
-    dec_ref r22
-    if not 0 goto L21 (error at abbr:15) else goto L15 :: bool
-L15:
-    unreachable
-L16:
-    r23 = CPyTagged_Subtract(limit, 6)
-    dec_ref limit :: int
-    r24 = CPyStr_GetSlice(rep, 0, r23)
-    dec_ref rep
-    dec_ref r23 :: int
-    if is_error(r24) goto L21 (error at abbr:17) else goto L17
-L17:
-    r25 = cast(str, r24)
-    if is_error(r25) goto L21 (error at abbr:17) else goto L18
-L18:
-    r26 = '...'
-    r27 = PyUnicode_Concat(r25, r26)
-    dec_ref r25
-    if is_error(r27) goto L21 (error at abbr:17) else goto L19
-L19:
-    rep = r27
-L20:
-    return rep
-L21:
-    r28 = <error> :: str
-    return r28
-L22:
-    inc_ref limit :: int
-    goto L2
-L23:
-    dec_ref limit :: int
-    goto L21
-L24:
-    dec_ref limit :: int
-    dec_ref rep
-    goto L21
-L25:
-    dec_ref limit :: int
-    goto L20
-L26:
-    dec_ref limit :: int
-    dec_ref rep
+    dec_ref r7
     goto L12
+L14:
+    dec_ref r7
+    dec_ref r8
+    goto L12
+L15:
+    dec_ref r9
+    goto L6
+L16:
+    dec_ref r7
+    dec_ref r10
+    goto L12
+
+def decode_c(self, types, data, strict):
+    self, types :: object
+    data :: union[bytes, object]
+    strict :: bool
+    r0 :: str
+    r1 :: None
+    r2 :: str
+    r3 :: None
+    r4 :: str
+    r5 :: object
+    r6 :: str
+    r7 :: object
+    r8 :: list
+    r9 :: object
+    r10 :: str
+    r11 :: tuple
+    r12 :: object
+    r13 :: dict
+    r14 :: object
+    r15 :: str
+    r16 :: object[2]
+    r17 :: object_ptr
+    r18 :: object
+    r19 :: object[1]
+    r20 :: object_ptr
+    r21 :: object
+    r22, r23 :: tuple
+L0:
+    if is_error(strict) goto L1 else goto L2
+L1:
+    strict = 1
+L2:
+    r0 = 'types'
+    r1 = validate_list_like_param(types, r0)
+    if is_error(r1) goto L15 (error at decode_c:76) else goto L3
+L3:
+    r2 = 'data'
+    r3 = validate_bytes_param(data, r2)
+    if is_error(r3) goto L15 (error at decode_c:77) else goto L4
+L4:
+    r4 = '_registry'
+    r5 = CPyObject_GetAttr(self, r4)
+    if is_error(r5) goto L15 (error at decode_c:79) else goto L5
+L5:
+    r6 = 'get_tuple_decoder'
+    r7 = CPyObject_GetAttr(r5, r6)
+    dec_ref r5
+    if is_error(r7) goto L15 (error at decode_c:79) else goto L6
+L6:
+    r8 = PyList_New(0)
+    if is_error(r8) goto L16 (error at decode_c:79) else goto L7
+L7:
+    r9 = CPyList_Extend(r8, types)
+    if is_error(r9) goto L17 (error at decode_c:79) else goto L18
+L8:
+    r10 = 'strict'
+    r11 = PyList_AsTuple(r8)
+    dec_ref r8
+    if is_error(r11) goto L16 (error at decode_c:79) else goto L9
+L9:
+    r12 = box(bool, strict)
+    r13 = CPyDict_Build(1, r10, r12)
+    if is_error(r13) goto L19 (error at decode_c:79) else goto L10
+L10:
+    r14 = PyObject_Call(r7, r11, r13)
+    dec_ref r7
+    dec_ref r11
+    dec_ref r13
+    if is_error(r14) goto L15 (error at decode_c:79) else goto L11
+L11:
+    r15 = 'stream_class'
+    r16 = [self, data]
+    r17 = load_address r16
+    r18 = PyObject_VectorcallMethod(r15, r17, 9223372036854775810, 0)
+    if is_error(r18) goto L20 (error at decode_c:80) else goto L12
+L12:
+    r19 = [r18]
+    r20 = load_address r19
+    r21 = PyObject_Vectorcall(r14, r20, 1, 0)
+    dec_ref r14
+    if is_error(r21) goto L21 (error at decode_c:82) else goto L13
+L13:
+    dec_ref r18
+    r22 = cast(tuple, r21)
+    if is_error(r22) goto L15 (error at decode_c:82) else goto L14
+L14:
+    return r22
+L15:
+    r23 = <error> :: tuple
+    return r23
+L16:
+    dec_ref r7
+    goto L15
+L17:
+    dec_ref r7
+    dec_ref r8
+    goto L15
+L18:
+    dec_ref r9
+    goto L8
+L19:
+    dec_ref r7
+    dec_ref r11
+    goto L15
+L20:
+    dec_ref r14
+    goto L15
+L21:
+    dec_ref r18
+    goto L15
 
 def __top_level__():
     r0, r1 :: object
@@ -5857,8 +4086,14 @@ def __top_level__():
     r4, r5 :: object
     r6 :: str
     r7 :: dict
-    r8 :: object
-    r9 :: None
+    r8, r9 :: object
+    r10 :: str
+    r11 :: dict
+    r12, r13 :: object
+    r14 :: str
+    r15 :: dict
+    r16 :: object
+    r17 :: None
 L0:
     r0 = builtins :: module
     r1 = load_address _Py_NoneStruct
@@ -5867,152 +4102,41 @@ L0:
 L1:
     r3 = 'builtins'
     r4 = PyImport_Import(r3)
-    if is_error(r4) goto L5 (error at <module>:-1) else goto L2
+    if is_error(r4) goto L8 (error at <module>:-1) else goto L2
 L2:
     builtins = r4 :: module
     dec_ref r4
 L3:
-    r5 = ('Any',)
+    r5 = ('TYPE_CHECKING', 'Any', 'Iterable', 'Tuple', 'cast')
     r6 = 'typing'
-    r7 = faster_eth_abi.utils.string.globals :: static
+    r7 = faster_eth_abi._codec.globals :: static
     r8 = CPyImport_ImportFromMany(r6, r5, r5, r7)
-    if is_error(r8) goto L5 (error at <module>:1) else goto L4
+    if is_error(r8) goto L8 (error at <module>:1) else goto L4
 L4:
     typing = r8 :: module
     dec_ref r8
-    return 1
+    r9 = ('Decodable', 'TypeStr')
+    r10 = 'eth_typing'
+    r11 = faster_eth_abi._codec.globals :: static
+    r12 = CPyImport_ImportFromMany(r10, r9, r9, r11)
+    if is_error(r12) goto L8 (error at <module>:9) else goto L5
 L5:
-    r9 = <error> :: None
-    return r9
-
-def zpad(value, length):
-    value :: bytes
-    length :: int
-    r0 :: bytes
-    r1 :: str
-    r2 :: object
-    r3 :: object[3]
-    r4 :: object_ptr
-    r5 :: object
-    r6, r7 :: bytes
-L0:
-    r0 = b'\x00'
-    r1 = 'rjust'
-    inc_ref length :: int
-    r2 = box(int, length)
-    r3 = [value, r2, r0]
-    r4 = load_address r3
-    r5 = PyObject_VectorcallMethod(r1, r4, 9223372036854775811, 0)
-    if is_error(r5) goto L4 (error at zpad:2) else goto L1
-L1:
-    dec_ref r2
-    r6 = cast(bytes, r5)
-    if is_error(r6) goto L3 (error at zpad:2) else goto L2
-L2:
-    return r6
-L3:
-    r7 = <error> :: bytes
-    return r7
-L4:
-    dec_ref r2
-    goto L3
-
-def zpad32(value):
-    value, r0, r1 :: bytes
-L0:
-    r0 = zpad(value, 64)
-    if is_error(r0) goto L2 (error at zpad32:6) else goto L1
-L1:
-    return r0
-L2:
-    r1 = <error> :: bytes
-    return r1
-
-def zpad_right(value, length):
-    value :: bytes
-    length :: int
-    r0 :: bytes
-    r1 :: str
-    r2 :: object
-    r3 :: object[3]
-    r4 :: object_ptr
-    r5 :: object
-    r6, r7 :: bytes
-L0:
-    r0 = b'\x00'
-    r1 = 'ljust'
-    inc_ref length :: int
-    r2 = box(int, length)
-    r3 = [value, r2, r0]
-    r4 = load_address r3
-    r5 = PyObject_VectorcallMethod(r1, r4, 9223372036854775811, 0)
-    if is_error(r5) goto L4 (error at zpad_right:10) else goto L1
-L1:
-    dec_ref r2
-    r6 = cast(bytes, r5)
-    if is_error(r6) goto L3 (error at zpad_right:10) else goto L2
-L2:
-    return r6
-L3:
-    r7 = <error> :: bytes
-    return r7
-L4:
-    dec_ref r2
-    goto L3
-
-def zpad32_right(value):
-    value, r0, r1 :: bytes
-L0:
-    r0 = zpad_right(value, 64)
-    if is_error(r0) goto L2 (error at zpad32_right:14) else goto L1
-L1:
-    return r0
-L2:
-    r1 = <error> :: bytes
-    return r1
-
-def fpad(value, length):
-    value :: bytes
-    length :: int
-    r0 :: bytes
-    r1 :: str
-    r2 :: object
-    r3 :: object[3]
-    r4 :: object_ptr
-    r5 :: object
-    r6, r7 :: bytes
-L0:
-    r0 = b'\xff'
-    r1 = 'rjust'
-    inc_ref length :: int
-    r2 = box(int, length)
-    r3 = [value, r2, r0]
-    r4 = load_address r3
-    r5 = PyObject_VectorcallMethod(r1, r4, 9223372036854775811, 0)
-    if is_error(r5) goto L4 (error at fpad:18) else goto L1
-L1:
-    dec_ref r2
-    r6 = cast(bytes, r5)
-    if is_error(r6) goto L3 (error at fpad:18) else goto L2
-L2:
-    return r6
-L3:
-    r7 = <error> :: bytes
-    return r7
-L4:
-    dec_ref r2
-    goto L3
-
-def fpad32(value):
-    value, r0, r1 :: bytes
-L0:
-    r0 = fpad(value, 64)
-    if is_error(r0) goto L2 (error at fpad32:22) else goto L1
-L1:
-    return r0
-L2:
-    r1 = <error> :: bytes
-    return r1
+    eth_typing = r12 :: module
+    dec_ref r12
+    r13 = ('validate_bytes_param', 'validate_list_like_param')
+    r14 = 'faster_eth_abi.utils.validation'
+    r15 = faster_eth_abi._codec.globals :: static
+    r16 = CPyImport_ImportFromMany(r14, r13, r13, r15)
+    if is_error(r16) goto L8 (error at <module>:14) else goto L6
+L6:
+    faster_eth_abi.utils.validation = r16 :: module
+    dec_ref r16
+    if 0 goto L7 else goto L7 :: bool
+L7:
+    return 1
+L8:
+    r17 = <error> :: None
+    return r17
 
 def __top_level__():
     r0, r1 :: object
@@ -6037,6 +4161,2064 @@ L3:
 L4:
     r5 = <error> :: None
     return r5
+
+def ceil32(x):
+    x, r0 :: int
+    r1 :: bit
+    r2, r3, r4, r5, r6 :: int
+L0:
+    r0 = CPyTagged_Remainder(x, 64)
+    if is_error(r0) goto L6 (error at ceil32:19) else goto L1
+L1:
+    r1 = r0 == 0
+    dec_ref r0 :: int
+    if r1 goto L2 else goto L3 :: bool
+L2:
+    inc_ref x :: int
+    r2 = x
+    goto L5
+L3:
+    r3 = CPyTagged_Add(x, 64)
+    r4 = CPyTagged_Remainder(x, 64)
+    if is_error(r4) goto L7 (error at ceil32:19) else goto L4
+L4:
+    r5 = CPyTagged_Subtract(r3, r4)
+    dec_ref r3 :: int
+    dec_ref r4 :: int
+    r2 = r5
+L5:
+    return r2
+L6:
+    r6 = <error> :: int
+    return r6
+L7:
+    dec_ref r3 :: int
+    goto L6
+
+def compute_unsigned_integer_bounds(num_bits):
+    num_bits :: int
+    r0, r1, r2, r3, r4 :: object
+    r5 :: tuple[int, object]
+    r6 :: int
+    r7, r8 :: tuple[int, int]
+L0:
+    r0 = object 2
+    inc_ref num_bits :: int
+    r1 = box(int, num_bits)
+    r2 = CPyNumber_Power(r0, r1)
+    dec_ref r1
+    if is_error(r2) goto L4 (error at compute_unsigned_integer_bounds:25) else goto L1
+L1:
+    r3 = object 1
+    r4 = PyNumber_Subtract(r2, r3)
+    dec_ref r2
+    if is_error(r4) goto L4 (error at compute_unsigned_integer_bounds:25) else goto L2
+L2:
+    inc_ref r4
+    r5 = (0, r4)
+    dec_ref r5
+    r6 = unbox(int, r4)
+    dec_ref r4
+    if is_error(r6) goto L4 (error at compute_unsigned_integer_bounds:23) else goto L3
+L3:
+    r7 = (0, r6)
+    return r7
+L4:
+    r8 = <error> :: tuple[int, int]
+    return r8
+
+def compute_signed_integer_bounds(num_bits):
+    num_bits, r0 :: int
+    r1, r2, r3, r4, r5 :: object
+    r6 :: int
+    r7, r8, r9, r10, r11 :: object
+    r12 :: tuple[object, object]
+    r13, r14 :: int
+    r15, r16 :: tuple[int, int]
+L0:
+    r0 = CPyTagged_Subtract(num_bits, 2)
+    r1 = object 2
+    r2 = box(int, r0)
+    r3 = CPyNumber_Power(r1, r2)
+    dec_ref r2
+    if is_error(r3) goto L7 (error at compute_signed_integer_bounds:31) else goto L1
+L1:
+    r4 = object -1
+    r5 = PyNumber_Multiply(r4, r3)
+    dec_ref r3
+    if is_error(r5) goto L7 (error at compute_signed_integer_bounds:31) else goto L2
+L2:
+    r6 = CPyTagged_Subtract(num_bits, 2)
+    r7 = object 2
+    r8 = box(int, r6)
+    r9 = CPyNumber_Power(r7, r8)
+    dec_ref r8
+    if is_error(r9) goto L8 (error at compute_signed_integer_bounds:32) else goto L3
+L3:
+    r10 = object 1
+    r11 = PyNumber_Subtract(r9, r10)
+    dec_ref r9
+    if is_error(r11) goto L8 (error at compute_signed_integer_bounds:32) else goto L4
+L4:
+    inc_ref r5
+    inc_ref r11
+    r12 = (r5, r11)
+    dec_ref r12
+    r13 = unbox(int, r5)
+    dec_ref r5
+    if is_error(r13) goto L9 (error at compute_signed_integer_bounds:30) else goto L5
+L5:
+    r14 = unbox(int, r11)
+    dec_ref r11
+    if is_error(r14) goto L10 (error at compute_signed_integer_bounds:30) else goto L6
+L6:
+    r15 = (r13, r14)
+    return r15
+L7:
+    r16 = <error> :: tuple[int, int]
+    return r16
+L8:
+    dec_ref r5
+    goto L7
+L9:
+    dec_ref r11
+    goto L7
+L10:
+    dec_ref r13 :: int
+    goto L7
+
+def compute_unsigned_fixed_bounds(num_bits, frac_places):
+    num_bits, frac_places :: int
+    r0, upper :: object
+    r1 :: tuple[int, int]
+    r2 :: int
+    r3 :: object
+    r4 :: bool
+    r5 :: object
+    r6 :: str
+    r7 :: object
+    r8 :: object[1]
+    r9 :: object_ptr
+    r10, r11 :: object
+    r12 :: str
+    r13 :: object
+    r14 :: str
+    r15 :: object
+    r16 :: object[1]
+    r17 :: object_ptr
+    r18 :: object
+    r19 :: bool
+    r20 :: object
+    r21 :: bool
+    r22 :: object
+    r23 :: object[1]
+    r24 :: object_ptr
+    r25, r26 :: object
+    r27 :: bool
+    r28 :: int
+    r29, r30, r31 :: object
+    r32, r33 :: tuple[object, object, object]
+    r34, r35, r36 :: object
+    r37 :: object[4]
+    r38 :: object_ptr
+    r39 :: object
+    r40 :: i32
+    r41 :: bit
+    r42 :: bool
+    r43 :: bit
+    r44, r45, r46 :: tuple[object, object, object]
+    r47 :: object
+    r48 :: object[4]
+    r49 :: object_ptr
+    r50 :: object
+    r51 :: bit
+    r52 :: object
+    r53, r54 :: bool
+    r55, r56 :: tuple[object, object]
+L0:
+    r0 = <error> :: object
+    upper = r0
+    r1 = compute_unsigned_integer_bounds(num_bits)
+    if is_error(r1) goto L48 (error at compute_unsigned_fixed_bounds:40) else goto L1
+L1:
+    r2 = r1[1]
+    dec_ref r1
+    r3 = faster_eth_abi.utils.numeric.abi_decimal_context :: static
+    if is_error(r3) goto L49 else goto L4
+L2:
+    r4 = raise NameError('value for final name "abi_decimal_context" was not set')
+    if not r4 goto L47 (error at compute_unsigned_fixed_bounds:42) else goto L3 :: bool
+L3:
+    unreachable
+L4:
+    r5 = decimal :: module
+    r6 = 'localcontext'
+    r7 = CPyObject_GetAttr(r5, r6)
+    if is_error(r7) goto L50 (error at compute_unsigned_fixed_bounds:42) else goto L5
+L5:
+    r8 = [r3]
+    r9 = load_address r8
+    r10 = PyObject_Vectorcall(r7, r9, 1, 0)
+    dec_ref r7
+    if is_error(r10) goto L50 (error at compute_unsigned_fixed_bounds:42) else goto L6
+L6:
+    r11 = PyObject_Type(r10)
+    r12 = '__exit__'
+    r13 = CPyObject_GetAttr(r11, r12)
+    if is_error(r13) goto L51 (error at compute_unsigned_fixed_bounds:42) else goto L7
+L7:
+    r14 = '__enter__'
+    r15 = CPyObject_GetAttr(r11, r14)
+    dec_ref r11
+    if is_error(r15) goto L52 (error at compute_unsigned_fixed_bounds:42) else goto L8
+L8:
+    r16 = [r10]
+    r17 = load_address r16
+    r18 = PyObject_Vectorcall(r15, r17, 1, 0)
+    dec_ref r15
+    if is_error(r18) goto L52 (error at compute_unsigned_fixed_bounds:42) else goto L53
+L9:
+    r19 = 1
+L10:
+    r20 = faster_eth_abi.utils.numeric.Decimal :: static
+    if is_error(r20) goto L54 else goto L13
+L11:
+    r21 = raise NameError('value for final name "Decimal" was not set')
+    if not r21 goto L20 (error at compute_unsigned_fixed_bounds:43) else goto L55 :: bool
+L12:
+    unreachable
+L13:
+    r22 = box(int, r2)
+    r23 = [r22]
+    r24 = load_address r23
+    r25 = PyObject_Vectorcall(r20, r24, 1, 0)
+    if is_error(r25) goto L56 (error at compute_unsigned_fixed_bounds:43) else goto L14
+L14:
+    dec_ref r22
+    r26 = faster_eth_abi.utils.numeric.TEN :: static
+    if is_error(r26) goto L57 else goto L17
+L15:
+    r27 = raise NameError('value for final name "TEN" was not set')
+    if not r27 goto L20 (error at compute_unsigned_fixed_bounds:43) else goto L58 :: bool
+L16:
+    unreachable
+L17:
+    r28 = CPyTagged_Negate(frac_places)
+    r29 = box(int, r28)
+    r30 = CPyNumber_Power(r26, r29)
+    dec_ref r29
+    if is_error(r30) goto L59 (error at compute_unsigned_fixed_bounds:43) else goto L18
+L18:
+    r31 = PyNumber_Multiply(r25, r30)
+    dec_ref r25
+    dec_ref r30
+    if is_error(r31) goto L20 (error at compute_unsigned_fixed_bounds:43) else goto L60
+L19:
+    upper = r31
+    goto L28
+L20:
+    r32 = CPy_CatchError()
+    r19 = 0
+    r33 = CPy_GetExcInfo()
+    r34 = r33[0]
+    r35 = r33[1]
+    r36 = r33[2]
+    dec_ref r33
+    r37 = [r10, r34, r35, r36]
+    r38 = load_address r37
+    r39 = PyObject_Vectorcall(r13, r38, 4, 0)
+    if is_error(r39) goto L61 (error at compute_unsigned_fixed_bounds:42) else goto L21
+L21:
+    dec_ref r34
+    dec_ref r35
+    dec_ref r36
+    r40 = PyObject_IsTrue(r39)
+    dec_ref r39
+    r41 = r40 >= 0 :: signed
+    if not r41 goto L26 (error at compute_unsigned_fixed_bounds:42) else goto L22 :: bool
+L22:
+    r42 = truncate r40: i32 to builtins.bool
+    if r42 goto L25 else goto L23 :: bool
+L23:
+    CPy_Reraise()
+    if not 0 goto L26 else goto L62 :: bool
+L24:
+    unreachable
+L25:
+    CPy_RestoreExcInfo(r32)
+    dec_ref r32
+    goto L28
+L26:
+    CPy_RestoreExcInfo(r32)
+    dec_ref r32
+    r43 = CPy_KeepPropagating()
+    if not r43 goto L29 else goto L63 :: bool
+L27:
+    unreachable
+L28:
+    r44 = <error> :: tuple[object, object, object]
+    r45 = r44
+    goto L30
+L29:
+    r46 = CPy_CatchError()
+    r45 = r46
+L30:
+    if r19 goto L31 else goto L64 :: bool
+L31:
+    r47 = load_address _Py_NoneStruct
+    r48 = [r10, r47, r47, r47]
+    r49 = load_address r48
+    r50 = PyObject_Vectorcall(r13, r49, 4, 0)
+    dec_ref r13
+    if is_error(r50) goto L65 (error at compute_unsigned_fixed_bounds:42) else goto L66
+L32:
+    dec_ref r10
+L33:
+    if is_error(r45) goto L40 else goto L67
+L34:
+    CPy_Reraise()
+    if not 0 goto L36 else goto L68 :: bool
+L35:
+    unreachable
+L36:
+    if is_error(r45) goto L38 else goto L37
+L37:
+    CPy_RestoreExcInfo(r45)
+    xdec_ref r45
+L38:
+    r51 = CPy_KeepPropagating()
+    if not r51 goto L47 else goto L39 :: bool
+L39:
+    unreachable
+L40:
+    r52 = faster_eth_abi.utils.numeric.ZERO :: static
+    if is_error(r52) goto L69 else goto L43
+L41:
+    r53 = raise NameError('value for final name "ZERO" was not set')
+    if not r53 goto L47 (error at compute_unsigned_fixed_bounds:45) else goto L42 :: bool
+L42:
+    unreachable
+L43:
+    if is_error(upper) goto L44 else goto L46
+L44:
+    r54 = raise UnboundLocalError('local variable "upper" referenced before assignment')
+    if not r54 goto L47 (error at compute_unsigned_fixed_bounds:45) else goto L45 :: bool
+L45:
+    unreachable
+L46:
+    inc_ref r52
+    r55 = (r52, upper)
+    return r55
+L47:
+    r56 = <error> :: tuple[object, object]
+    return r56
+L48:
+    xdec_ref upper
+    goto L47
+L49:
+    xdec_ref upper
+    dec_ref r2 :: int
+    goto L2
+L50:
+    xdec_ref upper
+    dec_ref r2 :: int
+    goto L47
+L51:
+    xdec_ref upper
+    dec_ref r2 :: int
+    dec_ref r10
+    dec_ref r11
+    goto L47
+L52:
+    xdec_ref upper
+    dec_ref r2 :: int
+    dec_ref r10
+    dec_ref r13
+    goto L47
+L53:
+    dec_ref r18
+    goto L9
+L54:
+    dec_ref r2 :: int
+    goto L11
+L55:
+    xdec_ref upper
+    dec_ref r10
+    dec_ref r13
+    goto L12
+L56:
+    dec_ref r22
+    goto L20
+L57:
+    dec_ref r25
+    goto L15
+L58:
+    xdec_ref upper
+    dec_ref r10
+    dec_ref r13
+    goto L16
+L59:
+    dec_ref r25
+    goto L20
+L60:
+    xdec_ref upper
+    goto L19
+L61:
+    dec_ref r34
+    dec_ref r35
+    dec_ref r36
+    goto L26
+L62:
+    xdec_ref upper
+    dec_ref r10
+    dec_ref r13
+    dec_ref r32
+    goto L24
+L63:
+    xdec_ref upper
+    dec_ref r10
+    dec_ref r13
+    goto L27
+L64:
+    dec_ref r10
+    dec_ref r13
+    goto L33
+L65:
+    xdec_ref upper
+    dec_ref r10
+    goto L36
+L66:
+    dec_ref r50
+    goto L32
+L67:
+    xdec_ref upper
+    goto L34
+L68:
+    xdec_ref r45
+    goto L35
+L69:
+    xdec_ref upper
+    goto L41
+
+def compute_signed_fixed_bounds(num_bits, frac_places):
+    num_bits, frac_places :: int
+    r0, lower, r1, upper :: object
+    r2 :: tuple[int, int]
+    r3, r4, r5, r6 :: int
+    r7 :: object
+    r8 :: bool
+    r9 :: object
+    r10 :: str
+    r11 :: object
+    r12 :: object[1]
+    r13 :: object_ptr
+    r14, r15 :: object
+    r16 :: str
+    r17 :: object
+    r18 :: str
+    r19 :: object
+    r20 :: object[1]
+    r21 :: object_ptr
+    r22 :: object
+    r23 :: bool
+    r24 :: object
+    r25 :: bool
+    r26 :: int
+    r27, r28, r29 :: object
+    r30 :: bool
+    r31 :: object
+    r32 :: object[1]
+    r33 :: object_ptr
+    r34, r35, r36 :: object
+    r37 :: bool
+    r38 :: object
+    r39 :: object[1]
+    r40 :: object_ptr
+    r41, r42 :: object
+    r43, r44 :: tuple[object, object, object]
+    r45, r46, r47 :: object
+    r48 :: object[4]
+    r49 :: object_ptr
+    r50 :: object
+    r51 :: i32
+    r52 :: bit
+    r53 :: bool
+    r54 :: bit
+    r55, r56, r57 :: tuple[object, object, object]
+    r58 :: object
+    r59 :: object[4]
+    r60 :: object_ptr
+    r61 :: object
+    r62 :: bit
+    r63, r64 :: bool
+    r65, r66 :: tuple[object, object]
+L0:
+    r0 = <error> :: object
+    lower = r0
+    r1 = <error> :: object
+    upper = r1
+    r2 = compute_signed_integer_bounds(num_bits)
+    if is_error(r2) goto L53 (error at compute_signed_fixed_bounds:52) else goto L1
+L1:
+    r3 = borrow r2[0]
+    r4 = borrow r2[1]
+    r5 = unborrow r3
+    r6 = unborrow r4
+    r7 = faster_eth_abi.utils.numeric.abi_decimal_context :: static
+    if is_error(r7) goto L54 else goto L4
+L2:
+    r8 = raise NameError('value for final name "abi_decimal_context" was not set')
+    if not r8 goto L52 (error at compute_signed_fixed_bounds:54) else goto L3 :: bool
+L3:
+    unreachable
+L4:
+    r9 = decimal :: module
+    r10 = 'localcontext'
+    r11 = CPyObject_GetAttr(r9, r10)
+    if is_error(r11) goto L55 (error at compute_signed_fixed_bounds:54) else goto L5
+L5:
+    r12 = [r7]
+    r13 = load_address r12
+    r14 = PyObject_Vectorcall(r11, r13, 1, 0)
+    dec_ref r11
+    if is_error(r14) goto L55 (error at compute_signed_fixed_bounds:54) else goto L6
+L6:
+    r15 = PyObject_Type(r14)
+    r16 = '__exit__'
+    r17 = CPyObject_GetAttr(r15, r16)
+    if is_error(r17) goto L56 (error at compute_signed_fixed_bounds:54) else goto L7
+L7:
+    r18 = '__enter__'
+    r19 = CPyObject_GetAttr(r15, r18)
+    dec_ref r15
+    if is_error(r19) goto L57 (error at compute_signed_fixed_bounds:54) else goto L8
+L8:
+    r20 = [r14]
+    r21 = load_address r20
+    r22 = PyObject_Vectorcall(r19, r21, 1, 0)
+    dec_ref r19
+    if is_error(r22) goto L57 (error at compute_signed_fixed_bounds:54) else goto L58
+L9:
+    r23 = 1
+L10:
+    r24 = faster_eth_abi.utils.numeric.TEN :: static
+    if is_error(r24) goto L59 else goto L13
+L11:
+    r25 = raise NameError('value for final name "TEN" was not set')
+    if not r25 goto L25 (error at compute_signed_fixed_bounds:55) else goto L60 :: bool
+L12:
+    unreachable
+L13:
+    r26 = CPyTagged_Negate(frac_places)
+    r27 = box(int, r26)
+    r28 = CPyNumber_Power(r24, r27)
+    dec_ref r27
+    if is_error(r28) goto L61 (error at compute_signed_fixed_bounds:55) else goto L14
+L14:
+    r29 = faster_eth_abi.utils.numeric.Decimal :: static
+    if is_error(r29) goto L62 else goto L17
+L15:
+    r30 = raise NameError('value for final name "Decimal" was not set')
+    if not r30 goto L25 (error at compute_signed_fixed_bounds:56) else goto L63 :: bool
+L16:
+    unreachable
+L17:
+    r31 = box(int, r5)
+    r32 = [r31]
+    r33 = load_address r32
+    r34 = PyObject_Vectorcall(r29, r33, 1, 0)
+    if is_error(r34) goto L64 (error at compute_signed_fixed_bounds:56) else goto L18
+L18:
+    dec_ref r31
+    r35 = PyNumber_Multiply(r34, r28)
+    dec_ref r34
+    if is_error(r35) goto L65 (error at compute_signed_fixed_bounds:56) else goto L66
+L19:
+    lower = r35
+    r36 = faster_eth_abi.utils.numeric.Decimal :: static
+    if is_error(r36) goto L67 else goto L22
+L20:
+    r37 = raise NameError('value for final name "Decimal" was not set')
+    if not r37 goto L25 (error at compute_signed_fixed_bounds:57) else goto L68 :: bool
+L21:
+    unreachable
+L22:
+    r38 = box(int, r6)
+    r39 = [r38]
+    r40 = load_address r39
+    r41 = PyObject_Vectorcall(r36, r40, 1, 0)
+    if is_error(r41) goto L69 (error at compute_signed_fixed_bounds:57) else goto L23
+L23:
+    dec_ref r38
+    r42 = PyNumber_Multiply(r41, r28)
+    dec_ref r41
+    dec_ref r28
+    if is_error(r42) goto L25 (error at compute_signed_fixed_bounds:57) else goto L70
+L24:
+    upper = r42
+    goto L33
+L25:
+    r43 = CPy_CatchError()
+    r23 = 0
+    r44 = CPy_GetExcInfo()
+    r45 = r44[0]
+    r46 = r44[1]
+    r47 = r44[2]
+    dec_ref r44
+    r48 = [r14, r45, r46, r47]
+    r49 = load_address r48
+    r50 = PyObject_Vectorcall(r17, r49, 4, 0)
+    if is_error(r50) goto L71 (error at compute_signed_fixed_bounds:54) else goto L26
+L26:
+    dec_ref r45
+    dec_ref r46
+    dec_ref r47
+    r51 = PyObject_IsTrue(r50)
+    dec_ref r50
+    r52 = r51 >= 0 :: signed
+    if not r52 goto L31 (error at compute_signed_fixed_bounds:54) else goto L27 :: bool
+L27:
+    r53 = truncate r51: i32 to builtins.bool
+    if r53 goto L30 else goto L28 :: bool
+L28:
+    CPy_Reraise()
+    if not 0 goto L31 else goto L72 :: bool
+L29:
+    unreachable
+L30:
+    CPy_RestoreExcInfo(r43)
+    dec_ref r43
+    goto L33
+L31:
+    CPy_RestoreExcInfo(r43)
+    dec_ref r43
+    r54 = CPy_KeepPropagating()
+    if not r54 goto L34 else goto L73 :: bool
+L32:
+    unreachable
+L33:
+    r55 = <error> :: tuple[object, object, object]
+    r56 = r55
+    goto L35
+L34:
+    r57 = CPy_CatchError()
+    r56 = r57
+L35:
+    if r23 goto L36 else goto L74 :: bool
+L36:
+    r58 = load_address _Py_NoneStruct
+    r59 = [r14, r58, r58, r58]
+    r60 = load_address r59
+    r61 = PyObject_Vectorcall(r17, r60, 4, 0)
+    dec_ref r17
+    if is_error(r61) goto L75 (error at compute_signed_fixed_bounds:54) else goto L76
+L37:
+    dec_ref r14
+L38:
+    if is_error(r56) goto L45 else goto L77
+L39:
+    CPy_Reraise()
+    if not 0 goto L41 else goto L78 :: bool
+L40:
+    unreachable
+L41:
+    if is_error(r56) goto L43 else goto L42
+L42:
+    CPy_RestoreExcInfo(r56)
+    xdec_ref r56
+L43:
+    r62 = CPy_KeepPropagating()
+    if not r62 goto L52 else goto L44 :: bool
+L44:
+    unreachable
+L45:
+    if is_error(lower) goto L79 else goto L48
+L46:
+    r63 = raise UnboundLocalError('local variable "lower" referenced before assignment')
+    if not r63 goto L52 (error at compute_signed_fixed_bounds:59) else goto L47 :: bool
+L47:
+    unreachable
+L48:
+    if is_error(upper) goto L80 else goto L51
+L49:
+    r64 = raise UnboundLocalError('local variable "upper" referenced before assignment')
+    if not r64 goto L52 (error at compute_signed_fixed_bounds:59) else goto L50 :: bool
+L50:
+    unreachable
+L51:
+    r65 = (lower, upper)
+    return r65
+L52:
+    r66 = <error> :: tuple[object, object]
+    return r66
+L53:
+    xdec_ref lower
+    xdec_ref upper
+    goto L52
+L54:
+    xdec_ref lower
+    xdec_ref upper
+    dec_ref r5 :: int
+    dec_ref r6 :: int
+    goto L2
+L55:
+    xdec_ref lower
+    xdec_ref upper
+    dec_ref r5 :: int
+    dec_ref r6 :: int
+    goto L52
+L56:
+    xdec_ref lower
+    xdec_ref upper
+    dec_ref r5 :: int
+    dec_ref r6 :: int
+    dec_ref r14
+    dec_ref r15
+    goto L52
+L57:
+    xdec_ref lower
+    xdec_ref upper
+    dec_ref r5 :: int
+    dec_ref r6 :: int
+    dec_ref r14
+    dec_ref r17
+    goto L52
+L58:
+    dec_ref r22
+    goto L9
+L59:
+    dec_ref r5 :: int
+    dec_ref r6 :: int
+    goto L11
+L60:
+    xdec_ref lower
+    xdec_ref upper
+    dec_ref r14
+    dec_ref r17
+    goto L12
+L61:
+    dec_ref r5 :: int
+    dec_ref r6 :: int
+    goto L25
+L62:
+    dec_ref r5 :: int
+    dec_ref r6 :: int
+    dec_ref r28
+    goto L15
+L63:
+    xdec_ref lower
+    xdec_ref upper
+    dec_ref r14
+    dec_ref r17
+    goto L16
+L64:
+    dec_ref r6 :: int
+    dec_ref r28
+    dec_ref r31
+    goto L25
+L65:
+    dec_ref r6 :: int
+    dec_ref r28
+    goto L25
+L66:
+    xdec_ref lower
+    goto L19
+L67:
+    dec_ref r6 :: int
+    dec_ref r28
+    goto L20
+L68:
+    dec_ref lower
+    xdec_ref upper
+    dec_ref r14
+    dec_ref r17
+    goto L21
+L69:
+    dec_ref r28
+    dec_ref r38
+    goto L25
+L70:
+    xdec_ref upper
+    goto L24
+L71:
+    dec_ref r45
+    dec_ref r46
+    dec_ref r47
+    goto L31
+L72:
+    xdec_ref lower
+    xdec_ref upper
+    dec_ref r14
+    dec_ref r17
+    dec_ref r43
+    goto L29
+L73:
+    xdec_ref lower
+    xdec_ref upper
+    dec_ref r14
+    dec_ref r17
+    goto L32
+L74:
+    dec_ref r14
+    dec_ref r17
+    goto L38
+L75:
+    xdec_ref lower
+    xdec_ref upper
+    dec_ref r14
+    goto L41
+L76:
+    dec_ref r61
+    goto L37
+L77:
+    xdec_ref lower
+    xdec_ref upper
+    goto L39
+L78:
+    xdec_ref r56
+    goto L40
+L79:
+    xdec_ref upper
+    goto L46
+L80:
+    xdec_ref lower
+    goto L49
+
+def f_scale_places_obj.__get__(__mypyc_self__, instance, owner):
+    __mypyc_self__, instance, owner, r0 :: object
+    r1 :: bit
+    r2, r3 :: object
+L0:
+    r0 = load_address _Py_NoneStruct
+    r1 = instance == r0
+    if r1 goto L1 else goto L2 :: bool
+L1:
+    inc_ref __mypyc_self__
+    return __mypyc_self__
+L2:
+    r2 = PyMethod_New(__mypyc_self__, instance)
+    if is_error(r2) goto L4 else goto L3
+L3:
+    return r2
+L4:
+    r3 = <error> :: object
+    return r3
+
+def f_scale_places_obj.__call__(__mypyc_self__, x):
+    __mypyc_self__ :: faster_eth_abi.utils.numeric.f_scale_places_obj
+    x :: object
+    r0 :: faster_eth_abi.utils.numeric.scale_places_env
+    r1 :: object
+    r2 :: bool
+    r3 :: object
+    r4 :: str
+    r5 :: object
+    r6 :: object[1]
+    r7 :: object_ptr
+    r8, r9 :: object
+    r10 :: str
+    r11 :: object
+    r12 :: str
+    r13 :: object
+    r14 :: object[1]
+    r15 :: object_ptr
+    r16 :: object
+    r17 :: bool
+    r18, r19, r20 :: object
+    r21, r22 :: tuple[object, object, object]
+    r23, r24, r25 :: object
+    r26 :: object[4]
+    r27 :: object_ptr
+    r28 :: object
+    r29 :: i32
+    r30 :: bit
+    r31 :: bool
+    r32 :: bit
+    r33 :: object
+    r34, r35 :: tuple[object, object, object]
+    r36 :: object
+    r37 :: tuple[object, object, object]
+    r38 :: object
+    r39 :: object[4]
+    r40 :: object_ptr
+    r41 :: object
+    r42 :: bit
+    r43, r44 :: object
+L0:
+    r0 = __mypyc_self__.__mypyc_env__
+    if is_error(r0) goto L37 (error at f:76) else goto L1
+L1:
+    r1 = faster_eth_abi.utils.numeric.abi_decimal_context :: static
+    if is_error(r1) goto L38 else goto L4
+L2:
+    r2 = raise NameError('value for final name "abi_decimal_context" was not set')
+    if not r2 goto L37 (error at f:77) else goto L3 :: bool
+L3:
+    unreachable
+L4:
+    r3 = decimal :: module
+    r4 = 'localcontext'
+    r5 = CPyObject_GetAttr(r3, r4)
+    if is_error(r5) goto L39 (error at f:77) else goto L5
+L5:
+    r6 = [r1]
+    r7 = load_address r6
+    r8 = PyObject_Vectorcall(r5, r7, 1, 0)
+    dec_ref r5
+    if is_error(r8) goto L39 (error at f:77) else goto L6
+L6:
+    r9 = PyObject_Type(r8)
+    r10 = '__exit__'
+    r11 = CPyObject_GetAttr(r9, r10)
+    if is_error(r11) goto L40 (error at f:77) else goto L7
+L7:
+    r12 = '__enter__'
+    r13 = CPyObject_GetAttr(r9, r12)
+    dec_ref r9
+    if is_error(r13) goto L41 (error at f:77) else goto L8
+L8:
+    r14 = [r8]
+    r15 = load_address r14
+    r16 = PyObject_Vectorcall(r13, r15, 1, 0)
+    dec_ref r13
+    if is_error(r16) goto L41 (error at f:77) else goto L42
+L9:
+    r17 = 1
+L10:
+    r18 = r0.scaling_factor
+    dec_ref r0
+    if is_error(r18) goto L13 (error at f:78) else goto L11
+L11:
+    r19 = PyNumber_Multiply(x, r18)
+    dec_ref r18
+    if is_error(r19) goto L13 (error at f:78) else goto L12
+L12:
+    r20 = r19
+    goto L22
+L13:
+    r21 = CPy_CatchError()
+    r17 = 0
+    r22 = CPy_GetExcInfo()
+    r23 = r22[0]
+    r24 = r22[1]
+    r25 = r22[2]
+    dec_ref r22
+    r26 = [r8, r23, r24, r25]
+    r27 = load_address r26
+    r28 = PyObject_Vectorcall(r11, r27, 4, 0)
+    if is_error(r28) goto L43 (error at f:77) else goto L14
+L14:
+    dec_ref r23
+    dec_ref r24
+    dec_ref r25
+    r29 = PyObject_IsTrue(r28)
+    dec_ref r28
+    r30 = r29 >= 0 :: signed
+    if not r30 goto L19 (error at f:77) else goto L15 :: bool
+L15:
+    r31 = truncate r29: i32 to builtins.bool
+    if r31 goto L18 else goto L16 :: bool
+L16:
+    CPy_Reraise()
+    if not 0 goto L19 else goto L44 :: bool
+L17:
+    unreachable
+L18:
+    CPy_RestoreExcInfo(r21)
+    dec_ref r21
+    goto L21
+L19:
+    CPy_RestoreExcInfo(r21)
+    dec_ref r21
+    r32 = CPy_KeepPropagating()
+    if not r32 goto L23 else goto L45 :: bool
+L20:
+    unreachable
+L21:
+    r33 = <error> :: object
+    r20 = r33
+L22:
+    r34 = <error> :: tuple[object, object, object]
+    r35 = r34
+    goto L24
+L23:
+    r36 = <error> :: object
+    r20 = r36
+    r37 = CPy_CatchError()
+    r35 = r37
+L24:
+    if r17 goto L25 else goto L46 :: bool
+L25:
+    r38 = load_address _Py_NoneStruct
+    r39 = [r8, r38, r38, r38]
+    r40 = load_address r39
+    r41 = PyObject_Vectorcall(r11, r40, 4, 0)
+    dec_ref r11
+    if is_error(r41) goto L47 (error at f:77) else goto L48
+L26:
+    dec_ref r8
+L27:
+    if is_error(r35) goto L30 else goto L49
+L28:
+    CPy_Reraise()
+    if not 0 goto L32 else goto L50 :: bool
+L29:
+    unreachable
+L30:
+    if is_error(r20) goto L36 else goto L31
+L31:
+    return r20
+L32:
+    if is_error(r35) goto L34 else goto L33
+L33:
+    CPy_RestoreExcInfo(r35)
+    xdec_ref r35
+L34:
+    r42 = CPy_KeepPropagating()
+    if not r42 goto L37 else goto L35 :: bool
+L35:
+    unreachable
+L36:
+    r43 = box(None, 1)
+    inc_ref r43
+    return r43
+L37:
+    r44 = <error> :: object
+    return r44
+L38:
+    dec_ref r0
+    goto L2
+L39:
+    dec_ref r0
+    goto L37
+L40:
+    dec_ref r0
+    dec_ref r8
+    dec_ref r9
+    goto L37
+L41:
+    dec_ref r0
+    dec_ref r8
+    dec_ref r11
+    goto L37
+L42:
+    dec_ref r16
+    goto L9
+L43:
+    dec_ref r23
+    dec_ref r24
+    dec_ref r25
+    goto L19
+L44:
+    dec_ref r8
+    dec_ref r11
+    dec_ref r21
+    goto L17
+L45:
+    dec_ref r8
+    dec_ref r11
+    goto L20
+L46:
+    dec_ref r8
+    dec_ref r11
+    goto L27
+L47:
+    dec_ref r8
+    xdec_ref r20
+    goto L32
+L48:
+    dec_ref r41
+    goto L26
+L49:
+    xdec_ref r20
+    goto L28
+L50:
+    xdec_ref r35
+    goto L29
+
+def scale_places(places):
+    places :: int
+    r0 :: faster_eth_abi.utils.numeric.scale_places_env
+    r1, r2 :: object
+    r3 :: i32
+    r4 :: bit
+    r5 :: bool
+    r6, r7, r8 :: str
+    r9 :: object
+    r10, r11 :: str
+    r12 :: object[3]
+    r13 :: object_ptr
+    r14 :: object
+    r15, r16 :: str
+    r17, r18 :: object
+    r19, r20 :: str
+    r21 :: object[3]
+    r22 :: object_ptr
+    r23 :: object
+    r24 :: str
+    r25 :: list
+    r26, r27, r28, r29, r30, r31 :: ptr
+    r32 :: str
+    r33 :: object
+    r34 :: str
+    r35 :: object
+    r36 :: object[1]
+    r37 :: object_ptr
+    r38, r39 :: object
+    r40 :: bool
+    r41 :: object
+    r42 :: str
+    r43 :: object
+    r44 :: object[1]
+    r45 :: object_ptr
+    r46, r47 :: object
+    r48 :: str
+    r49 :: object
+    r50 :: str
+    r51 :: object
+    r52 :: object[1]
+    r53 :: object_ptr
+    r54 :: object
+    r55 :: bool
+    r56 :: object
+    r57 :: bool
+    r58 :: int
+    r59, r60 :: object
+    r61 :: bool
+    r62, r63 :: tuple[object, object, object]
+    r64, r65, r66 :: object
+    r67 :: object[4]
+    r68 :: object_ptr
+    r69 :: object
+    r70 :: i32
+    r71 :: bit
+    r72 :: bool
+    r73 :: bit
+    r74, r75, r76 :: tuple[object, object, object]
+    r77 :: object
+    r78 :: object[4]
+    r79 :: object_ptr
+    r80 :: object
+    r81 :: bit
+    r82 :: faster_eth_abi.utils.numeric.f_scale_places_obj
+    r83 :: bool
+    f :: object
+    r84 :: native_int
+    r85 :: bit
+    r86 :: native_int
+    r87, r88, r89 :: bit
+    r90, r91, r92, r93, r94 :: str
+    r95 :: int
+    r96, r97, places_repr, r98, r99, r100 :: str
+    r101 :: i32
+    r102 :: bit
+    r103 :: str
+    r104 :: i32
+    r105 :: bit
+    r106 :: object
+L0:
+    r0 = scale_places_env()
+    if is_error(r0) goto L61 (error at scale_places:62) else goto L1
+L1:
+    inc_ref places :: int
+    r1 = box(int, places)
+    r2 = load_address PyLong_Type
+    r3 = PyObject_IsInstance(r1, r2)
+    dec_ref r1
+    r4 = r3 >= 0 :: signed
+    if not r4 goto L62 (error at scale_places:67) else goto L2 :: bool
+L2:
+    r5 = truncate r3: i32 to builtins.bool
+    if r5 goto L11 else goto L63 :: bool
+L3:
+    r6 = ''
+    r7 = 'Argument `places` must be int.  Got value '
+    r8 = '{:{}}'
+    inc_ref places :: int
+    r9 = box(int, places)
+    r10 = ''
+    r11 = 'format'
+    r12 = [r8, r9, r10]
+    r13 = load_address r12
+    r14 = PyObject_VectorcallMethod(r11, r13, 9223372036854775811, 0)
+    if is_error(r14) goto L64 (error at scale_places:69) else goto L4
+L4:
+    dec_ref r9
+    r15 = ' of type '
+    r16 = '{:{}}'
+    inc_ref places :: int
+    r17 = box(int, places)
+    r18 = PyObject_Type(r17)
+    dec_ref r17
+    r19 = ''
+    r20 = 'format'
+    r21 = [r16, r18, r19]
+    r22 = load_address r21
+    r23 = PyObject_VectorcallMethod(r20, r22, 9223372036854775811, 0)
+    if is_error(r23) goto L65 (error at scale_places:70) else goto L5
+L5:
+    dec_ref r18
+    r24 = '.'
+    r25 = PyList_New(5)
+    if is_error(r25) goto L66 (error at scale_places:69) else goto L6
+L6:
+    r26 = get_element_ptr r25 ob_item :: PyListObject
+    r27 = load_mem r26 :: ptr*
+    inc_ref r7
+    set_mem r27, r7 :: builtins.object*
+    r28 = r27 + 8
+    set_mem r28, r14 :: builtins.object*
+    inc_ref r15
+    r29 = r27 + 16
+    set_mem r29, r15 :: builtins.object*
+    r30 = r27 + 24
+    set_mem r30, r23 :: builtins.object*
+    inc_ref r24
+    r31 = r27 + 32
+    set_mem r31, r24 :: builtins.object*
+    r32 = PyUnicode_Join(r6, r25)
+    dec_ref r25
+    if is_error(r32) goto L61 (error at scale_places:69) else goto L7
+L7:
+    r33 = builtins :: module
+    r34 = 'ValueError'
+    r35 = CPyObject_GetAttr(r33, r34)
+    if is_error(r35) goto L67 (error at scale_places:68) else goto L8
+L8:
+    r36 = [r32]
+    r37 = load_address r36
+    r38 = PyObject_Vectorcall(r35, r37, 1, 0)
+    dec_ref r35
+    if is_error(r38) goto L67 (error at scale_places:68) else goto L9
+L9:
+    dec_ref r32
+    CPy_Raise(r38)
+    dec_ref r38
+    if not 0 goto L61 (error at scale_places:68) else goto L10 :: bool
+L10:
+    unreachable
+L11:
+    r39 = faster_eth_abi.utils.numeric.abi_decimal_context :: static
+    if is_error(r39) goto L68 else goto L14
+L12:
+    r40 = raise NameError('value for final name "abi_decimal_context" was not set')
+    if not r40 goto L61 (error at scale_places:73) else goto L13 :: bool
+L13:
+    unreachable
+L14:
+    r41 = decimal :: module
+    r42 = 'localcontext'
+    r43 = CPyObject_GetAttr(r41, r42)
+    if is_error(r43) goto L62 (error at scale_places:73) else goto L15
+L15:
+    r44 = [r39]
+    r45 = load_address r44
+    r46 = PyObject_Vectorcall(r43, r45, 1, 0)
+    dec_ref r43
+    if is_error(r46) goto L62 (error at scale_places:73) else goto L16
+L16:
+    r47 = PyObject_Type(r46)
+    r48 = '__exit__'
+    r49 = CPyObject_GetAttr(r47, r48)
+    if is_error(r49) goto L69 (error at scale_places:73) else goto L17
+L17:
+    r50 = '__enter__'
+    r51 = CPyObject_GetAttr(r47, r50)
+    dec_ref r47
+    if is_error(r51) goto L70 (error at scale_places:73) else goto L18
+L18:
+    r52 = [r46]
+    r53 = load_address r52
+    r54 = PyObject_Vectorcall(r51, r53, 1, 0)
+    dec_ref r51
+    if is_error(r54) goto L70 (error at scale_places:73) else goto L71
+L19:
+    r55 = 1
+L20:
+    r56 = faster_eth_abi.utils.numeric.TEN :: static
+    if is_error(r56) goto L21 else goto L23
+L21:
+    r57 = raise NameError('value for final name "TEN" was not set')
+    if not r57 goto L25 (error at scale_places:74) else goto L72 :: bool
+L22:
+    unreachable
+L23:
+    r58 = CPyTagged_Negate(places)
+    r59 = box(int, r58)
+    r60 = CPyNumber_Power(r56, r59)
+    dec_ref r59
+    if is_error(r60) goto L25 (error at scale_places:74) else goto L24
+L24:
+    r0.scaling_factor = r60; r61 = is_error
+    if not r61 goto L25 (error at scale_places:74) else goto L33 :: bool
+L25:
+    r62 = CPy_CatchError()
+    r55 = 0
+    r63 = CPy_GetExcInfo()
+    r64 = r63[0]
+    r65 = r63[1]
+    r66 = r63[2]
+    dec_ref r63
+    r67 = [r46, r64, r65, r66]
+    r68 = load_address r67
+    r69 = PyObject_Vectorcall(r49, r68, 4, 0)
+    if is_error(r69) goto L73 (error at scale_places:73) else goto L26
+L26:
+    dec_ref r64
+    dec_ref r65
+    dec_ref r66
+    r70 = PyObject_IsTrue(r69)
+    dec_ref r69
+    r71 = r70 >= 0 :: signed
+    if not r71 goto L31 (error at scale_places:73) else goto L27 :: bool
+L27:
+    r72 = truncate r70: i32 to builtins.bool
+    if r72 goto L30 else goto L28 :: bool
+L28:
+    CPy_Reraise()
+    if not 0 goto L31 else goto L74 :: bool
+L29:
+    unreachable
+L30:
+    CPy_RestoreExcInfo(r62)
+    dec_ref r62
+    goto L33
+L31:
+    CPy_RestoreExcInfo(r62)
+    dec_ref r62
+    r73 = CPy_KeepPropagating()
+    if not r73 goto L34 else goto L75 :: bool
+L32:
+    unreachable
+L33:
+    r74 = <error> :: tuple[object, object, object]
+    r75 = r74
+    goto L35
+L34:
+    r76 = CPy_CatchError()
+    r75 = r76
+L35:
+    if r55 goto L36 else goto L76 :: bool
+L36:
+    r77 = load_address _Py_NoneStruct
+    r78 = [r46, r77, r77, r77]
+    r79 = load_address r78
+    r80 = PyObject_Vectorcall(r49, r79, 4, 0)
+    dec_ref r49
+    if is_error(r80) goto L77 (error at scale_places:73) else goto L78
+L37:
+    dec_ref r46
+L38:
+    if is_error(r75) goto L45 else goto L79
+L39:
+    CPy_Reraise()
+    if not 0 goto L41 else goto L80 :: bool
+L40:
+    unreachable
+L41:
+    if is_error(r75) goto L43 else goto L42
+L42:
+    CPy_RestoreExcInfo(r75)
+    xdec_ref r75
+L43:
+    r81 = CPy_KeepPropagating()
+    if not r81 goto L61 else goto L44 :: bool
+L44:
+    unreachable
+L45:
+    r82 = f_scale_places_obj()
+    if is_error(r82) goto L62 (error at scale_places:76) else goto L46
+L46:
+    r82.__mypyc_env__ = r0; r83 = is_error
+    if not r83 goto L81 (error at scale_places:76) else goto L47 :: bool
+L47:
+    f = r82
+    r84 = places & 1
+    r85 = r84 != 0
+    if r85 goto L49 else goto L48 :: bool
+L48:
+    r86 = 0 & 1
+    r87 = r86 != 0
+    if r87 goto L49 else goto L50 :: bool
+L49:
+    r88 = CPyTagged_IsLt_(0, places)
+    if r88 goto L51 else goto L54 :: bool
+L50:
+    r89 = places > 0 :: signed
+    if r89 goto L51 else goto L54 :: bool
+L51:
+    r90 = 'Eneg'
+    r91 = CPyTagged_Str(places)
+    if is_error(r91) goto L82 (error at scale_places:80) else goto L52
+L52:
+    r92 = CPyStr_Build(2, r90, r91)
+    dec_ref r91
+    if is_error(r92) goto L82 (error at scale_places:80) else goto L53
+L53:
+    r93 = r92
+    goto L57
+L54:
+    r94 = 'Epos'
+    r95 = CPyTagged_Negate(places)
+    r96 = CPyTagged_Str(r95)
+    dec_ref r95 :: int
+    if is_error(r96) goto L82 (error at scale_places:80) else goto L55
+L55:
+    r97 = CPyStr_Build(2, r94, r96)
+    dec_ref r96
+    if is_error(r97) goto L82 (error at scale_places:80) else goto L56
+L56:
+    r93 = r97
+L57:
+    places_repr = r93
+    r98 = 'scale_by_'
+    r99 = CPyStr_Build(2, r98, places_repr)
+    dec_ref places_repr
+    if is_error(r99) goto L82 (error at scale_places:81) else goto L58
+L58:
+    r100 = '__name__'
+    r101 = PyObject_SetAttr(f, r100, r99)
+    r102 = r101 >= 0 :: signed
+    if not r102 goto L83 (error at scale_places:83) else goto L59 :: bool
+L59:
+    r103 = '__qualname__'
+    r104 = PyObject_SetAttr(f, r103, r99)
+    dec_ref r99
+    r105 = r104 >= 0 :: signed
+    if not r105 goto L82 (error at scale_places:84) else goto L60 :: bool
+L60:
+    return f
+L61:
+    r106 = <error> :: object
+    return r106
+L62:
+    dec_ref r0
+    goto L61
+L63:
+    dec_ref r0
+    goto L3
+L64:
+    dec_ref r9
+    goto L61
+L65:
+    dec_ref r14
+    dec_ref r18
+    goto L61
+L66:
+    dec_ref r14
+    dec_ref r23
+    goto L61
+L67:
+    dec_ref r32
+    goto L61
+L68:
+    dec_ref r0
+    goto L12
+L69:
+    dec_ref r0
+    dec_ref r46
+    dec_ref r47
+    goto L61
+L70:
+    dec_ref r0
+    dec_ref r46
+    dec_ref r49
+    goto L61
+L71:
+    dec_ref r54
+    goto L19
+L72:
+    dec_ref r0
+    dec_ref r46
+    dec_ref r49
+    goto L22
+L73:
+    dec_ref r64
+    dec_ref r65
+    dec_ref r66
+    goto L31
+L74:
+    dec_ref r0
+    dec_ref r46
+    dec_ref r49
+    dec_ref r62
+    goto L29
+L75:
+    dec_ref r0
+    dec_ref r46
+    dec_ref r49
+    goto L32
+L76:
+    dec_ref r46
+    dec_ref r49
+    goto L38
+L77:
+    dec_ref r0
+    dec_ref r46
+    goto L41
+L78:
+    dec_ref r80
+    goto L37
+L79:
+    dec_ref r0
+    goto L39
+L80:
+    xdec_ref r75
+    goto L40
+L81:
+    dec_ref r82
+    goto L61
+L82:
+    dec_ref f
+    goto L61
+L83:
+    dec_ref f
+    dec_ref r99
+    goto L61
+
+def __top_level__():
+    r0, r1 :: object
+    r2 :: bit
+    r3 :: str
+    r4 :: object
+    r5 :: object_ptr
+    r6 :: object_ptr[1]
+    r7 :: c_ptr
+    r8 :: native_int[1]
+    r9 :: c_ptr
+    r10 :: object
+    r11 :: dict
+    r12, r13 :: str
+    r14 :: bit
+    r15 :: object
+    r16 :: str
+    r17 :: dict
+    r18 :: object
+    r19 :: dict
+    r20 :: str
+    r21 :: object
+    r22 :: i32
+    r23 :: bit
+    r24 :: object
+    r25 :: str
+    r26, r27 :: object
+    r28 :: object[1]
+    r29 :: object_ptr
+    r30, r31 :: object
+    r32 :: dict
+    r33 :: str
+    r34 :: i32
+    r35 :: bit
+    r36 :: object
+    r37 :: str
+    r38, r39 :: object
+    r40 :: object[1]
+    r41 :: object_ptr
+    r42 :: object
+    r43 :: dict
+    r44 :: str
+    r45 :: i32
+    r46 :: bit
+    r47 :: object
+    r48 :: str
+    r49, r50 :: object
+    r51 :: object[1]
+    r52 :: object_ptr
+    r53 :: object
+    r54 :: dict
+    r55 :: str
+    r56 :: i32
+    r57 :: bit
+    r58 :: object
+    r59 :: str
+    r60 :: object
+    r61 :: dict
+    r62 :: str
+    r63 :: i32
+    r64 :: bit
+    r65 :: None
+L0:
+    r0 = builtins :: module
+    r1 = load_address _Py_NoneStruct
+    r2 = r0 != r1
+    if r2 goto L3 else goto L1 :: bool
+L1:
+    r3 = 'builtins'
+    r4 = PyImport_Import(r3)
+    if is_error(r4) goto L18 (error at <module>:-1) else goto L2
+L2:
+    builtins = r4 :: module
+    dec_ref r4
+L3:
+    r5 = load_address decimal :: module
+    r6 = [r5]
+    r7 = load_address r6
+    r8 = [1]
+    r9 = load_address r8
+    r10 = (('decimal', 'decimal', 'decimal'),)
+    r11 = faster_eth_abi.utils.numeric.globals :: static
+    r12 = 'faster_eth_abi/utils/numeric.py'
+    r13 = '<module>'
+    r14 = CPyImport_ImportMany(r10, r7, r11, r12, r13, r9)
+    if not r14 goto L18 else goto L4 :: bool
+L4:
+    r15 = ('Callable', 'Final', 'Tuple')
+    r16 = 'typing'
+    r17 = faster_eth_abi.utils.numeric.globals :: static
+    r18 = CPyImport_ImportFromMany(r16, r15, r15, r17)
+    if is_error(r18) goto L18 (error at <module>:2) else goto L5
+L5:
+    typing = r18 :: module
+    dec_ref r18
+    r19 = faster_eth_abi.utils.numeric.globals :: static
+    r20 = 'ABI_DECIMAL_PREC'
+    r21 = object 999
+    r22 = CPyDict_SetItem(r19, r20, r21)
+    r23 = r22 >= 0 :: signed
+    if not r23 goto L18 (error at <module>:8) else goto L6 :: bool
+L6:
+    r24 = decimal :: module
+    r25 = 'Context'
+    r26 = CPyObject_GetAttr(r24, r25)
+    if is_error(r26) goto L18 (error at <module>:10) else goto L7
+L7:
+    r27 = object 999
+    r28 = [r27]
+    r29 = load_address r28
+    r30 = ('prec',)
+    r31 = PyObject_Vectorcall(r26, r29, 0, r30)
+    dec_ref r26
+    if is_error(r31) goto L18 (error at <module>:10) else goto L8
+L8:
+    faster_eth_abi.utils.numeric.abi_decimal_context = r31 :: static
+    r32 = faster_eth_abi.utils.numeric.globals :: static
+    r33 = 'abi_decimal_context'
+    r34 = CPyDict_SetItem(r32, r33, r31)
+    dec_ref r31
+    r35 = r34 >= 0 :: signed
+    if not r35 goto L18 (error at <module>:10) else goto L9 :: bool
+L9:
+    r36 = decimal :: module
+    r37 = 'Decimal'
+    r38 = CPyObject_GetAttr(r36, r37)
+    if is_error(r38) goto L18 (error at <module>:12) else goto L10
+L10:
+    r39 = object 0
+    r40 = [r39]
+    r41 = load_address r40
+    r42 = PyObject_Vectorcall(r38, r41, 1, 0)
+    dec_ref r38
+    if is_error(r42) goto L18 (error at <module>:12) else goto L11
+L11:
+    faster_eth_abi.utils.numeric.ZERO = r42 :: static
+    r43 = faster_eth_abi.utils.numeric.globals :: static
+    r44 = 'ZERO'
+    r45 = CPyDict_SetItem(r43, r44, r42)
+    dec_ref r42
+    r46 = r45 >= 0 :: signed
+    if not r46 goto L18 (error at <module>:12) else goto L12 :: bool
+L12:
+    r47 = decimal :: module
+    r48 = 'Decimal'
+    r49 = CPyObject_GetAttr(r47, r48)
+    if is_error(r49) goto L18 (error at <module>:13) else goto L13
+L13:
+    r50 = object 10
+    r51 = [r50]
+    r52 = load_address r51
+    r53 = PyObject_Vectorcall(r49, r52, 1, 0)
+    dec_ref r49
+    if is_error(r53) goto L18 (error at <module>:13) else goto L14
+L14:
+    faster_eth_abi.utils.numeric.TEN = r53 :: static
+    r54 = faster_eth_abi.utils.numeric.globals :: static
+    r55 = 'TEN'
+    r56 = CPyDict_SetItem(r54, r55, r53)
+    dec_ref r53
+    r57 = r56 >= 0 :: signed
+    if not r57 goto L18 (error at <module>:13) else goto L15 :: bool
+L15:
+    r58 = decimal :: module
+    r59 = 'Decimal'
+    r60 = CPyObject_GetAttr(r58, r59)
+    if is_error(r60) goto L18 (error at <module>:15) else goto L16
+L16:
+    faster_eth_abi.utils.numeric.Decimal = r60 :: static
+    r61 = faster_eth_abi.utils.numeric.globals :: static
+    r62 = 'Decimal'
+    r63 = CPyDict_SetItem(r61, r62, r60)
+    dec_ref r60
+    r64 = r63 >= 0 :: signed
+    if not r64 goto L18 (error at <module>:15) else goto L17 :: bool
+L17:
+    return 1
+L18:
+    r65 = <error> :: None
+    return r65
+
+def __top_level__():
+    r0, r1 :: object
+    r2 :: bit
+    r3 :: str
+    r4, r5 :: object
+    r6 :: str
+    r7 :: dict
+    r8, r9 :: object
+    r10 :: str
+    r11 :: dict
+    r12, r13 :: object
+    r14 :: str
+    r15 :: dict
+    r16 :: object
+    r17 :: dict
+    r18 :: str
+    r19 :: object
+    r20 :: dict
+    r21 :: str
+    r22 :: object
+    r23 :: object[1]
+    r24 :: object_ptr
+    r25 :: object
+    r26 :: dict
+    r27 :: str
+    r28 :: i32
+    r29 :: bit
+    r30 :: object
+    r31 :: bool
+    r32 :: str
+    r33 :: object
+    r34 :: dict
+    r35 :: str
+    r36 :: i32
+    r37 :: bit
+    r38 :: object
+    r39 :: bool
+    r40 :: str
+    r41 :: object
+    r42 :: dict
+    r43 :: str
+    r44 :: i32
+    r45 :: bit
+    r46 :: object
+    r47 :: bool
+    r48 :: str
+    r49 :: object
+    r50 :: dict
+    r51 :: str
+    r52 :: i32
+    r53 :: bit
+    r54 :: object
+    r55 :: bool
+    r56 :: str
+    r57 :: object
+    r58 :: dict
+    r59 :: str
+    r60 :: i32
+    r61 :: bit
+    r62 :: None
+L0:
+    r0 = builtins :: module
+    r1 = load_address _Py_NoneStruct
+    r2 = r0 != r1
+    if r2 goto L3 else goto L1 :: bool
+L1:
+    r3 = 'builtins'
+    r4 = PyImport_Import(r3)
+    if is_error(r4) goto L31 (error at <module>:-1) else goto L2
+L2:
+    builtins = r4 :: module
+    dec_ref r4
+L3:
+    r5 = ('Final',)
+    r6 = 'typing'
+    r7 = faster_eth_abi.abi.globals :: static
+    r8 = CPyImport_ImportFromMany(r6, r5, r5, r7)
+    if is_error(r8) goto L31 (error at <module>:1) else goto L4
+L4:
+    typing = r8 :: module
+    dec_ref r8
+    r9 = ('ABICodec',)
+    r10 = 'faster_eth_abi.codec'
+    r11 = faster_eth_abi.abi.globals :: static
+    r12 = CPyImport_ImportFromMany(r10, r9, r9, r11)
+    if is_error(r12) goto L31 (error at <module>:5) else goto L5
+L5:
+    faster_eth_abi.codec = r12 :: module
+    dec_ref r12
+    r13 = ('registry',)
+    r14 = 'faster_eth_abi.registry'
+    r15 = faster_eth_abi.abi.globals :: static
+    r16 = CPyImport_ImportFromMany(r14, r13, r13, r15)
+    if is_error(r16) goto L31 (error at <module>:8) else goto L6
+L6:
+    faster_eth_abi.registry = r16 :: module
+    dec_ref r16
+    r17 = faster_eth_abi.abi.globals :: static
+    r18 = 'registry'
+    r19 = CPyDict_GetItem(r17, r18)
+    if is_error(r19) goto L31 (error at <module>:12) else goto L7
+L7:
+    r20 = faster_eth_abi.abi.globals :: static
+    r21 = 'ABICodec'
+    r22 = CPyDict_GetItem(r20, r21)
+    if is_error(r22) goto L32 (error at <module>:12) else goto L8
+L8:
+    r23 = [r19]
+    r24 = load_address r23
+    r25 = PyObject_Vectorcall(r22, r24, 1, 0)
+    dec_ref r22
+    if is_error(r25) goto L32 (error at <module>:12) else goto L9
+L9:
+    dec_ref r19
+    faster_eth_abi.abi.default_codec = r25 :: static
+    r26 = faster_eth_abi.abi.globals :: static
+    r27 = 'default_codec'
+    r28 = CPyDict_SetItem(r26, r27, r25)
+    dec_ref r25
+    r29 = r28 >= 0 :: signed
+    if not r29 goto L31 (error at <module>:12) else goto L10 :: bool
+L10:
+    r30 = faster_eth_abi.abi.default_codec :: static
+    if is_error(r30) goto L11 else goto L13
+L11:
+    r31 = raise NameError('value for final name "default_codec" was not set')
+    if not r31 goto L31 (error at <module>:14) else goto L12 :: bool
+L12:
+    unreachable
+L13:
+    r32 = 'encode'
+    r33 = CPyObject_GetAttr(r30, r32)
+    if is_error(r33) goto L31 (error at <module>:14) else goto L14
+L14:
+    faster_eth_abi.abi.encode = r33 :: static
+    r34 = faster_eth_abi.abi.globals :: static
+    r35 = 'encode'
+    r36 = CPyDict_SetItem(r34, r35, r33)
+    dec_ref r33
+    r37 = r36 >= 0 :: signed
+    if not r37 goto L31 (error at <module>:14) else goto L15 :: bool
+L15:
+    r38 = faster_eth_abi.abi.default_codec :: static
+    if is_error(r38) goto L16 else goto L18
+L16:
+    r39 = raise NameError('value for final name "default_codec" was not set')
+    if not r39 goto L31 (error at <module>:15) else goto L17 :: bool
+L17:
+    unreachable
+L18:
+    r40 = 'decode'
+    r41 = CPyObject_GetAttr(r38, r40)
+    if is_error(r41) goto L31 (error at <module>:15) else goto L19
+L19:
+    faster_eth_abi.abi.decode = r41 :: static
+    r42 = faster_eth_abi.abi.globals :: static
+    r43 = 'decode'
+    r44 = CPyDict_SetItem(r42, r43, r41)
+    dec_ref r41
+    r45 = r44 >= 0 :: signed
+    if not r45 goto L31 (error at <module>:15) else goto L20 :: bool
+L20:
+    r46 = faster_eth_abi.abi.default_codec :: static
+    if is_error(r46) goto L21 else goto L23
+L21:
+    r47 = raise NameError('value for final name "default_codec" was not set')
+    if not r47 goto L31 (error at <module>:16) else goto L22 :: bool
+L22:
+    unreachable
+L23:
+    r48 = 'is_encodable'
+    r49 = CPyObject_GetAttr(r46, r48)
+    if is_error(r49) goto L31 (error at <module>:16) else goto L24
+L24:
+    faster_eth_abi.abi.is_encodable = r49 :: static
+    r50 = faster_eth_abi.abi.globals :: static
+    r51 = 'is_encodable'
+    r52 = CPyDict_SetItem(r50, r51, r49)
+    dec_ref r49
+    r53 = r52 >= 0 :: signed
+    if not r53 goto L31 (error at <module>:16) else goto L25 :: bool
+L25:
+    r54 = faster_eth_abi.abi.default_codec :: static
+    if is_error(r54) goto L26 else goto L28
+L26:
+    r55 = raise NameError('value for final name "default_codec" was not set')
+    if not r55 goto L31 (error at <module>:17) else goto L27 :: bool
+L27:
+    unreachable
+L28:
+    r56 = 'is_encodable_type'
+    r57 = CPyObject_GetAttr(r54, r56)
+    if is_error(r57) goto L31 (error at <module>:17) else goto L29
+L29:
+    faster_eth_abi.abi.is_encodable_type = r57 :: static
+    r58 = faster_eth_abi.abi.globals :: static
+    r59 = 'is_encodable_type'
+    r60 = CPyDict_SetItem(r58, r59, r57)
+    dec_ref r57
+    r61 = r60 >= 0 :: signed
+    if not r61 goto L31 (error at <module>:17) else goto L30 :: bool
+L30:
+    return 1
+L31:
+    r62 = <error> :: None
+    return r62
+L32:
+    dec_ref r19
+    goto L31
+
+def __top_level__():
+    r0, r1 :: object
+    r2 :: bit
+    r3 :: str
+    r4, r5 :: object
+    r6 :: str
+    r7 :: dict
+    r8, r9 :: object
+    r10 :: str
+    r11 :: dict
+    r12, r13 :: object
+    r14 :: str
+    r15 :: dict
+    r16 :: object
+    r17 :: dict
+    r18 :: str
+    r19 :: object
+    r20 :: dict
+    r21 :: str
+    r22 :: object
+    r23 :: object[1]
+    r24 :: object_ptr
+    r25 :: object
+    r26 :: dict
+    r27 :: str
+    r28 :: i32
+    r29 :: bit
+    r30 :: object
+    r31 :: bool
+    r32 :: str
+    r33 :: object
+    r34 :: dict
+    r35 :: str
+    r36 :: i32
+    r37 :: bit
+    r38 :: object
+    r39 :: bool
+    r40 :: str
+    r41 :: object
+    r42 :: dict
+    r43 :: str
+    r44 :: i32
+    r45 :: bit
+    r46 :: None
+L0:
+    r0 = builtins :: module
+    r1 = load_address _Py_NoneStruct
+    r2 = r0 != r1
+    if r2 goto L3 else goto L1 :: bool
+L1:
+    r3 = 'builtins'
+    r4 = PyImport_Import(r3)
+    if is_error(r4) goto L21 (error at <module>:-1) else goto L2
+L2:
+    builtins = r4 :: module
+    dec_ref r4
+L3:
+    r5 = ('Final',)
+    r6 = 'typing'
+    r7 = faster_eth_abi.packed.globals :: static
+    r8 = CPyImport_ImportFromMany(r6, r5, r5, r7)
+    if is_error(r8) goto L21 (error at <module>:1) else goto L4
+L4:
+    typing = r8 :: module
+    dec_ref r8
+    r9 = ('ABIEncoder',)
+    r10 = 'faster_eth_abi.codec'
+    r11 = faster_eth_abi.packed.globals :: static
+    r12 = CPyImport_ImportFromMany(r10, r9, r9, r11)
+    if is_error(r12) goto L21 (error at <module>:5) else goto L5
+L5:
+    faster_eth_abi.codec = r12 :: module
+    dec_ref r12
+    r13 = ('registry_packed',)
+    r14 = 'faster_eth_abi.registry'
+    r15 = faster_eth_abi.packed.globals :: static
+    r16 = CPyImport_ImportFromMany(r14, r13, r13, r15)
+    if is_error(r16) goto L21 (error at <module>:8) else goto L6
+L6:
+    faster_eth_abi.registry = r16 :: module
+    dec_ref r16
+    r17 = faster_eth_abi.packed.globals :: static
+    r18 = 'registry_packed'
+    r19 = CPyDict_GetItem(r17, r18)
+    if is_error(r19) goto L21 (error at <module>:12) else goto L7
+L7:
+    r20 = faster_eth_abi.packed.globals :: static
+    r21 = 'ABIEncoder'
+    r22 = CPyDict_GetItem(r20, r21)
+    if is_error(r22) goto L22 (error at <module>:12) else goto L8
+L8:
+    r23 = [r19]
+    r24 = load_address r23
+    r25 = PyObject_Vectorcall(r22, r24, 1, 0)
+    dec_ref r22
+    if is_error(r25) goto L22 (error at <module>:12) else goto L9
+L9:
+    dec_ref r19
+    faster_eth_abi.packed.default_encoder_packed = r25 :: static
+    r26 = faster_eth_abi.packed.globals :: static
+    r27 = 'default_encoder_packed'
+    r28 = CPyDict_SetItem(r26, r27, r25)
+    dec_ref r25
+    r29 = r28 >= 0 :: signed
+    if not r29 goto L21 (error at <module>:12) else goto L10 :: bool
+L10:
+    r30 = faster_eth_abi.packed.default_encoder_packed :: static
+    if is_error(r30) goto L11 else goto L13
+L11:
+    r31 = raise NameError('value for final name "default_encoder_packed" was not set')
+    if not r31 goto L21 (error at <module>:14) else goto L12 :: bool
+L12:
+    unreachable
+L13:
+    r32 = 'encode'
+    r33 = CPyObject_GetAttr(r30, r32)
+    if is_error(r33) goto L21 (error at <module>:14) else goto L14
+L14:
+    faster_eth_abi.packed.encode_packed = r33 :: static
+    r34 = faster_eth_abi.packed.globals :: static
+    r35 = 'encode_packed'
+    r36 = CPyDict_SetItem(r34, r35, r33)
+    dec_ref r33
+    r37 = r36 >= 0 :: signed
+    if not r37 goto L21 (error at <module>:14) else goto L15 :: bool
+L15:
+    r38 = faster_eth_abi.packed.default_encoder_packed :: static
+    if is_error(r38) goto L16 else goto L18
+L16:
+    r39 = raise NameError('value for final name "default_encoder_packed" was not set')
+    if not r39 goto L21 (error at <module>:15) else goto L17 :: bool
+L17:
+    unreachable
+L18:
+    r40 = 'is_encodable'
+    r41 = CPyObject_GetAttr(r38, r40)
+    if is_error(r41) goto L21 (error at <module>:15) else goto L19
+L19:
+    faster_eth_abi.packed.is_encodable_packed = r41 :: static
+    r42 = faster_eth_abi.packed.globals :: static
+    r43 = 'is_encodable_packed'
+    r44 = CPyDict_SetItem(r42, r43, r41)
+    dec_ref r41
+    r45 = r44 >= 0 :: signed
+    if not r45 goto L21 (error at <module>:15) else goto L20 :: bool
+L20:
+    return 1
+L21:
+    r46 = <error> :: None
+    return r46
+L22:
+    dec_ref r19
+    goto L21
 
 def new_from_type_str_parse_type_str_decorator_obj.__get__(__mypyc_self__, instance, owner):
     __mypyc_self__, instance, owner, r0 :: object
@@ -7469,185 +7651,3 @@ L40:
     dec_ref r74
     dec_ref r81
     goto L30
-
-def validate_bytes_param(param, param_name):
-    param :: object
-    param_name :: str
-    r0, r1 :: object
-    r2 :: str
-    r3 :: object
-    r4 :: tuple[object, object]
-    r5 :: object
-    r6 :: i32
-    r7 :: bit
-    r8 :: bool
-    r9, r10 :: str
-    r11 :: object
-    r12, r13 :: str
-    r14 :: object
-    r15 :: str
-    r16 :: object
-    r17 :: object[1]
-    r18 :: object_ptr
-    r19 :: object
-    r20 :: None
-L0:
-    r0 = load_address PyBytes_Type
-    r1 = builtins :: module
-    r2 = 'bytearray'
-    r3 = CPyObject_GetAttr(r1, r2)
-    if is_error(r3) goto L10 (error at validate_bytes_param:7) else goto L1
-L1:
-    inc_ref r0
-    r4 = (r0, r3)
-    r5 = box(tuple[object, object], r4)
-    r6 = PyObject_IsInstance(param, r5)
-    dec_ref r5
-    r7 = r6 >= 0 :: signed
-    if not r7 goto L10 (error at validate_bytes_param:7) else goto L2 :: bool
-L2:
-    r8 = truncate r6: i32 to builtins.bool
-    if r8 goto L9 else goto L3 :: bool
-L3:
-    r9 = 'The `'
-    r10 = '` value must be of bytes type. Got '
-    r11 = PyObject_Type(param)
-    r12 = PyObject_Str(r11)
-    dec_ref r11
-    if is_error(r12) goto L10 (error at validate_bytes_param:9) else goto L4
-L4:
-    r13 = CPyStr_Build(4, r9, param_name, r10, r12)
-    dec_ref r12
-    if is_error(r13) goto L10 (error at validate_bytes_param:9) else goto L5
-L5:
-    r14 = builtins :: module
-    r15 = 'TypeError'
-    r16 = CPyObject_GetAttr(r14, r15)
-    if is_error(r16) goto L11 (error at validate_bytes_param:8) else goto L6
-L6:
-    r17 = [r13]
-    r18 = load_address r17
-    r19 = PyObject_Vectorcall(r16, r18, 1, 0)
-    dec_ref r16
-    if is_error(r19) goto L11 (error at validate_bytes_param:8) else goto L7
-L7:
-    dec_ref r13
-    CPy_Raise(r19)
-    dec_ref r19
-    if not 0 goto L10 (error at validate_bytes_param:8) else goto L8 :: bool
-L8:
-    unreachable
-L9:
-    return 1
-L10:
-    r20 = <error> :: None
-    return r20
-L11:
-    dec_ref r13
-    goto L10
-
-def validate_list_like_param(param, param_name):
-    param :: object
-    param_name :: str
-    r0, r1 :: object
-    r2 :: tuple[object, object]
-    r3 :: object
-    r4 :: i32
-    r5 :: bit
-    r6 :: bool
-    r7, r8 :: str
-    r9 :: object
-    r10, r11 :: str
-    r12 :: object
-    r13 :: str
-    r14 :: object
-    r15 :: object[1]
-    r16 :: object_ptr
-    r17 :: object
-    r18 :: None
-L0:
-    r0 = load_address PyList_Type
-    r1 = load_address PyTuple_Type
-    inc_ref r0
-    inc_ref r1
-    r2 = (r0, r1)
-    r3 = box(tuple[object, object], r2)
-    r4 = PyObject_IsInstance(param, r3)
-    dec_ref r3
-    r5 = r4 >= 0 :: signed
-    if not r5 goto L9 (error at validate_list_like_param:14) else goto L1 :: bool
-L1:
-    r6 = truncate r4: i32 to builtins.bool
-    if r6 goto L8 else goto L2 :: bool
-L2:
-    r7 = 'The `'
-    r8 = '` value type must be one of list or tuple. Got '
-    r9 = PyObject_Type(param)
-    r10 = PyObject_Str(r9)
-    dec_ref r9
-    if is_error(r10) goto L9 (error at validate_list_like_param:16) else goto L3
-L3:
-    r11 = CPyStr_Build(4, r7, param_name, r8, r10)
-    dec_ref r10
-    if is_error(r11) goto L9 (error at validate_list_like_param:16) else goto L4
-L4:
-    r12 = builtins :: module
-    r13 = 'TypeError'
-    r14 = CPyObject_GetAttr(r12, r13)
-    if is_error(r14) goto L10 (error at validate_list_like_param:15) else goto L5
-L5:
-    r15 = [r11]
-    r16 = load_address r15
-    r17 = PyObject_Vectorcall(r14, r16, 1, 0)
-    dec_ref r14
-    if is_error(r17) goto L10 (error at validate_list_like_param:15) else goto L6
-L6:
-    dec_ref r11
-    CPy_Raise(r17)
-    dec_ref r17
-    if not 0 goto L9 (error at validate_list_like_param:15) else goto L7 :: bool
-L7:
-    unreachable
-L8:
-    return 1
-L9:
-    r18 = <error> :: None
-    return r18
-L10:
-    dec_ref r11
-    goto L9
-
-def __top_level__():
-    r0, r1 :: object
-    r2 :: bit
-    r3 :: str
-    r4, r5 :: object
-    r6 :: str
-    r7 :: dict
-    r8 :: object
-    r9 :: None
-L0:
-    r0 = builtins :: module
-    r1 = load_address _Py_NoneStruct
-    r2 = r0 != r1
-    if r2 goto L3 else goto L1 :: bool
-L1:
-    r3 = 'builtins'
-    r4 = PyImport_Import(r3)
-    if is_error(r4) goto L5 (error at <module>:-1) else goto L2
-L2:
-    builtins = r4 :: module
-    dec_ref r4
-L3:
-    r5 = ('Any',)
-    r6 = 'typing'
-    r7 = faster_eth_abi.utils.validation.globals :: static
-    r8 = CPyImport_ImportFromMany(r6, r5, r5, r7)
-    if is_error(r8) goto L5 (error at <module>:1) else goto L4
-L4:
-    typing = r8 :: module
-    dec_ref r8
-    return 1
-L5:
-    r9 = <error> :: None
-    return r9

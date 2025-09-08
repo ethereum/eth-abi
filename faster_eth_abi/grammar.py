@@ -458,10 +458,11 @@ def normalize(type_str: TypeStr) -> TypeStr:
     :param type_str: The type string to be normalized.
     :returns: The canonical version of the input type string.
     """
-    return TYPE_ALIAS_RE.sub(
-        lambda match: TYPE_ALIASES[match.group(0)],
-        type_str,
-    )
+    return TYPE_ALIAS_RE.sub(__normalize, type_str)
+
+
+def __normalize(match: re.Match[str]) -> str:
+    return TYPE_ALIASES[match.group(0)]
 
 
 parse: Final = visitor.parse
