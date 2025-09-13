@@ -461,7 +461,7 @@ def normalize(type_str: TypeStr) -> TypeStr:
     return TYPE_ALIAS_RE.sub(__normalize, type_str)
 
 
-def __normalize(match: re.Match[str]) -> str:
+def __normalize(match: "re.Match[str]") -> str:
     return TYPE_ALIASES[match.group(0)]
 
 
