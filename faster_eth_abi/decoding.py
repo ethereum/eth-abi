@@ -102,6 +102,9 @@ class TupleDecoder(BaseDecoder):
         )
 
         self.is_dynamic = any(getattr(d, "is_dynamic", False) for d in self.decoders)
+        self.len_of_head = sum(
+            getattr(decoder, "array_size", 1) for decoder in self.decoders
+        )
 
     def validate(self):
         super().validate()
@@ -114,11 +117,7 @@ class TupleDecoder(BaseDecoder):
         Verify that all pointers point to a valid location in the stream.
         """
         current_location = stream.tell()
-        len_of_head = sum(
-            decoder.array_size if hasattr(decoder, "array_size") else 1
-            for decoder in self.decoders
-        )
-        end_of_offsets = current_location + 32 * len_of_head
+        end_of_offsets = current_location + 32 * self.len_of_head
         total_stream_length = len(stream.getbuffer())
         for decoder in self.decoders:
             if isinstance(decoder, HeadTailDecoder):
