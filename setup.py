@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+from mypyc.build import (
+    mypycify,
+)
 from setuptools import (
     find_packages,
     setup,
@@ -47,30 +50,23 @@ with open("./README.md") as readme:
     long_description = readme.read()
 
 
-try:
-    from mypyc.build import (
-        mypycify,
-    )
-except ImportError:
-    ext_modules = []
-else:
-    ext_modules = mypycify(
-        [
-            "faster_eth_abi/_codec.py",
-            "faster_eth_abi/_encoding.py",
-            "faster_eth_abi/abi.py",
-            "faster_eth_abi/constants.py",
-            "faster_eth_abi/from_type_str.py",
-            # "faster_eth_abi/io.py",
-            "faster_eth_abi/packed.py",
-            "faster_eth_abi/tools",
-            "faster_eth_abi/utils",
-            "--pretty",
-            "--install-types",
-            "--disable-error-code=override",
-            "--disable-error-code=unused-ignore",
-        ],
-    )
+ext_modules = mypycify(
+    [
+        "faster_eth_abi/_codec.py",
+        "faster_eth_abi/_encoding.py",
+        "faster_eth_abi/abi.py",
+        "faster_eth_abi/constants.py",
+        "faster_eth_abi/from_type_str.py",
+        # "faster_eth_abi/io.py",
+        "faster_eth_abi/packed.py",
+        "faster_eth_abi/tools",
+        "faster_eth_abi/utils",
+        "--pretty",
+        "--install-types",
+        "--disable-error-code=override",
+        "--disable-error-code=unused-ignore",
+    ],
+)
 
 
 setup(
