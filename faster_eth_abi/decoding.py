@@ -2,8 +2,9 @@ import abc
 import decimal
 from typing import (
     Any,
-    Generator,
+    Optional,
     Tuple,
+    Union,
 )
 
 from faster_eth_utils import (
@@ -12,6 +13,10 @@ from faster_eth_utils import (
     to_tuple,
 )
 
+from faster_eth_abi._decoding import (
+    decode_head_tail,
+    decode_tuple,
+)
 from faster_eth_abi.base import (
     BaseCoder,
 )
@@ -32,6 +37,8 @@ from faster_eth_abi.utils.numeric import (
     abi_decimal_context,
     ceil32,
 )
+
+DynamicDecoder = Union["HeadTailDecoder", "DynamicArrayDecoder", "ByteStringDecoder"]
 
 
 class BaseDecoder(BaseCoder, metaclass=abc.ABCMeta):
@@ -65,29 +72,16 @@ class HeadTailDecoder(BaseDecoder):
 
     is_dynamic = True
 
-    tail_decoder = None
+    tail_decoder: Optional[DynamicDecoder] = None
 
-    def validate(self):
+    def validate(self) -> None:
         super().validate()
 
         if self.tail_decoder is None:
             raise ValueError("No `tail_decoder` set")
 
     def decode(self, stream: ContextFramesBytesIO) -> Any:
-        # Decode the offset and move the stream cursor forward 32 bytes
-        start_pos = decode_uint_256(stream)
-        # Jump ahead to the start of the value
-        stream.push_frame(start_pos)
-
-        # assertion check for mypy
-        if self.tail_decoder is None:
-            raise AssertionError("`tail_decoder` is None")
-        # Decode the value
-        value = self.tail_decoder(stream)
-        # Return the cursor
-        stream.pop_frame()
-
-        return value
+        return decode_head_tail(self, stream)
 
 
 class TupleDecoder(BaseDecoder):
@@ -106,7 +100,7 @@ class TupleDecoder(BaseDecoder):
             getattr(decoder, "array_size", 1) for decoder in self.decoders
         )
 
-    def validate(self):
+    def validate(self) -> None:
         super().validate()
 
         if self.decoders is None:
@@ -142,11 +136,8 @@ class TupleDecoder(BaseDecoder):
         # return the stream to its original location for actual decoding
         stream.seek(current_location)
 
-    @to_tuple  # type: ignore [misc]
-    def decode(self, stream: ContextFramesBytesIO) -> Generator[Any, None, None]:
-        self.validate_pointers(stream)
-        for decoder in self.decoders:
-            yield decoder(stream)
+    def decode(self, stream: ContextFramesBytesIO) -> Tuple[Any, ...]:
+        return decode_tuple(self, stream)
 
     @parse_tuple_type_str
     def from_type_str(cls, abi_type, registry):
@@ -160,7 +151,7 @@ class TupleDecoder(BaseDecoder):
 class SingleDecoder(BaseDecoder):
     decoder_fn = None
 
-    def validate(self):
+    def validate(self) -> None:
         super().validate()
 
         if self.decoder_fn is None:
@@ -189,7 +180,7 @@ class SingleDecoder(BaseDecoder):
 class BaseArrayDecoder(BaseDecoder):
     item_decoder = None
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: Any) -> None:
         super().__init__(**kwargs)
 
         # Use a head-tail decoder to decode dynamic elements
@@ -198,7 +189,7 @@ class BaseArrayDecoder(BaseDecoder):
                 tail_decoder=self.item_decoder,
             )
 
-    def validate(self):
+    def validate(self) -> None:
         super().validate()
 
         if self.item_decoder is None:
@@ -285,7 +276,7 @@ class FixedByteSizeDecoder(SingleDecoder):
     data_byte_size = None
     is_big_endian = None
 
-    def validate(self):
+    def validate(self) -> None:
         super().validate()
 
         if self.value_bit_size is None:
@@ -443,7 +434,7 @@ class BaseFixedDecoder(Fixed32ByteSizeDecoder):
     frac_places = None
     is_big_endian = True
 
-    def validate(self):
+    def validate(self) -> None:
         super().validate()
 
         if self.frac_places is None:
@@ -513,7 +504,7 @@ class ByteStringDecoder(SingleDecoder):
     def decoder_fn(data):
         return data
 
-    def read_data_from_stream(self, stream):
+    def read_data_from_stream(self, stream: ContextFramesBytesIO) -> bytes:
         data_length = decode_uint_256(stream)
         padded_length = ceil32(data_length)
 

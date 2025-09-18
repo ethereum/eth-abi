@@ -1,5 +1,5 @@
-#ifndef MYPYC_NATIVE_c42f5c78bc058f310136_H
-#define MYPYC_NATIVE_c42f5c78bc058f310136_H
+#ifndef MYPYC_NATIVE_76f9a3652d4d2667c55c_H
+#define MYPYC_NATIVE_76f9a3652d4d2667c55c_H
 #include <Python.h>
 #include <CPy.h>
 #ifndef MYPYC_DECLARED_tuple_T2OO

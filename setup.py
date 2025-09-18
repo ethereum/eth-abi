@@ -53,6 +53,7 @@ with open("./README.md") as readme:
 ext_modules = mypycify(
     [
         "faster_eth_abi/_codec.py",
+        "faster_eth_abi/_decoding.py",
         "faster_eth_abi/_encoding.py",
         "faster_eth_abi/abi.py",
         "faster_eth_abi/constants.py",
