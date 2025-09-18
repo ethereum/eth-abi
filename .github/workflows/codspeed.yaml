@@ -7,6 +7,10 @@ on:
     branches: [main, master]
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   benchmark:
     name: Run Benchmarks
@@ -20,9 +24,17 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install .[dev]
-          pip install pytest-codspeed eth-abi
+          pip install --no-binary :faster_eth_abi: .[dev] pytest-codspeed eth-abi
+      - name: Remove source package to force use of installed C extensions
+        run: rm -rf faster_eth_abi
+      - name: List compiled extension modules
+        run: |
+          find $(python -c "import site; print(site.getsitepackages()[0])") -name "*.so" || true
+      - name: Print module file locations
+        run: |
+          python -c "import faster_eth_abi._codec; print('faster_eth_abi._codec:', faster_eth_abi._codec.__file__)"
       - name: Run CodSpeed
         uses: CodSpeedHQ/action@v3
         with:
-          run: pytest --codspeed -k "test_faster_" benchmarks/
+          run: |
+            pytest --codspeed -k "test_faster_" benchmarks/
