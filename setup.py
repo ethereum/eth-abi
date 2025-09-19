@@ -73,7 +73,7 @@ ext_modules = mypycify(
 setup(
     name="faster_eth_abi",
     # *IMPORTANT*: Don't manually change the version here. See Contributing docs for the release process.
-    version="5.2.8",
+    version="5.2.9",
     description="""A faster fork of eth_abi: Python utilities for working with Ethereum ABI definitions, especially encoding and decoding. Implemented in C.""",
     long_description=long_description,
     long_description_content_type="text/markdown",
