@@ -668,5 +668,3 @@ class DynamicArrayEncoder(BaseArrayEncoder):
 
     def encode(self, value: Sequence[Any]) -> bytes:
         return encode_elements_dynamic(self.item_encoder, value)
-
-    __call__ = encode
