@@ -26,6 +26,7 @@ if TYPE_CHECKING:
     )
 
 
+# Helpers
 def decode_uint_256(stream: ContextFramesBytesIO) -> int:
     """
     This function is a faster version of decode_uint_256 in decoding.py.
@@ -37,6 +38,10 @@ def decode_uint_256(stream: ContextFramesBytesIO) -> int:
     if len(data := stream.read(32)) == 32:
         return big_endian_to_int(data)  # type: ignore [no-any-return]
     raise InsufficientDataBytes(f"Tried to read 32 bytes, only got {len(data)} bytes.")
+
+
+def get_value_byte_size(decoder: "FixedByteSizeDecoder") -> int:
+    return decoder.value_bit_size // 8
 
 
 # HeadTailDecoder

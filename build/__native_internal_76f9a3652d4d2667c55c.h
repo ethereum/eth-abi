@@ -6,7 +6,7 @@
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[263];
+extern PyObject *CPyStatics[264];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -78,6 +78,8 @@ extern PyObject *CPyPy__codec___decode_c(PyObject *self, PyObject *const *args, 
 extern char CPyDef__codec_____top_level__(void);
 extern CPyTagged CPyDef__decoding___decode_uint_256(PyObject *cpy_r_stream);
 extern PyObject *CPyPy__decoding___decode_uint_256(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern CPyTagged CPyDef__decoding___get_value_byte_size(PyObject *cpy_r_decoder);
+extern PyObject *CPyPy__decoding___get_value_byte_size(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef__decoding___decode_head_tail(PyObject *cpy_r_self, PyObject *cpy_r_stream);
 extern PyObject *CPyPy__decoding___decode_head_tail(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef__decoding___decode_tuple(PyObject *cpy_r_self, PyObject *cpy_r_stream);

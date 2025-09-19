@@ -19,6 +19,7 @@ from faster_eth_abi._decoding import (
     decode_head_tail,
     decode_sized_array,
     decode_tuple,
+    get_value_byte_size,
     read_fixed_byte_size_data_from_stream,
 )
 from faster_eth_abi.base import (
@@ -303,7 +304,7 @@ class FixedByteSizeDecoder(SingleDecoder):
         return read_fixed_byte_size_data_from_stream(self, stream)
 
     def split_data_and_padding(self, raw_data: bytes) -> Tuple[bytes, bytes]:
-        value_byte_size = self._get_value_byte_size()
+        value_byte_size = get_value_byte_size(self)
         padding_size = self.data_byte_size - value_byte_size
 
         if self.is_big_endian:
@@ -316,7 +317,7 @@ class FixedByteSizeDecoder(SingleDecoder):
         return data, padding_bytes
 
     def validate_padding_bytes(self, value: Any, padding_bytes: bytes) -> None:
-        value_byte_size = self._get_value_byte_size()
+        value_byte_size = get_value_byte_size(self)
         padding_size = self.data_byte_size - value_byte_size
 
         if padding_bytes != b"\x00" * padding_size:
@@ -325,7 +326,8 @@ class FixedByteSizeDecoder(SingleDecoder):
             )
 
     def _get_value_byte_size(self) -> int:
-        return self.value_bit_size // 8
+        # This is unused, but it is kept in to preserve the eth-abi api
+        return get_value_byte_size(self)
 
 
 class Fixed32ByteSizeDecoder(FixedByteSizeDecoder):
@@ -392,7 +394,7 @@ class SignedIntegerDecoder(Fixed32ByteSizeDecoder):
             return value
 
     def validate_padding_bytes(self, value: Any, padding_bytes: bytes) -> None:
-        value_byte_size = self._get_value_byte_size()
+        value_byte_size = get_value_byte_size(self)
         padding_size = self.data_byte_size - value_byte_size
 
         if value >= 0:
@@ -471,7 +473,7 @@ class SignedFixedDecoder(BaseFixedDecoder):
         return decimal_value
 
     def validate_padding_bytes(self, value: Any, padding_bytes: bytes) -> None:
-        value_byte_size = self._get_value_byte_size()
+        value_byte_size = get_value_byte_size(self)
         padding_size = self.data_byte_size - value_byte_size
 
         if value >= 0:
