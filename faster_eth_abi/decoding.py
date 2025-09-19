@@ -21,6 +21,8 @@ from faster_eth_abi._decoding import (
     decode_tuple,
     get_value_byte_size,
     read_fixed_byte_size_data_from_stream,
+    split_data_and_padding_fixed_byte_size,
+    validate_padding_bytes_fixed_byte_size,
 )
 from faster_eth_abi.base import (
     BaseCoder,
@@ -304,26 +306,10 @@ class FixedByteSizeDecoder(SingleDecoder):
         return read_fixed_byte_size_data_from_stream(self, stream)
 
     def split_data_and_padding(self, raw_data: bytes) -> Tuple[bytes, bytes]:
-        value_byte_size = get_value_byte_size(self)
-        padding_size = self.data_byte_size - value_byte_size
-
-        if self.is_big_endian:
-            padding_bytes = raw_data[:padding_size]
-            data = raw_data[padding_size:]
-        else:
-            data = raw_data[:value_byte_size]
-            padding_bytes = raw_data[value_byte_size:]
-
-        return data, padding_bytes
+        return split_data_and_padding_fixed_byte_size(self, raw_data)
 
     def validate_padding_bytes(self, value: Any, padding_bytes: bytes) -> None:
-        value_byte_size = get_value_byte_size(self)
-        padding_size = self.data_byte_size - value_byte_size
-
-        if padding_bytes != b"\x00" * padding_size:
-            raise NonEmptyPaddingBytes(
-                f"Padding bytes were not empty: {padding_bytes!r}"
-            )
+        validate_padding_bytes_fixed_byte_size(self, value, padding_bytes)
 
     def _get_value_byte_size(self) -> int:
         # This is unused, but it is kept in to preserve the eth-abi api

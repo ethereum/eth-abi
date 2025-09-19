@@ -10,6 +10,7 @@ from faster_eth_utils import (
 
 from faster_eth_abi.exceptions import (
     InsufficientDataBytes,
+    NonEmptyPaddingBytes,
 )
 from faster_eth_abi.io import (
     BytesIO,
@@ -112,3 +113,34 @@ def read_fixed_byte_size_data_from_stream(
     raise InsufficientDataBytes(
         f"Tried to read {data_byte_size} bytes, only got {len(data)} bytes."
     )
+
+
+def split_data_and_padding_fixed_byte_size(
+    self: "FixedByteSizeDecoder",
+    raw_data: bytes,
+) -> Tuple[bytes, bytes]:
+    value_byte_size = get_value_byte_size(self)
+    padding_size = self.data_byte_size - value_byte_size
+
+    if self.is_big_endian:
+        if padding_size == 0:
+            return raw_data, b""
+        padding_bytes = raw_data[:padding_size]
+        data = raw_data[padding_size:]
+    else:
+        data = raw_data[:value_byte_size]
+        padding_bytes = raw_data[value_byte_size:]
+
+    return data, padding_bytes
+
+
+def validate_padding_bytes_fixed_byte_size(
+    self: "FixedByteSizeDecoder",
+    value: Any,
+    padding_bytes: bytes,
+) -> None:
+    value_byte_size = get_value_byte_size(self)
+    padding_size = self.data_byte_size - value_byte_size
+
+    if padding_bytes != b"\x00" * padding_size:
+        raise NonEmptyPaddingBytes(f"Padding bytes were not empty: {padding_bytes!r}")
