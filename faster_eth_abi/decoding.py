@@ -19,6 +19,7 @@ from faster_eth_abi._decoding import (
     decode_head_tail,
     decode_sized_array,
     decode_tuple,
+    decoder_fn_boolean,
     get_value_byte_size,
     read_fixed_byte_size_data_from_stream,
     split_data_and_padding_fixed_byte_size,
@@ -324,16 +325,7 @@ class BooleanDecoder(Fixed32ByteSizeDecoder):
     value_bit_size = 8
     is_big_endian = True
 
-    @staticmethod
-    def decoder_fn(data: bytes) -> bool:
-        if data == b"\x00":
-            return False
-        elif data == b"\x01":
-            return True
-        else:
-            raise NonEmptyPaddingBytes(
-                f"Boolean must be either 0x0 or 0x1.  Got: {data!r}"
-            )
+    decoder_fn = staticmethod(decoder_fn_boolean)
 
     @parse_type_str("bool")
     def from_type_str(cls, abi_type, registry):

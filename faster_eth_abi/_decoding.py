@@ -144,3 +144,12 @@ def validate_padding_bytes_fixed_byte_size(
 
     if padding_bytes != b"\x00" * padding_size:
         raise NonEmptyPaddingBytes(f"Padding bytes were not empty: {padding_bytes!r}")
+
+
+# BooleanDecoder
+def decoder_fn_boolean(data: bytes) -> bool:
+    if data == b"\x00":
+        return False
+    elif data == b"\x01":
+        return True
+    raise NonEmptyPaddingBytes(f"Boolean must be either 0x0 or 0x1.  Got: {data!r}")
