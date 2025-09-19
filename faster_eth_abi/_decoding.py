@@ -35,7 +35,7 @@ def decode_uint_256(stream: ContextFramesBytesIO) -> int:
     """
     # read data from stream
     if len(data := stream.read(32)) == 32:
-        return big_endian_to_int(data)
+        return big_endian_to_int(data)  # type: ignore [no-any-return]
     raise InsufficientDataBytes(f"Tried to read 32 bytes, only got {len(data)} bytes.")
 
 
