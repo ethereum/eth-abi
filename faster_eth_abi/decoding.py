@@ -14,6 +14,7 @@ from faster_eth_utils import (
 )
 
 from faster_eth_abi._decoding import (
+    decode_dynamic_array,
     decode_head_tail,
     decode_tuple,
 )
@@ -257,17 +258,8 @@ class DynamicArrayDecoder(BaseArrayDecoder):
     # Dynamic arrays are always dynamic, regardless of their elements
     is_dynamic = True
 
-    @to_tuple
-    def decode(self, stream):
-        array_size = decode_uint_256(stream)
-        stream.push_frame(32)
-        if self.item_decoder is None:
-            raise AssertionError("`item_decoder` is None")
-
-        self.validate_pointers(stream, array_size)
-        for _ in range(array_size):
-            yield self.item_decoder(stream)
-        stream.pop_frame()
+    def decode(self, stream: ContextFramesBytesIO) -> Tuple[Any, ...]:
+        return decode_dynamic_array(self, stream)
 
 
 class FixedByteSizeDecoder(SingleDecoder):

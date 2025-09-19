@@ -11,6 +11,7 @@ from faster_eth_abi.io import (
 
 if TYPE_CHECKING:
     from .decoding import (
+        DynamicArrayDecoder,
         HeadTailDecoder,
         TupleDecoder,
         UnsignedIntegerDecoder,
@@ -62,3 +63,20 @@ def decode_head_tail(self: "HeadTailDecoder", stream: ContextFramesBytesIO) -> A
 def decode_tuple(self: "TupleDecoder", stream: ContextFramesBytesIO) -> Tuple[Any, ...]:
     self.validate_pointers(stream)
     return tuple(decoder(stream) for decoder in self.decoders)
+
+
+# DynamicArrayDecoder
+def decode_dynamic_array(
+    self: "DynamicArrayDecoder", stream: ContextFramesBytesIO
+) -> Tuple[Any, ...]:
+    array_size = decode_uint_256(stream)
+    stream.push_frame(32)
+    if self.item_decoder is None:
+        raise AssertionError("`item_decoder` is None")
+
+    self.validate_pointers(stream, array_size)
+    item_decoder = self.item_decoder
+    try:
+        return tuple(item_decoder(stream) for _ in range(array_size))
+    finally:
+        stream.pop_frame()
