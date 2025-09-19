@@ -98,14 +98,14 @@ class TupleDecoder(BaseDecoder):
     def __init__(self, decoders: Tuple[BaseDecoder, ...], **kwargs: Any) -> None:
         super().__init__(**kwargs)
 
-        self.decoders = tuple(
+        self.decoders = decoders = tuple(
             HeadTailDecoder(tail_decoder=d) if getattr(d, "is_dynamic", False) else d
             for d in decoders
         )
 
-        self.is_dynamic = any(getattr(d, "is_dynamic", False) for d in self.decoders)
+        self.is_dynamic = any(getattr(d, "is_dynamic", False) for d in decoders)
         self.len_of_head = sum(
-            getattr(decoder, "array_size", 1) for decoder in self.decoders
+            getattr(decoder, "array_size", 1) for decoder in decoders
         )
 
     def validate(self) -> None:
@@ -173,9 +173,10 @@ class SingleDecoder(BaseDecoder):
     def decode(self, stream):
         raw_data = self.read_data_from_stream(stream)
         data, padding_bytes = self.split_data_and_padding(raw_data)
-        if self.decoder_fn is None:
+        decoder_fn = self.decoder_fn
+        if decoder_fn is None:
             raise AssertionError("`decoder_fn` is None")
-        value = self.decoder_fn(data)
+        value = decoder_fn(data)
         self.validate_padding_bytes(value, padding_bytes)
 
         return value
@@ -190,16 +191,15 @@ class SingleDecoder(BaseDecoder):
 
 
 class BaseArrayDecoder(BaseDecoder):
-    item_decoder = None
+    item_decoder: BaseDecoder = None
 
     def __init__(self, **kwargs: Any) -> None:
         super().__init__(**kwargs)
 
         # Use a head-tail decoder to decode dynamic elements
-        if self.item_decoder.is_dynamic:
-            self.item_decoder = HeadTailDecoder(
-                tail_decoder=self.item_decoder,
-            )
+        item_decoder = self.item_decoder
+        if item_decoder.is_dynamic:
+            self.item_decoder = HeadTailDecoder(tail_decoder=item_decoder)
 
     def validate(self) -> None:
         super().validate()
@@ -280,21 +280,23 @@ class FixedByteSizeDecoder(SingleDecoder):
     def validate(self) -> None:
         super().validate()
 
-        if self.value_bit_size is None:
+        value_bit_size = self.value_bit_size
+        if value_bit_size is None:
             raise ValueError("`value_bit_size` may not be None")
-        if self.data_byte_size is None:
+        data_byte_size = self.data_byte_size
+        if data_byte_size is None:
             raise ValueError("`data_byte_size` may not be None")
         if self.decoder_fn is None:
             raise ValueError("`decoder_fn` may not be None")
         if self.is_big_endian is None:
             raise ValueError("`is_big_endian` may not be None")
 
-        if self.value_bit_size % 8 != 0:
+        if value_bit_size % 8 != 0:
             raise ValueError(
-                "Invalid value bit size: {self.value_bit_size}. Must be a multiple of 8"
+                f"Invalid value bit size: {value_bit_size}. Must be a multiple of 8"
             )
 
-        if self.value_bit_size > self.data_byte_size * 8:
+        if value_bit_size > data_byte_size * 8:
             raise ValueError("Value byte size exceeds data size")
 
     def read_data_from_stream(self, stream: ContextFramesBytesIO) -> bytes:
@@ -335,7 +337,7 @@ class BooleanDecoder(Fixed32ByteSizeDecoder):
     is_big_endian = True
 
     @staticmethod
-    def decoder_fn(data):
+    def decoder_fn(data: bytes) -> bool:
         if data == b"\x00":
             return False
         elif data == b"\x01":
@@ -383,8 +385,9 @@ class SignedIntegerDecoder(Fixed32ByteSizeDecoder):
 
     def decoder_fn(self, data):
         value = big_endian_to_int(data)
-        if value >= 2 ** (self.value_bit_size - 1):
-            return value - 2**self.value_bit_size
+        value_bit_size = self.value_bit_size
+        if value >= 2 ** (value_bit_size - 1):
+            return value - 2**value_bit_size
         else:
             return value
 
@@ -423,16 +426,17 @@ class BytesDecoder(Fixed32ByteSizeDecoder):
 
 
 class BaseFixedDecoder(Fixed32ByteSizeDecoder):
-    frac_places = None
+    frac_places: int = None
     is_big_endian = True
 
     def validate(self) -> None:
         super().validate()
 
-        if self.frac_places is None:
+        frac_places = self.frac_places
+        if frac_places is None:
             raise ValueError("must specify `frac_places`")
 
-        if self.frac_places <= 0 or self.frac_places > 80:
+        if frac_places <= 0 or frac_places > 80:
             raise ValueError("`frac_places` must be in range (0, 80]")
 
 
@@ -455,8 +459,9 @@ class UnsignedFixedDecoder(BaseFixedDecoder):
 class SignedFixedDecoder(BaseFixedDecoder):
     def decoder_fn(self, data):
         value = big_endian_to_int(data)
-        if value >= 2 ** (self.value_bit_size - 1):
-            signed_value = value - 2**self.value_bit_size
+        value_bit_size = self.value_bit_size
+        if value >= 2 ** (value_bit_size - 1):
+            signed_value = value - 2**value_bit_size
         else:
             signed_value = value
 

@@ -847,7 +847,6 @@ fail: ;
 PyObject *CPyDef__decoding___decode_sized_array(PyObject *cpy_r_self, PyObject *cpy_r_stream) {
     PyObject *cpy_r_r0;
     PyObject *cpy_r_r1;
-    PyObject *cpy_r_item_decoder;
     PyObject *cpy_r_r2;
     char cpy_r_r3;
     PyObject *cpy_r_r4;
@@ -887,9 +886,8 @@ PyObject *CPyDef__decoding___decode_sized_array(PyObject *cpy_r_self, PyObject *
         CPy_AddTraceback("faster_eth_abi/_decoding.py", "decode_sized_array", 71, CPyStatic__decoding___globals);
         goto CPyL20;
     }
-    cpy_r_item_decoder = cpy_r_r1;
     cpy_r_r2 = (PyObject *)&_Py_NoneStruct;
-    cpy_r_r3 = cpy_r_item_decoder == cpy_r_r2;
+    cpy_r_r3 = cpy_r_r1 == cpy_r_r2;
     if (cpy_r_r3) {
         goto CPyL21;
     } else
@@ -977,7 +975,7 @@ CPyL14: ;
 CPyL15: ;
     PyObject *cpy_r_r28[1] = {cpy_r_stream};
     cpy_r_r29 = (PyObject **)&cpy_r_r28;
-    cpy_r_r30 = PyObject_Vectorcall(cpy_r_item_decoder, cpy_r_r29, 1, 0);
+    cpy_r_r30 = PyObject_Vectorcall(cpy_r_r1, cpy_r_r29, 1, 0);
     if (unlikely(cpy_r_r30 == NULL)) {
         CPy_AddTraceback("faster_eth_abi/_decoding.py", "decode_sized_array", 77, CPyStatic__decoding___globals);
         goto CPyL27;
@@ -1009,13 +1007,13 @@ CPyL20: ;
     cpy_r_r36 = NULL;
     return cpy_r_r36;
 CPyL21: ;
-    CPy_DECREF(cpy_r_item_decoder);
+    CPy_DECREF(cpy_r_r1);
     goto CPyL2;
 CPyL22: ;
-    CPy_DecRef(cpy_r_item_decoder);
+    CPy_DecRef(cpy_r_r1);
     goto CPyL20;
 CPyL23: ;
-    CPy_DecRef(cpy_r_item_decoder);
+    CPy_DecRef(cpy_r_r1);
     CPyTagged_DecRef(cpy_r_r13);
     CPy_DecRef(cpy_r_r15);
     goto CPyL20;
@@ -1023,16 +1021,16 @@ CPyL24: ;
     CPy_DECREF(cpy_r_r18);
     goto CPyL9;
 CPyL25: ;
-    CPy_DecRef(cpy_r_item_decoder);
+    CPy_DecRef(cpy_r_r1);
     CPyTagged_DecRef(cpy_r_r13);
     goto CPyL20;
 CPyL26: ;
-    CPy_DECREF(cpy_r_item_decoder);
+    CPy_DECREF(cpy_r_r1);
     CPyTagged_DECREF(cpy_r_r13);
     CPyTagged_DECREF(cpy_r_r20);
     goto CPyL18;
 CPyL27: ;
-    CPy_DecRef(cpy_r_item_decoder);
+    CPy_DecRef(cpy_r_r1);
     CPyTagged_DecRef(cpy_r_r13);
     CPy_DecRef(cpy_r_r19);
     CPyTagged_DecRef(cpy_r_r20);
