@@ -19,6 +19,7 @@ from faster_eth_abi._decoding import (
     decode_head_tail,
     decode_sized_array,
     decode_tuple,
+    read_fixed_byte_size_data_from_stream,
 )
 from faster_eth_abi.base import (
     BaseCoder,
@@ -287,15 +288,7 @@ class FixedByteSizeDecoder(SingleDecoder):
             raise ValueError("Value byte size exceeds data size")
 
     def read_data_from_stream(self, stream: ContextFramesBytesIO) -> bytes:
-        data = stream.read(self.data_byte_size)
-
-        if len(data) != self.data_byte_size:
-            raise InsufficientDataBytes(
-                f"Tried to read {self.data_byte_size} bytes, "
-                f"only got {len(data)} bytes."
-            )
-
-        return data
+        return read_fixed_byte_size_data_from_stream(self, stream)
 
     def split_data_and_padding(self, raw_data: bytes) -> Tuple[bytes, bytes]:
         value_byte_size = self._get_value_byte_size()

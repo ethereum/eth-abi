@@ -5,13 +5,18 @@ from typing import (
     Tuple,
 )
 
+from faster_eth_abi.exceptions import (
+    InsufficientDataBytes,
+)
 from faster_eth_abi.io import (
+    BytesIO,
     ContextFramesBytesIO,
 )
 
 if TYPE_CHECKING:
     from .decoding import (
         DynamicArrayDecoder,
+        FixedByteSizeDecoder,
         HeadTailDecoder,
         SizedArrayDecoder,
         TupleDecoder,
@@ -95,3 +100,18 @@ def decode_dynamic_array(
         return tuple(item_decoder(stream) for _ in range(array_size))
     finally:
         stream.pop_frame()
+
+
+# FixedByteSizeDecoder
+def read_fixed_byte_size_data_from_stream(
+    self: "FixedByteSizeDecoder",
+    # NOTE: use BytesIO here so mypyc doesn't type-check
+    # `stream` once we compile ContextFramesBytesIO.
+    stream: BytesIO,
+) -> bytes:
+    data_byte_size = self.data_byte_size
+    if len(data := stream.read(data_byte_size)) == data_byte_size:
+        return data
+    raise InsufficientDataBytes(
+        f"Tried to read {data_byte_size} bytes, only got {len(data)} bytes."
+    )
