@@ -13,6 +13,7 @@ if TYPE_CHECKING:
     from .decoding import (
         DynamicArrayDecoder,
         HeadTailDecoder,
+        SizedArrayDecoder,
         TupleDecoder,
         UnsignedIntegerDecoder,
     )
@@ -49,10 +50,11 @@ def decode_head_tail(self: "HeadTailDecoder", stream: ContextFramesBytesIO) -> A
     stream.push_frame(start_pos)
 
     # assertion check for mypy
-    if self.tail_decoder is None:
+    tail_decoder = self.tail_decoder
+    if tail_decoder is None:
         raise AssertionError("`tail_decoder` is None")
     # Decode the value
-    value = self.tail_decoder(stream)
+    value = tail_decoder(stream)
     # Return the cursor
     stream.pop_frame()
 
@@ -63,6 +65,19 @@ def decode_head_tail(self: "HeadTailDecoder", stream: ContextFramesBytesIO) -> A
 def decode_tuple(self: "TupleDecoder", stream: ContextFramesBytesIO) -> Tuple[Any, ...]:
     self.validate_pointers(stream)
     return tuple(decoder(stream) for decoder in self.decoders)
+
+
+# SizedArrayDecoder
+def decode_sized_array(
+    self: "SizedArrayDecoder", stream: ContextFramesBytesIO
+) -> Tuple[Any, ...]:
+    item_decoder = self.item_decoder
+    if item_decoder is None:
+        raise AssertionError("`item_decoder` is None")
+
+    array_size = self.array_size
+    self.validate_pointers(stream, array_size)
+    return tuple(item_decoder(stream) for _ in range(array_size))
 
 
 # DynamicArrayDecoder

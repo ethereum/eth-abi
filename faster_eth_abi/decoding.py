@@ -12,12 +12,12 @@ from typing import (
 from faster_eth_utils import (
     big_endian_to_int,
     to_normalized_address,
-    to_tuple,
 )
 
 from faster_eth_abi._decoding import (
     decode_dynamic_array,
     decode_head_tail,
+    decode_sized_array,
     decode_tuple,
 )
 from faster_eth_abi.base import (
@@ -41,7 +41,9 @@ from faster_eth_abi.utils.numeric import (
     ceil32,
 )
 
-DynamicDecoder = Union["HeadTailDecoder", "DynamicArrayDecoder", "ByteStringDecoder"]
+DynamicDecoder = Union[
+    "HeadTailDecoder", "SizedArrayDecoder", "DynamicArrayDecoder", "ByteStringDecoder"
+]
 
 
 class BaseDecoder(BaseCoder, metaclass=abc.ABCMeta):
@@ -239,21 +241,15 @@ class BaseArrayDecoder(BaseDecoder):
 
 
 class SizedArrayDecoder(BaseArrayDecoder):
-    array_size = None
+    array_size: int = None
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
         self.is_dynamic = self.item_decoder.is_dynamic
 
-    @to_tuple
     def decode(self, stream):
-        if self.item_decoder is None:
-            raise AssertionError("`item_decoder` is None")
-
-        self.validate_pointers(stream, self.array_size)
-        for _ in range(self.array_size):
-            yield self.item_decoder(stream)
+        return decode_sized_array(self, stream)
 
 
 class DynamicArrayDecoder(BaseArrayDecoder):
