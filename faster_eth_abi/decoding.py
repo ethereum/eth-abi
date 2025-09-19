@@ -2,6 +2,8 @@ import abc
 import decimal
 from typing import (
     Any,
+    Callable,
+    Final,
     Optional,
     Tuple,
     Union,
@@ -171,10 +173,10 @@ class SingleDecoder(BaseDecoder):
 
         return value
 
-    def read_data_from_stream(self, stream):
+    def read_data_from_stream(self, stream: ContextFramesBytesIO) -> bytes:
         raise NotImplementedError("Must be implemented by subclasses")
 
-    def split_data_and_padding(self, raw_data):
+    def split_data_and_padding(self, raw_data: bytes) -> Tuple[bytes, bytes]:
         return raw_data, b""
 
 
@@ -263,10 +265,10 @@ class DynamicArrayDecoder(BaseArrayDecoder):
 
 
 class FixedByteSizeDecoder(SingleDecoder):
-    decoder_fn = None
-    value_bit_size = None
-    data_byte_size = None
-    is_big_endian = None
+    decoder_fn: Callable[[bytes], Any] = None
+    value_bit_size: int = None
+    data_byte_size: int = None
+    is_big_endian: bool = None
 
     def validate(self) -> None:
         super().validate()
@@ -288,7 +290,7 @@ class FixedByteSizeDecoder(SingleDecoder):
         if self.value_bit_size > self.data_byte_size * 8:
             raise ValueError("Value byte size exceeds data size")
 
-    def read_data_from_stream(self, stream):
+    def read_data_from_stream(self, stream: ContextFramesBytesIO) -> bytes:
         data = stream.read(self.data_byte_size)
 
         if len(data) != self.data_byte_size:
@@ -299,7 +301,7 @@ class FixedByteSizeDecoder(SingleDecoder):
 
         return data
 
-    def split_data_and_padding(self, raw_data):
+    def split_data_and_padding(self, raw_data: bytes) -> Tuple[bytes, bytes]:
         value_byte_size = self._get_value_byte_size()
         padding_size = self.data_byte_size - value_byte_size
 
@@ -312,7 +314,7 @@ class FixedByteSizeDecoder(SingleDecoder):
 
         return data, padding_bytes
 
-    def validate_padding_bytes(self, value, padding_bytes):
+    def validate_padding_bytes(self, value: Any, padding_bytes: bytes) -> None:
         value_byte_size = self._get_value_byte_size()
         padding_size = self.data_byte_size - value_byte_size
 
@@ -388,7 +390,7 @@ class SignedIntegerDecoder(Fixed32ByteSizeDecoder):
         else:
             return value
 
-    def validate_padding_bytes(self, value, padding_bytes):
+    def validate_padding_bytes(self, value: Any, padding_bytes: bytes) -> None:
         value_byte_size = self._get_value_byte_size()
         padding_size = self.data_byte_size - value_byte_size
 
@@ -465,7 +467,7 @@ class SignedFixedDecoder(BaseFixedDecoder):
 
         return decimal_value
 
-    def validate_padding_bytes(self, value, padding_bytes):
+    def validate_padding_bytes(self, value: Any, padding_bytes: bytes) -> None:
         value_byte_size = self._get_value_byte_size()
         padding_size = self.data_byte_size - value_byte_size
 
@@ -516,7 +518,7 @@ class ByteStringDecoder(SingleDecoder):
 
         return data[:data_length]
 
-    def validate_padding_bytes(self, value, padding_bytes):
+    def validate_padding_bytes(self, value: Any, padding_bytes: bytes) -> None:
         pass
 
     @parse_type_str("bytes")
@@ -525,19 +527,19 @@ class ByteStringDecoder(SingleDecoder):
 
 
 class StringDecoder(ByteStringDecoder):
-    def __init__(self, handle_string_errors="strict"):
-        self.bytes_errors = handle_string_errors
+    def __init__(self, handle_string_errors: str = "strict") -> None:
+        self.bytes_errors: Final = handle_string_errors
         super().__init__()
 
     @parse_type_str("string")
     def from_type_str(cls, abi_type, registry):
         return cls()
 
-    def decode(self, stream):
+    def decode(self, stream: ContextFramesBytesIO) -> str:
         raw_data = self.read_data_from_stream(stream)
         data, padding_bytes = self.split_data_and_padding(raw_data)
         return self.decoder_fn(data, self.bytes_errors)
 
     @staticmethod
-    def decoder_fn(data, handle_string_errors="strict"):
+    def decoder_fn(data: bytes, handle_string_errors: str = "strict") -> str:
         return data.decode("utf-8", errors=handle_string_errors)
