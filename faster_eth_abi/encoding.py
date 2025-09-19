@@ -108,28 +108,29 @@ class TupleEncoder(BaseEncoder):
 
         self.is_dynamic = any(getattr(e, "is_dynamic", False) for e in self.encoders)
 
-    def validate(self):
+    def validate(self) -> None:
         super().validate()
 
         if self.encoders is None:
             raise ValueError("`encoders` may not be none")
 
-    def validate_value(self, value):
+    def validate_value(self, value: Sequence[Any]) -> None:
         if not is_list_like(value):
             self.invalidate_value(
                 value,
                 msg="must be list-like object such as array or tuple",
             )
 
-        if len(value) != len(self.encoders):
+        encoders = self.encoders
+        if len(value) != len(encoders):
             self.invalidate_value(
                 value,
                 exc=ValueOutOfBounds,
-                msg=f"value has {len(value)} items when {len(self.encoders)} "
+                msg=f"value has {len(value)} items when {len(encoders)} "
                 "were expected",
             )
 
-        for item, encoder in zip(value, self.encoders):
+        for item, encoder in zip(value, encoders):
             try:
                 encoder.validate_value(item)
             except AttributeError:
@@ -157,25 +158,26 @@ class FixedSizeEncoder(BaseEncoder):
     type_check_fn = None
     is_big_endian = None
 
-    def validate(self):
+    def validate(self) -> None:
         super().validate()
 
-        if self.value_bit_size is None:
+        value_bit_size = self.value_bit_size
+        if value_bit_size is None:
             raise ValueError("`value_bit_size` may not be none")
-        if self.data_byte_size is None:
+        data_byte_size = self.data_byte_size
+        if data_byte_size is None:
             raise ValueError("`data_byte_size` may not be none")
         if self.encode_fn is None:
             raise ValueError("`encode_fn` may not be none")
         if self.is_big_endian is None:
             raise ValueError("`is_big_endian` may not be none")
 
-        if self.value_bit_size % 8 != 0:
+        if value_bit_size % 8 != 0:
             raise ValueError(
-                f"Invalid value bit size: {self.value_bit_size}. "
-                "Must be a multiple of 8"
+                f"Invalid value bit size: {value_bit_size}. Must be a multiple of 8"
             )
 
-        if self.value_bit_size > self.data_byte_size * 8:
+        if value_bit_size > data_byte_size * 8:
             raise ValueError("Value byte size exceeds data size")
 
     def validate_value(self, value):
@@ -183,11 +185,10 @@ class FixedSizeEncoder(BaseEncoder):
 
     def encode(self, value: Any) -> bytes:
         self.validate_value(value)
-        if self.encode_fn is None:
+        encode_fn = self.encode_fn
+        if encode_fn is None:
             raise AssertionError("`encode_fn` is None")
-        return encode_fixed(
-            value, self.encode_fn, self.is_big_endian, self.data_byte_size
-        )
+        return encode_fixed(value, encode_fn, self.is_big_endian, self.data_byte_size)
 
     __call__ = encode
 
@@ -206,7 +207,7 @@ class BooleanEncoder(Fixed32ByteSizeEncoder):
             cls.invalidate_value(value)
 
     @classmethod
-    def encode_fn(cls, value):
+    def encode_fn(cls, value: bool) -> bytes:
         if value is True:
             return b"\x01"
         elif value is False:
@@ -229,7 +230,7 @@ class NumberEncoder(Fixed32ByteSizeEncoder):
     illegal_value_fn = None
     type_check_fn = None
 
-    def validate(self):
+    def validate(self) -> None:
         super().validate()
 
         if self.bounds_fn is None:
@@ -238,14 +239,14 @@ class NumberEncoder(Fixed32ByteSizeEncoder):
             raise ValueError("`type_check_fn` cannot be null")
 
     def validate_value(self, value):
-        if self.type_check_fn is None:
+        type_check_fn = self.type_check_fn
+        if type_check_fn is None:
             raise AssertionError("`type_check_fn` is None")
-        if not self.type_check_fn(value):
+        if not type_check_fn(value):
             self.invalidate_value(value)
 
-        illegal_value = self.illegal_value_fn is not None and self.illegal_value_fn(
-            value
-        )
+        illegal_value_fn = self.illegal_value_fn
+        illegal_value = illegal_value_fn is not None and illegal_value_fn(value)
         if illegal_value:
             self.invalidate_value(value, exc=IllegalValue)
 
@@ -336,13 +337,14 @@ class BaseFixedEncoder(NumberEncoder):
                 f"{self.frac_places}",
             )
 
-    def validate(self):
+    def validate(self) -> None:
         super().validate()
 
-        if self.frac_places is None:
+        frac_places = self.frac_places
+        if frac_places is None:
             raise ValueError("must specify `frac_places`")
 
-        if self.frac_places <= 0 or self.frac_places > 80:
+        if frac_places <= 0 or frac_places > 80:
             raise ValueError("`frac_places` must be in range (0, 80]")
 
 
@@ -430,7 +432,7 @@ class AddressEncoder(Fixed32ByteSizeEncoder):
         if not is_address(value):
             cls.invalidate_value(value)
 
-    def validate(self):
+    def validate(self) -> None:
         super().validate()
 
         if self.value_bit_size != 20 * 8:
@@ -553,9 +555,9 @@ class PackedTextStringEncoder(TextStringEncoder):
 
 
 class BaseArrayEncoder(BaseEncoder):
-    item_encoder = None
+    item_encoder: BaseEncoder = None
 
-    def validate(self):
+    def validate(self) -> None:
         super().validate()
 
         if self.item_encoder is None:
@@ -568,8 +570,9 @@ class BaseArrayEncoder(BaseEncoder):
                 msg="must be list-like such as array or tuple",
             )
 
+        item_encoder = self.item_encoder
         for item in value:
-            self.item_encoder.validate_value(item)
+            item_encoder.validate_value(item)
 
     def encode_elements(self, value: Sequence[Any]) -> bytes:
         self.validate_value(value)
@@ -597,12 +600,12 @@ class PackedArrayEncoder(BaseArrayEncoder):
     def validate_value(self, value: Any) -> None:
         super().validate_value(value)
 
-        if self.array_size is not None and len(value) != self.array_size:
+        array_size = self.array_size
+        if array_size is not None and len(value) != array_size:
             self.invalidate_value(
                 value,
                 exc=ValueOutOfBounds,
-                msg=f"value has {len(value)} items when {self.array_size} were "
-                "expected",
+                msg=f"value has {len(value)} items when {array_size} were expected",
             )
 
     def encode(self, value: Sequence[Any]) -> bytes:
@@ -632,7 +635,7 @@ class SizedArrayEncoder(BaseArrayEncoder):
 
         self.is_dynamic = self.item_encoder.is_dynamic
 
-    def validate(self):
+    def validate(self) -> None:
         super().validate()
 
         if self.array_size is None:
