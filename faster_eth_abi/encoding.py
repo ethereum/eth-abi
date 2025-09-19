@@ -135,9 +135,11 @@ class TupleEncoder(BaseEncoder):
             except AttributeError:
                 encoder(item)
 
-    def encode(self, values):
+    def encode(self, values: Sequence[Any]) -> bytes:
         self.validate_value(values)
         return encode_tuple(values, self.encoders)
+
+    __call__ = encode
 
     @parse_tuple_type_str
     def from_type_str(cls, abi_type, registry):
@@ -186,6 +188,8 @@ class FixedSizeEncoder(BaseEncoder):
         return encode_fixed(
             value, self.encode_fn, self.is_big_endian, self.data_byte_size
         )
+
+    __call__ = encode
 
 
 class Fixed32ByteSizeEncoder(FixedSizeEncoder):
@@ -284,9 +288,11 @@ class SignedIntegerEncoder(NumberEncoder):
     def encode_fn(self, value: int) -> bytes:
         return int_to_big_endian(value % (2**self.value_bit_size))
 
-    def encode(self, value):
+    def encode(self, value: int) -> bytes:
         self.validate_value(value)
         return encode_signed(value, self.encode_fn, self.data_byte_size)
+
+    __call__ = encode
 
     @parse_type_str("int")
     def from_type_str(cls, abi_type, registry):
@@ -390,6 +396,8 @@ class SignedFixedEncoder(BaseFixedEncoder):
         self.validate_value(value)
         return encode_signed(value, self.encode_fn, self.data_byte_size)
 
+    __call__ = encode
+
     @parse_type_str("fixed")
     def from_type_str(cls, abi_type, registry):
         value_bit_size, frac_places = abi_type.sub
@@ -488,6 +496,8 @@ class ByteStringEncoder(BaseEncoder):
 
         return encoded_size + padded_value
 
+    __call__ = encode
+
     @parse_type_str("bytes")
     def from_type_str(cls, abi_type, registry):
         return cls()
@@ -501,6 +511,8 @@ class PackedByteStringEncoder(ByteStringEncoder):
         cls.validate_value(value)
         return value
 
+    __call__ = encode
+
 
 class TextStringEncoder(BaseEncoder):
     is_dynamic = True
@@ -511,7 +523,7 @@ class TextStringEncoder(BaseEncoder):
             cls.invalidate_value(value)
 
     @classmethod
-    def encode(cls, value):
+    def encode(cls, value: str) -> bytes:
         cls.validate_value(value)
 
         value_as_bytes = codecs.encode(value, "utf8")
@@ -522,6 +534,8 @@ class TextStringEncoder(BaseEncoder):
 
         return encoded_size + padded_value
 
+    __call__ = encode
+
     @parse_type_str("string")
     def from_type_str(cls, abi_type, registry):
         return cls()
@@ -531,9 +545,11 @@ class PackedTextStringEncoder(TextStringEncoder):
     is_dynamic = False
 
     @classmethod
-    def encode(cls, value):
+    def encode(cls, value: str) -> bytes:
         cls.validate_value(value)
         return codecs.encode(value, "utf8")
+
+    __call__ = encode
 
 
 class BaseArrayEncoder(BaseEncoder):
@@ -592,6 +608,8 @@ class PackedArrayEncoder(BaseArrayEncoder):
     def encode(self, value: Sequence[Any]) -> bytes:
         return encode_elements(self.item_encoder, value)
 
+    __call__ = encode
+
     @parse_type_str(with_arrlist=True)
     def from_type_str(cls, abi_type, registry):
         item_encoder = registry.get_encoder(abi_type.item_type.to_type_str())
@@ -634,9 +652,13 @@ class SizedArrayEncoder(BaseArrayEncoder):
     def encode(self, value: Sequence[Any]) -> bytes:
         return encode_elements(self.item_encoder, value)
 
+    __call__ = encode
+
 
 class DynamicArrayEncoder(BaseArrayEncoder):
     is_dynamic = True
 
     def encode(self, value: Sequence[Any]) -> bytes:
         return encode_elements_dynamic(self.item_encoder, value)
+
+    __call__ = encode

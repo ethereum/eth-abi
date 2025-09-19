@@ -3,7 +3,6 @@ from typing import (
     Any,
     Iterable,
     Tuple,
-    cast,
 )
 
 from eth_typing import (
@@ -79,4 +78,4 @@ def decode_c(
     decoder = self._registry.get_tuple_decoder(*types, strict=strict)
     stream = self.stream_class(data)
 
-    return cast(Tuple[Any, ...], decoder(stream))
+    return decoder(stream)

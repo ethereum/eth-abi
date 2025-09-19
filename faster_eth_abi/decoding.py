@@ -89,6 +89,8 @@ class HeadTailDecoder(BaseDecoder):
     def decode(self, stream: ContextFramesBytesIO) -> Any:
         return decode_head_tail(self, stream)
 
+    __call__ = decode
+
 
 class TupleDecoder(BaseDecoder):
     decoders: Tuple[BaseDecoder, ...] = ()
@@ -145,6 +147,8 @@ class TupleDecoder(BaseDecoder):
     def decode(self, stream: ContextFramesBytesIO) -> Tuple[Any, ...]:
         return decode_tuple(self, stream)
 
+    __call__ = decode
+
     @parse_tuple_type_str
     def from_type_str(cls, abi_type, registry):
         decoders = tuple(
@@ -175,6 +179,8 @@ class SingleDecoder(BaseDecoder):
         self.validate_padding_bytes(value, padding_bytes)
 
         return value
+
+    __call__ = decode
 
     def read_data_from_stream(self, stream: ContextFramesBytesIO) -> bytes:
         raise NotImplementedError("Must be implemented by subclasses")
@@ -252,6 +258,8 @@ class SizedArrayDecoder(BaseArrayDecoder):
     def decode(self, stream):
         return decode_sized_array(self, stream)
 
+    __call__ = decode
+
 
 class DynamicArrayDecoder(BaseArrayDecoder):
     # Dynamic arrays are always dynamic, regardless of their elements
@@ -259,6 +267,8 @@ class DynamicArrayDecoder(BaseArrayDecoder):
 
     def decode(self, stream: ContextFramesBytesIO) -> Tuple[Any, ...]:
         return decode_dynamic_array(self, stream)
+
+    __call__ = decode
 
 
 class FixedByteSizeDecoder(SingleDecoder):
@@ -528,6 +538,8 @@ class StringDecoder(ByteStringDecoder):
         raw_data = self.read_data_from_stream(stream)
         data, padding_bytes = self.split_data_and_padding(raw_data)
         return self.decoder_fn(data, self.bytes_errors)
+
+    __call__ = decode
 
     @staticmethod
     def decoder_fn(data: bytes, handle_string_errors: str = "strict") -> str:
