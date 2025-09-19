@@ -1,8 +1,11 @@
 from typing import (
     TYPE_CHECKING,
     Any,
-    Optional,
     Tuple,
+)
+
+from faster_eth_utils import (
+    big_endian_to_int,
 )
 
 from faster_eth_abi.exceptions import (
@@ -20,31 +23,20 @@ if TYPE_CHECKING:
         HeadTailDecoder,
         SizedArrayDecoder,
         TupleDecoder,
-        UnsignedIntegerDecoder,
     )
-
-
-_UINT256_DECODER: Optional["UnsignedIntegerDecoder"] = None
-
-
-def __set_uint256_decoder() -> "UnsignedIntegerDecoder":
-    # this helper breaks a circular dependency on the non-compiled decoding module
-    from . import (
-        decoding,
-    )
-
-    global _UINT256_DECODER
-    _UINT256_DECODER = decoding.decode_uint_256
-
-    return _UINT256_DECODER
 
 
 def decode_uint_256(stream: ContextFramesBytesIO) -> int:
-    decoder = _UINT256_DECODER
-    if decoder is None:
-        decoder = __set_uint256_decoder()
-    decoded: int = decoder(stream)
-    return decoded
+    """
+    This function is a faster version of decode_uint_256 in decoding.py.
+
+    It recreates the logic from the UnsignedIntegerDecoder, but we can
+    skip a lot because we know the value of many vars.
+    """
+    # read data from stream
+    if len(data := stream.read(32)) == 32:
+        return big_endian_to_int(data)
+    raise InsufficientDataBytes(f"Tried to read 32 bytes, only got {len(data)} bytes.")
 
 
 # HeadTailDecoder

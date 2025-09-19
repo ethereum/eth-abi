@@ -322,9 +322,8 @@ class FixedByteSizeDecoder(SingleDecoder):
                 f"Padding bytes were not empty: {padding_bytes!r}"
             )
 
-    def _get_value_byte_size(self):
-        value_byte_size = self.value_bit_size // 8
-        return value_byte_size
+    def _get_value_byte_size(self) -> int:
+        return self.value_bit_size // 8
 
 
 class Fixed32ByteSizeDecoder(FixedByteSizeDecoder):

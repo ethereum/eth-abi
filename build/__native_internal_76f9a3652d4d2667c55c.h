@@ -6,7 +6,7 @@
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[265];
+extern PyObject *CPyStatics[263];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -25,9 +25,9 @@ extern CPyModule *CPyModule_faster_eth_abi___utils___validation;
 extern CPyModule *CPyModule_faster_eth_abi____decoding__internal;
 extern CPyModule *CPyModule_faster_eth_abi____decoding;
 extern PyObject *CPyStatic__decoding___globals;
+extern CPyModule *CPyModule_faster_eth_utils;
 extern CPyModule *CPyModule_faster_eth_abi___exceptions;
 extern CPyModule *CPyModule_faster_eth_abi___io;
-extern CPyModule *CPyModule_faster_eth_abi;
 extern CPyModule *CPyModule_faster_eth_abi____encoding__internal;
 extern CPyModule *CPyModule_faster_eth_abi____encoding;
 extern PyObject *CPyStatic__encoding___globals;
@@ -76,8 +76,6 @@ extern PyObject *CPyPy__codec___encode_c(PyObject *self, PyObject *const *args, 
 extern PyObject *CPyDef__codec___decode_c(PyObject *cpy_r_self, PyObject *cpy_r_types, PyObject *cpy_r_data, char cpy_r_strict);
 extern PyObject *CPyPy__codec___decode_c(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern char CPyDef__codec_____top_level__(void);
-extern PyObject *CPyDef__decoding_____set_uint256_decoder(void);
-extern PyObject *CPyPy__decoding_____set_uint256_decoder(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern CPyTagged CPyDef__decoding___decode_uint_256(PyObject *cpy_r_stream);
 extern PyObject *CPyPy__decoding___decode_uint_256(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
 extern PyObject *CPyDef__decoding___decode_head_tail(PyObject *cpy_r_self, PyObject *cpy_r_stream);
