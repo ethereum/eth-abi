@@ -1,5 +1,5 @@
-#ifndef MYPYC_NATIVE_76f9a3652d4d2667c55c_H
-#define MYPYC_NATIVE_76f9a3652d4d2667c55c_H
+#ifndef MYPYC_NATIVE_96ed7ed3d355cd18e89b_H
+#define MYPYC_NATIVE_96ed7ed3d355cd18e89b_H
 #include <Python.h>
 #include <CPy.h>
 #ifndef MYPYC_DECLARED_tuple_T3OOO
@@ -34,6 +34,71 @@ typedef struct tuple_T2II {
     CPyTagged f1;
 } tuple_T2II;
 #endif
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+} faster_eth_abi___exceptions___EncodingErrorObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+} faster_eth_abi___exceptions___EncodingTypeErrorObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+} faster_eth_abi___exceptions___IllegalValueObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+} faster_eth_abi___exceptions___ValueOutOfBoundsObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+} faster_eth_abi___exceptions___DecodingErrorObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+} faster_eth_abi___exceptions___InsufficientDataBytesObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+} faster_eth_abi___exceptions___NonEmptyPaddingBytesObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+} faster_eth_abi___exceptions___InvalidPointerObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+} faster_eth_abi___exceptions___ParseErrorObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+} faster_eth_abi___exceptions___ABITypeErrorObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+} faster_eth_abi___exceptions___PredicateMappingErrorObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+} faster_eth_abi___exceptions___NoEntriesFoundObject;
+
+typedef struct {
+    PyObject_HEAD
+    CPyVTableItem *vtable;
+} faster_eth_abi___exceptions___MultipleEntriesFoundObject;
 
 typedef struct {
     PyObject_HEAD

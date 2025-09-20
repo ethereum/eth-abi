@@ -6,11 +6,15 @@ on:
     paths:
       - "faster_eth_abi/**"
       - "benchmarks/**"
+      - "pyproject.toml"
+      - "setup.py"
   push:
     branches: [main, master]
     paths:
       - "faster_eth_abi/**"
       - "benchmarks/**"
+      - "pyproject.toml"
+      - "setup.py"
   workflow_dispatch:
 
 concurrency:

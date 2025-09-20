@@ -1,12 +1,12 @@
-#ifndef MYPYC_NATIVE_INTERNAL_76f9a3652d4d2667c55c_H
-#define MYPYC_NATIVE_INTERNAL_76f9a3652d4d2667c55c_H
+#ifndef MYPYC_NATIVE_INTERNAL_96ed7ed3d355cd18e89b_H
+#define MYPYC_NATIVE_INTERNAL_96ed7ed3d355cd18e89b_H
 #include <Python.h>
 #include <CPy.h>
-#include "__native_76f9a3652d4d2667c55c.h"
+#include "__native_96ed7ed3d355cd18e89b.h"
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[269];
+extern PyObject *CPyStatics[291];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -26,6 +26,7 @@ extern CPyModule *CPyModule_faster_eth_abi____decoding__internal;
 extern CPyModule *CPyModule_faster_eth_abi____decoding;
 extern PyObject *CPyStatic__decoding___globals;
 extern CPyModule *CPyModule_faster_eth_utils;
+extern CPyModule *CPyModule_faster_eth_abi___exceptions__internal;
 extern CPyModule *CPyModule_faster_eth_abi___exceptions;
 extern CPyModule *CPyModule_faster_eth_abi___io;
 extern CPyModule *CPyModule_faster_eth_abi____encoding__internal;
@@ -40,6 +41,8 @@ extern CPyModule *CPyModule_faster_eth_abi___registry;
 extern CPyModule *CPyModule_faster_eth_abi___constants__internal;
 extern CPyModule *CPyModule_faster_eth_abi___constants;
 extern PyObject *CPyStatic_constants___globals;
+extern PyObject *CPyStatic_exceptions___globals;
+extern CPyModule *CPyModule_parsimonious;
 extern CPyModule *CPyModule_faster_eth_abi___from_type_str__internal;
 extern CPyModule *CPyModule_faster_eth_abi___from_type_str;
 extern PyObject *CPyStatic_from_type_str___globals;
@@ -119,6 +122,23 @@ extern PyObject *CPyStatic_abi___is_encodable;
 extern PyObject *CPyStatic_abi___is_encodable_type;
 extern char CPyDef_abi_____top_level__(void);
 extern char CPyDef_constants_____top_level__(void);
+extern PyTypeObject *CPyType_exceptions___EncodingError;
+extern PyTypeObject *CPyType_exceptions___EncodingTypeError;
+extern PyTypeObject *CPyType_exceptions___IllegalValue;
+extern PyTypeObject *CPyType_exceptions___ValueOutOfBounds;
+extern PyTypeObject *CPyType_exceptions___DecodingError;
+extern PyTypeObject *CPyType_exceptions___InsufficientDataBytes;
+extern PyTypeObject *CPyType_exceptions___NonEmptyPaddingBytes;
+extern PyTypeObject *CPyType_exceptions___InvalidPointer;
+extern PyTypeObject *CPyType_exceptions___ParseError;
+extern PyObject *CPyDef_exceptions___ParseError(void);
+extern PyTypeObject *CPyType_exceptions___ABITypeError;
+extern PyTypeObject *CPyType_exceptions___PredicateMappingError;
+extern PyTypeObject *CPyType_exceptions___NoEntriesFound;
+extern PyTypeObject *CPyType_exceptions___MultipleEntriesFound;
+extern PyObject *CPyDef_exceptions___ParseError_____str__(PyObject *cpy_r_self);
+extern PyObject *CPyPy_exceptions___ParseError_____str__(PyObject *self, PyObject *const *args, size_t nargs, PyObject *kwnames);
+extern char CPyDef_exceptions_____top_level__(void);
 extern PyTypeObject *CPyType_from_type_str___parse_type_str_env;
 extern PyObject *CPyDef_from_type_str___parse_type_str_env(void);
 extern CPyThreadLocal faster_eth_abi___from_type_str___parse_type_str_envObject *from_type_str___parse_type_str_env_free_instance;
