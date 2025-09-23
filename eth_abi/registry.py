@@ -477,7 +477,8 @@ class ABIRegistry(Copyable, BaseRegistry):
 
         if hasattr(decoder, "is_dynamic") and decoder.is_dynamic:
             # Create a copy of the decoder to avoid mutating shared cached instances
-            # This prevents issues where strict=False calls affect subsequent strict=True calls
+            # This prevents issues where strict=False calls affect subsequent
+            # strict=True calls
             decoder = copy.deepcopy(decoder)
 
             # Set a transient flag each time a call is made to ``get_decoder()``.
