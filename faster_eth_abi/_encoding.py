@@ -1,6 +1,3 @@
-from itertools import (
-    accumulate,
-)
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -35,7 +32,12 @@ def encode_tuple(
             tail_chunks.append(b"")
 
     head_length = sum(32 if item is None else len(item) for item in raw_head_chunks)
-    tail_offsets = (0, *accumulate(len(item) for item in tail_chunks[:-1]))
+    tail_offsets = [0]
+    total_offset = 0
+    for item in tail_chunks[:-1]:
+        total_offset += len(item)
+        tail_offsets.append(total_offset)
+        
     head_chunks = tuple(
         encode_uint_256(head_length + offset) if chunk is None else chunk
         for chunk, offset in zip(raw_head_chunks, tail_offsets)
@@ -77,7 +79,12 @@ def encode_elements(item_encoder: "BaseEncoder", value: Sequence[Any]) -> bytes:
         return b"".join(tail_chunks)
 
     head_length = 32 * len(value)
-    tail_offsets = (0, *accumulate(len(item) for item in tail_chunks[:-1]))
+    tail_offsets = [0]
+    total_offset = 0
+    for item in tail_chunks[:-1]:
+        total_offset += len(item)
+        tail_offsets.append(total_offset)
+    
     head_chunks = tuple(
         encode_uint_256(head_length + offset) for offset in tail_offsets
     )
