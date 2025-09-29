@@ -6,7 +6,7 @@
 
 int CPyGlobalsInit(void);
 
-extern PyObject *CPyStatics[288];
+extern PyObject *CPyStatics[289];
 extern const char * const CPyLit_Str[];
 extern const char * const CPyLit_Bytes[];
 extern const char * const CPyLit_Int[];
@@ -211,6 +211,7 @@ extern PyObject *CPyPy__strategies___get_tuple_strategy(PyObject *self, PyObject
 extern char CPyDef__strategies_____top_level__(void);
 extern char CPyDef_utils_____top_level__(void);
 extern PyObject *CPyStatic_numeric___abi_decimal_context;
+extern PyObject *CPyStatic_numeric___decimal_localcontext;
 extern PyObject *CPyStatic_numeric___ZERO;
 extern PyObject *CPyStatic_numeric___TEN;
 extern PyObject *CPyStatic_numeric___Decimal;
