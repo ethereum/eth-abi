@@ -462,7 +462,7 @@ class ABIRegistry(Copyable, BaseRegistry):
         self.unregister_decoder(label)
 
     def _get_encoder_uncached(self, type_str: abi.TypeStr) -> Encoder:
-        return self._get_registration(self._encoders, type_str)
+        return cast(Encoder, self._get_registration(self._encoders, type_str))
 
     def _get_tuple_encoder_uncached(
         self,
@@ -491,7 +491,7 @@ class ABIRegistry(Copyable, BaseRegistry):
     def _get_decoder_uncached(
         self, type_str: abi.TypeStr, strict: bool = True
     ) -> Decoder:
-        decoder = self._get_registration(self._decoders, type_str)
+        decoder = cast(Decoder, self._get_registration(self._decoders, type_str))
 
         if getattr(decoder, "is_dynamic", False):
             # Set a transient flag each time a call is made to ``get_decoder()``.
