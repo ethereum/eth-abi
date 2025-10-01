@@ -7,6 +7,7 @@ from typing import (
     Optional,
     Type,
     Union,
+    cast,
 )
 
 from eth_typing import (
