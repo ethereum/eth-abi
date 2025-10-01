@@ -501,7 +501,7 @@ class ABIRegistry(Copyable, BaseRegistry):
 
     def _get_tuple_decoder_uncached(
         self,
-        *type_strs: abi.TypeStr, 
+        *type_strs: abi.TypeStr,
         strict: bool = True,
     ) -> decoding.TupleDecoder:
         return decoding.TupleDecoder(
