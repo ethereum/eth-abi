@@ -1,8 +1,7 @@
-import decimal
-from typing import (
+from collections.abc import (
     Callable,
-    Tuple,
 )
+import decimal
 
 ABI_DECIMAL_PREC = 999
 
@@ -16,14 +15,14 @@ def ceil32(x: int) -> int:
     return x if x % 32 == 0 else x + 32 - (x % 32)
 
 
-def compute_unsigned_integer_bounds(num_bits: int) -> Tuple[int, int]:
+def compute_unsigned_integer_bounds(num_bits: int) -> tuple[int, int]:
     return (
         0,
         2**num_bits - 1,
     )
 
 
-def compute_signed_integer_bounds(num_bits: int) -> Tuple[int, int]:
+def compute_signed_integer_bounds(num_bits: int) -> tuple[int, int]:
     return (
         -1 * 2 ** (num_bits - 1),
         2 ** (num_bits - 1) - 1,
@@ -33,7 +32,7 @@ def compute_signed_integer_bounds(num_bits: int) -> Tuple[int, int]:
 def compute_unsigned_fixed_bounds(
     num_bits: int,
     frac_places: int,
-) -> Tuple[decimal.Decimal, decimal.Decimal]:
+) -> tuple[decimal.Decimal, decimal.Decimal]:
     int_upper = compute_unsigned_integer_bounds(num_bits)[1]
 
     with decimal.localcontext(abi_decimal_context):
@@ -45,7 +44,7 @@ def compute_unsigned_fixed_bounds(
 def compute_signed_fixed_bounds(
     num_bits: int,
     frac_places: int,
-) -> Tuple[decimal.Decimal, decimal.Decimal]:
+) -> tuple[decimal.Decimal, decimal.Decimal]:
     int_lower, int_upper = compute_signed_integer_bounds(num_bits)
 
     with decimal.localcontext(abi_decimal_context):

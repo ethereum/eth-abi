@@ -1,11 +1,11 @@
 import abc
+from collections.abc import (
+    Callable,
+)
 import copy
 import functools
 from typing import (
     Any,
-    Callable,
-    Optional,
-    Type,
     Union,
 )
 
@@ -32,8 +32,8 @@ Lookup = Union[abi.TypeStr, Callable[[abi.TypeStr], bool]]
 EncoderCallable = Callable[[Any], bytes]
 DecoderCallable = Callable[[decoding.ContextFramesBytesIO], Any]
 
-Encoder = Union[EncoderCallable, Type[encoding.BaseEncoder]]
-Decoder = Union[DecoderCallable, Type[decoding.BaseDecoder]]
+Encoder = Union[EncoderCallable, type[encoding.BaseEncoder]]
+Decoder = Union[DecoderCallable, type[decoding.BaseDecoder]]
 
 
 class Copyable(abc.ABC):
@@ -344,8 +344,8 @@ class ABIRegistry(Copyable, BaseRegistry):
     def __init__(self):
         self._encoders = PredicateMapping("encoder registry")
         self._decoders = PredicateMapping("decoder registry")
-        self.get_encoder = functools.lru_cache(maxsize=None)(self._get_encoder_uncached)
-        self.get_decoder = functools.lru_cache(maxsize=None)(self._get_decoder_uncached)
+        self.get_encoder = functools.cache(self._get_encoder_uncached)
+        self.get_decoder = functools.cache(self._get_decoder_uncached)
 
     def _get_registration(self, mapping, type_str):
         coder = super()._get_registration(mapping, type_str)
@@ -357,7 +357,7 @@ class ABIRegistry(Copyable, BaseRegistry):
 
     @_clear_encoder_cache
     def register_encoder(
-        self, lookup: Lookup, encoder: Encoder, label: Optional[str] = None
+        self, lookup: Lookup, encoder: Encoder, label: str | None = None
     ) -> None:
         """
         Registers the given ``encoder`` under the given ``lookup``.  A unique
@@ -380,7 +380,7 @@ class ABIRegistry(Copyable, BaseRegistry):
 
     @_clear_decoder_cache
     def register_decoder(
-        self, lookup: Lookup, decoder: Decoder, label: Optional[str] = None
+        self, lookup: Lookup, decoder: Decoder, label: str | None = None
     ) -> None:
         """
         Registers the given ``decoder`` under the given ``lookup``.  A unique
@@ -406,7 +406,7 @@ class ABIRegistry(Copyable, BaseRegistry):
         lookup: Lookup,
         encoder: Encoder,
         decoder: Decoder,
-        label: Optional[str] = None,
+        label: str | None = None,
     ) -> None:
         """
         Registers the given ``encoder`` and ``decoder`` under the given
@@ -445,7 +445,7 @@ class ABIRegistry(Copyable, BaseRegistry):
         self.register_encoder(lookup, encoder, label=label)
         self.register_decoder(lookup, decoder, label=label)
 
-    def unregister(self, label: Optional[str]) -> None:
+    def unregister(self, label: str | None) -> None:
         """
         Unregisters the entries in the encoder and decoder registries which
         have the label ``label``.

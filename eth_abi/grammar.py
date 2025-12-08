@@ -45,7 +45,7 @@ class NodeVisitor(parsimonious.NodeVisitor):  # type: ignore[misc] # subclasses 
     """
 
     def __init__(self):
-        self.parse = functools.lru_cache(maxsize=None)(self._parse_uncached)
+        self.parse = functools.cache(self._parse_uncached)
 
     grammar = grammar
 

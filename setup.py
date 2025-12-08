@@ -66,9 +66,7 @@ setup(
     py_modules=["eth_abi"],
     zip_safe=False,
     keywords="ethereum",
-    packages=find_packages(
-        exclude=["scripts", "scripts.*", "tests", "tests.*"]
-    ),
+    packages=find_packages(exclude=["scripts", "scripts.*", "tests", "tests.*"]),
     package_data={"eth_abi": ["py.typed"]},
     classifiers=[
         "Development Status :: 5 - Production/Stable",

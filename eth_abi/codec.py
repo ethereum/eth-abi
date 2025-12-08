@@ -1,7 +1,8 @@
+from collections.abc import (
+    Iterable,
+)
 from typing import (
     Any,
-    Iterable,
-    Tuple,
     cast,
 )
 
@@ -131,7 +132,7 @@ class ABIDecoder(BaseABICoder):
         types: Iterable[TypeStr],
         data: Decodable,
         strict: bool = True,
-    ) -> Tuple[Any, ...]:
+    ) -> tuple[Any, ...]:
         """
         Decodes the binary value ``data`` as a sequence of values of the ABI types
         in ``types`` via the head-tail mechanism into a tuple of equivalent python
@@ -159,7 +160,7 @@ class ABIDecoder(BaseABICoder):
         decoder = TupleDecoder(decoders=decoders)
         stream = self.stream_class(data)
 
-        return cast(Tuple[Any, ...], decoder(stream))
+        return cast(tuple[Any, ...], decoder(stream))
 
 
 class ABICodec(ABIEncoder, ABIDecoder):

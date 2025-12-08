@@ -6,8 +6,6 @@ from itertools import (
 )
 from typing import (
     Any,
-    Optional,
-    Type,
 )
 
 from eth_utils import (
@@ -77,8 +75,8 @@ class BaseEncoder(BaseCoder, metaclass=abc.ABCMeta):
     def invalidate_value(
         cls,
         value: Any,
-        exc: Type[Exception] = EncodingTypeError,
-        msg: Optional[str] = None,
+        exc: type[Exception] = EncodingTypeError,
+        msg: str | None = None,
     ) -> None:
         """
         Throws a standard exception for when a value is not encodable by an

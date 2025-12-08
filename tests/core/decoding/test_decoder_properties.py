@@ -1,5 +1,4 @@
 import pytest
-import sys
 
 from eth_utils import (
     big_endian_to_int,
@@ -96,10 +95,7 @@ def is_valid_padding_bytes(padding_bytes, data_bytes):
 
 
 def all_bytes_equal(test_bytes, target):
-    if sys.version_info.major < 3:
-        return all(byte == chr(target) for byte in test_bytes)
-    else:
-        return all(byte == target for byte in test_bytes)
+    return all(byte == target for byte in test_bytes)
 
 
 @settings(max_examples=250)

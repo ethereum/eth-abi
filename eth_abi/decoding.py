@@ -1,9 +1,11 @@
 import abc
+from collections.abc import (
+    Generator,
+)
 import decimal
 import io
 from typing import (
     Any,
-    Generator,
 )
 
 from eth_utils import (
