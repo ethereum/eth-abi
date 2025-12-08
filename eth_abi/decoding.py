@@ -1,5 +1,6 @@
 import abc
 from collections.abc import (
+    Callable,
     Generator,
 )
 import decimal
@@ -169,7 +170,7 @@ class HeadTailDecoder(BaseDecoder):
 
 
 class TupleDecoder(BaseDecoder):
-    decoders = None
+    decoders: tuple[BaseDecoder, ...] | None = None
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -193,8 +194,7 @@ class TupleDecoder(BaseDecoder):
         """
         current_location = stream.tell()
         len_of_head = sum(
-            decoder.array_size if hasattr(decoder, "array_size") else 1
-            for decoder in self.decoders
+            getattr(decoder, "array_size", 1) for decoder in self.decoders
         )
         end_of_offsets = current_location + 32 * len_of_head
         total_stream_length = len(stream.getbuffer())
@@ -237,7 +237,7 @@ class TupleDecoder(BaseDecoder):
 
 
 class SingleDecoder(BaseDecoder):
-    decoder_fn = None
+    decoder_fn: Callable[..., Any] | None = None
 
     def validate(self):
         super().validate()
@@ -359,7 +359,7 @@ class DynamicArrayDecoder(BaseArrayDecoder):
 
 
 class FixedByteSizeDecoder(SingleDecoder):
-    decoder_fn = None
+    decoder_fn: Callable[..., Any] | None = None
     value_bit_size = None
     data_byte_size = None
     is_big_endian = None

@@ -325,8 +325,7 @@ class BaseRegistry:
             f"{repr(lookup_or_label)}"
         )
 
-    @staticmethod
-    def _get_registration(mapping, type_str):
+    def _get_registration(self, mapping, type_str):
         try:
             value = mapping.find(type_str)
         except ValueError as e:
