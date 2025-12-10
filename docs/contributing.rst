@@ -76,7 +76,7 @@ GitHub interface and make sure all tests are passing. In general pull requests t
 do not pass the CI build yet won't get reviewed unless explicitly requested.
 
 If the pull request introduces changes that should be reflected in the release notes,
-please add a `newsfragment` file as explained
+please add a newsfragment file as explained
 `here <https://github.com/ethereum/eth-abi/blob/main/newsfragments/README.md>`_.
 
 If possible, the change to the release notes file should be included in the commit that
@@ -89,7 +89,7 @@ Releases are typically done from the ``main`` branch, except when releasing a be
 which case the beta is released from ``main``, and the previous stable branch is
 released from said branch).
 
-Final test before each release
+Final review before each release
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Before releasing a new version, build and test the package that will be released:
@@ -102,11 +102,17 @@ Before releasing a new version, build and test the package that will be released
 This will build the package and install it in a temporary virtual environment. Follow
 the instructions to activate the venv and test whatever you think is important.
 
-You can also preview the release notes:
+Review the documentation that will get published:
 
 .. code:: sh
 
-    towncrier --draft
+    make docs
+
+Validate and preview the release notes:
+
+.. code:: sh
+
+    make validate-newsfragments
 
 Build the release notes
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

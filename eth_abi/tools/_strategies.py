@@ -1,6 +1,7 @@
-from typing import (
+from collections.abc import (
     Callable,
-    Optional,
+)
+from typing import (
     Union,
 )
 
@@ -45,7 +46,7 @@ class StrategyRegistry(BaseRegistry):
         self,
         lookup: Lookup,
         registration: StrategyRegistration,
-        label: Optional[str] = None,
+        label: str | None = None,
     ) -> None:
         self._register(self._strategies, lookup, registration, label=label)
 

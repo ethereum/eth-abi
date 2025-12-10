@@ -1,9 +1,11 @@
 import pytest
+from collections.abc import (
+    Iterable,
+    Iterator,
+)
 import decimal
 import itertools
 from typing import (
-    Iterable,
-    Iterator,
     TypeVar,
 )
 
