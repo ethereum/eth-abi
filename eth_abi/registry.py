@@ -475,12 +475,51 @@ class ABIRegistry(Copyable, BaseRegistry):
         decoder = self._get_registration(self._decoders, type_str)
 
         if hasattr(decoder, "is_dynamic") and decoder.is_dynamic:
+            # Create a copy of the decoder to avoid mutating shared cached instances
+            # This prevents issues where strict=False calls affect subsequent
+            # strict=True calls
+            decoder = copy.deepcopy(decoder)
+
             # Set a transient flag each time a call is made to ``get_decoder()``.
             # Only dynamic decoders should be allowed these looser constraints. All
             # other decoders should keep the default value of ``True``.
             decoder.strict = strict
 
+            # Recursively set strict on nested decoders
+            self._set_strict_on_nested_decoders(decoder, strict)
+
         return decoder
+
+    def _set_strict_on_nested_decoders(self, decoder, strict):
+        """
+        Recursively set the strict attribute on nested decoders.
+        """
+        if hasattr(decoder, "item_decoder") and decoder.item_decoder:
+            if hasattr(decoder.item_decoder, "strict"):
+                decoder.item_decoder.strict = strict
+            if (
+                hasattr(decoder.item_decoder, "tail_decoder")
+                and decoder.item_decoder.tail_decoder
+            ):
+                if hasattr(decoder.item_decoder.tail_decoder, "strict"):
+                    decoder.item_decoder.tail_decoder.strict = strict
+                self._set_strict_on_nested_decoders(
+                    decoder.item_decoder.tail_decoder, strict
+                )
+
+        if hasattr(decoder, "decoders") and decoder.decoders:
+            for nested_decoder in decoder.decoders:
+                if hasattr(nested_decoder, "strict"):
+                    nested_decoder.strict = strict
+                if (
+                    hasattr(nested_decoder, "tail_decoder")
+                    and nested_decoder.tail_decoder
+                ):
+                    if hasattr(nested_decoder.tail_decoder, "strict"):
+                        nested_decoder.tail_decoder.strict = strict
+                    self._set_strict_on_nested_decoders(
+                        nested_decoder.tail_decoder, strict
+                    )
 
     def copy(self):
         """
