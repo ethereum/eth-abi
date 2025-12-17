@@ -3,6 +3,27 @@ Release Notes
 
 .. towncrier release notes start
 
+eth-abi v6.0.0-beta.1 (2025-12-17)
+----------------------------------
+
+Breaking Changes
+~~~~~~~~~~~~~~~~
+
+- Drop support for Python 3.8 & 3.9 (`#250 <https://github.com/ethereum/eth-abi/issues/250>`__)
+
+
+Improved Documentation
+~~~~~~~~~~~~~~~~~~~~~~
+
+- Fix typo in index (`#243 <https://github.com/ethereum/eth-abi/issues/243>`__)
+
+
+Features
+~~~~~~~~
+
+- Add support for Python 3.14 (`#250 <https://github.com/ethereum/eth-abi/issues/250>`__)
+
+
 eth-abi v5.2.0 (2025-01-14)
 ---------------------------
 
