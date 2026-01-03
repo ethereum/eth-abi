@@ -1,5 +1,6 @@
 import functools
 import re
+from typing import Optional
 
 import parsimonious
 from parsimonious import (
@@ -224,7 +225,7 @@ class TupleType(ABIType):
     Represents the result of parsing a tuple type string e.g. "(int,bool)".
     """
 
-    __slots__ = ("components",)
+    __slots__ = ("components", "_type_str")
 
     def __init__(self, components, arrlist=None, *, node=None):
         super().__init__(arrlist, node)
@@ -235,15 +236,26 @@ class TupleType(ABIType):
         tuple type's components.
         """
 
-    def to_type_str(self):
-        arrlist = self.arrlist
+        self._type_str: Optional[str] = None
+        """
+        The string representation of an ABI type.  Once populated,
+        this will be equal to the type string from which it was created.
+        """
 
-        if isinstance(arrlist, tuple):
-            arrlist = "".join(repr(list(a)) for a in arrlist)
-        else:
-            arrlist = ""
-
-        return f"({','.join(c.to_type_str() for c in self.components)}){arrlist}"
+    def to_type_str(self) -> str:
+        type_str = self._type_str
+        if type_str is None:
+            arrlist = self.arrlist
+    
+            if isinstance(arrlist, tuple):
+                arrlist = "".join(repr(list(a)) for a in arrlist)
+            else:
+                arrlist = ""
+    
+            type_str = self._type_str = (
+                f"({','.join(c.to_type_str() for c in self.components)}){arrlist}"
+            )
+        return type_str
 
     @property
     def item_type(self):
@@ -276,7 +288,7 @@ class BasicType(ABIType):
     "ufixed128x19[][2]".
     """
 
-    __slots__ = ("base", "sub")
+    __slots__ = ("base", "sub", "_type_str")
 
     def __init__(self, base, sub=None, arrlist=None, *, node=None):
         super().__init__(arrlist, node)
@@ -291,22 +303,31 @@ class BasicType(ABIType):
         type.
         """
 
+        self._type_str: Optional[str] = None
+        """
+        The string representation of an ABI type.  Once populated,
+        this will be equal to the type string from which it was created.
+        """
+
     def to_type_str(self):
-        sub, arrlist = self.sub, self.arrlist
-
-        if isinstance(sub, int):
-            sub = str(sub)
-        elif isinstance(sub, tuple):
-            sub = "x".join(str(s) for s in sub)
-        else:
-            sub = ""
-
-        if isinstance(arrlist, tuple):
-            arrlist = "".join(repr(list(a)) for a in arrlist)
-        else:
-            arrlist = ""
-
-        return self.base + sub + arrlist
+        type_str = self._type_str
+        if type_str is None:
+            sub, arrlist = self.sub, self.arrlist
+    
+            if isinstance(sub, int):
+                sub = str(sub)
+            elif isinstance(sub, tuple):
+                sub = "x".join(str(s) for s in sub)
+            else:
+                sub = ""
+    
+            if isinstance(arrlist, tuple):
+                arrlist = "".join(repr(list(a)) for a in arrlist)
+            else:
+                arrlist = ""
+    
+            type_str = self._type_str = self.base + sub + arrlist
+        return type_str
 
     @property
     def item_type(self):
