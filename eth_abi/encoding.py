@@ -4,6 +4,9 @@ from collections.abc import (
     Callable,
 )
 import decimal
+from functools import (
+    cached_property,
+)
 from itertools import (
     accumulate,
 )
@@ -243,6 +246,20 @@ class NumberEncoder(Fixed32ByteSizeEncoder):
     illegal_value_fn: Callable[..., Any] | None = None
     type_check_fn: Callable[..., Any] | None = None
 
+    @cached_property
+    def bounds(self):
+        if self.bounds_fn is None:
+            raise AssertionError("`bounds_fn` is None")
+        return self.bounds_fn(self.value_bit_size)
+
+    @cached_property
+    def lower_bound(self):
+        return self.bounds[0]
+
+    @cached_property
+    def upper_bound(self):
+        return self.bounds[1]
+
     def validate(self):
         super().validate()
 
@@ -263,15 +280,12 @@ class NumberEncoder(Fixed32ByteSizeEncoder):
         if illegal_value:
             self.invalidate_value(value, exc=IllegalValue)
 
-        if self.bounds_fn is None:
-            raise AssertionError("`bounds_fn` is None")
-        lower_bound, upper_bound = self.bounds_fn(self.value_bit_size)
-        if value < lower_bound or value > upper_bound:
+        if value < self.lower_bound or value > self.upper_bound:
             self.invalidate_value(
                 value,
                 exc=ValueOutOfBounds,
                 msg=f"Cannot be encoded in {self.value_bit_size} bits. Must be bounded "
-                f"between [{lower_bound}, {upper_bound}].",
+                f"between [{self.lower_bound}, {self.upper_bound}].",
             )
 
 
