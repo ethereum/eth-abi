@@ -1,5 +1,4 @@
 import abc
-import codecs
 from collections.abc import (
     Callable,
 )
@@ -548,7 +547,7 @@ class TextStringEncoder(BaseEncoder):
     def encode(cls, value):
         cls.validate_value(value)
 
-        value_as_bytes = codecs.encode(value, "utf8")
+        value_as_bytes = value.encode("utf-8")
         value_length = len(value_as_bytes)
 
         encoded_size = encode_uint_256(value_length)
@@ -567,7 +566,7 @@ class PackedTextStringEncoder(TextStringEncoder):
     @classmethod
     def encode(cls, value):
         cls.validate_value(value)
-        return codecs.encode(value, "utf8")
+        return value.encode("utf-8")
 
 
 class BaseArrayEncoder(BaseEncoder):

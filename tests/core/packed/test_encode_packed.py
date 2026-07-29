@@ -34,3 +34,8 @@ def test_encode_packed(single_abi_type, python_value, _, packed_encoding):
 def test_encode_packed_single_types(single_abi_type, python_value, _, packed_encoding):
     actual = encode_packed([single_abi_type], [python_value])
     assert actual == packed_encoding
+
+
+def test_encode_packed_unicode_string():
+    actual = encode_packed(["string"], ["snowman \u2603"])
+    assert actual == b"snowman \xe2\x98\x83"

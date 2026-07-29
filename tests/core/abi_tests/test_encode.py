@@ -86,6 +86,16 @@ def test_abi_encode_for_single_dynamic_types(
     assert eth_abi_encoded == solidity_abi_encoded
 
 
+def test_abi_encode_for_unicode_string():
+    eth_abi_encoded = encode(["string"], ["snowman \u2603"])
+
+    assert eth_abi_encoded == words(
+        "20",
+        "b",
+        "736e6f776d616e20e29883>0",
+    )
+
+
 @pytest.mark.parametrize(
     "non_list_like_value",
     (
