@@ -1,5 +1,4 @@
 import pytest
-
 from eth_utils import (
     big_endian_to_int,
     decode_hex,
@@ -13,6 +12,8 @@ from hypothesis import (
     example,
     given,
     settings,
+)
+from hypothesis import (
     strategies as st,
 )
 

@@ -60,7 +60,7 @@ Non-Standard Packed Mode Encoding
 
     Non-standard packed mode encoding is an experimental feature in the eth-abi
     library.  Use at your own risk and please report any problems at
-    https://github.com/ethereum/eth-abi/issues.
+    https://github.com/ApeWorX/eth-abi/issues.
 
 In certain cases, the Solidity programming language uses a non-standard packed
 encoding.  You can encode values in this format like so:

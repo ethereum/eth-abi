@@ -1,1 +1,0 @@
-Cache tuple encoder and decoder objects for reuse during encoding / decoding.

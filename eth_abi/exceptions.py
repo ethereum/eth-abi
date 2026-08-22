@@ -21,7 +21,7 @@ class IllegalValue(EncodingError):
 
     .. code-block:: python
 
-        fixed128x19_encoder(Decimal('NaN'))  # cannot encode NaN
+        fixed128x19_encoder(Decimal("NaN"))  # cannot encode NaN
 
     """
 
@@ -34,7 +34,7 @@ class ValueOutOfBounds(IllegalValue):
 
     .. code-block:: python
 
-        ufixed8x1_encoder(Decimal('25.6'))  # out of bounds
+        ufixed8x1_encoder(Decimal("25.6"))  # out of bounds
 
     """
 

@@ -4,6 +4,8 @@ from hypothesis import (
     event,
     given,
     settings,
+)
+from hypothesis import (
     strategies as st,
 )
 

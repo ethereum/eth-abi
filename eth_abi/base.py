@@ -24,44 +24,35 @@ def parse_type_str(expected_base=None, with_arrlist=False):
 
             type_str_repr = repr(type_str)
             if type_str != normalized_type_str:
-                type_str_repr = "{} (normalized to {})".format(
-                    type_str_repr,
-                    repr(normalized_type_str),
+                normalized_type_str_repr = repr(normalized_type_str)
+                type_str_repr = (
+                    f"{type_str_repr} (normalized to {normalized_type_str_repr})"
                 )
 
             if expected_base is not None:
                 if not isinstance(abi_type, BasicType):
                     raise ValueError(
-                        "Cannot create {} for non-basic type {}".format(
-                            cls.__name__,
-                            type_str_repr,
-                        )
+                        f"Cannot create {cls.__name__} for non-basic type "
+                        f"{type_str_repr}"
                     )
                 if abi_type.base != expected_base:
                     raise ValueError(
-                        "Cannot create {} for type {}: expected type with "
-                        "base '{}'".format(
-                            cls.__name__,
-                            type_str_repr,
-                            expected_base,
-                        )
+                        f"Cannot create {cls.__name__} for type {type_str_repr}: "
+                        "expected type with "
+                        f"base '{expected_base}'"
                     )
 
             if not with_arrlist and abi_type.arrlist is not None:
                 raise ValueError(
-                    "Cannot create {} for type {}: expected type with "
-                    "no array dimension list".format(
-                        cls.__name__,
-                        type_str_repr,
-                    )
+                    f"Cannot create {cls.__name__} for type {type_str_repr}: "
+                    "expected type with "
+                    "no array dimension list"
                 )
             if with_arrlist and abi_type.arrlist is None:
                 raise ValueError(
-                    "Cannot create {} for type {}: expected type with "
-                    "array dimension list".format(
-                        cls.__name__,
-                        type_str_repr,
-                    )
+                    f"Cannot create {cls.__name__} for type {type_str_repr}: "
+                    "expected type with "
+                    "array dimension list"
                 )
 
             # Perform general validation of default solidity types
@@ -88,17 +79,14 @@ def parse_tuple_type_str(old_from_type_str):
 
         type_str_repr = repr(type_str)
         if type_str != normalized_type_str:
-            type_str_repr = "{} (normalized to {})".format(
-                type_str_repr,
-                repr(normalized_type_str),
+            normalized_type_str_repr = repr(normalized_type_str)
+            type_str_repr = (
+                f"{type_str_repr} (normalized to {normalized_type_str_repr})"
             )
 
         if not isinstance(abi_type, TupleType):
             raise ValueError(
-                "Cannot create {} for non-tuple type {}".format(
-                    cls.__name__,
-                    type_str_repr,
-                )
+                f"Cannot create {cls.__name__} for non-tuple type {type_str_repr}"
             )
 
         abi_type.validate()
@@ -122,12 +110,10 @@ class BaseCoder:
         for key, value in kwargs.items():
             if not hasattr(cls, key):
                 raise AttributeError(
-                    "Property {key} not found on {cls_name} class. "
-                    "`{cls_name}.__init__` only accepts keyword arguments which are "
-                    "present on the {cls_name} class.".format(
-                        key=key,
-                        cls_name=cls.__name__,
-                    )
+                    f"Property {key} not found on {cls.__name__} class. "
+                    f"`{cls.__name__}.__init__` only accepts keyword arguments "
+                    "which are "
+                    f"present on the {cls.__name__} class."
                 )
             setattr(self, key, value)
 

@@ -15,14 +15,9 @@
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 # sys.path.insert(0, os.path.abspath('.'))
 
-import os
-
-DIR = os.path.dirname(__file__)
-with open(os.path.join(DIR, "../setup.py"), "r") as f:
-    for line in f:
-        if "version=" in line:
-            setup_version = line.split('"')[1]
-            break
+from importlib.metadata import (
+    version as metadata_version,
+)
 
 # -- General configuration ------------------------------------------------
 
@@ -55,7 +50,7 @@ master_doc = "index"
 project = "Ethereum Contract Interface (ABI) Utility"
 copyright = "2016-2020, 2022-2025, The Ethereum Foundation"
 
-__version__ = setup_version
+__version__ = metadata_version("eth_abi")
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # built documents.

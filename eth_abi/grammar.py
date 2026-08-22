@@ -127,9 +127,11 @@ class NodeVisitor(parsimonious.NodeVisitor):  # type: ignore[misc] # subclasses 
             # If this logic grows any bigger, we should abstract it to its own function.
             if "()" in type_str:
                 # validate against zero-sized tuple types
-                raise ValueError('Zero-sized tuple types "()" are not supported.')
+                raise ValueError(
+                    'Zero-sized tuple types "()" are not supported.'
+                ) from e
 
-            raise ParseError(e.text, e.pos, e.expr)
+            raise ParseError(e.text, e.pos, e.expr) from e
 
 
 visitor = NodeVisitor()

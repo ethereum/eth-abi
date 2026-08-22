@@ -1,12 +1,11 @@
 import abc
+import copy
+import functools
 from collections.abc import (
     Callable,
 )
-import copy
-import functools
 from typing import (
     Any,
-    Union,
     cast,
 )
 
@@ -28,13 +27,13 @@ from .exceptions import (
     NoEntriesFound,
 )
 
-Lookup = Union[abi.TypeStr, Callable[[abi.TypeStr], bool]]
+Lookup = abi.TypeStr | Callable[[abi.TypeStr], bool]
 
 EncoderCallable = Callable[[Any], bytes]
 DecoderCallable = Callable[[decoding.ContextFramesBytesIO], Any]
 
-Encoder = Union[EncoderCallable, type[encoding.BaseEncoder]]
-Decoder = Union[DecoderCallable, type[decoding.BaseDecoder]]
+Encoder = EncoderCallable | type[encoding.BaseEncoder]
+Decoder = DecoderCallable | type[decoding.BaseDecoder]
 
 
 class Copyable(abc.ABC):
@@ -90,7 +89,7 @@ class PredicateMapping(Copyable):
                 f"No matching entries for '{type_str}' in {self._name}"
             )
 
-        predicates, values = tuple(zip(*results))
+        predicates, values = tuple(zip(*results, strict=False))
 
         if len(results) > 1:
             predicate_reprs = ", ".join(map(repr, predicates))
@@ -109,8 +108,10 @@ class PredicateMapping(Copyable):
         # Delete the predicate mapping to the previously stored value
         try:
             del self._values[predicate]
-        except KeyError:
-            raise KeyError(f"Matcher {repr(predicate)} not found in {self._name}")
+        except KeyError as exc:
+            raise KeyError(
+                f"Matcher {repr(predicate)} not found in {self._name}"
+            ) from exc
 
         # Delete any label which refers to this predicate
         try:
@@ -134,8 +135,8 @@ class PredicateMapping(Copyable):
     def remove_by_label(self, label):
         try:
             predicate = self._labeled_predicates[label]
-        except KeyError:
-            raise KeyError(f"Label '{label}' not found in {self._name}")
+        except KeyError as exc:
+            raise KeyError(f"Label '{label}' not found in {self._name}") from exc
 
         del self._labeled_predicates[label]
         del self._values[predicate]

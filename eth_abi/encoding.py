@@ -1,9 +1,9 @@
 import abc
 import codecs
+import decimal
 from collections.abc import (
     Callable,
 )
-import decimal
 from itertools import (
     accumulate,
 )
@@ -123,7 +123,7 @@ class TupleEncoder(BaseEncoder):
                 "were expected",
             )
 
-        for item, encoder in zip(value, self.encoders):
+        for item, encoder in zip(value, self.encoders, strict=False):
             try:
                 encoder.validate_value(item)
             except AttributeError:
@@ -134,7 +134,7 @@ class TupleEncoder(BaseEncoder):
 
         raw_head_chunks = []
         tail_chunks = []
-        for value, encoder in zip(values, self.encoders):
+        for value, encoder in zip(values, self.encoders, strict=False):
             if getattr(encoder, "is_dynamic", False):
                 raw_head_chunks.append(None)
                 tail_chunks.append(encoder(value))
@@ -146,7 +146,7 @@ class TupleEncoder(BaseEncoder):
         tail_offsets = (0,) + tuple(accumulate(map(len, tail_chunks[:-1])))
         head_chunks = tuple(
             encode_uint_256(head_length + offset) if chunk is None else chunk
-            for chunk, offset in zip(raw_head_chunks, tail_offsets)
+            for chunk, offset in zip(raw_head_chunks, tail_offsets, strict=False)
         )
 
         encoded_value = b"".join(head_chunks + tuple(tail_chunks))

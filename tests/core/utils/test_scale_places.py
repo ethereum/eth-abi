@@ -1,16 +1,18 @@
-import pytest
+import decimal
+import itertools
 from collections.abc import (
     Iterable,
     Iterator,
 )
-import decimal
-import itertools
 from typing import (
     TypeVar,
 )
 
+import pytest
 from hypothesis import (
     given,
+)
+from hypothesis import (
     strategies as st,
 )
 
@@ -26,7 +28,7 @@ def take(n: int, it: Iterable[T]) -> Iterator[T]:
     """
     Returns an iterator that takes ``n`` items from the iterable ``it``.
     """
-    yield from (i for _, i in zip(range(n), it))
+    yield from (i for _, i in zip(range(n), it, strict=False))
 
 
 def get_test_value(prec: int, frac_places: int) -> decimal.Decimal:

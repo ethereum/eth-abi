@@ -1,6 +1,7 @@
-import pytest
 import copy
 import itertools
+
+import pytest
 
 from eth_abi import (
     decoding,
@@ -11,6 +12,8 @@ from eth_abi.registry import (
     ABIRegistry,
     BaseEquals,
     has_arrlist,
+)
+from eth_abi.registry import (
     registry as default_registry,
 )
 

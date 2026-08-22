@@ -1,10 +1,10 @@
 import abc
+import decimal
+import io
 from collections.abc import (
     Callable,
     Generator,
 )
-import decimal
-import io
 from typing import (
     Any,
 )
@@ -106,8 +106,8 @@ class ContextFramesBytesIO(io.BytesIO):
         """
         try:
             offset, return_pos = self._frames.pop()
-        except IndexError:
-            raise IndexError("no frames to pop")
+        except IndexError as exc:
+            raise IndexError("no frames to pop") from exc
         self._total_offset -= offset
 
         self.seek(return_pos)

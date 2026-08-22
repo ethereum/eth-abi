@@ -15,7 +15,7 @@ def validate_bytes_param(param: Any, param_name: str) -> None:
 
 
 def validate_list_like_param(param: Any, param_name: str) -> None:
-    if not isinstance(param, (list, tuple)):
+    if not isinstance(param, list | tuple):
         raise TypeError(
             f"The `{param_name}` value type must be one of list or tuple. "
             f"Got {type(param)}"

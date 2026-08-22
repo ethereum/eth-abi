@@ -1,7 +1,7 @@
-import pytest
 import codecs
 import decimal
 
+import pytest
 from eth_utils import (
     decode_hex,
     int_to_big_endian,
@@ -19,6 +19,8 @@ from hypothesis import (
     example,
     given,
     settings,
+)
+from hypothesis import (
     strategies as st,
 )
 

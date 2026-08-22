@@ -1,7 +1,7 @@
+import decimal
 from collections.abc import (
     Callable,
 )
-import decimal
 
 ABI_DECIMAL_PREC = 999
 

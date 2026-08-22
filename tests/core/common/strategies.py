@@ -1,7 +1,7 @@
+import hypothesis.strategies as st
 from eth_utils import (
     encode_hex,
 )
-import hypothesis.strategies as st
 
 from eth_abi.utils.numeric import (
     scale_places,
@@ -277,7 +277,7 @@ tuple_strs_values = st.recursive(
 
 
 def unzip_strs_values(strs_values):
-    type_strs, type_values = zip(*strs_values)
+    type_strs, type_values = zip(*strs_values, strict=False)
 
     return tuple(type_strs), tuple(type_values)
 

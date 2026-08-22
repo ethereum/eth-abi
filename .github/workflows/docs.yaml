@@ -1,0 +1,20 @@
+on: ["push", "pull_request"]
+
+name: Docs
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - uses: astral-sh/setup-uv@v7
+        with:
+          python-version: "3.10"
+      - run: uv run --group docs sphinx-build -W -b html docs docs/_build/html
+      - run: uv run --group docs sphinx-build -W -b doctest docs docs/_build/doctest

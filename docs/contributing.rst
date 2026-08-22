@@ -15,16 +15,15 @@ development machine:
 
     git clone git@github.com:your-github-username/eth-abi.git
 
-Next, install the development dependencies. We recommend using a virtual environment,
-such as `virtualenv <https://virtualenv.pypa.io/en/stable/>`_.
+Next, install the development dependencies with
+`uv <https://docs.astral.sh/uv/>`_. The ``dev`` dependency group is installed
+by default, so ``uv sync`` is enough for a local development environment.
 
 .. code:: sh
 
     cd eth-abi
-    virtualenv -p python venv
-    . venv/bin/activate
-    python -m pip install -e ".[dev]"
-    pre-commit install
+    uv sync
+    uv run prek install
 
 Running the tests
 ~~~~~~~~~~~~~~~~~
@@ -35,24 +34,25 @@ We can run all tests with:
 
 .. code:: sh
 
-    pytest tests
+    uv run --group test pytest tests/core
 
 Code Style
 ~~~~~~~~~~
 
-We use `pre-commit <https://pre-commit.com/>`_ to enforce a consistent code style across
+We use `prek <https://prek.j178.dev>`_ to enforce a consistent code style across
 the library. This tool runs automatically with every commit, but you can also run it
 manually with:
 
 .. code:: sh
 
-    make lint
+    uv run --group lint ruff check .
+    uv run --group lint ruff format --check .
 
-If you need to make a commit that skips the ``pre-commit`` checks, you can do so with
+If you need to make a commit that skips the ``prek`` checks, you can do so with
 ``git commit --no-verify``.
 
 This library uses type hints, which are enforced by the ``mypy`` tool (part of the
-``pre-commit`` checks). All new code is required to land with type hints, with the
+``prek`` checks). All new code is required to land with type hints, with the
 exception of code within the ``tests`` directory.
 
 Documentation
@@ -71,13 +71,13 @@ a discussion, and doesn't necessarily need to be the final, finished submission.
 GitHub's documentation for working on pull requests is
 `available here <https://docs.github.com/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests>`_.
 
-Once you've made a pull request, take a look at the Circle CI build status in the
+Once you've made a pull request, take a look at the GitHub Actions build status in the
 GitHub interface and make sure all tests are passing. In general pull requests that
 do not pass the CI build yet won't get reviewed unless explicitly requested.
 
 If the pull request introduces changes that should be reflected in the release notes,
 please add a newsfragment file as explained
-`here <https://github.com/ethereum/eth-abi/blob/main/newsfragments/README.md>`_.
+`here <https://github.com/ApeWorX/eth-abi/blob/main/newsfragments/README.md>`_.
 
 If possible, the change to the release notes file should be included in the commit that
 introduces the feature or bugfix.
@@ -97,67 +97,27 @@ Before releasing a new version, build and test the package that will be released
 .. code:: sh
 
     git checkout main && git pull
-    make package-test
+    uv build
 
-This will build the package and install it in a temporary virtual environment. Follow
-the instructions to activate the venv and test whatever you think is important.
+This will build the source distribution and wheel.
 
 Review the documentation that will get published:
 
 .. code:: sh
 
-    make docs
+    uv run --group docs sphinx-build -W -b html docs docs/_build/html
+    uv run --group docs sphinx-build -W -b doctest docs docs/_build/doctest
 
-Validate and preview the release notes:
-
-.. code:: sh
-
-    make validate-newsfragments
-
-Build the release notes
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Before bumping the version number, build the release notes. You must include the part of
-the version to bump (see below), which changes how the version number will show in the
-release notes.
+Run the test suite:
 
 .. code:: sh
 
-    make notes bump=$$VERSION_PART_TO_BUMP$$
-
-If there are any errors, be sure to re-run make notes until it works.
+    uv run --group test pytest tests/core
 
 Push the release to github & pypi
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-After confirming that the release package looks okay, release a new version:
-
-.. code:: sh
-
-    make release bump=$$VERSION_PART_TO_BUMP$$
-
-This command will:
-
-- Bump the version number as specified in ``.pyproject.toml`` and ``setup.py``.
-- Create a git commit and tag for the new version.
-- Build the package.
-- Push the commit and tag to github.
-- Push the new package files to pypi.
-
-Which version part to bump
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-``$$VERSION_PART_TO_BUMP$$`` must be one of: ``major``, ``minor``, ``patch``, ``stage``,
-or ``devnum``.
-
-The version format for this repo is ``{major}.{minor}.{patch}`` for stable, and
-``{major}.{minor}.{patch}-{stage}.{devnum}`` for unstable (``stage`` can be alpha or
-beta).
-
-If you are in a beta version, ``make release bump=stage`` will switch to a stable.
-
-To issue an unstable version when the current version is stable, specify the new version
-explicitly, like ``make release bump="--new-version 4.0.0-alpha.1"``
-
-You can see what the result of bumping any particular version part would be with
-``bump-my-version show-bump``
+After confirming that the release package looks okay, create a GitHub Release for the
+new version. GitHub creates the tag, ``setuptools-scm`` derives the package version from
+that tag, and the release workflow publishes the package to PyPI through trusted
+publishing.

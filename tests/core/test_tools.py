@@ -1,9 +1,10 @@
 import pytest
-
 from hypothesis import (
     example,
     given,
     settings,
+)
+from hypothesis import (
     strategies as st,
 )
 

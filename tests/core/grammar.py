@@ -1,8 +1,9 @@
 import pytest
-
 from hypothesis import (
     example,
     given,
+)
+from hypothesis import (
     strategies as st,
 )
 
@@ -225,7 +226,7 @@ def test_basic_type_item_type_throws_errors():
 
     pattern = "Cannot determine item type for non-array type 'int256'"
     with pytest.raises(ValueError, match=pattern):
-        bt.item_type
+        _ = bt.item_type
 
 
 @pytest.mark.parametrize(
